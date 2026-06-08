@@ -1,9 +1,6 @@
 import { ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 
-import type {
-  AgentRuntimeStatusDto,
-  ThreadDto,
-} from '@remote-codex/shared';
+import type { AgentRuntimeStatusDto, ThreadDto } from '@remote-codex/shared';
 import {
   formatShortTimestamp,
   threadStatusClassName,
@@ -43,7 +40,9 @@ interface ThreadWorkspaceLayoutProps {
     onClick: () => void;
   }) => ReactNode;
   onCloseAppNavigation?: () => void;
-  onRenameThread?: ((threadId: string, title: string) => Promise<void> | void) | undefined;
+  onRenameThread?:
+    | ((threadId: string, title: string) => Promise<void> | void)
+    | undefined;
   onDeleteThread?: ((thread: ThreadDto) => void) | undefined;
   children: ReactNode;
 }
@@ -126,7 +125,9 @@ function SidebarSection({
         <span className="text-xs uppercase tracking-[0.28em] text-[var(--theme-fg-muted)]">
           {title}
         </span>
-        <span className="text-xs text-[var(--theme-fg-muted)]">{open ? 'Hide' : 'Show'}</span>
+        <span className="text-xs text-[var(--theme-fg-muted)]">
+          {open ? 'Hide' : 'Show'}
+        </span>
       </button>
       {open && <div className="mt-3">{children}</div>}
     </section>
@@ -158,7 +159,9 @@ function ThreadCard({
   showDeleteButton?: boolean;
   showSessionCopyButton?: boolean;
 }) {
-  const [copyState, setCopyState] = useState<'idle' | 'copied' | 'failed'>('idle');
+  const [copyState, setCopyState] = useState<'idle' | 'copied' | 'failed'>(
+    'idle',
+  );
   const resetTimerRef = useRef<number | null>(null);
   const workspaceLabel = workspaceLabels[thread.workspaceId];
   const isCurrentThread = currentThreadId === thread.id;
@@ -183,13 +186,19 @@ function ThreadCard({
       if (resetTimerRef.current !== null) {
         window.clearTimeout(resetTimerRef.current);
       }
-      resetTimerRef.current = window.setTimeout(() => setCopyState('idle'), 1200);
+      resetTimerRef.current = window.setTimeout(
+        () => setCopyState('idle'),
+        1200,
+      );
     } catch {
       setCopyState('failed');
       if (resetTimerRef.current !== null) {
         window.clearTimeout(resetTimerRef.current);
       }
-      resetTimerRef.current = window.setTimeout(() => setCopyState('idle'), 1600);
+      resetTimerRef.current = window.setTimeout(
+        () => setCopyState('idle'),
+        1600,
+      );
     }
   }
 
@@ -197,7 +206,7 @@ function ThreadCard({
     isCurrentThread
       ? 'thread-sidebar-card-active shadow-lg shadow-stone-950/12'
       : ''
-  } ${showSessionCopyButton && (thread.providerSessionId) ? 'pb-4' : ''}`;
+  } ${showSessionCopyButton && thread.providerSessionId ? 'pb-4' : ''}`;
   const openThread = () => onOpenThread(thread.id);
   const cardContent = (
     <>
@@ -257,13 +266,15 @@ function ThreadCard({
           {threadStatusLabel(thread.status)}
         </span>
       </div>
-      <div className={`mt-2 flex items-center justify-between gap-3 text-[11px] text-[var(--theme-fg-muted)] ${showSessionCopyButton && (thread.providerSessionId) ? 'pr-9' : ''}`}>
+      <div
+        className={`mt-2 flex items-center justify-between gap-3 text-[11px] text-[var(--theme-fg-muted)] ${showSessionCopyButton && thread.providerSessionId ? 'pr-9' : ''}`}
+      >
         <time dateTime={thread.lastTurnStartedAt ?? thread.updatedAt}>
           {formatShortTimestamp(thread.lastTurnStartedAt ?? thread.updatedAt)}
         </time>
         <span>{thread.model ?? 'No model'}</span>
       </div>
-      {showSessionCopyButton && (thread.providerSessionId) && (
+      {showSessionCopyButton && thread.providerSessionId && (
         <button
           type="button"
           aria-label="Copy session ID"
@@ -542,12 +553,15 @@ export function ThreadWorkspaceLayout({
       <div className="space-y-4">
         <section>
           <div className="mb-3 flex items-center justify-between gap-3">
-            <p className="text-xs uppercase tracking-[0.28em] text-[var(--theme-fg-muted)]">
-              Thread List
+            <p className="flex items-center gap-2 text-xs font-medium text-[var(--theme-fg-muted)]">
+              <span className="h-1.5 w-1.5 rounded-full bg-[var(--theme-border-strong)]" />
+              Rooms
             </p>
             <div className="flex items-center gap-2">
               {loading && (
-                <span className="text-xs text-[var(--theme-fg-muted)]">Refreshing...</span>
+                <span className="text-xs text-[var(--theme-fg-muted)]">
+                  Refreshing...
+                </span>
               )}
               {renderNewThreadButton(
                 'inline-flex h-7 items-center rounded-full bg-[var(--theme-accent-solid)] px-2.5 text-[10px] font-medium uppercase tracking-[0.16em] text-[var(--theme-accent-solid-fg)] transition hover:bg-[var(--theme-accent-solid-hover)]',
@@ -609,15 +623,15 @@ export function ThreadWorkspaceLayout({
       <div
         className={
           viewportConstrained
-            ? `flex h-full max-h-full min-h-0 flex-col gap-2 overflow-hidden overscroll-none sm:gap-4 lg:grid ${
+            ? `flex h-full max-h-full min-h-0 flex-col gap-2 overflow-hidden overscroll-none sm:gap-2 lg:grid ${
                 desktopSidebarCollapsed
                   ? 'lg:grid-cols-[0_minmax(0,1fr)]'
-                  : 'lg:grid-cols-[320px_minmax(0,1fr)] xl:grid-cols-[340px_minmax(0,1fr)]'
+                  : 'lg:grid-cols-[264px_minmax(0,1fr)]'
               }`
             : `flex min-h-[calc(100dvh-2rem)] flex-col gap-4 lg:grid ${
                 desktopSidebarCollapsed
                   ? 'lg:grid-cols-[0_minmax(0,1fr)]'
-                  : 'lg:grid-cols-[320px_minmax(0,1fr)] xl:grid-cols-[340px_minmax(0,1fr)]'
+                  : 'lg:grid-cols-[264px_minmax(0,1fr)]'
               }`
         }
       >
@@ -625,11 +639,12 @@ export function ThreadWorkspaceLayout({
           <div className="relative">
             <div
               className={`thread-topbar-surface grid h-10 items-center gap-1.5 border-b px-2.5 backdrop-blur ${
-                showMobileAppMenu && (showMobileNewThreadShortcut || mobileHeaderAction)
+                showMobileAppMenu &&
+                (showMobileNewThreadShortcut || mobileHeaderAction)
                   ? 'grid-cols-[2.5rem_minmax(0,1fr)_auto]'
                   : showMobileAppMenu
                     ? 'grid-cols-[2.5rem_minmax(0,1fr)]'
-                  : 'grid-cols-[minmax(0,1fr)]'
+                    : 'grid-cols-[minmax(0,1fr)]'
               }`}
             >
               {showMobileAppMenu && appMenuButton}
@@ -675,14 +690,14 @@ export function ThreadWorkspaceLayout({
               )}
 
               {showMobileAppMenu &&
-                (mobileHeaderAction ? (
-                  mobileHeaderAction
-                ) : showMobileNewThreadShortcut ? (
-                  renderNewThreadButton(
-                    'inline-flex h-8 min-w-0 shrink-0 items-center justify-center gap-1 rounded-full bg-[var(--theme-accent-solid)] px-2 text-[10px] font-medium uppercase tracking-[0.16em] text-[var(--theme-accent-solid-fg)] transition hover:bg-[var(--theme-accent-solid-hover)]',
-                    true,
-                  )
-                ) : null)}
+                (mobileHeaderAction
+                  ? mobileHeaderAction
+                  : showMobileNewThreadShortcut
+                    ? renderNewThreadButton(
+                        'inline-flex h-8 min-w-0 shrink-0 items-center justify-center gap-1 rounded-full bg-[var(--theme-accent-solid)] px-2 text-[10px] font-medium uppercase tracking-[0.16em] text-[var(--theme-accent-solid-fg)] transition hover:bg-[var(--theme-accent-solid-hover)]',
+                        true,
+                      )
+                    : null)}
             </div>
 
             {showMobileAppMenu && appNavigationMenu && (
@@ -692,7 +707,7 @@ export function ThreadWorkspaceLayout({
             )}
 
             {showMobileThreadNavToggle && mobileSidebarOpen && (
-              <aside className="thread-sidebar-surface absolute inset-x-2 top-[calc(100%+0.35rem)] z-50 max-h-[min(70dvh,34rem)] overflow-y-auto overscroll-contain rounded-[1.35rem] border p-4 shadow-2xl shadow-stone-950/18 backdrop-blur">
+              <aside className="thread-sidebar-surface absolute inset-x-2 top-[calc(100%+0.35rem)] z-50 max-h-[min(70dvh,34rem)] overflow-y-auto overscroll-contain rounded-[12px] border p-3 shadow-2xl shadow-stone-950/18 backdrop-blur">
                 {renderSidebarContent()}
               </aside>
             )}
@@ -701,7 +716,9 @@ export function ThreadWorkspaceLayout({
 
         <aside
           className={`relative hidden min-h-0 lg:block ${
-            desktopSidebarCollapsed ? 'pointer-events-none overflow-visible' : ''
+            desktopSidebarCollapsed
+              ? 'pointer-events-none overflow-visible'
+              : ''
           }`}
         >
           <button
@@ -736,7 +753,7 @@ export function ThreadWorkspaceLayout({
           </button>
           <div
             aria-hidden={desktopSidebarCollapsed}
-            className={`thread-sidebar-surface sticky top-4 rounded-[2rem] border p-4 shadow-2xl shadow-stone-950/12 backdrop-blur transition-opacity ${
+            className={`thread-sidebar-surface sticky top-2 rounded-[12px] border p-3 shadow-[var(--theme-shadow)] backdrop-blur transition-opacity ${
               viewportConstrained ? 'h-full max-h-full overflow-y-auto' : ''
             } ${desktopSidebarCollapsed ? 'pointer-events-none opacity-0' : 'opacity-100'}`}
           >
@@ -763,7 +780,9 @@ export function ThreadWorkspaceLayout({
         busy={renamingThreadId !== null}
         onChange={setDraftTitle}
         onCancel={cancelRenameThread}
-        onSubmit={() => editingThreadId ? handleRenameThread(editingThreadId) : undefined}
+        onSubmit={() =>
+          editingThreadId ? handleRenameThread(editingThreadId) : undefined
+        }
       />
     </>
   );

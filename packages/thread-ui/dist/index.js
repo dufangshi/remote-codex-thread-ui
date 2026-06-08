@@ -10,9 +10,17 @@ import {
 import { jsx, jsxs } from "react/jsx-runtime";
 var HOOK_EVENT_OPTIONS = [
   { value: "preToolUse", label: "PreToolUse", matcherHint: "Bash" },
-  { value: "permissionRequest", label: "PermissionRequest", matcherHint: "Bash" },
+  {
+    value: "permissionRequest",
+    label: "PermissionRequest",
+    matcherHint: "Bash"
+  },
   { value: "postToolUse", label: "PostToolUse", matcherHint: "Bash" },
-  { value: "sessionStart", label: "SessionStart", matcherHint: "startup|resume" },
+  {
+    value: "sessionStart",
+    label: "SessionStart",
+    matcherHint: "startup|resume"
+  },
   { value: "userPromptSubmit", label: "UserPromptSubmit", matcherHint: "" },
   { value: "stop", label: "Stop", matcherHint: "" },
   { value: "preCompact", label: "PreCompact", matcherHint: "" },
@@ -319,11 +327,7 @@ function upsertMcpServerBlock(configContent, serverName, blockContent) {
     }
     const before = lines.slice(0, start).join("\n").trimEnd();
     const after = lines.slice(end).join("\n").trim();
-    return [
-      before,
-      trimmedBlock.trimEnd(),
-      after
-    ].filter(Boolean).join("\n\n").replace(/\n{3,}/g, "\n\n").concat("\n");
+    return [before, trimmedBlock.trimEnd(), after].filter(Boolean).join("\n\n").replace(/\n{3,}/g, "\n\n").concat("\n");
   }
   const base = normalizedConfig.trimEnd();
   return base ? `${base}
@@ -436,7 +440,9 @@ function basenameFromAttachmentPath(value) {
   return segments.at(-1) ?? normalized;
 }
 function attachmentDisplayLabel(attachment) {
-  const placeholderMatch = attachment.placeholder.match(/^\[(?:PHOTO|FILE)\s+(.+)\]$/);
+  const placeholderMatch = attachment.placeholder.match(
+    /^\[(?:PHOTO|FILE)\s+(.+)\]$/
+  );
   if (placeholderMatch?.[1]) {
     return placeholderMatch[1];
   }
@@ -606,7 +612,12 @@ function ThreadComposer({
       hookTrust: capabilities?.management.hookTrust ?? false,
       planMode: capabilities?.controls.planMode ?? false
     }),
-    [capabilities, mcpConfigFormat, onReadProviderConfig, onWriteProviderConfig]
+    [
+      capabilities,
+      mcpConfigFormat,
+      onReadProviderConfig,
+      onWriteProviderConfig
+    ]
   );
   const availableToolboxItems = useMemo(
     () => (toolboxItems ?? []).filter((item) => {
@@ -654,7 +665,9 @@ function ThreadComposer({
   const [editingHookTarget, setEditingHookTarget] = useState(null);
   const [hookConfigBusy, setHookConfigBusy] = useState(false);
   const [hookConfigError, setHookConfigError] = useState(null);
-  const [hookConfigSuccess, setHookConfigSuccess] = useState(null);
+  const [hookConfigSuccess, setHookConfigSuccess] = useState(
+    null
+  );
   const [mcpHttpName, setMcpHttpName] = useState("");
   const [mcpHttpUrl, setMcpHttpUrl] = useState("");
   const [mcpRawBlock, setMcpRawBlock] = useState("");
@@ -673,15 +686,21 @@ function ThreadComposer({
   const promptRef = useRef(null);
   const photoInputRef = useRef(null);
   const fileInputRef = useRef(null);
-  const pendingSelectionRef = useRef(null);
+  const pendingSelectionRef = useRef(
+    null
+  );
   const pendingInsertedAttachmentIdsRef = useRef([]);
-  const selectionSnapshotRef = useRef(null);
+  const selectionSnapshotRef = useRef(
+    null
+  );
   const previewUrlCacheRef = useRef(/* @__PURE__ */ new Map());
   const renderedPreviewSignatureRef = useRef("");
   const renderedSanitizeNonceRef = useRef(0);
   const isShellView = activeView === "shell";
   const canToggleShellView = shellAvailable || isShellView;
-  const isMobileShell = Boolean(isShellView && shellControlState?.isMobileShell);
+  const isMobileShell = Boolean(
+    isShellView && shellControlState?.isMobileShell
+  );
   const shellPromptLabel = shellControlState?.promptLabel ?? null;
   const [attachmentPreviewUrls, setAttachmentPreviewUrls] = useState({});
   const [isDragTargetActive, setIsDragTargetActive] = useState(false);
@@ -724,10 +743,14 @@ function ThreadComposer({
     }
   }, [slashPanelView]);
   useEffect(() => {
-    const selected = HOOK_EVENT_OPTIONS.find((entry) => entry.value === hookEventName);
+    const selected = HOOK_EVENT_OPTIONS.find(
+      (entry) => entry.value === hookEventName
+    );
     setHookMatcher((current) => {
       const trimmed = current.trim();
-      const knownHints = new Set(HOOK_EVENT_OPTIONS.map((entry) => entry.matcherHint).filter(Boolean));
+      const knownHints = new Set(
+        HOOK_EVENT_OPTIONS.map((entry) => entry.matcherHint).filter(Boolean)
+      );
       if (trimmed && !knownHints.has(trimmed)) {
         return current;
       }
@@ -736,7 +759,12 @@ function ThreadComposer({
     setHookCommand(
       (current) => defaultHookCommands.has(current.trim()) ? defaultHookCommand(hookEventName) : current
     );
-  }, [defaultHookCommand, defaultHookCommands, hookEventName, hookCommandTemplateByEvent]);
+  }, [
+    defaultHookCommand,
+    defaultHookCommands,
+    hookEventName,
+    hookCommandTemplateByEvent
+  ]);
   useEffect(() => {
     if (!copiedSkillName) {
       return;
@@ -880,7 +908,9 @@ function ThreadComposer({
   );
   async function loadProviderConfig() {
     if (!slashCapabilities.hostConfigFiles || !onReadProviderConfig) {
-      throw new Error("Provider config editing is unavailable for this thread.");
+      throw new Error(
+        "Provider config editing is unavailable for this thread."
+      );
     }
     const file = await onReadProviderConfig();
     setMcpConfigPath(file.path);
@@ -888,7 +918,9 @@ function ThreadComposer({
   }
   async function writeMcpConfig(nextContent) {
     if (!slashCapabilities.hostConfigFiles || !onWriteProviderConfig) {
-      throw new Error("Provider config editing is unavailable for this thread.");
+      throw new Error(
+        "Provider config editing is unavailable for this thread."
+      );
     }
     const updated = await onWriteProviderConfig(nextContent);
     setMcpConfigPath(updated.path);
@@ -979,7 +1011,9 @@ function ThreadComposer({
   function startEditingHook(hook) {
     const target = editableHookTarget(hook);
     if (!target) {
-      setHookConfigError("Only command hooks in global or project hooks.json can be edited here.");
+      setHookConfigError(
+        "Only command hooks in global or project hooks.json can be edited here."
+      );
       return;
     }
     setEditingHookTarget(target);
@@ -1156,7 +1190,9 @@ function ThreadComposer({
       });
       setHookConfigSuccess("Hook trusted.");
     } catch (error2) {
-      setHookConfigError(error2 instanceof Error ? error2.message : "Unable to trust hook.");
+      setHookConfigError(
+        error2 instanceof Error ? error2.message : "Unable to trust hook."
+      );
     } finally {
       setHookConfigBusy(false);
     }
@@ -1175,7 +1211,9 @@ function ThreadComposer({
       });
       setHookConfigSuccess("Hook untrusted.");
     } catch (error2) {
-      setHookConfigError(error2 instanceof Error ? error2.message : "Unable to untrust hook.");
+      setHookConfigError(
+        error2 instanceof Error ? error2.message : "Unable to untrust hook."
+      );
     } finally {
       setHookConfigBusy(false);
     }
@@ -1228,7 +1266,11 @@ function ThreadComposer({
       return null;
     }
     return {
-      start: measureSelectionOffset(editor, range.startContainer, range.startOffset),
+      start: measureSelectionOffset(
+        editor,
+        range.startContainer,
+        range.startOffset
+      ),
       end: measureSelectionOffset(editor, range.endContainer, range.endOffset)
     };
   }
@@ -1249,7 +1291,9 @@ function ThreadComposer({
     if (container.nodeType === Node.TEXT_NODE) {
       resolvedChild = container;
     } else {
-      const nearestChild = Array.from(root.childNodes).find((child) => child.contains(container));
+      const nearestChild = Array.from(root.childNodes).find(
+        (child) => child.contains(container)
+      );
       if (!nearestChild) {
         return serializeEditorPrompt().length;
       }
@@ -1348,20 +1392,23 @@ function ThreadComposer({
       offset: root.childNodes.length
     };
   }
-  const restoreSelection = useCallback((selection) => {
-    const editor = promptRef.current;
-    if (!editor || !selection) {
-      return;
-    }
-    const startPosition = resolveOffsetToDomPosition(editor, selection.start);
-    const endPosition = resolveOffsetToDomPosition(editor, selection.end);
-    const range = document.createRange();
-    range.setStart(startPosition.node, startPosition.offset);
-    range.setEnd(endPosition.node, endPosition.offset);
-    const currentSelection = window.getSelection();
-    currentSelection?.removeAllRanges();
-    currentSelection?.addRange(range);
-  }, []);
+  const restoreSelection = useCallback(
+    (selection) => {
+      const editor = promptRef.current;
+      if (!editor || !selection) {
+        return;
+      }
+      const startPosition = resolveOffsetToDomPosition(editor, selection.start);
+      const endPosition = resolveOffsetToDomPosition(editor, selection.end);
+      const range = document.createRange();
+      range.setStart(startPosition.node, startPosition.offset);
+      range.setEnd(endPosition.node, endPosition.offset);
+      const currentSelection = window.getSelection();
+      currentSelection?.removeAllRanges();
+      currentSelection?.addRange(range);
+    },
+    []
+  );
   function restoreSelectionAfterInsertedAttachments(editor) {
     const insertedClientIds = pendingInsertedAttachmentIdsRef.current;
     if (insertedClientIds.length === 0) {
@@ -1431,7 +1478,9 @@ function ThreadComposer({
       return;
     }
     const nextFiles = Array.from(files);
-    const usedPlaceholders = new Set(attachments.map((entry) => entry.placeholder));
+    const usedPlaceholders = new Set(
+      attachments.map((entry) => entry.placeholder)
+    );
     const nextAttachments = nextFiles.map((file) => {
       const originalName = normalizedAttachmentFileName(file, kind);
       const placeholder = buildAttachmentPlaceholder(
@@ -1492,7 +1541,9 @@ function ThreadComposer({
       file: files.filter((file) => classifyAttachmentKind(file) === "file")
     };
     const nextFiles = [...groupedFiles.photo, ...groupedFiles.file];
-    const usedPlaceholders = new Set(attachments.map((entry) => entry.placeholder));
+    const usedPlaceholders = new Set(
+      attachments.map((entry) => entry.placeholder)
+    );
     const nextAttachments = nextFiles.map((file) => {
       const kind = classifyAttachmentKind(file);
       const originalName = normalizedAttachmentFileName(file, kind);
@@ -1588,7 +1639,9 @@ function ThreadComposer({
       for (const segment of promptSegments) {
         if (segment.type === "text") {
           fragment.append(
-            document.createTextNode(segment.text === " " ? "\xA0" : segment.text)
+            document.createTextNode(
+              segment.text === " " ? "\xA0" : segment.text
+            )
           );
           continue;
         }
@@ -1600,7 +1653,15 @@ function ThreadComposer({
         token.contentEditable = "false";
         token.className = "mx-[0.12rem] inline-flex max-w-full align-baseline";
         if (attachment.kind === "photo") {
-          token.classList.add("rounded-[0.95rem]", "border", "border-sky-300/35", "bg-sky-300/10", "p-1", "shadow-sm", "shadow-stone-950/20");
+          token.classList.add(
+            "rounded-[0.95rem]",
+            "border",
+            "border-sky-300/35",
+            "bg-sky-300/10",
+            "p-1",
+            "shadow-sm",
+            "shadow-stone-950/20"
+          );
           const previewUrl = attachmentPreviewUrls[attachment.clientId];
           if (previewUrl) {
             const image = document.createElement("img");
@@ -1699,7 +1760,9 @@ function ThreadComposer({
       return;
     }
     const normalizedPrompt = isShellView ? prompt : prompt.trim();
-    const activeAttachments = isShellView ? [] : attachments.filter((attachment) => normalizedPrompt.includes(attachment.placeholder));
+    const activeAttachments = isShellView ? [] : attachments.filter(
+      (attachment) => normalizedPrompt.includes(attachment.placeholder)
+    );
     const submitted = await onSubmit(
       activeAttachments.length > 0 ? { prompt: normalizedPrompt, attachments: activeAttachments } : { prompt: normalizedPrompt }
     );
@@ -1822,8 +1885,8 @@ function ThreadComposer({
   const effortControlsDisabled = modelControlsDisabled || supportedEfforts.length === 0;
   const effortControlTitle = fastMode ? "Fast mode is on. Turn it off from the slash toolbox to edit reasoning." : supportedEfforts.length === 0 ? "The selected model does not expose adjustable reasoning effort." : "Select reasoning effort";
   const composerLayerClassName = openMenu ? "relative z-[80] shrink-0" : "relative z-20 shrink-0";
-  const formClassName = edgeToEdgeMobile || isMobileShell ? "relative z-20 shrink-0 bg-transparent px-3 pb-0 pt-3 sm:p-4" : "relative z-20 shrink-0 bg-transparent px-3 pb-3 pt-0 sm:px-4 sm:pb-4 sm:pt-0";
-  const promptInputClassName = `thread-composer-input min-h-[7.25rem] w-full rounded-[1.25rem] border px-4 pr-14 pt-2.5 outline-none transition sm:min-h-[6.25rem] ${isDragTargetActive ? "is-drag-target border-sky-300/80 bg-sky-300/[0.08] shadow-[0_0_0_1px_rgba(125,211,252,0.2)]" : "border-stone-700 focus-within:border-[var(--theme-accent-border)]"}`;
+  const formClassName = edgeToEdgeMobile || isMobileShell ? "relative z-20 shrink-0 bg-transparent px-3 pb-3 pt-2 sm:p-4" : "relative z-20 shrink-0 bg-transparent px-3 pb-3 pt-0 sm:px-4 sm:pb-4 sm:pt-0";
+  const promptInputClassName = `thread-composer-input min-h-[5.75rem] w-full rounded-[1.25rem] border px-4 pr-14 pt-2.5 outline-none transition sm:min-h-[5.5rem] ${isDragTargetActive ? "is-drag-target border-sky-300/80 bg-sky-300/[0.08] shadow-[0_0_0_1px_rgba(125,211,252,0.2)]" : "border-stone-700 focus-within:border-[var(--theme-accent-border)]"}`;
   return /* @__PURE__ */ jsxs("div", { className: composerLayerClassName, children: [
     /* @__PURE__ */ jsx(
       "input",
@@ -1882,1013 +1945,1027 @@ function ThreadComposer({
         )
       }
     ),
-    /* @__PURE__ */ jsxs(
-      "form",
-      {
-        ref: menuRef,
-        onSubmit: handleSubmit,
-        className: formClassName,
-        children: [
-          /* @__PURE__ */ jsxs(
-            "div",
-            {
-              className: "thread-composer-toolbar relative z-30 mb-0 flex items-center gap-2 rounded-full border px-2.5 py-1.5 text-xs shadow-lg shadow-stone-950/8",
-              children: [
-                /* @__PURE__ */ jsxs("div", { className: "flex shrink-0 items-center gap-1.5", children: [
-                  !isShellView && /* @__PURE__ */ jsxs("div", { className: "relative", children: [
-                    /* @__PURE__ */ jsx(
-                      "button",
-                      {
-                        type: "button",
-                        "data-composer-menu-trigger": "true",
-                        "aria-label": "Open slash toolbox",
-                        title: "Open slash toolbox",
-                        onClick: () => setOpenMenu(
-                          (current) => current === "slash" ? null : "slash"
-                        ),
-                        className: "thread-composer-icon-button inline-flex h-7 w-7 items-center justify-center rounded-full border border-stone-700 bg-stone-900/92 text-stone-200 transition hover:bg-stone-800",
-                        children: /* @__PURE__ */ jsx(SlashIcon, {})
-                      }
-                    ),
-                    openMenu === "slash" && /* @__PURE__ */ jsx(
-                      "div",
-                      {
-                        "data-composer-menu-surface": "true",
-                        className: "thread-composer-menu absolute bottom-full left-0 z-40 mb-2 w-72 overflow-hidden rounded-2xl border bg-stone-900/72 shadow-2xl shadow-stone-950/20 backdrop-blur-xl",
-                        onClick: (event) => {
-                          event.stopPropagation();
-                        },
-                        onMouseDown: (event) => {
-                          event.stopPropagation();
-                        },
-                        onPointerDown: (event) => {
-                          event.stopPropagation();
-                        },
-                        onTouchStart: (event) => {
-                          event.stopPropagation();
-                        },
-                        children: slashPanelView === "root" ? /* @__PURE__ */ jsxs("div", { className: "p-2", children: [
-                          availableToolboxItems.map((item, index) => /* @__PURE__ */ jsx(
-                            "button",
-                            {
-                              type: "button",
-                              disabled: toolboxItemDisabled(item),
-                              onClick: (event) => handleToolboxItemClick(item, event),
-                              className: `${toolboxItemClassName(item)} ${index === 0 ? "mt-0" : ""}`,
-                              title: item.description ?? item.label,
-                              children: /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between gap-3", children: [
-                                /* @__PURE__ */ jsx("span", { children: item.command }),
-                                /* @__PURE__ */ jsx("span", { className: "text-[11px] uppercase tracking-[0.16em] text-stone-400", children: toolboxItemStatus(item) })
-                              ] })
-                            },
-                            `${item.action}:${item.command}`
-                          )),
-                          availableToolboxItems.length === 0 ? /* @__PURE__ */ jsx("p", { className: "px-3 py-2 text-sm text-stone-400", children: "No backend tools are available for this thread." }) : null
-                        ] }) : /* @__PURE__ */ jsx("div", { className: "max-h-80 overflow-auto", children: slashPanelView === "fork" ? /* @__PURE__ */ jsxs("div", { className: "p-2", children: [
-                          /* @__PURE__ */ jsx(
-                            "button",
-                            {
-                              type: "button",
-                              disabled: busy || forkBusy,
-                              onClick: () => void handleForkLatest(),
-                              className: "thread-composer-menu-item block w-full rounded-xl px-3 py-2 text-left text-sm transition disabled:cursor-not-allowed disabled:opacity-60",
-                              children: /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between gap-3", children: [
-                                /* @__PURE__ */ jsx("span", { children: "Fork from latest" }),
-                                /* @__PURE__ */ jsx("span", { className: "text-[11px] uppercase tracking-[0.16em] text-stone-400", children: forkBusy ? "Forking" : "Run" })
-                              ] })
-                            }
-                          ),
-                          /* @__PURE__ */ jsx(
-                            "button",
-                            {
-                              type: "button",
-                              disabled: busy || forkBusy,
-                              onClick: (event) => {
-                                event.stopPropagation();
-                                setSlashPanelView("forkTurns");
-                                void onOpenForkTurns?.();
-                              },
-                              className: "thread-composer-menu-item mt-1 block w-full rounded-xl px-3 py-2 text-left text-sm transition disabled:cursor-not-allowed disabled:opacity-60",
-                              children: /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between gap-3", children: [
-                                /* @__PURE__ */ jsx("span", { children: "Fork from selected turn" }),
-                                /* @__PURE__ */ jsx("span", { className: "text-[11px] uppercase tracking-[0.16em] text-stone-400", children: "Pick" })
-                              ] })
-                            }
-                          ),
-                          busy ? /* @__PURE__ */ jsx("p", { className: "mt-2 rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-3 text-sm text-stone-400", children: "Fork is only available while the thread is idle." }) : null
-                        ] }) : slashPanelView === "forkTurns" ? /* @__PURE__ */ jsxs("div", { className: "p-2", children: [
-                          forkTurnOptionsState.status === "loading" && !forkTurnOptionsState.data ? /* @__PURE__ */ jsx("p", { className: "rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-3 text-sm text-stone-400", children: "Loading turns\u2026" }) : null,
-                          forkTurnOptionsState.error ? /* @__PURE__ */ jsx("p", { className: "mb-2 rounded-xl border border-rose-500/35 bg-rose-500/10 px-3 py-3 text-sm text-rose-100/90", children: forkTurnOptionsState.error }) : null,
-                          forkTurnOptionsState.data?.length ? /* @__PURE__ */ jsx("div", { className: "space-y-2", children: forkTurnOptionsState.data.map((turn) => /* @__PURE__ */ jsx(
-                            "button",
-                            {
-                              type: "button",
-                              disabled: forkBusy,
-                              onClick: () => void handleForkTurn(turn.turnId),
-                              className: "thread-composer-panel-button block w-full rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-3 text-left transition disabled:cursor-not-allowed disabled:opacity-60",
-                              children: /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between gap-3", children: [
-                                /* @__PURE__ */ jsxs("span", { className: "text-sm text-stone-100", children: [
-                                  "Turn ",
-                                  turn.turnIndex
-                                ] }),
-                                /* @__PURE__ */ jsx("span", { className: "text-[11px] uppercase tracking-[0.16em] text-stone-500", children: forkBusy ? "Forking" : turn.status })
-                              ] })
-                            },
-                            turn.turnId
-                          )) }) : null,
-                          forkTurnOptionsState.status !== "loading" && !forkTurnOptionsState.error && (forkTurnOptionsState.data?.length ?? 0) === 0 ? /* @__PURE__ */ jsx("p", { className: "rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-3 text-sm text-stone-400", children: "No turns available to fork yet." }) : null
-                        ] }) : slashPanelView === "skills" ? /* @__PURE__ */ jsxs("div", { className: "p-2", children: [
-                          skillsState.status === "loading" && !skillsState.data ? /* @__PURE__ */ jsx("p", { className: "rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-3 text-sm text-stone-400", children: "Loading skills\u2026" }) : null,
-                          skillsState.error ? /* @__PURE__ */ jsx("p", { className: "mb-2 rounded-xl border border-rose-500/35 bg-rose-500/10 px-3 py-3 text-sm text-rose-100/90", children: skillsState.error }) : null,
-                          skillsState.data?.skills.length ? /* @__PURE__ */ jsx("div", { className: "space-y-2", children: skillsState.data.skills.map((skill) => /* @__PURE__ */ jsx(
-                            "div",
-                            {
-                              className: "rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-2.5",
-                              children: /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
-                                /* @__PURE__ */ jsx("p", { className: "truncate text-sm font-medium text-stone-100", children: skill.interface?.displayName ?? skill.name }),
-                                /* @__PURE__ */ jsxs("div", { className: "flex flex-wrap items-center gap-1.5 text-[10px] uppercase tracking-[0.14em]", children: [
-                                  /* @__PURE__ */ jsx("span", { className: "rounded-full border border-stone-700 px-2 py-1 text-stone-400", children: skillScopeLabel(skill.scope) }),
-                                  /* @__PURE__ */ jsxs(
-                                    "button",
-                                    {
-                                      type: "button",
-                                      className: `inline-flex items-center gap-1 rounded-full border px-2 py-1 normal-case tracking-normal transition ${copiedSkillName === skill.name ? "border-emerald-400/45 bg-emerald-400/12 text-emerald-100" : "thread-composer-chip-button border-stone-700 text-stone-300 hover:border-stone-500"}`,
-                                      onClick: () => void handleCopySkillInvokeName(skill.name),
-                                      title: `Copy $${skill.name}`,
-                                      "aria-label": `Copy $${skill.name}`,
-                                      children: [
-                                        /* @__PURE__ */ jsx(ClipboardIcon, {}),
-                                        "$",
-                                        skill.name
-                                      ]
-                                    }
-                                  )
-                                ] }),
-                                /* @__PURE__ */ jsx("p", { className: "text-xs leading-5 text-stone-400", children: skill.interface?.shortDescription ?? skill.shortDescription ?? skill.description })
-                              ] })
-                            },
-                            skill.path
-                          )) }) : null,
-                          skillsState.data?.errors.length ? /* @__PURE__ */ jsx("div", { className: "mt-2 space-y-2", children: skillsState.data.errors.map((entry) => /* @__PURE__ */ jsxs(
-                            "div",
-                            {
-                              className: "rounded-xl border border-amber-500/25 bg-amber-500/10 px-3 py-2 text-xs text-amber-100/85",
-                              children: [
-                                /* @__PURE__ */ jsx("p", { className: "font-medium", children: entry.message }),
-                                /* @__PURE__ */ jsx("p", { className: "mt-1 break-all text-amber-100/60", children: entry.path })
-                              ]
-                            },
-                            `${entry.path}:${entry.message}`
-                          )) }) : null,
-                          skillsState.status !== "loading" && !skillsState.error && (skillsState.data?.skills.length ?? 0) === 0 && (skillsState.data?.errors.length ?? 0) === 0 ? /* @__PURE__ */ jsx("p", { className: "rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-3 text-sm text-stone-400", children: "No skills available right now." }) : null
-                        ] }) : slashPanelView === "hooks" ? /* @__PURE__ */ jsxs("div", { className: "p-2", children: [
-                          /* @__PURE__ */ jsxs("div", { className: "mb-2 flex items-center justify-between gap-2", children: [
-                            /* @__PURE__ */ jsxs("div", { className: "min-w-0", children: [
-                              /* @__PURE__ */ jsx("p", { className: "text-xs text-stone-400", children: "Hook config sources" }),
-                              /* @__PURE__ */ jsx("p", { className: "truncate text-[11px] text-stone-500", children: hooksState.data?.projectHooksPath ?? "<workspace hooks config>" })
-                            ] }),
-                            hooksPanelMode === "list" && slashCapabilities.hostConfigFiles ? /* @__PURE__ */ jsx(
-                              "button",
-                              {
-                                type: "button",
-                                onClick: (event) => {
-                                  event.stopPropagation();
-                                  resetHookForm();
-                                  setHooksPanelMode("add");
-                                  setHookConfigError(null);
-                                  setHookConfigSuccess(null);
-                                },
-                                className: "shrink-0 rounded-full border border-sky-300/35 px-3 py-1.5 text-xs text-sky-100 transition hover:bg-sky-300/10",
-                                children: "Add Hook"
-                              }
-                            ) : null
-                          ] }),
-                          hooksState.status === "loading" && !hooksState.data ? /* @__PURE__ */ jsx("p", { className: "rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-3 text-sm text-stone-400", children: "Loading hooks\u2026" }) : null,
-                          hooksState.error ? /* @__PURE__ */ jsx("p", { className: "mb-2 rounded-xl border border-rose-500/35 bg-rose-500/10 px-3 py-3 text-sm text-rose-100/90", children: hooksState.error }) : null,
-                          hookConfigError ? /* @__PURE__ */ jsx("p", { className: "mb-2 rounded-xl border border-rose-500/35 bg-rose-500/10 px-3 py-3 text-sm text-rose-100/90", children: hookConfigError }) : null,
-                          hookConfigSuccess ? /* @__PURE__ */ jsx("p", { className: "mb-2 rounded-xl border border-emerald-500/35 bg-emerald-500/10 px-3 py-3 text-sm text-emerald-100/90", children: hookConfigSuccess }) : null,
-                          hooksPanelMode === "add" || hooksPanelMode === "edit" ? /* @__PURE__ */ jsxs("div", { className: "space-y-2 rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-3", children: [
-                            hooksPanelMode === "edit" ? /* @__PURE__ */ jsxs("p", { className: "rounded-lg border border-stone-800 bg-stone-950 px-3 py-2 text-[11px] text-stone-400", children: [
-                              "Editing ",
-                              hookEventJsonKey(editingHookTarget?.eventName ?? hookEventName),
-                              " in",
-                              " ",
-                              editingHookTarget?.scope === "global" ? "global" : "project",
-                              " hooks.json"
-                            ] }) : null,
-                            /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-2 gap-2", children: [
-                              /* @__PURE__ */ jsxs("label", { className: "block text-xs text-stone-400", children: [
-                                "Scope",
-                                /* @__PURE__ */ jsxs(
-                                  "select",
-                                  {
-                                    "aria-label": "Hook scope",
-                                    value: hookScope,
-                                    onChange: (event) => setHookScope(event.target.value),
-                                    disabled: hooksPanelMode === "edit",
-                                    className: "mt-1 w-full rounded-lg border border-stone-700 bg-stone-950 px-2.5 py-2 text-sm text-stone-100 outline-none focus:border-sky-300/50",
-                                    children: [
-                                      /* @__PURE__ */ jsx("option", { value: "project", children: "Project" }),
-                                      /* @__PURE__ */ jsx("option", { value: "global", children: "Global" })
-                                    ]
-                                  }
-                                )
-                              ] }),
-                              /* @__PURE__ */ jsxs("label", { className: "block text-xs text-stone-400", children: [
-                                "Event",
-                                /* @__PURE__ */ jsx(
-                                  "select",
-                                  {
-                                    "aria-label": "Hook event",
-                                    value: hookEventName,
-                                    onChange: (event) => setHookEventName(event.target.value),
-                                    className: "mt-1 w-full rounded-lg border border-stone-700 bg-stone-950 px-2.5 py-2 text-sm text-stone-100 outline-none focus:border-sky-300/50",
-                                    children: HOOK_EVENT_OPTIONS.map((eventOption) => /* @__PURE__ */ jsx("option", { value: eventOption.value, children: eventOption.label }, eventOption.value))
-                                  }
-                                )
-                              ] })
-                            ] }),
-                            /* @__PURE__ */ jsxs("div", { children: [
-                              /* @__PURE__ */ jsx("label", { className: "mb-1 block text-xs text-stone-400", children: "Matcher" }),
-                              /* @__PURE__ */ jsx(
-                                "input",
-                                {
-                                  "aria-label": "Hook matcher",
-                                  value: hookMatcher,
-                                  onChange: (event) => setHookMatcher(event.target.value),
-                                  placeholder: "Bash",
-                                  className: "w-full rounded-lg border border-stone-700 bg-stone-950 px-3 py-2 text-sm text-stone-100 outline-none placeholder:text-stone-500 focus:border-sky-300/50"
-                                }
-                              )
-                            ] }),
-                            /* @__PURE__ */ jsxs("div", { children: [
-                              /* @__PURE__ */ jsx("label", { className: "mb-1 block text-xs text-stone-400", children: "Command" }),
-                              /* @__PURE__ */ jsx(
-                                "textarea",
-                                {
-                                  "aria-label": "Hook command",
-                                  value: hookCommand,
-                                  onChange: (event) => setHookCommand(event.target.value),
-                                  rows: 3,
-                                  className: "w-full rounded-lg border border-stone-700 bg-stone-950 px-3 py-2 font-mono text-xs text-stone-100 outline-none placeholder:text-stone-500 focus:border-sky-300/50"
-                                }
-                              )
-                            ] }),
-                            /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-2 gap-2", children: [
-                              /* @__PURE__ */ jsxs("label", { className: "block text-xs text-stone-400", children: [
-                                "Timeout",
-                                /* @__PURE__ */ jsx(
-                                  "input",
-                                  {
-                                    "aria-label": "Hook timeout seconds",
-                                    value: hookTimeoutSec,
-                                    onChange: (event) => setHookTimeoutSec(event.target.value),
-                                    inputMode: "numeric",
-                                    className: "mt-1 w-full rounded-lg border border-stone-700 bg-stone-950 px-3 py-2 text-sm text-stone-100 outline-none focus:border-sky-300/50"
-                                  }
-                                )
-                              ] }),
-                              /* @__PURE__ */ jsxs("label", { className: "block text-xs text-stone-400", children: [
-                                "Status message",
-                                /* @__PURE__ */ jsx(
-                                  "input",
-                                  {
-                                    "aria-label": "Hook status message",
-                                    value: hookStatusMessage,
-                                    onChange: (event) => setHookStatusMessage(event.target.value),
-                                    className: "mt-1 w-full rounded-lg border border-stone-700 bg-stone-950 px-3 py-2 text-sm text-stone-100 outline-none focus:border-sky-300/50"
-                                  }
-                                )
-                              ] })
-                            ] }),
-                            /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between gap-2 pt-1", children: [
-                              /* @__PURE__ */ jsx(
-                                "button",
-                                {
-                                  type: "button",
-                                  onClick: () => {
-                                    setHooksPanelMode("list");
-                                    setEditingHookTarget(null);
-                                  },
-                                  className: "thread-composer-chip-button rounded-full border border-stone-700 px-3 py-1.5 text-xs text-stone-300 transition",
-                                  children: "Back"
-                                }
-                              ),
-                              /* @__PURE__ */ jsx(
-                                "button",
-                                {
-                                  type: "button",
-                                  onClick: () => void handleSaveHook(),
-                                  disabled: hookConfigBusy,
-                                  className: "ui-status-info rounded-full px-3 py-1.5 text-xs transition disabled:cursor-not-allowed disabled:opacity-60",
-                                  children: hookConfigBusy ? "Saving\u2026" : hooksPanelMode === "edit" ? "Update Hook" : "Write Hook"
-                                }
-                              )
-                            ] })
-                          ] }) : null,
-                          hooksPanelMode === "list" && hooksState.data?.warnings.length ? /* @__PURE__ */ jsx("div", { className: "mb-2 space-y-2", children: hooksState.data.warnings.map((warning) => /* @__PURE__ */ jsx(
-                            "p",
-                            {
-                              className: "rounded-xl border border-amber-500/25 bg-amber-500/10 px-3 py-2 text-xs text-amber-100/85",
-                              children: warning
-                            },
-                            warning
-                          )) }) : null,
-                          hooksPanelMode === "list" && hooksState.data?.errors.length ? /* @__PURE__ */ jsx("div", { className: "mb-2 space-y-2", children: hooksState.data.errors.map((entry) => /* @__PURE__ */ jsxs(
-                            "div",
-                            {
-                              className: "rounded-xl border border-rose-500/35 bg-rose-500/10 px-3 py-2 text-xs text-rose-100/90",
-                              children: [
-                                /* @__PURE__ */ jsx("p", { className: "font-medium", children: entry.message }),
-                                /* @__PURE__ */ jsx("p", { className: "mt-1 break-all text-rose-100/60", children: entry.path })
-                              ]
-                            },
-                            `${entry.path}:${entry.message}`
-                          )) }) : null,
-                          hooksPanelMode === "list" && hooksState.data?.hooks.length ? /* @__PURE__ */ jsx("div", { className: "space-y-2", children: hooksState.data.hooks.map((hook) => /* @__PURE__ */ jsxs(
-                            "div",
-                            {
-                              className: "rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-2.5",
-                              children: [
-                                /* @__PURE__ */ jsxs("div", { className: "min-w-0", children: [
-                                  /* @__PURE__ */ jsxs("p", { className: "truncate text-sm font-medium text-stone-100", children: [
-                                    hookEventLabel(hook.eventName),
-                                    hook.matcher ? ` \xB7 ${hook.matcher}` : ""
-                                  ] }),
-                                  /* @__PURE__ */ jsx("p", { className: "mt-0.5 truncate font-mono text-[11px] text-stone-400", children: hook.command ?? hook.handlerType }),
-                                  hook.statusMessage ? /* @__PURE__ */ jsx("p", { className: "mt-1 truncate text-[11px] text-stone-500", children: hook.statusMessage }) : null
-                                ] }),
-                                /* @__PURE__ */ jsxs("div", { className: "mt-2 flex flex-wrap items-center gap-1.5 text-[10px] uppercase tracking-[0.08em] text-stone-500", children: [
-                                  editableHookTarget(hook) ? /* @__PURE__ */ jsx(
-                                    "button",
-                                    {
-                                      type: "button",
-                                      onClick: (event) => {
-                                        event.stopPropagation();
-                                        startEditingHook(hook);
-                                      },
-                                      className: "thread-composer-chip-button rounded-full border border-stone-700 px-2 py-0.5 text-[10px] normal-case tracking-normal text-sky-100 transition hover:border-sky-300/35 hover:bg-sky-300/10",
-                                      children: "Edit"
-                                    }
-                                  ) : null,
-                                  slashCapabilities.hookTrust && hook.trustStatus === "trusted" && !hook.isManaged ? /* @__PURE__ */ jsx(
-                                    "button",
-                                    {
-                                      type: "button",
-                                      disabled: hookConfigBusy,
-                                      onClick: (event) => {
-                                        event.stopPropagation();
-                                        void handleUntrustHook(hook);
-                                      },
-                                      className: "thread-composer-chip-button rounded-full border border-stone-700 px-2 py-0.5 text-[10px] normal-case tracking-normal text-amber-100 transition hover:border-amber-300/35 hover:bg-amber-300/10 disabled:cursor-not-allowed disabled:opacity-50",
-                                      children: "Untrust"
-                                    }
-                                  ) : null,
-                                  (hook.trustStatus === "untrusted" || hook.trustStatus === "modified") && !hook.isManaged && slashCapabilities.hookTrust ? /* @__PURE__ */ jsx(
-                                    "button",
-                                    {
-                                      type: "button",
-                                      disabled: hookConfigBusy || !hook.currentHash,
-                                      onClick: (event) => {
-                                        event.stopPropagation();
-                                        void handleTrustHook(hook);
-                                      },
-                                      className: "thread-composer-chip-button rounded-full border border-stone-700 px-2 py-0.5 text-[10px] normal-case tracking-normal text-emerald-100 transition hover:border-emerald-300/35 hover:bg-emerald-300/10 disabled:cursor-not-allowed disabled:opacity-50",
-                                      children: "Trust"
-                                    }
-                                  ) : null,
-                                  /* @__PURE__ */ jsx("span", { className: "rounded-full border border-stone-700 px-2 py-0.5 text-stone-300", children: hookTrustLabel(hook.trustStatus) })
-                                ] }),
-                                /* @__PURE__ */ jsxs("div", { className: "mt-2 flex flex-wrap items-center gap-1.5 text-[10px] uppercase tracking-[0.14em] text-stone-500", children: [
-                                  /* @__PURE__ */ jsx("span", { className: "rounded-full border border-stone-700 px-2 py-1", children: hookSourceLabel(hook.source) }),
-                                  /* @__PURE__ */ jsx("span", { className: "rounded-full border border-stone-700 px-2 py-1", children: hook.enabled ? "Enabled" : "Disabled" }),
-                                  /* @__PURE__ */ jsxs("span", { className: "rounded-full border border-stone-700 px-2 py-1", children: [
-                                    hook.timeoutSec,
-                                    "s"
-                                  ] })
-                                ] })
-                              ]
-                            },
-                            hook.key
-                          )) }) : null,
-                          hooksPanelMode === "list" && hooksState.status !== "loading" && !hooksState.error && (hooksState.data?.hooks.length ?? 0) === 0 ? /* @__PURE__ */ jsx("p", { className: "rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-3 text-sm text-stone-400", children: "No hooks configured for this workspace." }) : null
-                        ] }) : /* @__PURE__ */ jsxs("div", { className: "p-2", children: [
-                          /* @__PURE__ */ jsxs("div", { className: "mb-2 flex items-center justify-between gap-2", children: [
-                            /* @__PURE__ */ jsxs("div", { className: "min-w-0", children: [
-                              /* @__PURE__ */ jsx("p", { className: "text-xs text-stone-400", children: "MCP config source" }),
-                              /* @__PURE__ */ jsx("p", { className: "truncate text-[11px] text-stone-500", children: mcpConfigPath ?? "<provider config>" })
-                            ] }),
-                            mcpPanelMode === "list" && slashCapabilities.mcpConfigEditing ? /* @__PURE__ */ jsx(
-                              "button",
-                              {
-                                type: "button",
-                                onClick: (event) => {
-                                  event.stopPropagation();
-                                  setMcpPanelMode("add");
-                                  setMcpConfigError(null);
-                                  setMcpConfigSuccess(null);
-                                },
-                                className: "shrink-0 rounded-full border border-sky-300/35 px-3 py-1.5 text-xs text-sky-100 transition hover:bg-sky-300/10",
-                                children: "Add MCP"
-                              }
-                            ) : null
-                          ] }),
-                          mcpState.status === "loading" && !mcpState.data ? /* @__PURE__ */ jsx("p", { className: "rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-3 text-sm text-stone-400", children: "Loading MCP servers\u2026" }) : null,
-                          mcpState.error ? /* @__PURE__ */ jsx("p", { className: "mb-2 rounded-xl border border-rose-500/35 bg-rose-500/10 px-3 py-3 text-sm text-rose-100/90", children: mcpState.error }) : null,
-                          mcpConfigError ? /* @__PURE__ */ jsx("p", { className: "mb-2 rounded-xl border border-rose-500/35 bg-rose-500/10 px-3 py-3 text-sm text-rose-100/90", children: mcpConfigError }) : null,
-                          mcpConfigSuccess ? /* @__PURE__ */ jsx("p", { className: "mb-2 rounded-xl border border-emerald-500/35 bg-emerald-500/10 px-3 py-3 text-sm text-emerald-100/90", children: mcpConfigSuccess }) : null,
-                          mcpPanelMode === "add" ? /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
-                            /* @__PURE__ */ jsxs(
-                              "button",
-                              {
-                                type: "button",
-                                onClick: (event) => {
-                                  event.stopPropagation();
-                                  setMcpPanelMode("http");
-                                  setMcpConfigError(null);
-                                  setMcpConfigSuccess(null);
-                                },
-                                className: "thread-composer-panel-button block w-full rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-3 text-left transition",
-                                children: [
-                                  /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between gap-3", children: [
-                                    /* @__PURE__ */ jsx("span", { className: "text-sm text-stone-100", children: "HTTP / Streamable HTTP" }),
-                                    /* @__PURE__ */ jsx("span", { className: "text-[11px] uppercase tracking-[0.16em] text-stone-500", children: "Form" })
-                                  ] }),
-                                  /* @__PURE__ */ jsx("p", { className: "mt-1 text-xs text-stone-400", children: "Add an MCP server with a name and URL, then write the matching block into provider config." })
-                                ]
-                              }
-                            ),
-                            /* @__PURE__ */ jsxs(
-                              "button",
-                              {
-                                type: "button",
-                                onClick: (event) => {
-                                  event.stopPropagation();
-                                  void handlePrepareRawMcpBlock();
-                                },
-                                className: "thread-composer-panel-button block w-full rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-3 text-left transition",
-                                children: [
-                                  /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between gap-3", children: [
-                                    /* @__PURE__ */ jsx("span", { className: "text-sm text-stone-100", children: "stdio / raw block" }),
-                                    /* @__PURE__ */ jsx("span", { className: "text-[11px] uppercase tracking-[0.16em] text-stone-500", children: "TOML" })
-                                  ] }),
-                                  /* @__PURE__ */ jsx("p", { className: "mt-1 text-xs text-stone-400", children: "Write a single `[mcp_servers.name]` block, then save it back into provider config." })
-                                ]
-                              }
-                            )
-                          ] }) : null,
-                          mcpPanelMode === "http" ? /* @__PURE__ */ jsxs("div", { className: "space-y-2 rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-3", children: [
-                            /* @__PURE__ */ jsxs("div", { children: [
-                              /* @__PURE__ */ jsx("label", { className: "mb-1 block text-xs text-stone-400", children: "MCP name" }),
-                              /* @__PURE__ */ jsx(
-                                "input",
-                                {
-                                  "aria-label": "MCP name",
-                                  value: mcpHttpName,
-                                  onChange: (event) => setMcpHttpName(event.target.value),
-                                  placeholder: "openaiDeveloperDocs",
-                                  className: "w-full rounded-lg border border-stone-700 bg-stone-950 px-3 py-2 text-sm text-stone-100 outline-none placeholder:text-stone-500 focus:border-sky-300/50"
-                                }
-                              )
-                            ] }),
-                            /* @__PURE__ */ jsxs("div", { children: [
-                              /* @__PURE__ */ jsx("label", { className: "mb-1 block text-xs text-stone-400", children: "URL" }),
-                              /* @__PURE__ */ jsx(
-                                "input",
-                                {
-                                  "aria-label": "URL",
-                                  value: mcpHttpUrl,
-                                  onChange: (event) => setMcpHttpUrl(event.target.value),
-                                  placeholder: "https://developers.openai.com/mcp",
-                                  className: "w-full rounded-lg border border-stone-700 bg-stone-950 px-3 py-2 text-sm text-stone-100 outline-none placeholder:text-stone-500 focus:border-sky-300/50"
-                                }
-                              )
-                            ] }),
-                            /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between gap-2 pt-1", children: [
-                              /* @__PURE__ */ jsx(
-                                "button",
-                                {
-                                  type: "button",
-                                  onClick: () => setMcpPanelMode("add"),
-                                  className: "thread-composer-chip-button rounded-full border border-stone-700 px-3 py-1.5 text-xs text-stone-300 transition",
-                                  children: "Back"
-                                }
-                              ),
-                              /* @__PURE__ */ jsx(
-                                "button",
-                                {
-                                  type: "button",
-                                  onClick: () => void handleSaveHttpMcp(),
-                                  disabled: mcpConfigBusy,
-                                  className: "ui-status-info rounded-full px-3 py-1.5 text-xs transition disabled:cursor-not-allowed disabled:opacity-60",
-                                  children: mcpConfigBusy ? "Saving\u2026" : "Write HTTP MCP"
-                                }
-                              )
-                            ] })
-                          ] }) : null,
-                          mcpPanelMode === "stdio" ? /* @__PURE__ */ jsxs("div", { className: "space-y-2 rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-3", children: [
-                            /* @__PURE__ */ jsx("label", { className: "block text-xs text-stone-400", children: "MCP block for provider config" }),
-                            /* @__PURE__ */ jsx(
-                              "textarea",
-                              {
-                                "aria-label": "MCP block for provider config",
-                                value: mcpRawBlock,
-                                onChange: (event) => setMcpRawBlock(event.target.value),
-                                rows: 8,
-                                className: "w-full rounded-lg border border-stone-700 bg-stone-950 px-3 py-2 text-sm text-stone-100 outline-none placeholder:text-stone-500 focus:border-sky-300/50"
-                              }
-                            ),
-                            /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between gap-2 pt-1", children: [
-                              /* @__PURE__ */ jsx(
-                                "button",
-                                {
-                                  type: "button",
-                                  onClick: () => setMcpPanelMode("add"),
-                                  className: "thread-composer-chip-button rounded-full border border-stone-700 px-3 py-1.5 text-xs text-stone-300 transition",
-                                  children: "Back"
-                                }
-                              ),
-                              /* @__PURE__ */ jsx(
-                                "button",
-                                {
-                                  type: "button",
-                                  onClick: () => void handleSaveRawMcpBlock(),
-                                  disabled: mcpConfigBusy,
-                                  className: "ui-status-info rounded-full px-3 py-1.5 text-xs transition disabled:cursor-not-allowed disabled:opacity-60",
-                                  children: mcpConfigBusy ? "Saving\u2026" : "Write raw block"
-                                }
-                              )
-                            ] })
-                          ] }) : null,
-                          mcpPanelMode === "list" && mcpState.data?.servers.length ? /* @__PURE__ */ jsx("div", { className: "space-y-2", children: mcpState.data.servers.map((server) => /* @__PURE__ */ jsxs(
-                            "div",
-                            {
-                              className: "rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-2.5",
-                              children: [
-                                /* @__PURE__ */ jsxs("div", { className: "flex items-start justify-between gap-3", children: [
-                                  /* @__PURE__ */ jsxs("div", { className: "min-w-0", children: [
-                                    /* @__PURE__ */ jsx("p", { className: "truncate text-sm font-medium text-stone-100", children: server.name }),
-                                    /* @__PURE__ */ jsxs("p", { className: "mt-0.5 text-xs text-stone-400", children: [
-                                      server.tools.length,
-                                      " tools \xB7 ",
-                                      server.resourceCount,
-                                      " ",
-                                      "resources \xB7 ",
-                                      server.resourceTemplateCount,
-                                      " templates"
-                                    ] })
-                                  ] }),
-                                  /* @__PURE__ */ jsx("span", { className: "shrink-0 rounded-full border border-stone-700 px-2 py-1 text-[10px] uppercase tracking-[0.14em] text-stone-300", children: authStatusLabel(server.authStatus) })
-                                ] }),
-                                server.tools.length > 0 ? /* @__PURE__ */ jsx("p", { className: "mt-2 line-clamp-2 text-xs text-stone-500", children: server.tools.slice(0, 4).map((tool) => tool.title ?? tool.name).join(" \xB7 ") }) : null
-                              ]
-                            },
-                            server.name
-                          )) }) : null,
-                          mcpPanelMode === "list" && mcpState.status !== "loading" && !mcpState.error && (mcpState.data?.servers.length ?? 0) === 0 ? /* @__PURE__ */ jsx("p", { className: "rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-3 text-sm text-stone-400", children: "No MCP servers available right now." }) : null
-                        ] }) })
-                      }
-                    )
-                  ] }),
-                  !isShellView && /* @__PURE__ */ jsxs("div", { className: "relative", children: [
-                    /* @__PURE__ */ jsx(
-                      "button",
-                      {
-                        type: "button",
-                        "data-composer-menu-trigger": "true",
-                        "aria-label": "Add attachment",
-                        title: "Add attachment",
-                        onClick: () => setOpenMenu(
-                          (current) => current === "attachments" ? null : "attachments"
-                        ),
-                        className: "thread-composer-icon-button inline-flex h-7 w-7 items-center justify-center rounded-full border border-stone-700 bg-stone-900/92 text-stone-200 transition hover:bg-stone-800",
-                        children: /* @__PURE__ */ jsx(PlusIcon, {})
-                      }
-                    ),
-                    openMenu === "attachments" && /* @__PURE__ */ jsx(
-                      "div",
-                      {
-                        "data-composer-menu-surface": "true",
-                        className: "thread-composer-menu absolute left-0 top-full mt-2 w-32 overflow-hidden rounded-2xl border bg-stone-900/72 shadow-2xl shadow-stone-950/20",
-                        children: /* @__PURE__ */ jsxs("div", { className: "p-2", children: [
-                          /* @__PURE__ */ jsx(
-                            "button",
-                            {
-                              type: "button",
-                              onClick: () => {
-                                dismissPromptFocus();
-                                photoInputRef.current?.click();
-                              },
-                              className: "thread-composer-menu-item block w-full rounded-xl px-3 py-2 text-left text-sm transition",
-                              children: "Photo"
-                            }
-                          ),
-                          /* @__PURE__ */ jsx(
-                            "button",
-                            {
-                              type: "button",
-                              onClick: () => {
-                                dismissPromptFocus();
-                                fileInputRef.current?.click();
-                              },
-                              className: "thread-composer-menu-item mt-1 block w-full rounded-xl px-3 py-2 text-left text-sm transition",
-                              children: "File"
-                            }
-                          )
-                        ] })
-                      }
-                    )
-                  ] }),
-                  canToggleShellView && /* @__PURE__ */ jsx(
-                    "button",
-                    {
-                      type: "button",
-                      "aria-label": isShellView ? "Switch to chat" : "Switch to shell",
-                      title: isShellView ? "Switch to chat" : "Switch to shell",
-                      onClick: () => onToggleView?.(),
-                      className: "thread-composer-icon-button inline-flex h-7 w-7 items-center justify-center rounded-full border border-stone-700 bg-stone-900/92 text-stone-200 transition hover:bg-stone-800",
-                      children: isShellView ? /* @__PURE__ */ jsx(ChatIcon, {}) : /* @__PURE__ */ jsx(TerminalIcon, {})
-                    }
-                  )
-                ] }),
-                /* @__PURE__ */ jsxs("div", { className: "flex min-w-0 flex-1 items-center justify-end gap-1.5", children: [
-                  isShellView && shellPromptLabel && /* @__PURE__ */ jsx(
-                    "span",
-                    {
-                      className: "min-w-0 max-w-[12rem] truncate rounded-full px-1.5 py-1 text-stone-400",
-                      title: shellPromptLabel,
-                      children: shellPromptLabel
-                    }
-                  ),
-                  isMobileShell && /* @__PURE__ */ jsxs("div", { className: "relative", children: [
-                    /* @__PURE__ */ jsx(
-                      "button",
-                      {
-                        type: "button",
-                        "data-composer-menu-trigger": "true",
-                        "aria-label": openMenu === "shellTools" ? "Close shell tools" : "Open shell tools",
-                        "aria-haspopup": "menu",
-                        "aria-expanded": openMenu === "shellTools",
-                        title: openMenu === "shellTools" ? "Close shell tools" : "Open shell tools",
-                        onClick: () => {
-                          dismissPromptFocus();
-                          setOpenMenu((current) => current === "shellTools" ? null : "shellTools");
-                        },
-                        className: "inline-flex h-7 w-7 items-center justify-center rounded-full border border-stone-700 bg-stone-900/92 text-stone-200 transition hover:bg-stone-800",
-                        children: /* @__PURE__ */ jsx(WrenchScrewdriverIcon, {})
-                      }
-                    ),
-                    openMenu === "shellTools" && /* @__PURE__ */ jsx(
-                      "div",
-                      {
-                        "data-composer-menu-surface": "true",
-                        className: "absolute right-0 top-full z-40 mt-2 w-[11.5rem] max-w-[calc(100vw-1.5rem)] rounded-[1rem] border border-stone-700/90 bg-stone-950/96 p-2 shadow-2xl shadow-stone-950/40 sm:w-48",
-                        onMouseDown: (event) => {
-                          event.stopPropagation();
-                        },
-                        onPointerDown: (event) => {
-                          event.stopPropagation();
-                        },
-                        onTouchStart: (event) => {
-                          event.stopPropagation();
-                        },
-                        children: /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-2 gap-2", children: [
-                          /* @__PURE__ */ jsx(
-                            "button",
-                            {
-                              type: "button",
-                              onClick: () => void pasteClipboardIntoPrompt(),
-                              className: "inline-flex items-center justify-center rounded-full border border-sky-300/35 bg-sky-300/12 px-2 py-2 text-sky-50",
-                              children: /* @__PURE__ */ jsxs("span", { className: "inline-flex items-center gap-1.5", children: [
-                                /* @__PURE__ */ jsx(ClipboardIcon, {}),
-                                /* @__PURE__ */ jsx("span", { className: "text-[10px] font-medium tracking-[0.12em]", children: "Paste" })
-                              ] })
-                            }
-                          ),
-                          /* @__PURE__ */ jsx(
-                            "button",
-                            {
-                              type: "button",
-                              onClick: () => {
-                                dismissPromptFocus();
-                                setOpenMenu(null);
-                                void onShellCopy?.();
-                              },
-                              className: "inline-flex items-center justify-center rounded-full border border-stone-700/90 bg-stone-900/80 px-2 py-2 text-stone-100",
-                              children: /* @__PURE__ */ jsxs("span", { className: "inline-flex items-center gap-1.5", children: [
-                                /* @__PURE__ */ jsx(ClipboardIcon, {}),
-                                /* @__PURE__ */ jsx("span", { className: "text-[10px] font-medium tracking-[0.12em]", children: "Copy" })
-                              ] })
-                            }
-                          ),
-                          /* @__PURE__ */ jsx(
-                            "button",
-                            {
-                              type: "button",
-                              disabled: busy,
-                              onClick: () => {
-                                dismissPromptFocus();
-                                setOpenMenu(null);
-                                void onSubmit({ prompt: "clear" });
-                              },
-                              className: "disabled:cursor-not-allowed disabled:opacity-45",
-                              children: /* @__PURE__ */ jsx(ToolPill, { label: "CLEAR", tone: "sky" })
-                            }
-                          ),
-                          /* @__PURE__ */ jsx(
-                            "button",
-                            {
-                              type: "button",
-                              disabled: !shellControlState?.shellInputEnabled || !shellControlState?.isCommandRunning,
-                              onClick: () => {
-                                dismissPromptFocus();
-                                setOpenMenu(null);
-                                void onShellControl?.("ctrl_c");
-                              },
-                              className: "disabled:cursor-not-allowed disabled:opacity-45",
-                              children: /* @__PURE__ */ jsx(ToolPill, { label: "CTRL-C", tone: "rose" })
-                            }
-                          ),
-                          /* @__PURE__ */ jsx(
-                            "button",
-                            {
-                              type: "button",
-                              disabled: !shellControlState?.shellInputEnabled,
-                              onClick: () => {
-                                dismissPromptFocus();
-                                setOpenMenu(null);
-                                void onShellControl?.("ctrl_d");
-                              },
-                              className: "disabled:cursor-not-allowed disabled:opacity-45",
-                              children: /* @__PURE__ */ jsx(ToolPill, { label: "CTRL-D" })
-                            }
-                          ),
-                          /* @__PURE__ */ jsx(
-                            "button",
-                            {
-                              type: "button",
-                              disabled: !shellControlState?.shellInputEnabled,
-                              onClick: () => {
-                                dismissPromptFocus();
-                                setOpenMenu(null);
-                                void onShellControl?.("esc");
-                              },
-                              className: "disabled:cursor-not-allowed disabled:opacity-45",
-                              children: /* @__PURE__ */ jsx(ToolPill, { label: "ESC" })
-                            }
-                          ),
-                          /* @__PURE__ */ jsx(
-                            "button",
-                            {
-                              type: "button",
-                              disabled: !shellControlState?.shellInputEnabled,
-                              onClick: () => {
-                                dismissPromptFocus();
-                                setOpenMenu(null);
-                                void onShellControl?.("tab");
-                              },
-                              className: "disabled:cursor-not-allowed disabled:opacity-45",
-                              children: /* @__PURE__ */ jsx(ToolPill, { label: "TAB" })
-                            }
-                          ),
-                          /* @__PURE__ */ jsx(
-                            "button",
-                            {
-                              type: "button",
-                              disabled: !shellControlState?.shellInputEnabled,
-                              onClick: () => {
-                                dismissPromptFocus();
-                                setOpenMenu(null);
-                                void onShellControl?.("up");
-                              },
-                              className: "disabled:cursor-not-allowed disabled:opacity-45",
-                              children: /* @__PURE__ */ jsx(ToolPill, { label: "UP" })
-                            }
-                          ),
-                          /* @__PURE__ */ jsx(
-                            "button",
-                            {
-                              type: "button",
-                              disabled: !shellControlState?.shellInputEnabled,
-                              onClick: () => {
-                                dismissPromptFocus();
-                                setOpenMenu(null);
-                                void onShellControl?.("down");
-                              },
-                              className: "disabled:cursor-not-allowed disabled:opacity-45",
-                              children: /* @__PURE__ */ jsx(ToolPill, { label: "DOWN" })
-                            }
-                          )
-                        ] })
-                      }
-                    )
-                  ] })
-                ] })
-              ]
-            }
-          ),
-          goalComposeMode && !isShellView && /* @__PURE__ */ jsxs("div", { className: "relative z-20 mb-1.5 flex flex-wrap items-center gap-2 rounded-2xl border border-sky-300/25 bg-sky-300/[0.07] px-3 py-2 text-xs text-sky-50 shadow-sm shadow-stone-950/10", children: [
-            /* @__PURE__ */ jsx("span", { className: "font-medium uppercase tracking-[0.16em] text-sky-100/90", children: "Goal" }),
-            /* @__PURE__ */ jsxs("label", { className: "flex items-center gap-2 text-stone-300", children: [
-              /* @__PURE__ */ jsx("span", { children: "Max tokens (k)" }),
-              /* @__PURE__ */ jsx(
-                "input",
-                {
-                  "aria-label": "Goal token budget",
-                  value: goalTokenBudget,
-                  onChange: (event) => setGoalTokenBudget(event.target.value),
-                  inputMode: "numeric",
-                  placeholder: "Optional",
-                  className: "h-7 w-24 rounded-full border border-sky-300/25 bg-stone-950/60 px-3 text-xs text-stone-100 outline-none placeholder:text-stone-500 focus:border-sky-300/70"
-                }
-              )
-            ] }),
-            goalLocalError ? /* @__PURE__ */ jsx("span", { className: "min-w-0 flex-1 text-rose-200", children: goalLocalError }) : null,
+    /* @__PURE__ */ jsxs("form", { ref: menuRef, onSubmit: handleSubmit, className: formClassName, children: [
+      /* @__PURE__ */ jsxs("div", { className: "thread-composer-toolbar relative z-30 mb-0 flex items-center gap-2 rounded-full border px-2.5 py-1.5 text-xs shadow-lg shadow-stone-950/8", children: [
+        /* @__PURE__ */ jsxs("div", { className: "flex shrink-0 items-center gap-1.5", children: [
+          !isShellView && /* @__PURE__ */ jsxs("div", { className: "relative", children: [
             /* @__PURE__ */ jsx(
               "button",
               {
                 type: "button",
-                onClick: exitGoalComposeMode,
-                className: "rounded-full border border-stone-700/80 px-2.5 py-1 text-[11px] text-stone-300 transition hover:bg-stone-800",
-                children: "Cancel"
+                "data-composer-menu-trigger": "true",
+                "aria-label": "Open slash toolbox",
+                title: "Open slash toolbox",
+                onClick: () => setOpenMenu(
+                  (current) => current === "slash" ? null : "slash"
+                ),
+                className: "thread-composer-icon-button inline-flex h-7 w-7 items-center justify-center rounded-full border border-stone-700 bg-stone-900/92 text-stone-200 transition hover:bg-stone-800",
+                children: /* @__PURE__ */ jsx(SlashIcon, {})
+              }
+            ),
+            openMenu === "slash" && /* @__PURE__ */ jsx(
+              "div",
+              {
+                "data-composer-menu-surface": "true",
+                className: "thread-composer-menu absolute bottom-full left-0 z-40 mb-2 w-72 overflow-hidden rounded-2xl border bg-stone-900/72 shadow-2xl shadow-stone-950/20 backdrop-blur-xl",
+                onClick: (event) => {
+                  event.stopPropagation();
+                },
+                onMouseDown: (event) => {
+                  event.stopPropagation();
+                },
+                onPointerDown: (event) => {
+                  event.stopPropagation();
+                },
+                onTouchStart: (event) => {
+                  event.stopPropagation();
+                },
+                children: slashPanelView === "root" ? /* @__PURE__ */ jsxs("div", { className: "p-2", children: [
+                  availableToolboxItems.map((item, index) => /* @__PURE__ */ jsx(
+                    "button",
+                    {
+                      type: "button",
+                      disabled: toolboxItemDisabled(item),
+                      onClick: (event) => handleToolboxItemClick(item, event),
+                      className: `${toolboxItemClassName(item)} ${index === 0 ? "mt-0" : ""}`,
+                      title: item.description ?? item.label,
+                      children: /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between gap-3", children: [
+                        /* @__PURE__ */ jsx("span", { children: item.command }),
+                        /* @__PURE__ */ jsx("span", { className: "text-[11px] uppercase tracking-[0.16em] text-stone-400", children: toolboxItemStatus(item) })
+                      ] })
+                    },
+                    `${item.action}:${item.command}`
+                  )),
+                  availableToolboxItems.length === 0 ? /* @__PURE__ */ jsx("p", { className: "px-3 py-2 text-sm text-stone-400", children: "No backend tools are available for this thread." }) : null
+                ] }) : /* @__PURE__ */ jsx("div", { className: "max-h-80 overflow-auto", children: slashPanelView === "fork" ? /* @__PURE__ */ jsxs("div", { className: "p-2", children: [
+                  /* @__PURE__ */ jsx(
+                    "button",
+                    {
+                      type: "button",
+                      disabled: busy || forkBusy,
+                      onClick: () => void handleForkLatest(),
+                      className: "thread-composer-menu-item block w-full rounded-xl px-3 py-2 text-left text-sm transition disabled:cursor-not-allowed disabled:opacity-60",
+                      children: /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between gap-3", children: [
+                        /* @__PURE__ */ jsx("span", { children: "Fork from latest" }),
+                        /* @__PURE__ */ jsx("span", { className: "text-[11px] uppercase tracking-[0.16em] text-stone-400", children: forkBusy ? "Forking" : "Run" })
+                      ] })
+                    }
+                  ),
+                  /* @__PURE__ */ jsx(
+                    "button",
+                    {
+                      type: "button",
+                      disabled: busy || forkBusy,
+                      onClick: (event) => {
+                        event.stopPropagation();
+                        setSlashPanelView("forkTurns");
+                        void onOpenForkTurns?.();
+                      },
+                      className: "thread-composer-menu-item mt-1 block w-full rounded-xl px-3 py-2 text-left text-sm transition disabled:cursor-not-allowed disabled:opacity-60",
+                      children: /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between gap-3", children: [
+                        /* @__PURE__ */ jsx("span", { children: "Fork from selected turn" }),
+                        /* @__PURE__ */ jsx("span", { className: "text-[11px] uppercase tracking-[0.16em] text-stone-400", children: "Pick" })
+                      ] })
+                    }
+                  ),
+                  busy ? /* @__PURE__ */ jsx("p", { className: "mt-2 rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-3 text-sm text-stone-400", children: "Fork is only available while the thread is idle." }) : null
+                ] }) : slashPanelView === "forkTurns" ? /* @__PURE__ */ jsxs("div", { className: "p-2", children: [
+                  forkTurnOptionsState.status === "loading" && !forkTurnOptionsState.data ? /* @__PURE__ */ jsx("p", { className: "rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-3 text-sm text-stone-400", children: "Loading turns\u2026" }) : null,
+                  forkTurnOptionsState.error ? /* @__PURE__ */ jsx("p", { className: "mb-2 rounded-xl border border-rose-500/35 bg-rose-500/10 px-3 py-3 text-sm text-rose-100/90", children: forkTurnOptionsState.error }) : null,
+                  forkTurnOptionsState.data?.length ? /* @__PURE__ */ jsx("div", { className: "space-y-2", children: forkTurnOptionsState.data.map((turn) => /* @__PURE__ */ jsx(
+                    "button",
+                    {
+                      type: "button",
+                      disabled: forkBusy,
+                      onClick: () => void handleForkTurn(turn.turnId),
+                      className: "thread-composer-panel-button block w-full rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-3 text-left transition disabled:cursor-not-allowed disabled:opacity-60",
+                      children: /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between gap-3", children: [
+                        /* @__PURE__ */ jsxs("span", { className: "text-sm text-stone-100", children: [
+                          "Turn ",
+                          turn.turnIndex
+                        ] }),
+                        /* @__PURE__ */ jsx("span", { className: "text-[11px] uppercase tracking-[0.16em] text-stone-500", children: forkBusy ? "Forking" : turn.status })
+                      ] })
+                    },
+                    turn.turnId
+                  )) }) : null,
+                  forkTurnOptionsState.status !== "loading" && !forkTurnOptionsState.error && (forkTurnOptionsState.data?.length ?? 0) === 0 ? /* @__PURE__ */ jsx("p", { className: "rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-3 text-sm text-stone-400", children: "No turns available to fork yet." }) : null
+                ] }) : slashPanelView === "skills" ? /* @__PURE__ */ jsxs("div", { className: "p-2", children: [
+                  skillsState.status === "loading" && !skillsState.data ? /* @__PURE__ */ jsx("p", { className: "rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-3 text-sm text-stone-400", children: "Loading skills\u2026" }) : null,
+                  skillsState.error ? /* @__PURE__ */ jsx("p", { className: "mb-2 rounded-xl border border-rose-500/35 bg-rose-500/10 px-3 py-3 text-sm text-rose-100/90", children: skillsState.error }) : null,
+                  skillsState.data?.skills.length ? /* @__PURE__ */ jsx("div", { className: "space-y-2", children: skillsState.data.skills.map((skill) => /* @__PURE__ */ jsx(
+                    "div",
+                    {
+                      className: "rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-2.5",
+                      children: /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+                        /* @__PURE__ */ jsx("p", { className: "truncate text-sm font-medium text-stone-100", children: skill.interface?.displayName ?? skill.name }),
+                        /* @__PURE__ */ jsxs("div", { className: "flex flex-wrap items-center gap-1.5 text-[10px] uppercase tracking-[0.14em]", children: [
+                          /* @__PURE__ */ jsx("span", { className: "rounded-full border border-stone-700 px-2 py-1 text-stone-400", children: skillScopeLabel(skill.scope) }),
+                          /* @__PURE__ */ jsxs(
+                            "button",
+                            {
+                              type: "button",
+                              className: `inline-flex items-center gap-1 rounded-full border px-2 py-1 normal-case tracking-normal transition ${copiedSkillName === skill.name ? "border-emerald-400/45 bg-emerald-400/12 text-emerald-100" : "thread-composer-chip-button border-stone-700 text-stone-300 hover:border-stone-500"}`,
+                              onClick: () => void handleCopySkillInvokeName(
+                                skill.name
+                              ),
+                              title: `Copy $${skill.name}`,
+                              "aria-label": `Copy $${skill.name}`,
+                              children: [
+                                /* @__PURE__ */ jsx(ClipboardIcon, {}),
+                                "$",
+                                skill.name
+                              ]
+                            }
+                          )
+                        ] }),
+                        /* @__PURE__ */ jsx("p", { className: "text-xs leading-5 text-stone-400", children: skill.interface?.shortDescription ?? skill.shortDescription ?? skill.description })
+                      ] })
+                    },
+                    skill.path
+                  )) }) : null,
+                  skillsState.data?.errors.length ? /* @__PURE__ */ jsx("div", { className: "mt-2 space-y-2", children: skillsState.data.errors.map((entry) => /* @__PURE__ */ jsxs(
+                    "div",
+                    {
+                      className: "rounded-xl border border-amber-500/25 bg-amber-500/10 px-3 py-2 text-xs text-amber-100/85",
+                      children: [
+                        /* @__PURE__ */ jsx("p", { className: "font-medium", children: entry.message }),
+                        /* @__PURE__ */ jsx("p", { className: "mt-1 break-all text-amber-100/60", children: entry.path })
+                      ]
+                    },
+                    `${entry.path}:${entry.message}`
+                  )) }) : null,
+                  skillsState.status !== "loading" && !skillsState.error && (skillsState.data?.skills.length ?? 0) === 0 && (skillsState.data?.errors.length ?? 0) === 0 ? /* @__PURE__ */ jsx("p", { className: "rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-3 text-sm text-stone-400", children: "No skills available right now." }) : null
+                ] }) : slashPanelView === "hooks" ? /* @__PURE__ */ jsxs("div", { className: "p-2", children: [
+                  /* @__PURE__ */ jsxs("div", { className: "mb-2 flex items-center justify-between gap-2", children: [
+                    /* @__PURE__ */ jsxs("div", { className: "min-w-0", children: [
+                      /* @__PURE__ */ jsx("p", { className: "text-xs text-stone-400", children: "Hook config sources" }),
+                      /* @__PURE__ */ jsx("p", { className: "truncate text-[11px] text-stone-500", children: hooksState.data?.projectHooksPath ?? "<workspace hooks config>" })
+                    ] }),
+                    hooksPanelMode === "list" && slashCapabilities.hostConfigFiles ? /* @__PURE__ */ jsx(
+                      "button",
+                      {
+                        type: "button",
+                        onClick: (event) => {
+                          event.stopPropagation();
+                          resetHookForm();
+                          setHooksPanelMode("add");
+                          setHookConfigError(null);
+                          setHookConfigSuccess(null);
+                        },
+                        className: "shrink-0 rounded-full border border-sky-300/35 px-3 py-1.5 text-xs text-sky-100 transition hover:bg-sky-300/10",
+                        children: "Add Hook"
+                      }
+                    ) : null
+                  ] }),
+                  hooksState.status === "loading" && !hooksState.data ? /* @__PURE__ */ jsx("p", { className: "rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-3 text-sm text-stone-400", children: "Loading hooks\u2026" }) : null,
+                  hooksState.error ? /* @__PURE__ */ jsx("p", { className: "mb-2 rounded-xl border border-rose-500/35 bg-rose-500/10 px-3 py-3 text-sm text-rose-100/90", children: hooksState.error }) : null,
+                  hookConfigError ? /* @__PURE__ */ jsx("p", { className: "mb-2 rounded-xl border border-rose-500/35 bg-rose-500/10 px-3 py-3 text-sm text-rose-100/90", children: hookConfigError }) : null,
+                  hookConfigSuccess ? /* @__PURE__ */ jsx("p", { className: "mb-2 rounded-xl border border-emerald-500/35 bg-emerald-500/10 px-3 py-3 text-sm text-emerald-100/90", children: hookConfigSuccess }) : null,
+                  hooksPanelMode === "add" || hooksPanelMode === "edit" ? /* @__PURE__ */ jsxs("div", { className: "space-y-2 rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-3", children: [
+                    hooksPanelMode === "edit" ? /* @__PURE__ */ jsxs("p", { className: "rounded-lg border border-stone-800 bg-stone-950 px-3 py-2 text-[11px] text-stone-400", children: [
+                      "Editing",
+                      " ",
+                      hookEventJsonKey(
+                        editingHookTarget?.eventName ?? hookEventName
+                      ),
+                      " ",
+                      "in",
+                      " ",
+                      editingHookTarget?.scope === "global" ? "global" : "project",
+                      " ",
+                      "hooks.json"
+                    ] }) : null,
+                    /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-2 gap-2", children: [
+                      /* @__PURE__ */ jsxs("label", { className: "block text-xs text-stone-400", children: [
+                        "Scope",
+                        /* @__PURE__ */ jsxs(
+                          "select",
+                          {
+                            "aria-label": "Hook scope",
+                            value: hookScope,
+                            onChange: (event) => setHookScope(
+                              event.target.value
+                            ),
+                            disabled: hooksPanelMode === "edit",
+                            className: "mt-1 w-full rounded-lg border border-stone-700 bg-stone-950 px-2.5 py-2 text-sm text-stone-100 outline-none focus:border-sky-300/50",
+                            children: [
+                              /* @__PURE__ */ jsx("option", { value: "project", children: "Project" }),
+                              /* @__PURE__ */ jsx("option", { value: "global", children: "Global" })
+                            ]
+                          }
+                        )
+                      ] }),
+                      /* @__PURE__ */ jsxs("label", { className: "block text-xs text-stone-400", children: [
+                        "Event",
+                        /* @__PURE__ */ jsx(
+                          "select",
+                          {
+                            "aria-label": "Hook event",
+                            value: hookEventName,
+                            onChange: (event) => setHookEventName(
+                              event.target.value
+                            ),
+                            className: "mt-1 w-full rounded-lg border border-stone-700 bg-stone-950 px-2.5 py-2 text-sm text-stone-100 outline-none focus:border-sky-300/50",
+                            children: HOOK_EVENT_OPTIONS.map((eventOption) => /* @__PURE__ */ jsx(
+                              "option",
+                              {
+                                value: eventOption.value,
+                                children: eventOption.label
+                              },
+                              eventOption.value
+                            ))
+                          }
+                        )
+                      ] })
+                    ] }),
+                    /* @__PURE__ */ jsxs("div", { children: [
+                      /* @__PURE__ */ jsx("label", { className: "mb-1 block text-xs text-stone-400", children: "Matcher" }),
+                      /* @__PURE__ */ jsx(
+                        "input",
+                        {
+                          "aria-label": "Hook matcher",
+                          value: hookMatcher,
+                          onChange: (event) => setHookMatcher(event.target.value),
+                          placeholder: "Bash",
+                          className: "w-full rounded-lg border border-stone-700 bg-stone-950 px-3 py-2 text-sm text-stone-100 outline-none placeholder:text-stone-500 focus:border-sky-300/50"
+                        }
+                      )
+                    ] }),
+                    /* @__PURE__ */ jsxs("div", { children: [
+                      /* @__PURE__ */ jsx("label", { className: "mb-1 block text-xs text-stone-400", children: "Command" }),
+                      /* @__PURE__ */ jsx(
+                        "textarea",
+                        {
+                          "aria-label": "Hook command",
+                          value: hookCommand,
+                          onChange: (event) => setHookCommand(event.target.value),
+                          rows: 3,
+                          className: "w-full rounded-lg border border-stone-700 bg-stone-950 px-3 py-2 font-mono text-xs text-stone-100 outline-none placeholder:text-stone-500 focus:border-sky-300/50"
+                        }
+                      )
+                    ] }),
+                    /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-2 gap-2", children: [
+                      /* @__PURE__ */ jsxs("label", { className: "block text-xs text-stone-400", children: [
+                        "Timeout",
+                        /* @__PURE__ */ jsx(
+                          "input",
+                          {
+                            "aria-label": "Hook timeout seconds",
+                            value: hookTimeoutSec,
+                            onChange: (event) => setHookTimeoutSec(event.target.value),
+                            inputMode: "numeric",
+                            className: "mt-1 w-full rounded-lg border border-stone-700 bg-stone-950 px-3 py-2 text-sm text-stone-100 outline-none focus:border-sky-300/50"
+                          }
+                        )
+                      ] }),
+                      /* @__PURE__ */ jsxs("label", { className: "block text-xs text-stone-400", children: [
+                        "Status message",
+                        /* @__PURE__ */ jsx(
+                          "input",
+                          {
+                            "aria-label": "Hook status message",
+                            value: hookStatusMessage,
+                            onChange: (event) => setHookStatusMessage(event.target.value),
+                            className: "mt-1 w-full rounded-lg border border-stone-700 bg-stone-950 px-3 py-2 text-sm text-stone-100 outline-none focus:border-sky-300/50"
+                          }
+                        )
+                      ] })
+                    ] }),
+                    /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between gap-2 pt-1", children: [
+                      /* @__PURE__ */ jsx(
+                        "button",
+                        {
+                          type: "button",
+                          onClick: () => {
+                            setHooksPanelMode("list");
+                            setEditingHookTarget(null);
+                          },
+                          className: "thread-composer-chip-button rounded-full border border-stone-700 px-3 py-1.5 text-xs text-stone-300 transition",
+                          children: "Back"
+                        }
+                      ),
+                      /* @__PURE__ */ jsx(
+                        "button",
+                        {
+                          type: "button",
+                          onClick: () => void handleSaveHook(),
+                          disabled: hookConfigBusy,
+                          className: "ui-status-info rounded-full px-3 py-1.5 text-xs transition disabled:cursor-not-allowed disabled:opacity-60",
+                          children: hookConfigBusy ? "Saving\u2026" : hooksPanelMode === "edit" ? "Update Hook" : "Write Hook"
+                        }
+                      )
+                    ] })
+                  ] }) : null,
+                  hooksPanelMode === "list" && hooksState.data?.warnings.length ? /* @__PURE__ */ jsx("div", { className: "mb-2 space-y-2", children: hooksState.data.warnings.map((warning) => /* @__PURE__ */ jsx(
+                    "p",
+                    {
+                      className: "rounded-xl border border-amber-500/25 bg-amber-500/10 px-3 py-2 text-xs text-amber-100/85",
+                      children: warning
+                    },
+                    warning
+                  )) }) : null,
+                  hooksPanelMode === "list" && hooksState.data?.errors.length ? /* @__PURE__ */ jsx("div", { className: "mb-2 space-y-2", children: hooksState.data.errors.map((entry) => /* @__PURE__ */ jsxs(
+                    "div",
+                    {
+                      className: "rounded-xl border border-rose-500/35 bg-rose-500/10 px-3 py-2 text-xs text-rose-100/90",
+                      children: [
+                        /* @__PURE__ */ jsx("p", { className: "font-medium", children: entry.message }),
+                        /* @__PURE__ */ jsx("p", { className: "mt-1 break-all text-rose-100/60", children: entry.path })
+                      ]
+                    },
+                    `${entry.path}:${entry.message}`
+                  )) }) : null,
+                  hooksPanelMode === "list" && hooksState.data?.hooks.length ? /* @__PURE__ */ jsx("div", { className: "space-y-2", children: hooksState.data.hooks.map((hook) => /* @__PURE__ */ jsxs(
+                    "div",
+                    {
+                      className: "rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-2.5",
+                      children: [
+                        /* @__PURE__ */ jsxs("div", { className: "min-w-0", children: [
+                          /* @__PURE__ */ jsxs("p", { className: "truncate text-sm font-medium text-stone-100", children: [
+                            hookEventLabel(hook.eventName),
+                            hook.matcher ? ` \xB7 ${hook.matcher}` : ""
+                          ] }),
+                          /* @__PURE__ */ jsx("p", { className: "mt-0.5 truncate font-mono text-[11px] text-stone-400", children: hook.command ?? hook.handlerType }),
+                          hook.statusMessage ? /* @__PURE__ */ jsx("p", { className: "mt-1 truncate text-[11px] text-stone-500", children: hook.statusMessage }) : null
+                        ] }),
+                        /* @__PURE__ */ jsxs("div", { className: "mt-2 flex flex-wrap items-center gap-1.5 text-[10px] uppercase tracking-[0.08em] text-stone-500", children: [
+                          editableHookTarget(hook) ? /* @__PURE__ */ jsx(
+                            "button",
+                            {
+                              type: "button",
+                              onClick: (event) => {
+                                event.stopPropagation();
+                                startEditingHook(hook);
+                              },
+                              className: "thread-composer-chip-button rounded-full border border-stone-700 px-2 py-0.5 text-[10px] normal-case tracking-normal text-sky-100 transition hover:border-sky-300/35 hover:bg-sky-300/10",
+                              children: "Edit"
+                            }
+                          ) : null,
+                          slashCapabilities.hookTrust && hook.trustStatus === "trusted" && !hook.isManaged ? /* @__PURE__ */ jsx(
+                            "button",
+                            {
+                              type: "button",
+                              disabled: hookConfigBusy,
+                              onClick: (event) => {
+                                event.stopPropagation();
+                                void handleUntrustHook(hook);
+                              },
+                              className: "thread-composer-chip-button rounded-full border border-stone-700 px-2 py-0.5 text-[10px] normal-case tracking-normal text-amber-100 transition hover:border-amber-300/35 hover:bg-amber-300/10 disabled:cursor-not-allowed disabled:opacity-50",
+                              children: "Untrust"
+                            }
+                          ) : null,
+                          (hook.trustStatus === "untrusted" || hook.trustStatus === "modified") && !hook.isManaged && slashCapabilities.hookTrust ? /* @__PURE__ */ jsx(
+                            "button",
+                            {
+                              type: "button",
+                              disabled: hookConfigBusy || !hook.currentHash,
+                              onClick: (event) => {
+                                event.stopPropagation();
+                                void handleTrustHook(hook);
+                              },
+                              className: "thread-composer-chip-button rounded-full border border-stone-700 px-2 py-0.5 text-[10px] normal-case tracking-normal text-emerald-100 transition hover:border-emerald-300/35 hover:bg-emerald-300/10 disabled:cursor-not-allowed disabled:opacity-50",
+                              children: "Trust"
+                            }
+                          ) : null,
+                          /* @__PURE__ */ jsx("span", { className: "rounded-full border border-stone-700 px-2 py-0.5 text-stone-300", children: hookTrustLabel(hook.trustStatus) })
+                        ] }),
+                        /* @__PURE__ */ jsxs("div", { className: "mt-2 flex flex-wrap items-center gap-1.5 text-[10px] uppercase tracking-[0.14em] text-stone-500", children: [
+                          /* @__PURE__ */ jsx("span", { className: "rounded-full border border-stone-700 px-2 py-1", children: hookSourceLabel(hook.source) }),
+                          /* @__PURE__ */ jsx("span", { className: "rounded-full border border-stone-700 px-2 py-1", children: hook.enabled ? "Enabled" : "Disabled" }),
+                          /* @__PURE__ */ jsxs("span", { className: "rounded-full border border-stone-700 px-2 py-1", children: [
+                            hook.timeoutSec,
+                            "s"
+                          ] })
+                        ] })
+                      ]
+                    },
+                    hook.key
+                  )) }) : null,
+                  hooksPanelMode === "list" && hooksState.status !== "loading" && !hooksState.error && (hooksState.data?.hooks.length ?? 0) === 0 ? /* @__PURE__ */ jsx("p", { className: "rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-3 text-sm text-stone-400", children: "No hooks configured for this workspace." }) : null
+                ] }) : /* @__PURE__ */ jsxs("div", { className: "p-2", children: [
+                  /* @__PURE__ */ jsxs("div", { className: "mb-2 flex items-center justify-between gap-2", children: [
+                    /* @__PURE__ */ jsxs("div", { className: "min-w-0", children: [
+                      /* @__PURE__ */ jsx("p", { className: "text-xs text-stone-400", children: "MCP config source" }),
+                      /* @__PURE__ */ jsx("p", { className: "truncate text-[11px] text-stone-500", children: mcpConfigPath ?? "<provider config>" })
+                    ] }),
+                    mcpPanelMode === "list" && slashCapabilities.mcpConfigEditing ? /* @__PURE__ */ jsx(
+                      "button",
+                      {
+                        type: "button",
+                        onClick: (event) => {
+                          event.stopPropagation();
+                          setMcpPanelMode("add");
+                          setMcpConfigError(null);
+                          setMcpConfigSuccess(null);
+                        },
+                        className: "shrink-0 rounded-full border border-sky-300/35 px-3 py-1.5 text-xs text-sky-100 transition hover:bg-sky-300/10",
+                        children: "Add MCP"
+                      }
+                    ) : null
+                  ] }),
+                  mcpState.status === "loading" && !mcpState.data ? /* @__PURE__ */ jsx("p", { className: "rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-3 text-sm text-stone-400", children: "Loading MCP servers\u2026" }) : null,
+                  mcpState.error ? /* @__PURE__ */ jsx("p", { className: "mb-2 rounded-xl border border-rose-500/35 bg-rose-500/10 px-3 py-3 text-sm text-rose-100/90", children: mcpState.error }) : null,
+                  mcpConfigError ? /* @__PURE__ */ jsx("p", { className: "mb-2 rounded-xl border border-rose-500/35 bg-rose-500/10 px-3 py-3 text-sm text-rose-100/90", children: mcpConfigError }) : null,
+                  mcpConfigSuccess ? /* @__PURE__ */ jsx("p", { className: "mb-2 rounded-xl border border-emerald-500/35 bg-emerald-500/10 px-3 py-3 text-sm text-emerald-100/90", children: mcpConfigSuccess }) : null,
+                  mcpPanelMode === "add" ? /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+                    /* @__PURE__ */ jsxs(
+                      "button",
+                      {
+                        type: "button",
+                        onClick: (event) => {
+                          event.stopPropagation();
+                          setMcpPanelMode("http");
+                          setMcpConfigError(null);
+                          setMcpConfigSuccess(null);
+                        },
+                        className: "thread-composer-panel-button block w-full rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-3 text-left transition",
+                        children: [
+                          /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between gap-3", children: [
+                            /* @__PURE__ */ jsx("span", { className: "text-sm text-stone-100", children: "HTTP / Streamable HTTP" }),
+                            /* @__PURE__ */ jsx("span", { className: "text-[11px] uppercase tracking-[0.16em] text-stone-500", children: "Form" })
+                          ] }),
+                          /* @__PURE__ */ jsx("p", { className: "mt-1 text-xs text-stone-400", children: "Add an MCP server with a name and URL, then write the matching block into provider config." })
+                        ]
+                      }
+                    ),
+                    /* @__PURE__ */ jsxs(
+                      "button",
+                      {
+                        type: "button",
+                        onClick: (event) => {
+                          event.stopPropagation();
+                          void handlePrepareRawMcpBlock();
+                        },
+                        className: "thread-composer-panel-button block w-full rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-3 text-left transition",
+                        children: [
+                          /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between gap-3", children: [
+                            /* @__PURE__ */ jsx("span", { className: "text-sm text-stone-100", children: "stdio / raw block" }),
+                            /* @__PURE__ */ jsx("span", { className: "text-[11px] uppercase tracking-[0.16em] text-stone-500", children: "TOML" })
+                          ] }),
+                          /* @__PURE__ */ jsx("p", { className: "mt-1 text-xs text-stone-400", children: "Write a single `[mcp_servers.name]` block, then save it back into provider config." })
+                        ]
+                      }
+                    )
+                  ] }) : null,
+                  mcpPanelMode === "http" ? /* @__PURE__ */ jsxs("div", { className: "space-y-2 rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-3", children: [
+                    /* @__PURE__ */ jsxs("div", { children: [
+                      /* @__PURE__ */ jsx("label", { className: "mb-1 block text-xs text-stone-400", children: "MCP name" }),
+                      /* @__PURE__ */ jsx(
+                        "input",
+                        {
+                          "aria-label": "MCP name",
+                          value: mcpHttpName,
+                          onChange: (event) => setMcpHttpName(event.target.value),
+                          placeholder: "openaiDeveloperDocs",
+                          className: "w-full rounded-lg border border-stone-700 bg-stone-950 px-3 py-2 text-sm text-stone-100 outline-none placeholder:text-stone-500 focus:border-sky-300/50"
+                        }
+                      )
+                    ] }),
+                    /* @__PURE__ */ jsxs("div", { children: [
+                      /* @__PURE__ */ jsx("label", { className: "mb-1 block text-xs text-stone-400", children: "URL" }),
+                      /* @__PURE__ */ jsx(
+                        "input",
+                        {
+                          "aria-label": "URL",
+                          value: mcpHttpUrl,
+                          onChange: (event) => setMcpHttpUrl(event.target.value),
+                          placeholder: "https://developers.openai.com/mcp",
+                          className: "w-full rounded-lg border border-stone-700 bg-stone-950 px-3 py-2 text-sm text-stone-100 outline-none placeholder:text-stone-500 focus:border-sky-300/50"
+                        }
+                      )
+                    ] }),
+                    /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between gap-2 pt-1", children: [
+                      /* @__PURE__ */ jsx(
+                        "button",
+                        {
+                          type: "button",
+                          onClick: () => setMcpPanelMode("add"),
+                          className: "thread-composer-chip-button rounded-full border border-stone-700 px-3 py-1.5 text-xs text-stone-300 transition",
+                          children: "Back"
+                        }
+                      ),
+                      /* @__PURE__ */ jsx(
+                        "button",
+                        {
+                          type: "button",
+                          onClick: () => void handleSaveHttpMcp(),
+                          disabled: mcpConfigBusy,
+                          className: "ui-status-info rounded-full px-3 py-1.5 text-xs transition disabled:cursor-not-allowed disabled:opacity-60",
+                          children: mcpConfigBusy ? "Saving\u2026" : "Write HTTP MCP"
+                        }
+                      )
+                    ] })
+                  ] }) : null,
+                  mcpPanelMode === "stdio" ? /* @__PURE__ */ jsxs("div", { className: "space-y-2 rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-3", children: [
+                    /* @__PURE__ */ jsx("label", { className: "block text-xs text-stone-400", children: "MCP block for provider config" }),
+                    /* @__PURE__ */ jsx(
+                      "textarea",
+                      {
+                        "aria-label": "MCP block for provider config",
+                        value: mcpRawBlock,
+                        onChange: (event) => setMcpRawBlock(event.target.value),
+                        rows: 8,
+                        className: "w-full rounded-lg border border-stone-700 bg-stone-950 px-3 py-2 text-sm text-stone-100 outline-none placeholder:text-stone-500 focus:border-sky-300/50"
+                      }
+                    ),
+                    /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between gap-2 pt-1", children: [
+                      /* @__PURE__ */ jsx(
+                        "button",
+                        {
+                          type: "button",
+                          onClick: () => setMcpPanelMode("add"),
+                          className: "thread-composer-chip-button rounded-full border border-stone-700 px-3 py-1.5 text-xs text-stone-300 transition",
+                          children: "Back"
+                        }
+                      ),
+                      /* @__PURE__ */ jsx(
+                        "button",
+                        {
+                          type: "button",
+                          onClick: () => void handleSaveRawMcpBlock(),
+                          disabled: mcpConfigBusy,
+                          className: "ui-status-info rounded-full px-3 py-1.5 text-xs transition disabled:cursor-not-allowed disabled:opacity-60",
+                          children: mcpConfigBusy ? "Saving\u2026" : "Write raw block"
+                        }
+                      )
+                    ] })
+                  ] }) : null,
+                  mcpPanelMode === "list" && mcpState.data?.servers.length ? /* @__PURE__ */ jsx("div", { className: "space-y-2", children: mcpState.data.servers.map((server) => /* @__PURE__ */ jsxs(
+                    "div",
+                    {
+                      className: "rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-2.5",
+                      children: [
+                        /* @__PURE__ */ jsxs("div", { className: "flex items-start justify-between gap-3", children: [
+                          /* @__PURE__ */ jsxs("div", { className: "min-w-0", children: [
+                            /* @__PURE__ */ jsx("p", { className: "truncate text-sm font-medium text-stone-100", children: server.name }),
+                            /* @__PURE__ */ jsxs("p", { className: "mt-0.5 text-xs text-stone-400", children: [
+                              server.tools.length,
+                              " tools \xB7",
+                              " ",
+                              server.resourceCount,
+                              " resources \xB7",
+                              " ",
+                              server.resourceTemplateCount,
+                              " ",
+                              "templates"
+                            ] })
+                          ] }),
+                          /* @__PURE__ */ jsx("span", { className: "shrink-0 rounded-full border border-stone-700 px-2 py-1 text-[10px] uppercase tracking-[0.14em] text-stone-300", children: authStatusLabel(server.authStatus) })
+                        ] }),
+                        server.tools.length > 0 ? /* @__PURE__ */ jsx("p", { className: "mt-2 line-clamp-2 text-xs text-stone-500", children: server.tools.slice(0, 4).map(
+                          (tool) => tool.title ?? tool.name
+                        ).join(" \xB7 ") }) : null
+                      ]
+                    },
+                    server.name
+                  )) }) : null,
+                  mcpPanelMode === "list" && mcpState.status !== "loading" && !mcpState.error && (mcpState.data?.servers.length ?? 0) === 0 ? /* @__PURE__ */ jsx("p", { className: "rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-3 text-sm text-stone-400", children: "No MCP servers available right now." }) : null
+                ] }) })
+              }
+            )
+          ] }),
+          !isShellView && /* @__PURE__ */ jsxs("div", { className: "relative", children: [
+            /* @__PURE__ */ jsx(
+              "button",
+              {
+                type: "button",
+                "data-composer-menu-trigger": "true",
+                "aria-label": "Add attachment",
+                title: "Add attachment",
+                onClick: () => setOpenMenu(
+                  (current) => current === "attachments" ? null : "attachments"
+                ),
+                className: "thread-composer-icon-button inline-flex h-7 w-7 items-center justify-center rounded-full border border-stone-700 bg-stone-900/92 text-stone-200 transition hover:bg-stone-800",
+                children: /* @__PURE__ */ jsx(PlusIcon, {})
+              }
+            ),
+            openMenu === "attachments" && /* @__PURE__ */ jsx(
+              "div",
+              {
+                "data-composer-menu-surface": "true",
+                className: "thread-composer-menu absolute left-0 top-full mt-2 w-32 overflow-hidden rounded-2xl border bg-stone-900/72 shadow-2xl shadow-stone-950/20",
+                children: /* @__PURE__ */ jsxs("div", { className: "p-2", children: [
+                  /* @__PURE__ */ jsx(
+                    "button",
+                    {
+                      type: "button",
+                      onClick: () => {
+                        dismissPromptFocus();
+                        photoInputRef.current?.click();
+                      },
+                      className: "thread-composer-menu-item block w-full rounded-xl px-3 py-2 text-left text-sm transition",
+                      children: "Photo"
+                    }
+                  ),
+                  /* @__PURE__ */ jsx(
+                    "button",
+                    {
+                      type: "button",
+                      onClick: () => {
+                        dismissPromptFocus();
+                        fileInputRef.current?.click();
+                      },
+                      className: "thread-composer-menu-item mt-1 block w-full rounded-xl px-3 py-2 text-left text-sm transition",
+                      children: "File"
+                    }
+                  )
+                ] })
+              }
+            )
+          ] }),
+          canToggleShellView && /* @__PURE__ */ jsx(
+            "button",
+            {
+              type: "button",
+              "aria-label": isShellView ? "Switch to chat" : "Switch to shell",
+              title: isShellView ? "Switch to chat" : "Switch to shell",
+              onClick: () => onToggleView?.(),
+              className: "thread-composer-icon-button inline-flex h-7 w-7 items-center justify-center rounded-full border border-stone-700 bg-stone-900/92 text-stone-200 transition hover:bg-stone-800",
+              children: isShellView ? /* @__PURE__ */ jsx(ChatIcon, {}) : /* @__PURE__ */ jsx(TerminalIcon, {})
+            }
+          )
+        ] }),
+        /* @__PURE__ */ jsxs("div", { className: "flex min-w-0 flex-1 items-center justify-end gap-1.5", children: [
+          isShellView && shellPromptLabel && /* @__PURE__ */ jsx(
+            "span",
+            {
+              className: "min-w-0 max-w-[12rem] truncate rounded-full px-1.5 py-1 text-stone-400",
+              title: shellPromptLabel,
+              children: shellPromptLabel
+            }
+          ),
+          isMobileShell && /* @__PURE__ */ jsxs("div", { className: "relative", children: [
+            /* @__PURE__ */ jsx(
+              "button",
+              {
+                type: "button",
+                "data-composer-menu-trigger": "true",
+                "aria-label": openMenu === "shellTools" ? "Close shell tools" : "Open shell tools",
+                "aria-haspopup": "menu",
+                "aria-expanded": openMenu === "shellTools",
+                title: openMenu === "shellTools" ? "Close shell tools" : "Open shell tools",
+                onClick: () => {
+                  dismissPromptFocus();
+                  setOpenMenu(
+                    (current) => current === "shellTools" ? null : "shellTools"
+                  );
+                },
+                className: "inline-flex h-7 w-7 items-center justify-center rounded-full border border-stone-700 bg-stone-900/92 text-stone-200 transition hover:bg-stone-800",
+                children: /* @__PURE__ */ jsx(WrenchScrewdriverIcon, {})
+              }
+            ),
+            openMenu === "shellTools" && /* @__PURE__ */ jsx(
+              "div",
+              {
+                "data-composer-menu-surface": "true",
+                className: "absolute right-0 top-full z-40 mt-2 w-[11.5rem] max-w-[calc(100vw-1.5rem)] rounded-[1rem] border border-stone-700/90 bg-stone-950/96 p-2 shadow-2xl shadow-stone-950/40 sm:w-48",
+                onMouseDown: (event) => {
+                  event.stopPropagation();
+                },
+                onPointerDown: (event) => {
+                  event.stopPropagation();
+                },
+                onTouchStart: (event) => {
+                  event.stopPropagation();
+                },
+                children: /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-2 gap-2", children: [
+                  /* @__PURE__ */ jsx(
+                    "button",
+                    {
+                      type: "button",
+                      onClick: () => void pasteClipboardIntoPrompt(),
+                      className: "inline-flex items-center justify-center rounded-full border border-sky-300/35 bg-sky-300/12 px-2 py-2 text-sky-50",
+                      children: /* @__PURE__ */ jsxs("span", { className: "inline-flex items-center gap-1.5", children: [
+                        /* @__PURE__ */ jsx(ClipboardIcon, {}),
+                        /* @__PURE__ */ jsx("span", { className: "text-[10px] font-medium tracking-[0.12em]", children: "Paste" })
+                      ] })
+                    }
+                  ),
+                  /* @__PURE__ */ jsx(
+                    "button",
+                    {
+                      type: "button",
+                      onClick: () => {
+                        dismissPromptFocus();
+                        setOpenMenu(null);
+                        void onShellCopy?.();
+                      },
+                      className: "inline-flex items-center justify-center rounded-full border border-stone-700/90 bg-stone-900/80 px-2 py-2 text-stone-100",
+                      children: /* @__PURE__ */ jsxs("span", { className: "inline-flex items-center gap-1.5", children: [
+                        /* @__PURE__ */ jsx(ClipboardIcon, {}),
+                        /* @__PURE__ */ jsx("span", { className: "text-[10px] font-medium tracking-[0.12em]", children: "Copy" })
+                      ] })
+                    }
+                  ),
+                  /* @__PURE__ */ jsx(
+                    "button",
+                    {
+                      type: "button",
+                      disabled: busy,
+                      onClick: () => {
+                        dismissPromptFocus();
+                        setOpenMenu(null);
+                        void onSubmit({ prompt: "clear" });
+                      },
+                      className: "disabled:cursor-not-allowed disabled:opacity-45",
+                      children: /* @__PURE__ */ jsx(ToolPill, { label: "CLEAR", tone: "sky" })
+                    }
+                  ),
+                  /* @__PURE__ */ jsx(
+                    "button",
+                    {
+                      type: "button",
+                      disabled: !shellControlState?.shellInputEnabled || !shellControlState?.isCommandRunning,
+                      onClick: () => {
+                        dismissPromptFocus();
+                        setOpenMenu(null);
+                        void onShellControl?.("ctrl_c");
+                      },
+                      className: "disabled:cursor-not-allowed disabled:opacity-45",
+                      children: /* @__PURE__ */ jsx(ToolPill, { label: "CTRL-C", tone: "rose" })
+                    }
+                  ),
+                  /* @__PURE__ */ jsx(
+                    "button",
+                    {
+                      type: "button",
+                      disabled: !shellControlState?.shellInputEnabled,
+                      onClick: () => {
+                        dismissPromptFocus();
+                        setOpenMenu(null);
+                        void onShellControl?.("ctrl_d");
+                      },
+                      className: "disabled:cursor-not-allowed disabled:opacity-45",
+                      children: /* @__PURE__ */ jsx(ToolPill, { label: "CTRL-D" })
+                    }
+                  ),
+                  /* @__PURE__ */ jsx(
+                    "button",
+                    {
+                      type: "button",
+                      disabled: !shellControlState?.shellInputEnabled,
+                      onClick: () => {
+                        dismissPromptFocus();
+                        setOpenMenu(null);
+                        void onShellControl?.("esc");
+                      },
+                      className: "disabled:cursor-not-allowed disabled:opacity-45",
+                      children: /* @__PURE__ */ jsx(ToolPill, { label: "ESC" })
+                    }
+                  ),
+                  /* @__PURE__ */ jsx(
+                    "button",
+                    {
+                      type: "button",
+                      disabled: !shellControlState?.shellInputEnabled,
+                      onClick: () => {
+                        dismissPromptFocus();
+                        setOpenMenu(null);
+                        void onShellControl?.("tab");
+                      },
+                      className: "disabled:cursor-not-allowed disabled:opacity-45",
+                      children: /* @__PURE__ */ jsx(ToolPill, { label: "TAB" })
+                    }
+                  ),
+                  /* @__PURE__ */ jsx(
+                    "button",
+                    {
+                      type: "button",
+                      disabled: !shellControlState?.shellInputEnabled,
+                      onClick: () => {
+                        dismissPromptFocus();
+                        setOpenMenu(null);
+                        void onShellControl?.("up");
+                      },
+                      className: "disabled:cursor-not-allowed disabled:opacity-45",
+                      children: /* @__PURE__ */ jsx(ToolPill, { label: "UP" })
+                    }
+                  ),
+                  /* @__PURE__ */ jsx(
+                    "button",
+                    {
+                      type: "button",
+                      disabled: !shellControlState?.shellInputEnabled,
+                      onClick: () => {
+                        dismissPromptFocus();
+                        setOpenMenu(null);
+                        void onShellControl?.("down");
+                      },
+                      className: "disabled:cursor-not-allowed disabled:opacity-45",
+                      children: /* @__PURE__ */ jsx(ToolPill, { label: "DOWN" })
+                    }
+                  )
+                ] })
+              }
+            )
+          ] })
+        ] })
+      ] }),
+      goalComposeMode && !isShellView && /* @__PURE__ */ jsxs("div", { className: "relative z-20 mb-1.5 flex flex-wrap items-center gap-2 rounded-2xl border border-sky-300/25 bg-sky-300/[0.07] px-3 py-2 text-xs text-sky-50 shadow-sm shadow-stone-950/10", children: [
+        /* @__PURE__ */ jsx("span", { className: "font-medium uppercase tracking-[0.16em] text-sky-100/90", children: "Goal" }),
+        /* @__PURE__ */ jsxs("label", { className: "flex items-center gap-2 text-stone-300", children: [
+          /* @__PURE__ */ jsx("span", { children: "Max tokens (k)" }),
+          /* @__PURE__ */ jsx(
+            "input",
+            {
+              "aria-label": "Goal token budget",
+              value: goalTokenBudget,
+              onChange: (event) => setGoalTokenBudget(event.target.value),
+              inputMode: "numeric",
+              placeholder: "Optional",
+              className: "h-7 w-24 rounded-full border border-sky-300/25 bg-stone-950/60 px-3 text-xs text-stone-100 outline-none placeholder:text-stone-500 focus:border-sky-300/70"
+            }
+          )
+        ] }),
+        goalLocalError ? /* @__PURE__ */ jsx("span", { className: "min-w-0 flex-1 text-rose-200", children: goalLocalError }) : null,
+        /* @__PURE__ */ jsx(
+          "button",
+          {
+            type: "button",
+            onClick: exitGoalComposeMode,
+            className: "rounded-full border border-stone-700/80 px-2.5 py-1 text-[11px] text-stone-300 transition hover:bg-stone-800",
+            children: "Cancel"
+          }
+        )
+      ] }),
+      /* @__PURE__ */ jsxs("div", { className: "relative", children: [
+        isShellView ? /* @__PURE__ */ jsx(
+          "textarea",
+          {
+            "aria-label": "Prompt",
+            disabled: false,
+            value: prompt,
+            onChange: (event) => setPrompt(event.target.value),
+            onKeyDown: handlePromptKeyDown,
+            rows: 2,
+            placeholder: promptPlaceholder,
+            className: `${promptInputClassName} resize-y pb-10`
+          }
+        ) : /* @__PURE__ */ jsxs("div", { className: promptInputClassName, children: [
+          prompt.length === 0 && /* @__PURE__ */ jsx("span", { className: "pointer-events-none absolute left-4 top-2.5 text-stone-500", children: promptPlaceholder }),
+          /* @__PURE__ */ jsx(
+            "div",
+            {
+              ref: promptRef,
+              role: "textbox",
+              "aria-label": "Prompt",
+              "aria-multiline": "true",
+              contentEditable: !disabled,
+              suppressContentEditableWarning: true,
+              onInput: () => handlePromptInput(),
+              onPaste: handlePromptPaste,
+              onKeyDown: handlePromptKeyDown,
+              onKeyUp: () => {
+                selectionSnapshotRef.current = snapshotSelection();
+              },
+              onMouseUp: () => {
+                selectionSnapshotRef.current = snapshotSelection();
+              },
+              onBlur: () => {
+                selectionSnapshotRef.current = snapshotSelection();
+                setIsDragTargetActive(false);
+              },
+              onDragEnter: handlePromptDragEnter,
+              onDragOver: handlePromptDragOver,
+              onDragLeave: handlePromptDragLeave,
+              onDrop: handlePromptDrop,
+              className: `relative z-[1] min-h-[3.75rem] whitespace-pre-wrap break-words pb-10 outline-none sm:min-h-[3.75rem] ${disabled ? "cursor-not-allowed text-stone-500" : ""}`
+            }
+          )
+        ] }),
+        /* @__PURE__ */ jsx(
+          "button",
+          {
+            type: "button",
+            "aria-label": interruptLabel,
+            title: interruptLabel,
+            onClick: () => void onInterrupt?.(),
+            disabled: !canInterrupt,
+            className: `absolute right-2.5 top-2.5 inline-flex h-8 w-8 items-center justify-center rounded-full border transition ${canInterrupt ? "border-rose-300/55 bg-rose-300/[0.14] text-rose-50 shadow-lg shadow-rose-950/20 hover:bg-rose-300/[0.22]" : "cursor-not-allowed border-stone-700/30 bg-stone-400/[0.02] text-stone-500/55 opacity-55"}`,
+            children: /* @__PURE__ */ jsx(
+              "span",
+              {
+                "aria-hidden": "true",
+                className: "block h-2.5 w-2.5 rounded-[2px] bg-current"
+              }
+            )
+          }
+        ),
+        /* @__PURE__ */ jsx(
+          "button",
+          {
+            type: "submit",
+            "aria-label": goalComposeMode && !isShellView ? "Set goal" : isShellView ? "Send Shell Input" : "Send Prompt",
+            onMouseDown: (event) => {
+              event.preventDefault();
+            },
+            onPointerDown: (event) => {
+              event.preventDefault();
+            },
+            onTouchStart: (event) => {
+              event.preventDefault();
+            },
+            disabled: goalBusy || busy || (activeView === "chat" ? disabled : false),
+            className: `absolute bottom-2.5 right-2.5 rounded-full px-3.5 py-1.5 text-sm font-medium shadow-lg shadow-stone-950/30 transition disabled:cursor-not-allowed disabled:bg-stone-700 disabled:text-stone-300 ${sendButtonClassName}`,
+            children: sendButtonLabel
+          }
+        ),
+        !isShellView && /* @__PURE__ */ jsxs("div", { className: "absolute bottom-2.5 left-3 z-30 flex max-w-[calc(100%-7rem)] items-center gap-1.5 text-xs", children: [
+          /* @__PURE__ */ jsxs("div", { className: "relative min-w-0", children: [
+            /* @__PURE__ */ jsx(
+              "button",
+              {
+                type: "button",
+                "data-composer-menu-trigger": "true",
+                "aria-haspopup": "menu",
+                "aria-expanded": openMenu === "model",
+                "aria-label": model ?? "Select model",
+                disabled: modelControlsDisabled || modelOptions.length === 0,
+                onClick: () => setOpenMenu(
+                  (current) => current === "model" ? null : "model"
+                ),
+                title: fastMode ? `Fast mode is on. Turn it off from the slash toolbox to edit model. ${modelContextTitle}` : modelContextTitle,
+                className: "thread-composer-inline-toggle relative inline-flex min-w-0 max-w-[8.75rem] items-center overflow-hidden rounded-full px-2.5 py-1 text-left text-stone-300 transition disabled:cursor-not-allowed disabled:text-stone-600 sm:max-w-[11rem]",
+                children: /* @__PURE__ */ jsx("span", { className: "relative z-[1] block min-w-0 truncate whitespace-nowrap [direction:rtl]", children: model ?? "Select model" })
+              }
+            ),
+            model ? /* @__PURE__ */ jsx(ContextProgressBar, { contextUsage }) : null,
+            openMenu === "model" && /* @__PURE__ */ jsx(
+              "div",
+              {
+                "data-composer-menu-surface": "true",
+                className: "absolute bottom-full left-0 mb-2 w-max min-w-[9rem] max-w-[14rem] overflow-hidden rounded-2xl border border-stone-700 bg-stone-900 shadow-2xl shadow-stone-950/40",
+                children: /* @__PURE__ */ jsx("div", { className: "max-h-72 overflow-auto p-2", children: modelOptions.map((entry) => /* @__PURE__ */ jsx(
+                  "button",
+                  {
+                    type: "button",
+                    onClick: () => void handleUpdateSettings({
+                      model: entry.model,
+                      reasoningEffort: entry.defaultReasoningEffort
+                    }),
+                    className: `block w-full rounded-xl px-3 py-2 text-left transition ${entry.model === model ? "ui-status-warning" : "thread-composer-menu-item text-stone-300"}`,
+                    children: /* @__PURE__ */ jsx("p", { className: "text-sm font-medium", children: entry.model })
+                  },
+                  entry.id
+                )) })
               }
             )
           ] }),
           /* @__PURE__ */ jsxs("div", { className: "relative", children: [
-            isShellView ? /* @__PURE__ */ jsx(
-              "textarea",
-              {
-                "aria-label": "Prompt",
-                disabled: false,
-                value: prompt,
-                onChange: (event) => setPrompt(event.target.value),
-                onKeyDown: handlePromptKeyDown,
-                rows: 2,
-                placeholder: promptPlaceholder,
-                className: `${promptInputClassName} resize-y pb-10`
-              }
-            ) : /* @__PURE__ */ jsxs("div", { className: promptInputClassName, children: [
-              prompt.length === 0 && /* @__PURE__ */ jsx("span", { className: "pointer-events-none absolute left-4 top-2.5 text-stone-500", children: promptPlaceholder }),
-              /* @__PURE__ */ jsx(
-                "div",
-                {
-                  ref: promptRef,
-                  role: "textbox",
-                  "aria-label": "Prompt",
-                  "aria-multiline": "true",
-                  contentEditable: !disabled,
-                  suppressContentEditableWarning: true,
-                  onInput: () => handlePromptInput(),
-                  onPaste: handlePromptPaste,
-                  onKeyDown: handlePromptKeyDown,
-                  onKeyUp: () => {
-                    selectionSnapshotRef.current = snapshotSelection();
-                  },
-                  onMouseUp: () => {
-                    selectionSnapshotRef.current = snapshotSelection();
-                  },
-                  onBlur: () => {
-                    selectionSnapshotRef.current = snapshotSelection();
-                    setIsDragTargetActive(false);
-                  },
-                  onDragEnter: handlePromptDragEnter,
-                  onDragOver: handlePromptDragOver,
-                  onDragLeave: handlePromptDragLeave,
-                  onDrop: handlePromptDrop,
-                  className: `relative z-[1] min-h-[5.75rem] whitespace-pre-wrap break-words pb-10 outline-none sm:min-h-[4.875rem] ${disabled ? "cursor-not-allowed text-stone-500" : ""}`
-                }
-              )
-            ] }),
             /* @__PURE__ */ jsx(
               "button",
               {
                 type: "button",
-                "aria-label": interruptLabel,
-                title: interruptLabel,
-                onClick: () => void onInterrupt?.(),
-                disabled: !canInterrupt,
-                className: `absolute right-2.5 top-2.5 inline-flex h-8 w-8 items-center justify-center rounded-full border transition ${canInterrupt ? "border-rose-300/55 bg-rose-300/[0.14] text-rose-50 shadow-lg shadow-rose-950/20 hover:bg-rose-300/[0.22]" : "cursor-not-allowed border-stone-700/30 bg-stone-400/[0.02] text-stone-500/55 opacity-55"}`,
-                children: /* @__PURE__ */ jsx(
-                  "span",
-                  {
-                    "aria-hidden": "true",
-                    className: "block h-2.5 w-2.5 rounded-[2px] bg-current"
-                  }
-                )
+                "data-composer-menu-trigger": "true",
+                "aria-haspopup": "menu",
+                "aria-expanded": openMenu === "effort",
+                disabled: effortControlsDisabled,
+                onClick: () => setOpenMenu(
+                  (current) => current === "effort" ? null : "effort"
+                ),
+                title: effortControlTitle,
+                className: `thread-composer-inline-toggle rounded-full px-2 py-1 transition disabled:cursor-not-allowed disabled:text-stone-700 ${effortControlsDisabled ? "text-stone-500" : "text-stone-300 hover:text-stone-100"}`,
+                children: formatReasoningEffortLabel(reasoningEffort)
               }
             ),
-            /* @__PURE__ */ jsx(
-              "button",
+            openMenu === "effort" && /* @__PURE__ */ jsx(
+              "div",
               {
-                type: "submit",
-                "aria-label": goalComposeMode && !isShellView ? "Set goal" : isShellView ? "Send Shell Input" : "Send Prompt",
-                onMouseDown: (event) => {
-                  event.preventDefault();
-                },
-                onPointerDown: (event) => {
-                  event.preventDefault();
-                },
-                onTouchStart: (event) => {
-                  event.preventDefault();
-                },
-                disabled: goalBusy || busy || (activeView === "chat" ? disabled : false),
-                className: `absolute bottom-2.5 right-2.5 rounded-full px-3.5 py-1.5 text-sm font-medium shadow-lg shadow-stone-950/30 transition disabled:cursor-not-allowed disabled:bg-stone-700 disabled:text-stone-300 ${sendButtonClassName}`,
-                children: sendButtonLabel
+                "data-composer-menu-surface": "true",
+                className: "absolute bottom-full left-0 mb-2 w-max min-w-[8rem] max-w-[12rem] overflow-hidden rounded-2xl border border-stone-700 bg-stone-900 shadow-2xl shadow-stone-950/40",
+                children: /* @__PURE__ */ jsx("div", { className: "max-h-72 overflow-auto p-2", children: supportedEfforts.map((entry) => /* @__PURE__ */ jsx(
+                  "button",
+                  {
+                    type: "button",
+                    onClick: () => void handleUpdateSettings({
+                      reasoningEffort: entry.reasoningEffort
+                    }),
+                    className: `block w-full rounded-xl px-3 py-2 text-left transition ${entry.reasoningEffort === reasoningEffort ? "ui-status-warning" : "thread-composer-menu-item text-stone-300"}`,
+                    children: /* @__PURE__ */ jsx("p", { className: "text-sm font-medium", children: formatReasoningEffortLabel(entry.reasoningEffort) })
+                  },
+                  entry.reasoningEffort
+                )) })
               }
-            ),
-            !isShellView && /* @__PURE__ */ jsxs("div", { className: "absolute bottom-2.5 left-3 z-30 flex max-w-[calc(100%-7rem)] items-center gap-1.5 text-xs", children: [
-              /* @__PURE__ */ jsxs("div", { className: "relative min-w-0", children: [
-                /* @__PURE__ */ jsx(
-                  "button",
-                  {
-                    type: "button",
-                    "data-composer-menu-trigger": "true",
-                    "aria-haspopup": "menu",
-                    "aria-expanded": openMenu === "model",
-                    "aria-label": model ?? "Select model",
-                    disabled: modelControlsDisabled || modelOptions.length === 0,
-                    onClick: () => setOpenMenu((current) => current === "model" ? null : "model"),
-                    title: fastMode ? `Fast mode is on. Turn it off from the slash toolbox to edit model. ${modelContextTitle}` : modelContextTitle,
-                    className: "thread-composer-inline-toggle relative inline-flex min-w-0 max-w-[8.75rem] items-center overflow-hidden rounded-full px-2.5 py-1 text-left text-stone-300 transition disabled:cursor-not-allowed disabled:text-stone-600 sm:max-w-[11rem]",
-                    children: /* @__PURE__ */ jsx("span", { className: "relative z-[1] block min-w-0 truncate whitespace-nowrap [direction:rtl]", children: model ?? "Select model" })
-                  }
-                ),
-                model ? /* @__PURE__ */ jsx(ContextProgressBar, { contextUsage }) : null,
-                openMenu === "model" && /* @__PURE__ */ jsx(
-                  "div",
-                  {
-                    "data-composer-menu-surface": "true",
-                    className: "absolute bottom-full left-0 mb-2 w-max min-w-[9rem] max-w-[14rem] overflow-hidden rounded-2xl border border-stone-700 bg-stone-900 shadow-2xl shadow-stone-950/40",
-                    children: /* @__PURE__ */ jsx("div", { className: "max-h-72 overflow-auto p-2", children: modelOptions.map((entry) => /* @__PURE__ */ jsx(
-                      "button",
-                      {
-                        type: "button",
-                        onClick: () => void handleUpdateSettings({
-                          model: entry.model,
-                          reasoningEffort: entry.defaultReasoningEffort
-                        }),
-                        className: `block w-full rounded-xl px-3 py-2 text-left transition ${entry.model === model ? "ui-status-warning" : "thread-composer-menu-item text-stone-300"}`,
-                        children: /* @__PURE__ */ jsx("p", { className: "text-sm font-medium", children: entry.model })
-                      },
-                      entry.id
-                    )) })
-                  }
-                )
-              ] }),
-              /* @__PURE__ */ jsxs("div", { className: "relative", children: [
-                /* @__PURE__ */ jsx(
-                  "button",
-                  {
-                    type: "button",
-                    "data-composer-menu-trigger": "true",
-                    "aria-haspopup": "menu",
-                    "aria-expanded": openMenu === "effort",
-                    disabled: effortControlsDisabled,
-                    onClick: () => setOpenMenu((current) => current === "effort" ? null : "effort"),
-                    title: effortControlTitle,
-                    className: `thread-composer-inline-toggle rounded-full px-2 py-1 transition disabled:cursor-not-allowed disabled:text-stone-700 ${effortControlsDisabled ? "text-stone-500" : "text-stone-300 hover:text-stone-100"}`,
-                    children: formatReasoningEffortLabel(reasoningEffort)
-                  }
-                ),
-                openMenu === "effort" && /* @__PURE__ */ jsx(
-                  "div",
-                  {
-                    "data-composer-menu-surface": "true",
-                    className: "absolute bottom-full left-0 mb-2 w-max min-w-[8rem] max-w-[12rem] overflow-hidden rounded-2xl border border-stone-700 bg-stone-900 shadow-2xl shadow-stone-950/40",
-                    children: /* @__PURE__ */ jsx("div", { className: "max-h-72 overflow-auto p-2", children: supportedEfforts.map((entry) => /* @__PURE__ */ jsx(
-                      "button",
-                      {
-                        type: "button",
-                        onClick: () => void handleUpdateSettings({
-                          reasoningEffort: entry.reasoningEffort
-                        }),
-                        className: `block w-full rounded-xl px-3 py-2 text-left transition ${entry.reasoningEffort === reasoningEffort ? "ui-status-warning" : "thread-composer-menu-item text-stone-300"}`,
-                        children: /* @__PURE__ */ jsx("p", { className: "text-sm font-medium", children: formatReasoningEffortLabel(entry.reasoningEffort) })
-                      },
-                      entry.reasoningEffort
-                    )) })
-                  }
-                )
-              ] }),
-              slashCapabilities.planMode && /* @__PURE__ */ jsx(
-                "button",
-                {
-                  type: "button",
-                  "aria-pressed": displayedCollaborationMode === "plan",
-                  disabled: settingsBusy,
-                  onClick: () => void handleUpdateSettings({
-                    collaborationMode: displayedCollaborationMode === "plan" ? "default" : "plan"
-                  }),
-                  className: `thread-composer-inline-toggle rounded-full px-2.5 py-1 transition ${displayedCollaborationMode === "plan" ? "thread-composer-plan-toggle-active" : "text-stone-500"} disabled:cursor-not-allowed disabled:opacity-60`,
-                  children: "Plan"
-                }
-              )
-            ] })
+            )
           ] }),
-          error && /* @__PURE__ */ jsx("div", { className: "mt-2 rounded-2xl border border-rose-500/40 bg-rose-500/10 px-4 py-3 text-sm text-rose-200", children: error })
-        ]
-      }
-    )
+          slashCapabilities.planMode && /* @__PURE__ */ jsx(
+            "button",
+            {
+              type: "button",
+              "aria-pressed": displayedCollaborationMode === "plan",
+              disabled: settingsBusy,
+              onClick: () => void handleUpdateSettings({
+                collaborationMode: displayedCollaborationMode === "plan" ? "default" : "plan"
+              }),
+              className: `thread-composer-inline-toggle rounded-full px-2.5 py-1 transition ${displayedCollaborationMode === "plan" ? "thread-composer-plan-toggle-active" : "text-stone-500"} disabled:cursor-not-allowed disabled:opacity-60`,
+              children: "Plan"
+            }
+          )
+        ] })
+      ] }),
+      error && /* @__PURE__ */ jsx("div", { className: "mt-2 rounded-2xl border border-rose-500/40 bg-rose-500/10 px-4 py-3 text-sm text-rose-200", children: error })
+    ] })
   ] });
 }
 
@@ -3223,7 +3300,9 @@ function ThreadCard({
   showDeleteButton = false,
   showSessionCopyButton = false
 }) {
-  const [copyState, setCopyState] = useState2("idle");
+  const [copyState, setCopyState] = useState2(
+    "idle"
+  );
   const resetTimerRef = useRef2(null);
   const workspaceLabel = workspaceLabels[thread.workspaceId];
   const isCurrentThread = currentThreadId === thread.id;
@@ -3245,13 +3324,19 @@ function ThreadCard({
       if (resetTimerRef.current !== null) {
         window.clearTimeout(resetTimerRef.current);
       }
-      resetTimerRef.current = window.setTimeout(() => setCopyState("idle"), 1200);
+      resetTimerRef.current = window.setTimeout(
+        () => setCopyState("idle"),
+        1200
+      );
     } catch {
       setCopyState("failed");
       if (resetTimerRef.current !== null) {
         window.clearTimeout(resetTimerRef.current);
       }
-      resetTimerRef.current = window.setTimeout(() => setCopyState("idle"), 1600);
+      resetTimerRef.current = window.setTimeout(
+        () => setCopyState("idle"),
+        1600
+      );
     }
   }
   const cardClassName = `thread-sidebar-card relative block rounded-[1.2rem] border px-3 py-2.5 transition ${isCurrentThread ? "thread-sidebar-card-active shadow-lg shadow-stone-950/12" : ""} ${showSessionCopyButton && thread.providerSessionId ? "pb-4" : ""}`;
@@ -3315,10 +3400,16 @@ function ThreadCard({
         }
       )
     ] }),
-    /* @__PURE__ */ jsxs3("div", { className: `mt-2 flex items-center justify-between gap-3 text-[11px] text-[var(--theme-fg-muted)] ${showSessionCopyButton && thread.providerSessionId ? "pr-9" : ""}`, children: [
-      /* @__PURE__ */ jsx3("time", { dateTime: thread.lastTurnStartedAt ?? thread.updatedAt, children: formatShortTimestamp(thread.lastTurnStartedAt ?? thread.updatedAt) }),
-      /* @__PURE__ */ jsx3("span", { children: thread.model ?? "No model" })
-    ] }),
+    /* @__PURE__ */ jsxs3(
+      "div",
+      {
+        className: `mt-2 flex items-center justify-between gap-3 text-[11px] text-[var(--theme-fg-muted)] ${showSessionCopyButton && thread.providerSessionId ? "pr-9" : ""}`,
+        children: [
+          /* @__PURE__ */ jsx3("time", { dateTime: thread.lastTurnStartedAt ?? thread.updatedAt, children: formatShortTimestamp(thread.lastTurnStartedAt ?? thread.updatedAt) }),
+          /* @__PURE__ */ jsx3("span", { children: thread.model ?? "No model" })
+        ]
+      }
+    ),
     showSessionCopyButton && thread.providerSessionId && /* @__PURE__ */ jsx3(
       "button",
       {
@@ -3539,7 +3630,10 @@ function ThreadWorkspaceLayout({
     return /* @__PURE__ */ jsxs3("div", { className: "space-y-4", children: [
       /* @__PURE__ */ jsxs3("section", { children: [
         /* @__PURE__ */ jsxs3("div", { className: "mb-3 flex items-center justify-between gap-3", children: [
-          /* @__PURE__ */ jsx3("p", { className: "text-xs uppercase tracking-[0.28em] text-[var(--theme-fg-muted)]", children: "Thread List" }),
+          /* @__PURE__ */ jsxs3("p", { className: "flex items-center gap-2 text-xs font-medium text-[var(--theme-fg-muted)]", children: [
+            /* @__PURE__ */ jsx3("span", { className: "h-1.5 w-1.5 rounded-full bg-[var(--theme-border-strong)]" }),
+            "Rooms"
+          ] }),
           /* @__PURE__ */ jsxs3("div", { className: "flex items-center gap-2", children: [
             loading && /* @__PURE__ */ jsx3("span", { className: "text-xs text-[var(--theme-fg-muted)]", children: "Refreshing..." }),
             renderNewThreadButton(
@@ -3573,7 +3667,7 @@ function ThreadWorkspaceLayout({
     /* @__PURE__ */ jsxs3(
       "div",
       {
-        className: viewportConstrained ? `flex h-full max-h-full min-h-0 flex-col gap-2 overflow-hidden overscroll-none sm:gap-4 lg:grid ${desktopSidebarCollapsed ? "lg:grid-cols-[0_minmax(0,1fr)]" : "lg:grid-cols-[320px_minmax(0,1fr)] xl:grid-cols-[340px_minmax(0,1fr)]"}` : `flex min-h-[calc(100dvh-2rem)] flex-col gap-4 lg:grid ${desktopSidebarCollapsed ? "lg:grid-cols-[0_minmax(0,1fr)]" : "lg:grid-cols-[320px_minmax(0,1fr)] xl:grid-cols-[340px_minmax(0,1fr)]"}`,
+        className: viewportConstrained ? `flex h-full max-h-full min-h-0 flex-col gap-2 overflow-hidden overscroll-none sm:gap-2 lg:grid ${desktopSidebarCollapsed ? "lg:grid-cols-[0_minmax(0,1fr)]" : "lg:grid-cols-[264px_minmax(0,1fr)]"}` : `flex min-h-[calc(100dvh-2rem)] flex-col gap-4 lg:grid ${desktopSidebarCollapsed ? "lg:grid-cols-[0_minmax(0,1fr)]" : "lg:grid-cols-[264px_minmax(0,1fr)]"}`,
         children: [
           /* @__PURE__ */ jsx3("div", { className: "lg:hidden", children: /* @__PURE__ */ jsxs3("div", { className: "relative", children: [
             /* @__PURE__ */ jsxs3(
@@ -3629,7 +3723,7 @@ function ThreadWorkspaceLayout({
               }
             ),
             showMobileAppMenu && appNavigationMenu && /* @__PURE__ */ jsx3("div", { className: "absolute left-2 top-[calc(100%+0.45rem)] z-20 w-[min(18rem,calc(100vw-1rem))]", children: appNavigationMenu }),
-            showMobileThreadNavToggle && mobileSidebarOpen && /* @__PURE__ */ jsx3("aside", { className: "thread-sidebar-surface absolute inset-x-2 top-[calc(100%+0.35rem)] z-50 max-h-[min(70dvh,34rem)] overflow-y-auto overscroll-contain rounded-[1.35rem] border p-4 shadow-2xl shadow-stone-950/18 backdrop-blur", children: renderSidebarContent() })
+            showMobileThreadNavToggle && mobileSidebarOpen && /* @__PURE__ */ jsx3("aside", { className: "thread-sidebar-surface absolute inset-x-2 top-[calc(100%+0.35rem)] z-50 max-h-[min(70dvh,34rem)] overflow-y-auto overscroll-contain rounded-[12px] border p-3 shadow-2xl shadow-stone-950/18 backdrop-blur", children: renderSidebarContent() })
           ] }) }),
           /* @__PURE__ */ jsxs3(
             "aside",
@@ -3662,7 +3756,7 @@ function ThreadWorkspaceLayout({
                   "div",
                   {
                     "aria-hidden": desktopSidebarCollapsed,
-                    className: `thread-sidebar-surface sticky top-4 rounded-[2rem] border p-4 shadow-2xl shadow-stone-950/12 backdrop-blur transition-opacity ${viewportConstrained ? "h-full max-h-full overflow-y-auto" : ""} ${desktopSidebarCollapsed ? "pointer-events-none opacity-0" : "opacity-100"}`,
+                    className: `thread-sidebar-surface sticky top-2 rounded-[12px] border p-3 shadow-[var(--theme-shadow)] backdrop-blur transition-opacity ${viewportConstrained ? "h-full max-h-full overflow-y-auto" : ""} ${desktopSidebarCollapsed ? "pointer-events-none opacity-0" : "opacity-100"}`,
                     children: renderSidebarContent()
                   }
                 )
@@ -10881,7 +10975,7 @@ function ThreadDetailSurface({
   currentWorkspaceId,
   currentWorkspaceLabel,
   onCloseAppNavigation,
-  className = "thread-detail-surface relative flex h-full min-h-0 flex-1 flex-col overflow-hidden rounded-none border-y shadow-2xl shadow-stone-950/20 sm:flex-none sm:rounded-[2rem] sm:border",
+  className = "thread-detail-surface relative flex h-full min-h-0 flex-1 flex-col overflow-hidden rounded-none border-y sm:flex-none sm:rounded-[12px] sm:border",
   activeView = "chat",
   liveOutput = "",
   timelineProps,
@@ -10917,9 +11011,7 @@ function ThreadDetailSurface({
       adapter.openThread
     ]
   );
-  const terminalPanelEnabled = plugins.getThreadPanels().some(
-    (panel) => panel.kind === "terminal"
-  );
+  const terminalPanelEnabled = plugins.getThreadPanels().some((panel) => panel.kind === "terminal");
   const defaultContent = loading ? loadingContent ?? /* @__PURE__ */ jsx11("div", { className: "flex flex-1 items-center justify-center px-6 py-12 text-center text-[var(--theme-fg-muted)]", children: "Loading thread detail..." }) : detail ? /* @__PURE__ */ jsxs10("div", { className, children: [
     surfaceActions ? /* @__PURE__ */ jsx11("div", { className: "pointer-events-none absolute right-4 top-4 z-30 hidden lg:block", children: /* @__PURE__ */ jsx11("div", { className: "pointer-events-auto flex flex-col items-end gap-2", children: surfaceActions }) }) : null,
     floatingPanel ? /* @__PURE__ */ jsx11("div", { className: "fixed right-3 top-20 z-50 lg:absolute lg:right-4 lg:top-16", children: floatingPanel }) : null,

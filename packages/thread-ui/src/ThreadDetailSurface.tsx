@@ -117,7 +117,7 @@ export function ThreadDetailSurface({
   currentWorkspaceId,
   currentWorkspaceLabel,
   onCloseAppNavigation,
-  className = 'thread-detail-surface relative flex h-full min-h-0 flex-1 flex-col overflow-hidden rounded-none border-y shadow-2xl shadow-stone-950/20 sm:flex-none sm:rounded-[2rem] sm:border',
+  className = 'thread-detail-surface relative flex h-full min-h-0 flex-1 flex-col overflow-hidden rounded-none border-y sm:flex-none sm:rounded-[12px] sm:border',
   activeView = 'chat',
   liveOutput = '',
   timelineProps,
@@ -138,7 +138,8 @@ export function ThreadDetailSurface({
   emptyContent,
 }: ThreadDetailSurfaceProps) {
   const contextPlugins = usePlugins();
-  const plugins = providedPlugins ?? contextPlugins ?? createDefaultPluginContextValue();
+  const plugins =
+    providedPlugins ?? contextPlugins ?? createDefaultPluginContextValue();
   const timelineAdapter = useMemo(
     () => ({
       ...(adapter.getImageAssetUrl
@@ -158,16 +159,16 @@ export function ThreadDetailSurface({
       adapter.openThread,
     ],
   );
-  const terminalPanelEnabled = plugins.getThreadPanels().some(
-    (panel) => panel.kind === 'terminal',
-  );
+  const terminalPanelEnabled = plugins
+    .getThreadPanels()
+    .some((panel) => panel.kind === 'terminal');
 
   const defaultContent = loading ? (
-    loadingContent ?? (
+    (loadingContent ?? (
       <div className="flex flex-1 items-center justify-center px-6 py-12 text-center text-[var(--theme-fg-muted)]">
         Loading thread detail...
       </div>
-    )
+    ))
   ) : detail ? (
     <div className={className}>
       {surfaceActions ? (
@@ -182,29 +183,26 @@ export function ThreadDetailSurface({
           {floatingPanel}
         </div>
       ) : null}
-      {error && !loading && (
-        errorContent ?? (
+      {error &&
+        !loading &&
+        (errorContent ?? (
           <div className="shrink-0 border-b border-rose-500/20 bg-rose-500/10 px-5 py-4 text-sm text-rose-100 sm:px-6">
             {error}
           </div>
-        )
-      )}
-      {detail.workspacePathStatus === 'missing' && (
-        workspaceMissingContent ?? (
+        ))}
+      {detail.workspacePathStatus === 'missing' &&
+        (workspaceMissingContent ?? (
           <div className="shrink-0 border-b border-rose-500/20 bg-rose-500/10 px-5 py-4 text-sm text-rose-100 sm:px-6">
             <p className="font-medium text-rose-50">Workspace path missing</p>
             <p className="mt-1 break-words text-rose-100/90">
               {detail.workspace.absPath}
             </p>
           </div>
-        )
-      )}
+        ))}
       {beforeTimelineContent}
       <div
         className={
-          activeView === 'chat'
-            ? 'flex min-h-0 flex-1 flex-col'
-            : 'hidden'
+          activeView === 'chat' ? 'flex min-h-0 flex-1 flex-col' : 'hidden'
         }
       >
         <TimelineComponent
@@ -253,9 +251,7 @@ export function ThreadDetailSurface({
       </div>
       <div
         className={
-          activeView === 'shell'
-            ? 'flex min-h-0 flex-1 flex-col'
-            : 'hidden'
+          activeView === 'shell' ? 'flex min-h-0 flex-1 flex-col' : 'hidden'
         }
       >
         {shellContent ??
@@ -273,20 +269,21 @@ export function ThreadDetailSurface({
                 : {})}
             />
           ) : detail.thread.isLoaded && !terminalPanelEnabled ? (
-            shellUnavailableContent ?? (
+            (shellUnavailableContent ?? (
               <div className="flex min-h-0 flex-1 items-center justify-center p-4 sm:p-6">
                 <div className="thread-empty-surface max-w-md rounded-[1.6rem] border px-6 py-8 text-center">
                   <p className="text-base font-medium text-[var(--theme-fg)]">
                     Terminal plugin disabled
                   </p>
                   <p className="mt-3 text-sm leading-6 text-[var(--theme-fg-muted)]">
-                    Enable the Terminal plugin in Settings to use the shell panel.
+                    Enable the Terminal plugin in Settings to use the shell
+                    panel.
                   </p>
                 </div>
               </div>
-            )
+            ))
           ) : (
-            shellDisconnectedContent ?? (
+            (shellDisconnectedContent ?? (
               <div className="flex min-h-0 flex-1 items-center justify-center p-4 sm:p-6">
                 <div className="thread-empty-surface max-w-md rounded-[1.6rem] border px-6 py-8 text-center">
                   <p className="text-base font-medium text-[var(--theme-fg)]">
@@ -297,7 +294,7 @@ export function ThreadDetailSurface({
                   </p>
                 </div>
               </div>
-            )
+            ))
           ))}
         {activeView === 'shell' && shellComposerProps && !shellContent ? (
           <ThreadComposer
@@ -310,11 +307,11 @@ export function ThreadDetailSurface({
       {dialogs}
     </div>
   ) : (
-    emptyContent ?? (
+    (emptyContent ?? (
       <div className="flex flex-1 items-center justify-center px-6 py-12 text-center text-[var(--theme-fg-muted)]">
         Select a thread to inspect.
       </div>
-    )
+    ))
   );
 
   return (
@@ -336,12 +333,18 @@ export function ThreadDetailSurface({
       showMobileNewThreadShortcut={false}
       onOpenThread={adapter.openThread}
       {...(onCloseAppNavigation ? { onCloseAppNavigation } : {})}
-      {...(adapter.getThreadHref ? { getThreadHref: adapter.getThreadHref } : {})}
+      {...(adapter.getThreadHref
+        ? { getThreadHref: adapter.getThreadHref }
+        : {})}
       {...(adapter.getNewThreadHref
         ? { getNewThreadHref: adapter.getNewThreadHref }
         : {})}
-      {...(adapter.renameThread ? { onRenameThread: adapter.renameThread } : {})}
-      {...(adapter.deleteThread ? { onDeleteThread: adapter.deleteThread } : {})}
+      {...(adapter.renameThread
+        ? { onRenameThread: adapter.renameThread }
+        : {})}
+      {...(adapter.deleteThread
+        ? { onDeleteThread: adapter.deleteThread }
+        : {})}
     >
       {defaultContent}
     </ThreadWorkspaceLayout>
