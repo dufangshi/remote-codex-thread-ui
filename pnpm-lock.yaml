@@ -141,18 +141,6 @@ importers:
 
   packages/thread-ui:
     dependencies:
-      '@remote-codex/plugin-runtime':
-        specifier: workspace:*
-        version: link:../plugin-runtime
-      '@remote-codex/plugin-terminal':
-        specifier: workspace:*
-        version: link:../plugin-terminal
-      '@remote-codex/plugin-xyz-viewer':
-        specifier: workspace:*
-        version: link:../plugin-xyz-viewer
-      '@remote-codex/shared':
-        specifier: workspace:*
-        version: link:../shared
       '@streamdown/code':
         specifier: ^1.1.1
         version: 1.1.1(react@19.2.7)
@@ -175,6 +163,18 @@ importers:
         specifier: ^5.3.0
         version: 5.3.0
     devDependencies:
+      '@remote-codex/plugin-runtime':
+        specifier: workspace:*
+        version: link:../plugin-runtime
+      '@remote-codex/plugin-terminal':
+        specifier: workspace:*
+        version: link:../plugin-terminal
+      '@remote-codex/plugin-xyz-viewer':
+        specifier: workspace:*
+        version: link:../plugin-xyz-viewer
+      '@remote-codex/shared':
+        specifier: workspace:*
+        version: link:../shared
       tsup:
         specifier: ^8.4.0
         version: 8.5.1(jiti@2.7.0)(postcss@8.5.15)(tsx@4.22.4)(typescript@5.9.3)
