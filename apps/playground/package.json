@@ -1,0 +1,26 @@
+{
+  "name": "@remote-codex/thread-ui-playground",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0",
+    "build": "tsc -p tsconfig.json --noEmit && vite build",
+    "preview": "vite preview --host 0.0.0.0"
+  },
+  "dependencies": {
+    "@remote-codex/plugin-runtime": "workspace:*",
+    "@remote-codex/plugin-terminal": "workspace:*",
+    "@remote-codex/plugin-xyz-viewer": "workspace:*",
+    "@remote-codex/shared": "workspace:*",
+    "@remote-codex/thread-ui": "workspace:*",
+    "@vitejs/plugin-react": "^4.3.4",
+    "vite": "^6.3.2",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.3"
+  }
+}
+

@@ -1,0 +1,12 @@
+node_modules/
+dist/
+.turbo/
+.vite/
+coverage/
+playwright-report/
+test-results/
+*.tsbuildinfo
+pnpm-debug.log*
+package-lock.json
+yarn.lock
+
