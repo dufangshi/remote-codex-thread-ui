@@ -12,7 +12,6 @@ import {
   PluginProvider,
   ThreadDetailSurface,
 } from '@remote-codex/thread-ui';
-import '@remote-codex/thread-ui/styles.css';
 
 import {
   mockCapabilities,
