@@ -77,9 +77,9 @@ function PlaygroundApp() {
       settingsOpen,
       openSettings: () => setSettingsOpen(true),
       closeSettings: () => setSettingsOpen(false),
-      themeMode: 'dark',
+      themeMode: 'light',
       setThemeMode: () => {},
-      effectiveTheme: 'dark',
+      effectiveTheme: 'light',
       defaultBackend: 'codex',
       setDefaultBackend: () => {},
     }),
@@ -89,60 +89,100 @@ function PlaygroundApp() {
   return (
     <AppShellNavContext.Provider value={navContext}>
       <PluginProvider>
-        <div className="flex h-screen min-h-0 bg-[#0b0d10] text-zinc-100">
-          <aside className="hidden w-72 shrink-0 border-r border-white/10 bg-[#111418] lg:flex lg:flex-col">
-            <div className="border-b border-white/10 px-5 py-4">
-              <p className="text-xs font-medium uppercase tracking-[0.18em] text-cyan-300/80">
-                Thread UI
-              </p>
-              <h1 className="mt-2 text-lg font-semibold text-white">
-                GraphChat-style lab
-              </h1>
+        <div className="flex h-[100svh] min-h-0 overflow-hidden bg-[#f6f8fb] p-0 text-slate-900 sm:p-2">
+          <aside className="hidden w-[264px] shrink-0 flex-col overflow-hidden rounded-[12px] border border-slate-200/80 bg-white shadow-[0_10px_30px_rgba(15,23,42,0.04)] lg:flex">
+            <div className="flex h-16 shrink-0 items-center justify-between border-b border-slate-200 px-4">
+              <div className="flex min-w-0 items-center gap-3">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-slate-950 text-sm font-semibold text-white">
+                  G
+                </div>
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-semibold text-slate-900">
+                    GraphChat UI
+                  </p>
+                  <p className="truncate text-xs text-slate-400">
+                    Thread workspace
+                  </p>
+                </div>
+              </div>
+              <AppShellMenuButton />
+            </div>
+            <div className="flex h-[68px] shrink-0 items-center border-b border-slate-200 px-4">
+              <button
+                type="button"
+                className="inline-flex h-9 w-full items-center justify-center gap-2 rounded-xl bg-slate-950 px-3 text-sm font-medium text-white transition hover:bg-slate-800"
+                onClick={() => adapter.openThread('new-thread')}
+              >
+                <span aria-hidden="true">+</span>
+                New Chat
+              </button>
             </div>
             <div className="min-h-0 flex-1 overflow-y-auto px-3 py-3">
+              <div className="mb-3 flex items-center gap-2 px-2 text-xs font-medium text-slate-400">
+                <span className="h-1.5 w-1.5 rounded-full bg-slate-300" />
+                Rooms
+              </div>
               {mockThreads.map((thread) => (
                 <button
                   key={thread.id}
                   type="button"
-                  className="mb-2 w-full rounded-lg border border-white/10 bg-white/[0.03] px-3 py-3 text-left transition hover:border-cyan-300/40 hover:bg-cyan-300/10"
+                  className={`mb-1 flex w-full items-start gap-3 rounded-xl border px-3 py-3 text-left transition ${
+                    thread.id === mockDetail.thread.id
+                      ? 'border-slate-950 bg-slate-950 text-white shadow-[0_12px_30px_rgba(15,23,42,0.18)]'
+                      : 'border-transparent bg-slate-50 text-slate-700 hover:border-slate-200 hover:bg-white'
+                  }`}
                   onClick={() => adapter.openThread(thread.id)}
                 >
-                  <div className="flex items-center justify-between gap-3">
-                    <span className="truncate text-sm font-medium text-white">
+                  <span
+                    className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${
+                      thread.id === mockDetail.thread.id
+                        ? 'bg-white/15 text-white'
+                        : 'bg-white text-slate-500'
+                    }`}
+                  >
+                    #
+                  </span>
+                  <span className="min-w-0 flex-1">
+                    <span className="block truncate text-sm font-medium">
                       {thread.title}
                     </span>
-                    <span className="rounded-full bg-emerald-400/10 px-2 py-0.5 text-[11px] text-emerald-200">
-                      {thread.status}
+                    <span
+                      className={`mt-1 block truncate text-[11px] ${
+                        thread.id === mockDetail.thread.id
+                          ? 'text-slate-300'
+                          : 'text-slate-400'
+                      }`}
+                    >
+                      {thread.summaryText}
                     </span>
-                  </div>
-                  <p className="mt-1 line-clamp-2 text-xs leading-5 text-zinc-400">
-                    {thread.summaryText}
-                  </p>
+                  </span>
                 </button>
               ))}
             </div>
-            <div className="border-t border-white/10 px-4 py-3 text-xs text-zinc-500">
+            <div className="border-t border-slate-200 px-4 py-3 text-xs text-slate-400">
               Standalone package playground
             </div>
           </aside>
 
-          <main className="flex min-w-0 flex-1 flex-col">
-            <header className="flex h-14 shrink-0 items-center justify-between border-b border-white/10 bg-[#101317]/95 px-4 backdrop-blur">
-              <div className="flex items-center gap-3">
-                <AppShellMenuButton />
-                <div>
-                  <p className="text-sm font-medium text-white">
+          <main className="flex min-w-0 flex-1 flex-col overflow-hidden bg-white shadow-[0_10px_30px_rgba(15,23,42,0.04)] sm:rounded-[12px] sm:border sm:border-slate-200/80 lg:ml-2">
+            <header className="flex min-h-14 shrink-0 items-center justify-between border-b border-slate-200 bg-white px-3 py-2 sm:min-h-16 sm:px-5">
+              <div className="flex min-w-0 flex-1 items-center gap-3">
+                <div className="lg:hidden">
+                  <AppShellMenuButton />
+                </div>
+                <div className="min-w-0 space-y-1">
+                  <p className="truncate text-base font-semibold leading-none text-slate-900">
                     {mockDetail.thread.title}
                   </p>
-                  <p className="text-xs text-zinc-400">
-                    {mockDetail.workspace.label} / {mockDetail.thread.model}
+                  <p className="truncate text-xs text-slate-500">
+                    Room {mockDetail.workspace.id} / Session {mockDetail.thread.providerSessionId}
                   </p>
                 </div>
               </div>
               <div className="flex items-center gap-2">
                 <button
                   type="button"
-                  className="rounded-md border border-white/10 px-3 py-1.5 text-xs text-zinc-200 transition hover:bg-white/10"
+                  className="h-9 rounded-lg border border-slate-200 bg-white px-3 text-sm font-medium text-slate-700 shadow-none transition hover:bg-slate-50 hover:text-slate-900"
                   onClick={() =>
                     setActiveView((current) =>
                       current === 'chat' ? 'shell' : 'chat',
@@ -154,7 +194,7 @@ function PlaygroundApp() {
               </div>
             </header>
 
-            <div className="relative min-h-0 flex-1 overflow-hidden p-0 lg:p-4">
+            <div className="relative min-h-0 flex-1 overflow-hidden bg-white p-0 sm:p-2">
               <ThreadDetailSurface
                 threads={mockThreads}
                 detail={mockDetail}
@@ -197,21 +237,21 @@ function PlaygroundApp() {
                     'Shell adapter is not connected in playground',
                 }}
                 shellUnavailableContent={
-                  <div className="flex flex-1 items-center justify-center text-sm text-zinc-400">
+                  <div className="flex flex-1 items-center justify-center text-sm text-slate-500">
                     Shell is intentionally mocked out in this UI-only playground.
                   </div>
                 }
                 onShellStateChange={setShellState}
                 metaContent={
-                  <div className="space-y-2 text-xs text-zinc-400">
+                  <div className="space-y-2 text-xs text-slate-500">
                     <p>Runtime: {mockStatus.state}</p>
                     <p>Shell: {shellState?.status ?? 'mocked'}</p>
                   </div>
                 }
                 floatingPanel={
                   log.length ? (
-                    <div className="w-72 rounded-lg border border-white/10 bg-black/70 p-3 text-xs text-zinc-300 shadow-2xl backdrop-blur">
-                      <p className="mb-2 font-medium text-zinc-100">Adapter log</p>
+                    <div className="w-72 rounded-lg border border-slate-200 bg-white p-3 text-xs text-slate-600 shadow-lg">
+                      <p className="mb-2 font-medium text-slate-900">Adapter log</p>
                       {log.map((entry, index) => (
                         <p key={`${entry}-${index}`} className="truncate">
                           {entry}

@@ -1,12 +1,58 @@
 @import "tailwindcss";
+@source "../../../packages/thread-ui/src";
+@source "../../../packages/plugin-xyz-viewer/src";
+@source "../../../packages/plugin-terminal/src";
 
 :root {
-  color-scheme: dark;
+  color-scheme: light;
   font-family:
     Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
     sans-serif;
-  background: #0b0d10;
-  color: #f4f5f7;
+  --theme-bg: oklch(0.978 0.009 255);
+  --theme-panel: oklch(0.998 0.002 255);
+  --theme-surface: oklch(0.988 0.005 255);
+  --theme-surface-strong: oklch(0.958 0.011 255);
+  --theme-muted: oklch(0.94 0.012 255);
+  --theme-hover: oklch(0.948 0.013 255);
+  --theme-border: oklch(0.902 0.013 255);
+  --theme-border-strong: oklch(0.84 0.022 255);
+  --theme-border-contrast: oklch(0.43 0.022 255);
+  --theme-fg: oklch(0.22 0.024 255);
+  --theme-fg-soft: oklch(0.43 0.028 255);
+  --theme-fg-muted: oklch(0.57 0.026 255);
+  --theme-accent-solid: oklch(0.24 0.021 255);
+  --theme-accent-solid-hover: oklch(0.31 0.026 255);
+  --theme-accent-solid-fg: oklch(0.99 0.003 255);
+  --theme-accent-soft: oklch(0.94 0.029 214);
+  --theme-accent-strong: oklch(0.47 0.106 170);
+  --theme-accent-border: oklch(0.72 0.105 190);
+  --theme-shadow: 0 10px 30px oklch(0.22 0.024 255 / 0.06);
+  background: var(--theme-bg);
+  color: var(--theme-fg);
+}
+
+:root.dark,
+.dark {
+  color-scheme: dark;
+  --theme-bg: oklch(0.17 0.015 255);
+  --theme-panel: oklch(0.205 0.017 255);
+  --theme-surface: oklch(0.245 0.018 255);
+  --theme-surface-strong: oklch(0.275 0.02 255);
+  --theme-muted: oklch(0.31 0.02 255);
+  --theme-hover: oklch(0.32 0.021 255);
+  --theme-border: oklch(0.34 0.02 255);
+  --theme-border-strong: oklch(0.405 0.02 255);
+  --theme-border-contrast: oklch(0.68 0.025 255);
+  --theme-fg: oklch(0.965 0.004 255);
+  --theme-fg-soft: oklch(0.83 0.012 255);
+  --theme-fg-muted: oklch(0.65 0.018 255);
+  --theme-accent-solid: oklch(0.96 0.004 255);
+  --theme-accent-solid-hover: oklch(0.9 0.008 255);
+  --theme-accent-solid-fg: oklch(0.19 0.016 255);
+  --theme-accent-soft: oklch(0.29 0.035 204);
+  --theme-accent-strong: oklch(0.78 0.11 168);
+  --theme-accent-border: oklch(0.56 0.092 190);
+  --theme-shadow: 0 18px 40px oklch(0 0 0 / 0.28);
 }
 
 html,
@@ -23,3 +69,351 @@ select {
   font: inherit;
 }
 
+body {
+  min-width: 320px;
+  overflow: hidden;
+  background: var(--theme-bg);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+::selection {
+  background: oklch(0.76 0.115 190 / 0.28);
+}
+
+.thread-detail-surface,
+.thread-sidebar-surface,
+.thread-topbar-surface {
+  border-color: var(--theme-border);
+  background: var(--theme-panel);
+  color: var(--theme-fg);
+}
+
+.thread-detail-surface {
+  border-radius: 0;
+  box-shadow: var(--theme-shadow);
+}
+
+@media (min-width: 640px) {
+  .thread-detail-surface {
+    border-radius: 12px;
+  }
+}
+
+.thread-sidebar-surface {
+  border-radius: 12px;
+  box-shadow: var(--theme-shadow);
+}
+
+.thread-topbar-surface {
+  min-height: 3.5rem;
+  background: var(--theme-panel);
+}
+
+.thread-sidebar-card {
+  border-color: transparent;
+  background: var(--theme-surface-strong);
+  color: var(--theme-fg-soft);
+  box-shadow: none;
+}
+
+.thread-sidebar-card:hover {
+  border-color: var(--theme-border);
+  background: var(--theme-panel);
+  color: var(--theme-fg);
+}
+
+.thread-sidebar-card-active {
+  border-color: var(--theme-accent-solid);
+  background: var(--theme-accent-solid);
+  color: var(--theme-accent-solid-fg);
+  box-shadow: 0 12px 30px oklch(0.22 0.024 255 / 0.18);
+}
+
+.thread-sidebar-card-active p,
+.thread-sidebar-card-active span,
+.thread-sidebar-card-active button {
+  color: inherit;
+}
+
+.thread-timeline-surface {
+  background: var(--theme-surface);
+}
+
+.thread-timeline-surface [data-radix-scroll-area-viewport],
+.thread-timeline-surface {
+  scrollbar-color: var(--theme-border-strong) transparent;
+}
+
+.timeline-item-frame {
+  border-color: var(--theme-border);
+  background: var(--theme-panel);
+  color: var(--theme-fg);
+  box-shadow: none;
+}
+
+.timeline-agent {
+  border-color: transparent;
+  background: transparent;
+  box-shadow: none;
+}
+
+.timeline-user {
+  border-color: transparent;
+  background: oklch(0.94 0.025 214);
+  color: oklch(0.24 0.027 255);
+}
+
+.dark .timeline-user {
+  background: oklch(0.29 0.034 224);
+  color: var(--theme-fg);
+}
+
+.timeline-command,
+.timeline-agent-tool,
+.timeline-skill-tool,
+.timeline-action,
+.timeline-file-change,
+.timeline-file-read,
+.timeline-search,
+.timeline-plan,
+.timeline-reasoning,
+.timeline-other {
+  background: var(--theme-panel);
+  border-color: var(--theme-border);
+}
+
+.timeline-kind-agent,
+.timeline-kind-user,
+.timeline-kind-command,
+.timeline-kind-search,
+.timeline-kind-file-read,
+.timeline-kind-reasoning,
+.timeline-kind-agent-tool,
+.timeline-kind-skill-tool,
+.timeline-kind-action,
+.timeline-kind-plan,
+.timeline-kind-file {
+  border-left-width: 1px;
+}
+
+.timeline-primary-text,
+.timeline-message-content,
+.timeline-mobile-bubble-content,
+.thread-message-prose,
+.thread-message-prose :where(p, li, span, div, strong, em, code) {
+  color: var(--theme-fg);
+}
+
+.timeline-user .thread-message-prose,
+.timeline-user .thread-message-prose :where(p, li, span, div, strong, em, code) {
+  color: oklch(0.24 0.027 255);
+}
+
+.timeline-agent .thread-message-prose,
+.timeline-agent .thread-message-prose :where(p, li, span, div, strong, em, code) {
+  color: var(--theme-fg);
+}
+
+.timeline-soft-text,
+.thread-message-prose :where(blockquote) {
+  color: var(--theme-fg-soft);
+}
+
+.timeline-meta-text,
+.thread-message-prose :where(figcaption) {
+  color: var(--theme-fg-muted);
+}
+
+.timeline-overlay-badge,
+.ui-status-neutral,
+.ui-status-info,
+.ui-status-warning,
+.ui-status-success,
+.ui-status-danger {
+  border-color: transparent;
+  box-shadow: none;
+}
+
+.ui-status-neutral {
+  background: var(--theme-muted);
+  color: var(--theme-fg-soft);
+}
+
+.ui-status-info {
+  background: oklch(0.94 0.03 235);
+  color: oklch(0.43 0.09 242);
+}
+
+.ui-status-warning {
+  background: oklch(0.94 0.048 84);
+  color: oklch(0.46 0.08 75);
+}
+
+.ui-status-success {
+  background: oklch(0.94 0.052 155);
+  color: oklch(0.43 0.095 155);
+}
+
+.ui-status-danger {
+  background: oklch(0.94 0.04 25);
+  color: oklch(0.48 0.125 24);
+}
+
+.dark .ui-status-info {
+  background: oklch(0.3 0.042 235);
+  color: oklch(0.77 0.1 235);
+}
+
+.dark .ui-status-warning {
+  background: oklch(0.31 0.045 75);
+  color: oklch(0.83 0.11 80);
+}
+
+.dark .ui-status-success {
+  background: oklch(0.31 0.05 155);
+  color: oklch(0.8 0.115 155);
+}
+
+.dark .ui-status-danger {
+  background: oklch(0.31 0.052 25);
+  color: oklch(0.78 0.12 25);
+}
+
+.thread-message-icon-user,
+.thread-message-icon-agent {
+  border-color: transparent;
+  background: var(--theme-muted);
+  color: var(--theme-fg-muted);
+}
+
+.timeline-attached-reasoning-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: var(--theme-fg-muted);
+}
+
+.timeline-attached-reasoning-body {
+  border: 1px solid var(--theme-border);
+  background: var(--theme-surface-strong);
+  color: var(--theme-fg-soft);
+}
+
+.timeline-corner-copy-visual {
+  border-color: var(--theme-border);
+  background: color-mix(in oklch, var(--theme-panel) 88%, transparent);
+  color: var(--theme-fg-muted);
+}
+
+.thread-composer-toolbar,
+.thread-composer-input,
+.thread-composer-menu {
+  border-color: var(--theme-border);
+  background: var(--theme-panel);
+  color: var(--theme-fg);
+}
+
+.thread-composer-toolbar {
+  border-radius: 0.75rem;
+  box-shadow: none;
+}
+
+.thread-composer-input {
+  border-radius: 12px;
+  box-shadow: none;
+}
+
+.thread-composer-input:focus-within {
+  border-color: var(--theme-accent-border);
+  box-shadow: 0 0 0 3px oklch(0.72 0.105 190 / 0.18);
+}
+
+.thread-composer-input [contenteditable],
+.thread-composer-input textarea {
+  color: var(--theme-fg);
+}
+
+.thread-composer-icon-button,
+.thread-composer-inline-toggle,
+.thread-composer-chip-button,
+.thread-composer-menu-item,
+.thread-composer-panel-button {
+  border-color: transparent;
+  background: transparent;
+  color: var(--theme-fg-soft);
+}
+
+.thread-composer-icon-button:hover,
+.thread-composer-inline-toggle:hover,
+.thread-composer-chip-button:hover,
+.thread-composer-menu-item:hover,
+.thread-composer-panel-button:hover {
+  background: var(--theme-hover);
+  color: var(--theme-fg);
+}
+
+.thread-composer-menu {
+  border-radius: 12px;
+  box-shadow: 0 16px 38px oklch(0.22 0.024 255 / 0.16);
+}
+
+.thread-composer-plan-toggle-active {
+  background: var(--theme-accent-soft);
+  color: var(--theme-accent-strong);
+}
+
+.thread-jump-latest-badge {
+  border-color: var(--theme-border);
+  background: var(--theme-panel);
+  color: var(--theme-fg-muted);
+}
+
+.ui-action-primary {
+  background: var(--theme-accent-solid);
+  color: var(--theme-accent-solid-fg);
+}
+
+.ui-action-primary:hover {
+  background: var(--theme-accent-solid-hover);
+}
+
+.ui-action-info {
+  background: oklch(0.46 0.1 235);
+  color: oklch(0.98 0.005 235);
+}
+
+.ui-action-danger {
+  background: oklch(0.56 0.16 25);
+  color: oklch(0.98 0.005 25);
+}
+
+.thread-empty-surface,
+.timeline-pending-card,
+.timeline-note-card,
+.timeline-activity-card,
+.timeline-live-plan-card,
+.timeline-question-section,
+.timeline-live-plan-step,
+.timeline-detail-row {
+  border-color: var(--theme-border);
+  background: var(--theme-panel);
+  color: var(--theme-fg);
+}
+
+.prose,
+.prose :where(p, li, strong, code, pre, blockquote) {
+  color: inherit;
+}
+
+.prose img {
+  max-width: min(28rem, 100%);
+  height: auto;
+  border-radius: 10px;
+  border: 1px solid var(--theme-border);
+  box-shadow: 0 12px 35px oklch(0.22 0.024 255 / 0.14);
+  margin-top: 0.75rem;
+  margin-bottom: 0.75rem;
+}

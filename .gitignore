@@ -5,8 +5,9 @@ dist/
 coverage/
 playwright-report/
 test-results/
+_reference/
+output/
 *.tsbuildinfo
 pnpm-debug.log*
 package-lock.json
 yarn.lock
-
