@@ -2,8 +2,8 @@ import { useMemo, useState } from 'react';
 
 import {
   type MoleculeViewerSnapshot,
+  XyzMoleculeViewer,
 } from '@remote-codex/plugin-xyz-viewer';
-import { XyzMoleculeViewer } from '@remote-codex/plugin-xyz-viewer/frontend';
 import '@remote-codex/plugin-xyz-viewer/styles.css';
 import { looksLikeMoleculeStructure } from '@remote-codex/plugin-runtime';
 import type {

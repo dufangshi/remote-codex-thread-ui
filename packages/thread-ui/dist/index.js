@@ -3826,7 +3826,9 @@ import { terminalPluginManifest } from "@remote-codex/plugin-terminal";
 
 // src/plugins/xyz-plugin-renderers.tsx
 import { useMemo as useMemo3, useState as useState3 } from "react";
-import { XyzMoleculeViewer } from "@remote-codex/plugin-xyz-viewer/frontend";
+import {
+  XyzMoleculeViewer
+} from "@remote-codex/plugin-xyz-viewer";
 import "@remote-codex/plugin-xyz-viewer/styles.css";
 import { looksLikeMoleculeStructure } from "@remote-codex/plugin-runtime";
 import { jsx as jsx5, jsxs as jsxs5 } from "react/jsx-runtime";

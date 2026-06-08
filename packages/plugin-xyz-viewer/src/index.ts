@@ -12,3 +12,9 @@ export {
   type MoleculeViewerSnapshot,
   type MoleculeViewerSource,
 } from './moleculeViewerData';
+export {
+  XyzMoleculeViewer,
+  type XyzMoleculeViewerProps,
+  type MoleculeAtomSelection,
+  type MoleculeScreenshot,
+} from './XyzMoleculeViewer';
