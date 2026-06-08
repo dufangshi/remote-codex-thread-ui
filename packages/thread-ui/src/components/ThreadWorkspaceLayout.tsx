@@ -551,6 +551,22 @@ export function ThreadWorkspaceLayout({
   function renderSidebarContent() {
     return (
       <div className="space-y-4">
+        {appMenuButton ? (
+          <section className="hidden lg:block">
+            <div className="relative flex items-center justify-between gap-3">
+              <p className="text-xs font-medium uppercase tracking-[0.24em] text-[var(--theme-fg-muted)]">
+                Workspace
+              </p>
+              <div>{appMenuButton}</div>
+              {appNavigationMenu ? (
+                <div className="absolute right-0 top-[calc(100%+0.45rem)] z-50 w-[min(18rem,calc(100vw-1rem))]">
+                  {appNavigationMenu}
+                </div>
+              ) : null}
+            </div>
+          </section>
+        ) : null}
+
         <section>
           <div className="mb-3 flex items-center justify-between gap-3">
             <p className="flex items-center gap-2 text-xs font-medium text-[var(--theme-fg-muted)]">

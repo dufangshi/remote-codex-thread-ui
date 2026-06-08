@@ -3628,6 +3628,11 @@ function ThreadWorkspaceLayout({
   }
   function renderSidebarContent() {
     return /* @__PURE__ */ jsxs3("div", { className: "space-y-4", children: [
+      appMenuButton ? /* @__PURE__ */ jsx3("section", { className: "hidden lg:block", children: /* @__PURE__ */ jsxs3("div", { className: "relative flex items-center justify-between gap-3", children: [
+        /* @__PURE__ */ jsx3("p", { className: "text-xs font-medium uppercase tracking-[0.24em] text-[var(--theme-fg-muted)]", children: "Workspace" }),
+        /* @__PURE__ */ jsx3("div", { children: appMenuButton }),
+        appNavigationMenu ? /* @__PURE__ */ jsx3("div", { className: "absolute right-0 top-[calc(100%+0.45rem)] z-50 w-[min(18rem,calc(100vw-1rem))]", children: appNavigationMenu }) : null
+      ] }) }) : null,
       /* @__PURE__ */ jsxs3("section", { children: [
         /* @__PURE__ */ jsxs3("div", { className: "mb-3 flex items-center justify-between gap-3", children: [
           /* @__PURE__ */ jsxs3("p", { className: "flex items-center gap-2 text-xs font-medium text-[var(--theme-fg-muted)]", children: [
