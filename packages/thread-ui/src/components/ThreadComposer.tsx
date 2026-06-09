@@ -2333,10 +2333,12 @@ export function ThreadComposer({
         token.dataset.clientId = attachment.clientId;
         token.dataset.placeholder = attachment.placeholder;
         token.contentEditable = 'false';
-        token.className = 'mx-[0.12rem] inline-flex max-w-full align-baseline';
+        token.className =
+          'thread-composer-attachment-chip mx-[0.12rem] inline-flex max-w-full align-baseline';
 
         if (attachment.kind === 'photo') {
           token.classList.add(
+            'thread-composer-attachment-chip-photo',
             'rounded-[0.95rem]',
             'border',
             'border-sky-300/35',
@@ -2352,20 +2354,20 @@ export function ThreadComposer({
             image.src = previewUrl;
             image.alt = attachment.originalName || 'Pasted image';
             image.className =
-              'h-[4.5rem] w-[6rem] rounded-[0.7rem] bg-stone-950 object-contain';
+              'thread-composer-attachment-thumb h-[4.5rem] w-[6rem] rounded-[0.7rem] bg-stone-950 object-contain';
             image.draggable = false;
             token.append(image);
           } else {
             const imagePlaceholder = document.createElement('span');
             imagePlaceholder.className =
-              'inline-block h-[4.5rem] w-[6rem] rounded-[0.7rem] bg-stone-900/80';
+              'thread-composer-attachment-thumb inline-block h-[4.5rem] w-[6rem] rounded-[0.7rem] bg-stone-900/80';
             imagePlaceholder.setAttribute('aria-hidden', 'true');
             token.append(imagePlaceholder);
           }
 
           const caption = document.createElement('span');
           caption.className =
-            'ml-2 inline-flex max-w-[8rem] items-center text-[10px] font-medium tracking-[0.08em] text-sky-50';
+            'thread-composer-attachment-caption ml-2 inline-flex max-w-[8rem] items-center text-[10px] font-medium tracking-[0.08em] text-sky-50';
           caption.textContent = attachmentDisplayLabel(attachment);
 
           token.append(caption);

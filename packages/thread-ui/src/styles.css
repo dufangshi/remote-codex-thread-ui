@@ -772,22 +772,23 @@
 
 .thread-ui-shell
   :where(.text-stone-100, .text-stone-200, .text-stone-300) {
-  color: var(--theme-fg);
+  color: var(--theme-fg) !important;
 }
 
 .thread-ui-shell
   :where(.text-stone-400, .text-stone-500, .text-stone-600) {
-  color: var(--theme-fg-muted);
+  color: var(--theme-fg-muted) !important;
 }
 
 .thread-ui-shell
   :where(
     .border-stone-600,
     .border-stone-700,
+    .border-stone-700\/90,
     .border-stone-800,
     .border-stone-800\/80
   ) {
-  border-color: var(--theme-border);
+  border-color: var(--theme-border) !important;
 }
 
 .thread-ui-shell
@@ -797,13 +798,14 @@
     .bg-stone-800\/80,
     .bg-stone-900,
     .bg-stone-900\/60,
+    .bg-stone-900\/70,
     .bg-stone-900\/72,
     .bg-stone-900\/80,
     .bg-stone-950,
     .bg-stone-950\/70,
     .bg-stone-950\/90
   ) {
-  background: var(--theme-surface-strong);
+  background: var(--theme-surface-strong) !important;
 }
 
 .thread-ui-shell[data-theme-effective="light"]
@@ -3680,6 +3682,75 @@
   overflow-y: auto;
   background: transparent;
   color: inherit;
+}
+
+.thread-ui-shell .thread-graph-composer-input .thread-composer-attachment-chip,
+.thread-ui-shell .thread-composer-input .thread-composer-attachment-chip {
+  box-sizing: border-box;
+  flex: 0 0 auto;
+  width: max-content !important;
+  max-width: min(100%, 7.25rem) !important;
+  vertical-align: middle;
+}
+
+.thread-ui-shell .thread-graph-composer-input .thread-composer-attachment-chip-photo,
+.thread-ui-shell .thread-composer-input .thread-composer-attachment-chip-photo {
+  display: inline-flex !important;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.25rem;
+  padding: 0.35rem !important;
+}
+
+.thread-ui-shell .thread-graph-composer-input .thread-composer-attachment-thumb,
+.thread-ui-shell .thread-composer-input .thread-composer-attachment-thumb {
+  display: block;
+  width: 5.75rem !important;
+  height: 3.75rem !important;
+  max-width: 100%;
+  border-radius: 0.6rem !important;
+  object-fit: cover;
+}
+
+.thread-ui-shell .thread-graph-composer-input .thread-composer-attachment-caption,
+.thread-ui-shell .thread-composer-input .thread-composer-attachment-caption {
+  display: block !important;
+  width: 100%;
+  max-width: 5.75rem !important;
+  margin-left: 0 !important;
+  overflow: hidden;
+  color: rgb(3 105 161);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.thread-ui-shell.thread-ui-theme-dark
+  .thread-graph-composer-input
+  .thread-composer-attachment-caption,
+.thread-ui-shell[data-theme-effective="dark"]
+  .thread-graph-composer-input
+  .thread-composer-attachment-caption,
+:root[data-theme-effective="dark"]
+  .thread-ui-shell
+  .thread-graph-composer-input
+  .thread-composer-attachment-caption,
+.thread-ui-shell.dark
+  .thread-graph-composer-input
+  .thread-composer-attachment-caption,
+.thread-ui-shell.thread-ui-theme-dark
+  .thread-composer-input
+  .thread-composer-attachment-caption,
+.thread-ui-shell[data-theme-effective="dark"]
+  .thread-composer-input
+  .thread-composer-attachment-caption,
+:root[data-theme-effective="dark"]
+  .thread-ui-shell
+  .thread-composer-input
+  .thread-composer-attachment-caption,
+.thread-ui-shell.dark
+  .thread-composer-input
+  .thread-composer-attachment-caption {
+  color: rgb(125 211 252);
 }
 
 .thread-ui-shell .thread-graph-composer-toolbar {
