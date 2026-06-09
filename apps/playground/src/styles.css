@@ -20,8 +20,8 @@ select {
 body {
   min-width: 320px;
   overflow: hidden;
-  background: var(--theme-bg);
-  color: var(--theme-fg);
+  background: oklch(0.978 0.009 255);
+  color: oklch(0.22 0.024 255);
 }
 
 * {
