@@ -96,6 +96,7 @@
 
 .thread-ui-shell.thread-ui-theme-dark,
 .thread-ui-shell[data-theme-effective="dark"],
+:root[data-theme-effective="dark"] .thread-ui-shell,
 .thread-ui-shell.dark,
 .thread-ui-shell[data-theme="dark"],
 .thread-ui-shell[data-theme-mode="dark"],
@@ -178,9 +179,11 @@
 
 .thread-ui-shell.thread-ui-theme-dark .thread-graph-rooms-surface,
 .thread-ui-shell[data-theme-effective="dark"] .thread-graph-rooms-surface,
+:root[data-theme-effective="dark"] .thread-ui-shell .thread-graph-rooms-surface,
 .thread-ui-shell.dark .thread-graph-rooms-surface,
 .thread-ui-shell.thread-ui-theme-dark .thread-topbar-surface,
 .thread-ui-shell[data-theme-effective="dark"] .thread-topbar-surface,
+:root[data-theme-effective="dark"] .thread-ui-shell .thread-topbar-surface,
 .thread-ui-shell.dark .thread-topbar-surface {
   border-color: #2a2f3a;
   background: #171a22;
@@ -189,7 +192,9 @@
 }
 
 .thread-ui-shell[data-theme-effective="light"] .thread-graph-rooms-surface,
-.thread-ui-shell[data-theme-effective="light"] .thread-topbar-surface {
+:root[data-theme-effective="light"] .thread-ui-shell .thread-graph-rooms-surface,
+.thread-ui-shell[data-theme-effective="light"] .thread-topbar-surface,
+:root[data-theme-effective="light"] .thread-ui-shell .thread-topbar-surface {
   border-color: rgb(226 232 240 / 0.8);
   background: rgb(255 255 255);
   color: rgb(15 23 42);
@@ -197,6 +202,7 @@
 }
 
 .thread-ui-shell[data-theme-effective="dark"] .thread-mobile-scrim,
+:root[data-theme-effective="dark"] .thread-ui-shell .thread-mobile-scrim,
 .thread-ui-shell.thread-ui-theme-dark .thread-mobile-scrim,
 .thread-ui-shell.dark .thread-mobile-scrim {
   background: rgb(0 0 0 / 0.55);
@@ -212,6 +218,7 @@
 .thread-ui-shell .thread-rooms-rail {
   transform: none;
   translate: -100% 0;
+  overflow-x: hidden;
 }
 
 .thread-ui-shell .thread-rooms-rail.translate-x-0 {
@@ -761,6 +768,255 @@
 
 .thread-ui-shell .thread-graph-turn-time {
   color: var(--theme-fg-muted);
+}
+
+.thread-ui-shell
+  :where(.text-stone-100, .text-stone-200, .text-stone-300) {
+  color: var(--theme-fg);
+}
+
+.thread-ui-shell
+  :where(.text-stone-400, .text-stone-500, .text-stone-600) {
+  color: var(--theme-fg-muted);
+}
+
+.thread-ui-shell
+  :where(
+    .border-stone-600,
+    .border-stone-700,
+    .border-stone-800,
+    .border-stone-800\/80
+  ) {
+  border-color: var(--theme-border);
+}
+
+.thread-ui-shell
+  :where(
+    .bg-stone-800,
+    .bg-stone-800\/60,
+    .bg-stone-800\/80,
+    .bg-stone-900,
+    .bg-stone-900\/60,
+    .bg-stone-900\/72,
+    .bg-stone-900\/80,
+    .bg-stone-950,
+    .bg-stone-950\/70,
+    .bg-stone-950\/90
+  ) {
+  background: var(--theme-surface-strong);
+}
+
+.thread-ui-shell[data-theme-effective="light"]
+  :where(.text-sky-100, .text-sky-50),
+:root[data-theme-effective="light"] .thread-ui-shell
+  :where(.text-sky-100, .text-sky-50) {
+  color: rgb(3 105 161);
+}
+
+.thread-ui-shell[data-theme-effective="light"]
+  :where(.text-emerald-100, .text-emerald-50),
+:root[data-theme-effective="light"] .thread-ui-shell
+  :where(.text-emerald-100, .text-emerald-50) {
+  color: rgb(21 128 61);
+}
+
+.thread-ui-shell[data-theme-effective="light"]
+  :where(.text-rose-100, .text-rose-50),
+:root[data-theme-effective="light"] .thread-ui-shell
+  :where(.text-rose-100, .text-rose-50) {
+  color: rgb(190 24 93);
+}
+
+.thread-ui-shell[data-theme-effective="light"]
+  :where(.text-amber-100, .text-amber-50, .text-amber-200),
+:root[data-theme-effective="light"] .thread-ui-shell
+  :where(.text-amber-100, .text-amber-50, .text-amber-200) {
+  color: rgb(120 53 15);
+}
+
+.thread-ui-shell[data-theme-effective="light"] .text-fuchsia-100,
+:root[data-theme-effective="light"] .thread-ui-shell .text-fuchsia-100 {
+  color: rgb(162 28 175);
+}
+
+.thread-ui-shell[data-theme-effective="light"] .text-violet-100,
+:root[data-theme-effective="light"] .thread-ui-shell .text-violet-100 {
+  color: rgb(109 40 217);
+}
+
+.thread-ui-shell[data-theme-effective="light"] .text-lime-100,
+:root[data-theme-effective="light"] .thread-ui-shell .text-lime-100 {
+  color: rgb(77 124 15);
+}
+
+.thread-ui-shell[data-theme-effective="light"]
+  :where(
+    .bg-sky-300\/10,
+    .bg-sky-300\/15,
+    .bg-emerald-300\/10,
+    .bg-emerald-300\/15,
+    .bg-amber-300\/10,
+    .bg-amber-300\/15,
+    .bg-rose-300\/10,
+    .bg-rose-300\/15,
+    .bg-fuchsia-300\/10,
+    .bg-fuchsia-300\/15,
+    .bg-violet-300\/10,
+    .bg-violet-300\/15,
+    .bg-lime-300\/10,
+    .bg-lime-300\/15
+  ),
+:root[data-theme-effective="light"] .thread-ui-shell
+  :where(
+    .bg-sky-300\/10,
+    .bg-sky-300\/15,
+    .bg-emerald-300\/10,
+    .bg-emerald-300\/15,
+    .bg-amber-300\/10,
+    .bg-amber-300\/15,
+    .bg-rose-300\/10,
+    .bg-rose-300\/15,
+    .bg-fuchsia-300\/10,
+    .bg-fuchsia-300\/15,
+    .bg-violet-300\/10,
+    .bg-violet-300\/15,
+    .bg-lime-300\/10,
+    .bg-lime-300\/15
+  ) {
+  filter: saturate(0.72) brightness(0.97);
+}
+
+.thread-ui-shell .thread-token-popover {
+  border-color: var(--theme-border);
+  background: var(--theme-panel);
+  color: var(--theme-fg);
+}
+
+.thread-ui-shell .thread-token-popover-row {
+  border-color: var(--theme-border);
+  background: var(--theme-surface);
+}
+
+.thread-ui-shell .thread-token-popover-text {
+  color: var(--theme-fg-soft);
+}
+
+.thread-ui-shell .thread-token-popover-strong {
+  color: var(--theme-fg);
+}
+
+.thread-ui-shell .token-badge-in {
+  border-color: rgb(22 101 52 / 0.32);
+  background: rgb(220 252 231 / 0.72);
+  color: rgb(20 83 45);
+}
+
+.thread-ui-shell .token-badge-cache {
+  border-color: rgb(3 105 161 / 0.32);
+  background: rgb(224 242 254 / 0.76);
+  color: rgb(7 89 133);
+}
+
+.thread-ui-shell .token-badge-out {
+  border-color: rgb(109 40 217 / 0.28);
+  background: rgb(237 233 254 / 0.76);
+  color: rgb(91 33 182);
+}
+
+.thread-ui-shell .token-badge-reason {
+  border-color: rgb(146 64 14 / 0.28);
+  background: rgb(254 243 199 / 0.72);
+  color: rgb(120 53 15);
+}
+
+.thread-ui-shell .token-badge-total {
+  border-color: rgb(77 124 15 / 0.3);
+  background: rgb(236 252 203 / 0.72);
+  color: rgb(63 98 18);
+}
+
+.thread-ui-shell .token-badge-empty {
+  border-color: var(--theme-border-strong);
+  background: var(--theme-surface);
+  color: var(--theme-fg-soft);
+}
+
+.thread-ui-shell .thread-token-badge-value {
+  color: currentColor;
+}
+
+.thread-ui-shell[data-theme-effective="dark"] .thread-token-popover,
+:root[data-theme-effective="dark"] .thread-ui-shell .thread-token-popover,
+.thread-ui-shell.thread-ui-theme-dark .thread-token-popover,
+.thread-ui-shell.dark .thread-token-popover {
+  border-color: #303642;
+  background: #171a22;
+}
+
+.thread-ui-shell[data-theme-effective="dark"] .thread-token-popover-row,
+:root[data-theme-effective="dark"] .thread-ui-shell .thread-token-popover-row,
+.thread-ui-shell.thread-ui-theme-dark .thread-token-popover-row,
+.thread-ui-shell.dark .thread-token-popover-row {
+  border-color: #303642;
+  background: #1d222c;
+}
+
+.thread-ui-shell[data-theme-effective="dark"] .token-badge-in,
+.thread-ui-shell[data-theme-effective="dark"] .token-badge-cache,
+.thread-ui-shell[data-theme-effective="dark"] .token-badge-out,
+.thread-ui-shell[data-theme-effective="dark"] .token-badge-reason,
+.thread-ui-shell[data-theme-effective="dark"] .token-badge-total,
+:root[data-theme-effective="dark"] .thread-ui-shell .token-badge-in,
+:root[data-theme-effective="dark"] .thread-ui-shell .token-badge-cache,
+:root[data-theme-effective="dark"] .thread-ui-shell .token-badge-out,
+:root[data-theme-effective="dark"] .thread-ui-shell .token-badge-reason,
+:root[data-theme-effective="dark"] .thread-ui-shell .token-badge-total,
+.thread-ui-shell.thread-ui-theme-dark .token-badge-in,
+.thread-ui-shell.thread-ui-theme-dark .token-badge-cache,
+.thread-ui-shell.thread-ui-theme-dark .token-badge-out,
+.thread-ui-shell.thread-ui-theme-dark .token-badge-reason,
+.thread-ui-shell.thread-ui-theme-dark .token-badge-total,
+.thread-ui-shell.dark .token-badge-in,
+.thread-ui-shell.dark .token-badge-cache,
+.thread-ui-shell.dark .token-badge-out,
+.thread-ui-shell.dark .token-badge-reason,
+.thread-ui-shell.dark .token-badge-total {
+  background-color: color-mix(in oklch, currentColor 12%, transparent);
+}
+
+.thread-ui-shell[data-theme-effective="dark"] .token-badge-in,
+:root[data-theme-effective="dark"] .thread-ui-shell .token-badge-in,
+.thread-ui-shell.thread-ui-theme-dark .token-badge-in,
+.thread-ui-shell.dark .token-badge-in {
+  color: rgb(134 239 172);
+}
+
+.thread-ui-shell[data-theme-effective="dark"] .token-badge-cache,
+:root[data-theme-effective="dark"] .thread-ui-shell .token-badge-cache,
+.thread-ui-shell.thread-ui-theme-dark .token-badge-cache,
+.thread-ui-shell.dark .token-badge-cache {
+  color: rgb(125 211 252);
+}
+
+.thread-ui-shell[data-theme-effective="dark"] .token-badge-out,
+:root[data-theme-effective="dark"] .thread-ui-shell .token-badge-out,
+.thread-ui-shell.thread-ui-theme-dark .token-badge-out,
+.thread-ui-shell.dark .token-badge-out {
+  color: rgb(196 181 253);
+}
+
+.thread-ui-shell[data-theme-effective="dark"] .token-badge-reason,
+:root[data-theme-effective="dark"] .thread-ui-shell .token-badge-reason,
+.thread-ui-shell.thread-ui-theme-dark .token-badge-reason,
+.thread-ui-shell.dark .token-badge-reason {
+  color: rgb(252 211 77);
+}
+
+.thread-ui-shell[data-theme-effective="dark"] .token-badge-total,
+:root[data-theme-effective="dark"] .thread-ui-shell .token-badge-total,
+.thread-ui-shell.thread-ui-theme-dark .token-badge-total,
+.thread-ui-shell.dark .token-badge-total {
+  color: rgb(190 242 100);
 }
 
 .thread-ui-shell .thread-graph-event,
@@ -2881,6 +3137,19 @@
 .thread-ui-shell .thread-graph-message-markdown {
   color: inherit;
   word-break: break-word;
+}
+
+.thread-ui-shell .thread-graph-show-more {
+  min-height: 1.25rem;
+  border-color: var(--theme-border);
+  background: color-mix(in oklch, var(--theme-panel) 72%, transparent);
+  color: var(--theme-fg-muted);
+}
+
+.thread-ui-shell .thread-graph-show-more:hover,
+.thread-ui-shell .thread-graph-show-more:focus-visible {
+  background: var(--theme-hover);
+  color: var(--theme-fg);
 }
 
 .thread-ui-shell

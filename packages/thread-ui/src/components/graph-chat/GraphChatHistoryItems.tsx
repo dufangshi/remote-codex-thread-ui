@@ -556,9 +556,11 @@ function GraphChatHistoryToolFrame({
 export const GraphChatPlanHistoryItem = memo(function GraphChatPlanHistoryItem({
   item,
   scrollRootRef,
+  onBeforeResize,
 }: {
   item: ThreadHistoryItemDto & { kind: 'plan' };
   scrollRootRef: RefObject<HTMLDivElement | null>;
+  onBeforeResize?: () => void;
 }) {
   return (
     <GraphChatHistoryEventFrame
@@ -574,6 +576,7 @@ export const GraphChatPlanHistoryItem = memo(function GraphChatPlanHistoryItem({
           scrollRootRef={scrollRootRef}
           plainTextClassName="thread-graph-plain-text whitespace-pre-wrap break-words text-sm leading-6"
           markdownClassName="thread-graph-markdown text-sm"
+          {...(onBeforeResize ? { onBeforeResize } : {})}
         />
       </div>
     </GraphChatHistoryEventFrame>

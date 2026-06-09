@@ -1483,7 +1483,7 @@ function TurnTokenSummary({ turn }: { turn: TimelineTurn }) {
             title={`${detail.label}: ${detail.usdCompactValue}, ${detail.tokenRawValue} tokens`}
           >
             {detail.icon}
-            <span className="font-medium text-stone-100">{detail.tokenCompactValue}</span>
+            <span className="thread-token-badge-value font-medium">{detail.tokenCompactValue}</span>
           </span>
         ))}
       </div>
@@ -1514,6 +1514,36 @@ function TurnTokenSummary({ turn }: { turn: TimelineTurn }) {
   );
 }
 
+function inferTurnStartedAtFromItems(items: ThreadHistoryItemDto[]) {
+  const createdAt = items
+    .map((item) => {
+      const value = (item as ThreadHistoryItemDto & { createdAt?: unknown }).createdAt;
+      return typeof value === 'string' && value.trim() ? value : null;
+    })
+    .filter((value): value is string => Boolean(value))
+    .sort();
+
+  return createdAt[0] ?? null;
+}
+
+function buildSyntheticLiveTurn(
+  turnId: string,
+  items: ThreadHistoryItemDto[],
+): TimelineTurn {
+  return {
+    id: turnId,
+    startedAt: inferTurnStartedAtFromItems(items),
+    status: 'inProgress',
+    error: null,
+    model: null,
+    reasoningEffort: null,
+    reasoningEffortAvailable: null,
+    tokenUsage: null,
+    priceEstimate: null,
+    items: [],
+  };
+}
+
 function formatTurnRuntimeSummary(turn: TimelineTurn) {
   const modelLabel = turn.model?.trim() ? turn.model.trim() : '--';
   let reasoningLabel = '--';
@@ -1538,6 +1568,7 @@ const HistoryItemRow = memo(function HistoryItemRow({
   onOpenToolCallDetail,
   onOpenDeferredHistoryItemDetail,
   onSelectArtifact,
+  onBeforeMessageResize,
   adapter,
   timeLabel,
   timeTitle,
@@ -1566,6 +1597,7 @@ const HistoryItemRow = memo(function HistoryItemRow({
     errorText: string,
   ) => void;
   onSelectArtifact?: ThreadTimelineProps['onSelectArtifact'];
+  onBeforeMessageResize?: () => void;
   adapter?: ThreadTimelineAdapter | undefined;
 }) {
   if (isCompactChatItem(item.kind)) {
@@ -1580,6 +1612,7 @@ const HistoryItemRow = memo(function HistoryItemRow({
         scrollRootRef={scrollRootRef}
         timeLabel={timeLabel}
         timeTitle={timeTitle}
+        {...(onBeforeMessageResize ? { onBeforeMessageResize } : {})}
         {...(adapter ? { adapter } : {})}
       />
     );
@@ -1721,6 +1754,9 @@ const HistoryItemRow = memo(function HistoryItemRow({
           }
         }
         scrollRootRef={scrollRootRef}
+        {...(onBeforeMessageResize
+          ? { onBeforeResize: onBeforeMessageResize }
+          : {})}
       />
     );
   }
@@ -2174,6 +2210,7 @@ const ThreadTurnRow = memo(function ThreadTurnRow({
   onOpenToolCallDetail,
   onOpenDeferredHistoryItemDetail,
   onSelectArtifact,
+  onBeforeMessageResize,
   scrollRootRef,
   articleRef,
   isLatestVisibleTurn = false,
@@ -2213,6 +2250,7 @@ const ThreadTurnRow = memo(function ThreadTurnRow({
     errorText: string,
   ) => void;
   onSelectArtifact?: ThreadTimelineProps['onSelectArtifact'];
+  onBeforeMessageResize?: () => void;
   scrollRootRef: RefObject<HTMLDivElement | null>;
   articleRef?: RefCallback<HTMLElement> | undefined;
   isLatestVisibleTurn?: boolean;
@@ -2275,6 +2313,7 @@ const ThreadTurnRow = memo(function ThreadTurnRow({
         onOpenCommandDetail={onOpenCommandDetail}
         onOpenToolCallDetail={onOpenToolCallDetail}
         onOpenDeferredHistoryItemDetail={onOpenDeferredHistoryItemDetail}
+        {...(onBeforeMessageResize ? { onBeforeMessageResize } : {})}
         timeLabel={turnTimeLabel}
         timeTitle={turnTimeTitle}
         {...(onSelectArtifact ? { onSelectArtifact } : {})}
@@ -2308,6 +2347,7 @@ const ThreadTurnRow = memo(function ThreadTurnRow({
         timeLabel={turnTimeLabel}
         timeTitle={turnTimeTitle}
         streaming
+        {...(onBeforeMessageResize ? { onBeforeMessageResize } : {})}
       />
     ) : null;
   const footerNode = activeForRendering ? (
@@ -2352,6 +2392,7 @@ function TimelineHistoryEntries({
   onOpenToolCallDetail,
   onOpenDeferredHistoryItemDetail,
   onSelectArtifact,
+  onBeforeMessageResize,
   adapter,
   timeLabel,
   timeTitle,
@@ -2382,6 +2423,7 @@ function TimelineHistoryEntries({
     errorText: string,
   ) => void;
   onSelectArtifact?: ThreadTimelineProps['onSelectArtifact'];
+  onBeforeMessageResize?: () => void;
   adapter?: ThreadTimelineAdapter | undefined;
 }) {
   return (
@@ -2437,6 +2479,7 @@ function TimelineHistoryEntries({
           onOpenCommandDetail={onOpenCommandDetail}
           onOpenToolCallDetail={onOpenToolCallDetail}
           onOpenDeferredHistoryItemDetail={onOpenDeferredHistoryItemDetail}
+          {...(onBeforeMessageResize ? { onBeforeMessageResize } : {})}
           {...(onSelectArtifact ? { onSelectArtifact } : {})}
           {...(adapter ? { adapter } : {})}
         />
@@ -2499,9 +2542,6 @@ function ThreadTimelineComponent({
   const [collapsedTurns, setCollapsedTurns] = useState<Record<string, boolean>>(
     {},
   );
-  const [expandedLooseGroups, setExpandedLooseGroups] = useState<Record<string, boolean>>(
-    {},
-  );
   const [isTailVisible, setIsTailVisible] = useState(true);
   const loadHistoryItemDetail =
     adapter?.onLoadHistoryItemDetail ?? onLoadHistoryItemDetail;
@@ -2528,13 +2568,6 @@ function ThreadTimelineComponent({
     setCollapsedTurns((current) => ({
       ...current,
       [turnId]: !current[turnId],
-    }));
-  }, []);
-
-  const handleToggleLooseGroup = useCallback((groupKey: string) => {
-    setExpandedLooseGroups((current) => ({
-      ...current,
-      [groupKey]: !current[groupKey],
     }));
   }, []);
 
@@ -2760,6 +2793,17 @@ function ThreadTimelineComponent({
     setIsTailVisible((current) => (current ? current : true));
     userScrolledAwayFromTailRef.current = false;
     shouldStickToBottomRef.current = true;
+  }, []);
+
+  const preserveScrollPositionForResize = useCallback(() => {
+    const container = scrollContainerRef.current;
+    if (!container) {
+      return;
+    }
+    lastScrollTopRef.current = container.scrollTop;
+    lastObservedScrollHeightRef.current = container.scrollHeight;
+    shouldStickToBottomRef.current = false;
+    userScrolledAwayFromTailRef.current = true;
   }, []);
 
   useLayoutEffect(() => {
@@ -3012,9 +3056,16 @@ function ThreadTimelineComponent({
   const hasStructuredLiveItems = (liveItems?.items.length ?? 0) > 0;
   const unattachedLiveItems =
     liveItems && liveItemsTargetTurnId === null ? liveItems.items : null;
-  const unattachedLiveEntries = useMemo(
-    () => groupTimelineHistoryItems(unattachedLiveItems ?? []),
-    [unattachedLiveItems],
+  const unattachedLiveTurn = useMemo(
+    () =>
+      liveItems && liveItemsTargetTurnId === null && liveItems.items.length > 0
+        ? buildSyntheticLiveTurn(liveItems.turnId, liveItems.items)
+        : null,
+    [liveItems, liveItemsTargetTurnId],
+  );
+  const unattachedLiveTurnIndex = Math.max(
+    1,
+    effectiveTotalTurnCount + (optimisticTurn ? 1 : 0),
   );
   const liveOutputAttachedToOptimisticTurn =
     !!liveOutput &&
@@ -3354,6 +3405,7 @@ function ThreadTimelineComponent({
                     onOpenCommandDetail={handleOpenCommandDetail}
                     onOpenToolCallDetail={handleOpenToolCallDetail}
                     onOpenDeferredHistoryItemDetail={handleOpenDeferredHistoryItemDetail}
+                    onBeforeMessageResize={preserveScrollPositionForResize}
                     {...(onSelectArtifact ? { onSelectArtifact } : {})}
                     scrollRootRef={scrollContainerRef}
                     articleRef={undefined}
@@ -3449,6 +3501,7 @@ function ThreadTimelineComponent({
                     onOpenCommandDetail={handleOpenCommandDetail}
                     onOpenToolCallDetail={handleOpenToolCallDetail}
                     onOpenDeferredHistoryItemDetail={handleOpenDeferredHistoryItemDetail}
+                    onBeforeMessageResize={preserveScrollPositionForResize}
                     {...(onSelectArtifact ? { onSelectArtifact } : {})}
                     scrollRootRef={scrollContainerRef}
                   />
@@ -3479,6 +3532,7 @@ function ThreadTimelineComponent({
                     status: steer.status,
                   }}
                   scrollRootRef={scrollContainerRef}
+                  onBeforeMessageResize={preserveScrollPositionForResize}
                   {...(adapter ? { adapter } : {})}
                 />
               ))}
@@ -3525,26 +3579,31 @@ function ThreadTimelineComponent({
                   text: ephemeralUserNote,
                 }}
                 scrollRootRef={scrollContainerRef}
+                onBeforeMessageResize={preserveScrollPositionForResize}
               />
             </div>
           )}
 
-          {unattachedLiveItems && unattachedLiveItems.length > 0 && (
-            <div className="thread-graph-message-section space-y-3 px-3 py-2.5 sm:px-5">
-              <TimelineHistoryEntries
-                entries={unattachedLiveEntries}
-                expandedGroups={expandedLooseGroups}
-                onToggleGroupedItem={handleToggleLooseGroup}
-                threadId={threadId}
-                scrollRootRef={scrollContainerRef}
-                onOpenExpandedText={handleOpenExpandedText}
-                onOpenCommandDetail={handleOpenCommandDetail}
-                onOpenToolCallDetail={handleOpenToolCallDetail}
-                onOpenDeferredHistoryItemDetail={handleOpenDeferredHistoryItemDetail}
-                {...(onSelectArtifact ? { onSelectArtifact } : {})}
-                {...(adapter ? { adapter } : {})}
-              />
-            </div>
+          {unattachedLiveTurn && unattachedLiveItems && unattachedLiveItems.length > 0 && (
+            <ThreadTurnRow
+              threadId={threadId}
+              {...(adapter ? { adapter } : {})}
+              turn={unattachedLiveTurn}
+              absoluteIndex={unattachedLiveTurnIndex}
+              isCollapsed={collapsedTurns[unattachedLiveTurn.id] ?? false}
+              livePlan={livePlan?.turnId === unattachedLiveTurn.id ? livePlan : null}
+              liveItems={unattachedLiveItems}
+              liveOutput=""
+              forceActive
+              onToggleCollapse={handleToggleCollapse}
+              onOpenExpandedText={handleOpenExpandedText}
+              onOpenCommandDetail={handleOpenCommandDetail}
+              onOpenToolCallDetail={handleOpenToolCallDetail}
+              onOpenDeferredHistoryItemDetail={handleOpenDeferredHistoryItemDetail}
+              onBeforeMessageResize={preserveScrollPositionForResize}
+              {...(onSelectArtifact ? { onSelectArtifact } : {})}
+              scrollRootRef={scrollContainerRef}
+            />
           )}
 
           {liveOutput &&
@@ -3561,6 +3620,7 @@ function ThreadTimelineComponent({
                   onOpenCommandDetail={handleOpenCommandDetail}
                   onOpenToolCallDetail={handleOpenToolCallDetail}
                   onOpenDeferredHistoryItemDetail={handleOpenDeferredHistoryItemDetail}
+                  onBeforeMessageResize={preserveScrollPositionForResize}
                   {...(onSelectArtifact ? { onSelectArtifact } : {})}
                   {...(adapter ? { adapter } : {})}
                 />
@@ -3574,6 +3634,7 @@ function ThreadTimelineComponent({
                   }}
                   scrollRootRef={scrollContainerRef}
                   streaming
+                  onBeforeMessageResize={preserveScrollPositionForResize}
                   {...(adapter ? { adapter } : {})}
                 />
               )}

@@ -366,12 +366,12 @@ export function ThreadCards({
   collapsed = false,
 }: ThreadCardsProps) {
   const containerClassName = scrollable
-    ? `min-h-0 overflow-y-auto overscroll-contain pr-1 ${maxHeightClassName}`
+    ? `min-h-0 min-w-0 overflow-x-hidden overflow-y-auto overscroll-contain pr-1 ${maxHeightClassName}`
     : "";
 
   return (
     <div className={containerClassName}>
-      <div className="space-y-1">
+      <div className="min-w-0 space-y-1">
         {threads.map((thread) => (
           <ThreadCard
             key={thread.id}
@@ -857,7 +857,7 @@ export function ThreadWorkspaceLayout({
             ) : null}
           </div>
 
-          <div className="min-h-0 flex-1 overflow-y-auto px-1">
+          <div className="min-h-0 min-w-0 flex-1 overflow-x-hidden overflow-y-auto px-1">
             {error ? (
               <div className="rounded-xl border border-rose-500/30 bg-rose-500/10 px-3 py-3 text-sm text-rose-900 dark:text-rose-100">
                 {error}

@@ -70,6 +70,7 @@ export const GraphChatCompactMessageItem = memo(
     adapter,
     timeLabel,
     timeTitle,
+    onBeforeMessageResize,
   }: {
     threadId?: string | undefined;
     item: GraphChatCompactMessage;
@@ -78,6 +79,7 @@ export const GraphChatCompactMessageItem = memo(
     adapter?: ThreadTimelineAdapter;
     timeLabel?: string | null | undefined;
     timeTitle?: string | null | undefined;
+    onBeforeMessageResize?: () => void;
   }) {
     const [copyState, setCopyState] = useState<'idle' | 'copied' | 'failed'>(
       'idle',
@@ -217,6 +219,9 @@ export const GraphChatCompactMessageItem = memo(
             text={item.text}
             scrollRootRef={scrollRootRef}
             streaming={streaming}
+            {...(onBeforeMessageResize
+              ? { onBeforeResize: onBeforeMessageResize }
+              : {})}
           />
         ) : (
           <GraphChatUserMessageBody

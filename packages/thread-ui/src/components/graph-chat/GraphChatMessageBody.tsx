@@ -1,6 +1,8 @@
 import {
   memo,
+  useCallback,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -138,6 +140,7 @@ export const GraphChatMarkdownAwareBody = memo(
     containerClassName = '',
     plainTextClassName = 'thread-graph-plain-text whitespace-pre-wrap break-words text-[15px] leading-6',
     markdownClassName = 'thread-graph-markdown',
+    onBeforeResize,
   }: {
     text: string;
     scrollRootRef: RefObject<HTMLDivElement | null>;
@@ -145,8 +148,13 @@ export const GraphChatMarkdownAwareBody = memo(
     containerClassName?: string;
     plainTextClassName?: string;
     markdownClassName?: string;
+    onBeforeResize?: () => void;
   }) {
     const messageRef = useRef<HTMLDivElement | null>(null);
+    const scrollAnchorRef = useRef<{
+      root: HTMLDivElement;
+      top: number;
+    } | null>(null);
     const [expanded, setExpanded] = useState(false);
     const shouldRenderMarkdown = hasLikelyMarkdownSyntax(text);
     const isLargeText = !streaming && text.length > LARGE_MESSAGE_PREVIEW_CHARS;
@@ -157,6 +165,37 @@ export const GraphChatMarkdownAwareBody = memo(
     const [isActivated, setIsActivated] = useState(
       streaming || typeof IntersectionObserver === 'undefined',
     );
+
+    const toggleExpanded = useCallback(() => {
+      const root = scrollRootRef.current;
+      const message = messageRef.current;
+      const previousTop = message?.getBoundingClientRect().top ?? null;
+
+      onBeforeResize?.();
+      scrollAnchorRef.current =
+        root && previousTop !== null ? { root, top: previousTop } : null;
+      setExpanded((current) => !current);
+    }, [onBeforeResize, scrollRootRef]);
+
+    useLayoutEffect(() => {
+      const anchor = scrollAnchorRef.current;
+      const message = messageRef.current;
+      if (!anchor || !message) {
+        return;
+      }
+
+      scrollAnchorRef.current = null;
+      const adjustScroll = () => {
+        const nextTop = message.getBoundingClientRect().top;
+        anchor.root.scrollTop += nextTop - anchor.top;
+      };
+
+      adjustScroll();
+      const frame = window.requestAnimationFrame(adjustScroll);
+      return () => {
+        window.cancelAnimationFrame(frame);
+      };
+    }, [expanded]);
 
     useEffect(() => {
       if (streaming || typeof IntersectionObserver === 'undefined') {
@@ -205,12 +244,12 @@ export const GraphChatMarkdownAwareBody = memo(
         {isLargeText ? (
           <button
             type="button"
-            onClick={() => setExpanded((current) => !current)}
-            className="timeline-meta-text mt-2 inline-flex rounded-full border border-[var(--theme-border)] px-2.5 py-1 text-xs transition hover:bg-[var(--theme-hover)] hover:text-[var(--theme-fg)]"
+            onClick={toggleExpanded}
+            className="thread-graph-show-more timeline-meta-text mt-1.5 flex w-full items-center justify-center rounded-md border border-[var(--theme-border)] px-2 py-0.5 text-[10px] leading-4 transition hover:bg-[var(--theme-hover)] hover:text-[var(--theme-fg)]"
           >
             {expanded
               ? 'Show less'
-              : `Show full message (${text.length.toLocaleString()} chars)`}
+              : `Show more (${text.length.toLocaleString()} chars)`}
           </button>
         ) : null}
       </div>
@@ -223,10 +262,12 @@ export const GraphChatAgentMessageBody = memo(
     text,
     scrollRootRef,
     streaming = false,
+    onBeforeResize,
   }: {
     text: string;
     scrollRootRef: RefObject<HTMLDivElement | null>;
     streaming?: boolean;
+    onBeforeResize?: () => void;
   }) {
     return (
       <GraphChatMarkdownAwareBody
@@ -234,6 +275,7 @@ export const GraphChatAgentMessageBody = memo(
         scrollRootRef={scrollRootRef}
         streaming={streaming}
         containerClassName="thread-graph-message-prose"
+        {...(onBeforeResize ? { onBeforeResize } : {})}
       />
     );
   },
