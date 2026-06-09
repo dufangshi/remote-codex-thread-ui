@@ -9,6 +9,7 @@ _reference/
 output/
 .playwright-cli/
 .temp/
+.temp-*
 *.tsbuildinfo
 pnpm-debug.log*
 package-lock.json

@@ -16,6 +16,7 @@ import type {
   ThreadDto,
 } from '@remote-codex/shared';
 import type { ThreadDetailUiAdapter } from './adapters';
+import type { ThemeMode } from './app-shell/AppShellNavContext';
 import {
   createDefaultPluginContextValue,
   type PluginContextValue,
@@ -35,6 +36,58 @@ import {
   type ThreadShellControlState,
   type ThreadShellPanelHandle,
 } from './components/ThreadShellPanel';
+import {
+  MemoizedThreadGraphWorkspacePanel,
+  type ThreadGraphWorkspaceFeatures,
+} from './components/ThreadGraphWorkspacePanel';
+import {
+  GraphChatThreadChatPanel,
+  type GraphChatThreadUsageSummary,
+} from './components/graph-chat/GraphChatThreadChatPanel';
+
+function summarizeThreadUsage(
+  detail: ThreadDetailDto,
+): GraphChatThreadUsageSummary {
+  return detail.turns.reduce<GraphChatThreadUsageSummary>(
+    (summary, turn) => {
+      const usage = turn.tokenUsage?.total;
+      if (!usage) {
+        return summary;
+      }
+      return {
+        input: summary.input + usage.inputTokens,
+        output: summary.output + usage.outputTokens,
+        cache: summary.cache + usage.cachedInputTokens,
+        turns: summary.turns + 1,
+      };
+    },
+    { input: 0, output: 0, cache: 0, turns: 0 },
+  );
+}
+
+function formatTopbarTokenCount(value: number | undefined) {
+  if (typeof value !== 'number' || !Number.isFinite(value) || value <= 0) {
+    return '0';
+  }
+  if (value >= 1_000_000) {
+    return `${(value / 1_000_000).toFixed(value >= 10_000_000 ? 0 : 1)}m`;
+  }
+  if (value >= 1_000) {
+    return `${(value / 1_000).toFixed(value >= 10_000 ? 0 : 1)}k`;
+  }
+  return String(Math.round(value));
+}
+
+function formatTopbarUsageSummary(
+  usage: GraphChatThreadUsageSummary | null,
+) {
+  if (!usage || usage.turns <= 0) {
+    return 'waiting for agent usage';
+  }
+  return `in ${formatTopbarTokenCount(usage.input)} / out ${formatTopbarTokenCount(
+    usage.output,
+  )} / cache ${formatTopbarTokenCount(usage.cache)}`;
+}
 
 export interface ThreadDetailSurfaceProps {
   threads: ThreadDto[];
@@ -48,11 +101,18 @@ export interface ThreadDetailSurfaceProps {
   adapter: ThreadDetailUiAdapter;
   metaContent?: ReactNode;
   settingsContent?: ReactNode;
+  globalSettingsContent?: ReactNode;
   mobileHeaderAction?: ReactNode;
   appMenuButton?: ReactNode;
   appNavigationMenu?: ReactNode;
+  workspaceReturnHref?: string;
+  onWorkspaceReturn?: () => void;
   surfaceActions?: ReactNode;
   floatingPanel?: ReactNode;
+  workspaceContent?: ReactNode;
+  workspaceTitle?: string;
+  workspaceActions?: ReactNode;
+  workspaceFeatures?: ThreadGraphWorkspaceFeatures;
   beforeTimelineContent?: ReactNode;
   errorContent?: ReactNode;
   workspaceMissingContent?: ReactNode;
@@ -74,6 +134,8 @@ export interface ThreadDetailSurfaceProps {
   composerHostRef?: RefObject<HTMLDivElement | null>;
   shellPanelRef?: Ref<ThreadShellPanelHandle>;
   shellEffectiveTheme?: 'light' | 'dark';
+  shellThemeMode?: ThemeMode;
+  onShellThemeModeChange?: (mode: ThemeMode) => void;
   onShellStateChange?: (state: ThreadShellControlState) => void;
   shellUnavailableContent?: ReactNode;
   shellDisconnectedContent?: ReactNode;
@@ -104,11 +166,18 @@ export function ThreadDetailSurface({
   adapter,
   metaContent,
   settingsContent,
+  globalSettingsContent,
   mobileHeaderAction,
   appMenuButton,
   appNavigationMenu,
+  workspaceReturnHref,
+  onWorkspaceReturn,
   surfaceActions,
   floatingPanel,
+  workspaceContent,
+  workspaceTitle,
+  workspaceActions,
+  workspaceFeatures,
   beforeTimelineContent,
   errorContent,
   workspaceMissingContent,
@@ -117,7 +186,7 @@ export function ThreadDetailSurface({
   currentWorkspaceId,
   currentWorkspaceLabel,
   onCloseAppNavigation,
-  className = 'thread-detail-surface relative flex h-full min-h-0 flex-1 flex-col overflow-hidden rounded-none border-y sm:flex-none sm:rounded-[12px] sm:border',
+  className = 'thread-detail-surface relative flex h-full min-h-0 flex-1 flex-col overflow-hidden',
   activeView = 'chat',
   liveOutput = '',
   timelineProps,
@@ -128,6 +197,8 @@ export function ThreadDetailSurface({
   composerHostRef,
   shellPanelRef,
   shellEffectiveTheme = 'dark',
+  shellThemeMode = shellEffectiveTheme,
+  onShellThemeModeChange,
   onShellStateChange,
   shellUnavailableContent,
   shellDisconnectedContent,
@@ -162,6 +233,38 @@ export function ThreadDetailSurface({
   const terminalPanelEnabled = plugins
     .getThreadPanels()
     .some((panel) => panel.kind === 'terminal');
+  const threadUsageSummary = useMemo(
+    () => (detail ? summarizeThreadUsage(detail) : null),
+    [detail],
+  );
+  const topbarUsageLabel = useMemo(
+    () => formatTopbarUsageSummary(threadUsageSummary),
+    [threadUsageSummary],
+  );
+  const transcriptItemCount = useMemo(
+    () =>
+      detail
+        ? detail.turns.reduce(
+            (count, turn) => count + turn.items.length,
+            detail.liveItems?.items.length ?? 0,
+          )
+        : 0,
+    [detail],
+  );
+  const resolvedWorkspaceContent =
+    workspaceContent ??
+    (detail ? (
+      <MemoizedThreadGraphWorkspacePanel
+        detail={detail}
+        status={status}
+        plugins={plugins}
+        workspaceAdapter={adapter.workspace ?? null}
+        metaContent={metaContent}
+        settingsContent={settingsContent}
+        activeView={activeView}
+        features={workspaceFeatures}
+      />
+    ) : null);
 
   const defaultContent = loading ? (
     (loadingContent ?? (
@@ -171,13 +274,6 @@ export function ThreadDetailSurface({
     ))
   ) : detail ? (
     <div className={className}>
-      {surfaceActions ? (
-        <div className="pointer-events-none absolute right-4 top-4 z-30 hidden lg:block">
-          <div className="pointer-events-auto flex flex-col items-end gap-2">
-            {surfaceActions}
-          </div>
-        </div>
-      ) : null}
       {floatingPanel ? (
         <div className="fixed right-3 top-20 z-50 lg:absolute lg:right-4 lg:top-16">
           {floatingPanel}
@@ -199,55 +295,26 @@ export function ThreadDetailSurface({
             </p>
           </div>
         ))}
-      {beforeTimelineContent}
       <div
         className={
           activeView === 'chat' ? 'flex min-h-0 flex-1 flex-col' : 'hidden'
         }
       >
-        <TimelineComponent
-          threadId={detail.thread.id}
-          turns={detail.turns}
-          totalTurnCount={detail.totalTurnCount ?? detail.turns.length}
-          pendingRequests={detail.pendingRequests}
-          activeTurnId={detail.thread.activeTurnId}
-          threadRunning={
-            detail.thread.status === 'running' ||
-            detail.thread.activeTurnId !== null
-          }
+        <GraphChatThreadChatPanel
+          detail={detail}
+          adapter={adapter}
+          timelineAdapter={timelineAdapter}
+          TimelineComponent={TimelineComponent}
           liveOutput={liveOutput}
-          className="thread-timeline-surface min-h-0 flex-1"
-          {...timelineProps}
-          adapter={timelineAdapter}
-          onOpenThread={timelineProps?.onOpenThread ?? adapter.openThread}
+          threadUsageSummary={threadUsageSummary}
+          transcriptItemCount={transcriptItemCount}
+          useFloatingMobileComposer={useFloatingMobileComposer}
+          floatingMobileComposerBottomOffset={floatingMobileComposerBottomOffset}
+          {...(beforeTimelineContent ? { beforeTimelineContent } : {})}
+          {...(composerProps ? { composerProps } : {})}
+          {...(timelineProps ? { timelineProps } : {})}
+          {...(composerHostRef ? { composerHostRef } : {})}
         />
-        {composerProps ? (
-          useFloatingMobileComposer ? (
-            <div
-              ref={composerHostRef}
-              className="fixed inset-x-0 bottom-0 z-50 overflow-visible sm:hidden"
-              style={{
-                bottom: `${floatingMobileComposerBottomOffset}px`,
-                paddingBottom: 'env(safe-area-inset-bottom)',
-              }}
-            >
-              <ThreadComposer
-                {...composerProps}
-                activeView="chat"
-                edgeToEdgeMobile
-                onSubmit={adapter.sendPrompt}
-              />
-            </div>
-          ) : (
-            <div ref={composerHostRef}>
-              <ThreadComposer
-                {...composerProps}
-                activeView="chat"
-                onSubmit={adapter.sendPrompt}
-              />
-            </div>
-          )
-        ) : null}
       </div>
       <div
         className={
@@ -325,14 +392,30 @@ export function ThreadDetailSurface({
       currentThreadLabel={detail?.thread.title}
       currentWorkspaceId={currentWorkspaceId ?? detail?.thread.workspaceId}
       currentWorkspaceLabel={currentWorkspaceLabel ?? detail?.workspace.label}
+      sessionLabel={detail?.thread.providerSessionId ?? detail?.thread.id}
+      usageLabel={topbarUsageLabel}
+      topbarActions={surfaceActions}
       metaContent={metaContent}
       settingsContent={settingsContent}
+      globalSettingsContent={globalSettingsContent}
       mobileHeaderAction={mobileHeaderAction}
+      effectiveTheme={shellEffectiveTheme}
+      themeMode={shellThemeMode}
       appMenuButton={appMenuButton}
       appNavigationMenu={appNavigationMenu}
+      workspaceReturnHref={workspaceReturnHref}
+      {...(onWorkspaceReturn ? { onWorkspaceReturn } : {})}
+      showMobileAppMenu={Boolean(appMenuButton)}
+      showMobileThreadNavToggle
       showMobileNewThreadShortcut={false}
       onOpenThread={adapter.openThread}
+      workspaceContent={resolvedWorkspaceContent}
+      workspaceTitle={workspaceTitle ?? 'Workspace'}
+      workspaceActions={workspaceActions}
       {...(onCloseAppNavigation ? { onCloseAppNavigation } : {})}
+      {...(onShellThemeModeChange
+        ? { onThemeModeChange: onShellThemeModeChange }
+        : {})}
       {...(adapter.getThreadHref
         ? { getThreadHref: adapter.getThreadHref }
         : {})}

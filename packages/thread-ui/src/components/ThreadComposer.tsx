@@ -38,6 +38,12 @@ import type {
 } from '@remote-codex/shared';
 import type { ThreadShellControlState } from '../types';
 import type { PromptAttachmentUpload } from '../types';
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupButton,
+  InputGroupText,
+} from './graph-ui/InputGroup';
 
 export interface ThreadComposerProps {
   activeView: 'chat' | 'shell';
@@ -163,6 +169,13 @@ type SlashPanelView =
   | 'forkTurns';
 type McpPanelMode = 'list' | 'add' | 'http' | 'stdio';
 type HooksPanelMode = 'list' | 'add' | 'edit';
+type ComposerDraft = {
+  prompt: string;
+  attachments: ComposerAttachmentDraft[];
+};
+type DraftSyncMode = 'deferred' | 'immediate';
+
+const DRAFT_SYNC_DELAY_MS = 180;
 
 const HOOK_EVENT_OPTIONS: Array<{
   value: AgentHookEventNameDto;
@@ -259,6 +272,15 @@ function tokenizePrompt(
   }
 
   return segments;
+}
+
+function draftSignature(draft: ComposerDraft) {
+  return `${draft.prompt}\u001f${draft.attachments
+    .map(
+      (attachment) =>
+        `${attachment.clientId}\u001e${attachment.kind}\u001e${attachment.placeholder}\u001e${attachment.originalName}`,
+    )
+    .join('\u001d')}`;
 }
 
 function formatReasoningEffortLabel(
@@ -895,6 +917,11 @@ export function ThreadComposer({
     prompt: '',
     attachments: [],
   });
+  const [localControlledDraft, setLocalControlledDraft] =
+    useState<ComposerDraft>(() => ({
+      prompt: draftPrompt ?? '',
+      attachments: (draftAttachments ?? []) as ComposerAttachmentDraft[],
+    }));
   const [openMenu, setOpenMenu] = useState<SettingsMenu>(null);
   const [slashPanelView, setSlashPanelView] = useState<SlashPanelView>('root');
   const [mcpPanelMode, setMcpPanelMode] = useState<McpPanelMode>('list');
@@ -1012,6 +1039,12 @@ export function ThreadComposer({
   const previewUrlCacheRef = useRef<Map<string, string>>(new Map());
   const renderedPreviewSignatureRef = useRef('');
   const renderedSanitizeNonceRef = useRef(0);
+  const draftSyncTimerRef = useRef<number | null>(null);
+  const latestLocalDraftRef = useRef<ComposerDraft>(localControlledDraft);
+  const lastHostDraftSignatureRef = useRef(
+    draftSignature(localControlledDraft),
+  );
+  const lastSentDraftSignatureRef = useRef(lastHostDraftSignatureRef.current);
   const isShellView = activeView === 'shell';
   const canToggleShellView = shellAvailable || isShellView;
   const isMobileShell = Boolean(
@@ -1027,12 +1060,61 @@ export function ThreadComposer({
     draftPrompt !== undefined &&
     draftAttachments !== undefined &&
     typeof onDraftChange === 'function';
-  const prompt = isDraftControlled ? draftPrompt : internalDraft.prompt;
+  const controlledPropsSignature = isDraftControlled
+    ? draftSignature({
+        prompt: draftPrompt ?? '',
+        attachments: (draftAttachments ?? []) as ComposerAttachmentDraft[],
+      })
+    : '';
+  const lastRenderedControlledPropsSignatureRef = useRef(
+    controlledPropsSignature,
+  );
+  const prompt = isDraftControlled
+    ? localControlledDraft.prompt
+    : internalDraft.prompt;
   const attachments = (
-    isDraftControlled ? draftAttachments : internalDraft.attachments
+    isDraftControlled
+      ? localControlledDraft.attachments
+      : internalDraft.attachments
   ) as ComposerAttachmentDraft[];
   const displayedCollaborationMode =
     optimisticCollaborationMode ?? collaborationMode;
+
+  useEffect(() => {
+    return () => {
+      sendDraftToHost(latestLocalDraftRef.current);
+      if (draftSyncTimerRef.current !== null) {
+        window.clearTimeout(draftSyncTimerRef.current);
+      }
+    };
+  }, [isDraftControlled, onDraftChange]);
+
+  useEffect(() => {
+    if (!isDraftControlled) {
+      lastRenderedControlledPropsSignatureRef.current = '';
+      return;
+    }
+
+    const hostDraft: ComposerDraft = {
+      prompt: draftPrompt ?? '',
+      attachments: (draftAttachments ?? []) as ComposerAttachmentDraft[],
+    };
+    const hostSignature = draftSignature(hostDraft);
+
+    if (hostSignature === lastRenderedControlledPropsSignatureRef.current) {
+      return;
+    }
+
+    lastRenderedControlledPropsSignatureRef.current = hostSignature;
+    lastHostDraftSignatureRef.current = hostSignature;
+    lastSentDraftSignatureRef.current = hostSignature;
+    latestLocalDraftRef.current = hostDraft;
+    if (draftSyncTimerRef.current !== null) {
+      window.clearTimeout(draftSyncTimerRef.current);
+      draftSyncTimerRef.current = null;
+    }
+    setLocalControlledDraft(hostDraft);
+  }, [draftAttachments, draftPrompt, isDraftControlled]);
 
   useEffect(() => {
     setOptimisticCollaborationMode(null);
@@ -1114,6 +1196,52 @@ export function ThreadComposer({
     };
   }, [copiedSkillName]);
 
+  function sendDraftToHost(nextDraft: ComposerDraft) {
+    if (!isDraftControlled || !onDraftChange) {
+      return;
+    }
+
+    const signature = draftSignature(nextDraft);
+    if (signature === lastSentDraftSignatureRef.current) {
+      return;
+    }
+
+    lastSentDraftSignatureRef.current = signature;
+    lastHostDraftSignatureRef.current = signature;
+    onDraftChange(() => ({
+      prompt: nextDraft.prompt,
+      attachments: nextDraft.attachments as PromptAttachmentUpload[],
+    }));
+  }
+
+  function syncControlledDraftToHost(
+    nextDraft: ComposerDraft,
+    mode: DraftSyncMode,
+  ) {
+    if (!isDraftControlled) {
+      return;
+    }
+
+    if (draftSyncTimerRef.current !== null) {
+      window.clearTimeout(draftSyncTimerRef.current);
+      draftSyncTimerRef.current = null;
+    }
+
+    if (mode === 'immediate') {
+      sendDraftToHost(nextDraft);
+      return;
+    }
+
+    draftSyncTimerRef.current = window.setTimeout(() => {
+      draftSyncTimerRef.current = null;
+      sendDraftToHost(latestLocalDraftRef.current);
+    }, DRAFT_SYNC_DELAY_MS);
+  }
+
+  function flushControlledDraftToHost(nextDraft = latestLocalDraftRef.current) {
+    syncControlledDraftToHost(nextDraft, 'immediate');
+  }
+
   function updateDraft(
     updater: (current: {
       prompt: string;
@@ -1122,14 +1250,13 @@ export function ThreadComposer({
       prompt: string;
       attachments: ComposerAttachmentDraft[];
     },
+    syncMode: DraftSyncMode = 'immediate',
   ) {
     if (isDraftControlled) {
-      onDraftChange?.((current) =>
-        updater({
-          prompt: current.prompt,
-          attachments: current.attachments as ComposerAttachmentDraft[],
-        }),
-      );
+      const nextDraft = updater(latestLocalDraftRef.current);
+      latestLocalDraftRef.current = nextDraft;
+      setLocalControlledDraft(nextDraft);
+      syncControlledDraftToHost(nextDraft, syncMode);
       return;
     }
 
@@ -1350,7 +1477,10 @@ export function ThreadComposer({
       (item.action === 'fast' && fastMode) ||
       (item.action === 'goal' &&
         (goalComposeMode || goalState.data?.status === 'active'));
-    return `${active ? 'ui-status-warning' : 'thread-composer-menu-item'} mt-1 block w-full rounded-xl px-3 py-2 text-left text-sm transition disabled:cursor-not-allowed disabled:opacity-60`;
+    const menuItemClassName = isShellView
+      ? 'thread-composer-menu-item'
+      : 'thread-graph-composer-menu-item';
+    return `${active ? 'ui-status-warning' : menuItemClassName} mt-1 block w-full rounded-xl px-3 py-2 text-left text-sm transition disabled:cursor-not-allowed disabled:opacity-60`;
   }
 
   function handleToolboxItemClick(
@@ -2327,6 +2457,10 @@ export function ThreadComposer({
   }
 
   async function submitPrompt() {
+    if (isDraftControlled) {
+      flushControlledDraftToHost();
+    }
+
     if (goalComposeMode && !isShellView) {
       await handleSetGoal();
       return;
@@ -2381,7 +2515,7 @@ export function ThreadComposer({
       attachments: current.attachments.filter((attachment) =>
         nextPrompt.includes(attachment.placeholder),
       ),
-    }));
+    }), 'deferred');
   }
 
   function handlePromptPaste(event: ClipboardEvent<HTMLDivElement>) {
@@ -2517,17 +2651,74 @@ export function ThreadComposer({
     : supportedEfforts.length === 0
       ? 'The selected model does not expose adjustable reasoning effort.'
       : 'Select reasoning effort';
+  const composerLayerBaseClassName = isShellView
+    ? 'thread-composer-layer thread-shell-composer-layer'
+    : 'thread-graph-composer-layer';
   const composerLayerClassName = openMenu
-    ? 'relative z-[80] shrink-0'
-    : 'relative z-20 shrink-0';
+    ? `${composerLayerBaseClassName} relative z-[80] shrink-0`
+    : `${composerLayerBaseClassName} relative z-20 shrink-0`;
+  const composerFormBaseClassName = isShellView
+    ? 'thread-composer-form'
+    : 'thread-graph-composer-form';
+  const composerFloatingFormClassName = isShellView
+    ? 'thread-composer-form-floating'
+    : 'thread-graph-composer-form-floating';
   const formClassName =
-    edgeToEdgeMobile || isMobileShell
-      ? 'relative z-20 shrink-0 bg-transparent px-3 pb-3 pt-2 sm:p-4'
-      : 'relative z-20 shrink-0 bg-transparent px-3 pb-3 pt-0 sm:px-4 sm:pb-4 sm:pt-0';
-  const promptInputClassName = `thread-composer-input min-h-[5.75rem] w-full rounded-[1.25rem] border px-4 pr-14 pt-2.5 outline-none transition sm:min-h-[5.5rem] ${
+    isShellView
+      ? edgeToEdgeMobile || isMobileShell
+        ? `${composerFormBaseClassName} ${composerFloatingFormClassName} relative z-20 shrink-0 border-t border-[var(--theme-border)] bg-[var(--theme-surface)] px-3 py-2 pb-[calc(env(safe-area-inset-bottom)+0.5rem)] sm:px-4 sm:py-3`
+        : `${composerFormBaseClassName} relative z-20 shrink-0 border-t border-[var(--theme-border)] bg-[var(--theme-surface)] px-3 py-2 pb-[calc(env(safe-area-inset-bottom)+0.5rem)] sm:px-4 sm:py-3`
+      : `${composerFormBaseClassName} ${
+          edgeToEdgeMobile ? composerFloatingFormClassName : ''
+        } relative z-20 shrink-0 border-t px-3 py-2 pb-[calc(env(safe-area-inset-bottom)+0.5rem)] sm:px-4 sm:py-3`;
+  const composerShellClassName = isShellView
+    ? 'thread-composer-shell'
+    : 'thread-graph-composer-shell';
+  const composerToolbarClassName = isShellView
+    ? 'thread-composer-toolbar'
+    : 'thread-graph-composer-toolbar';
+  const composerInputClassName = isShellView
+    ? 'thread-composer-input'
+    : 'thread-graph-composer-input';
+  const composerIconButtonClassName = isShellView
+    ? 'thread-composer-icon-button'
+    : 'thread-graph-composer-icon-button';
+  const composerMenuClassName = isShellView
+    ? 'thread-composer-menu'
+    : 'thread-graph-composer-menu';
+  const composerMenuItemClassName = isShellView
+    ? 'thread-composer-menu-item'
+    : 'thread-graph-composer-menu-item';
+  const composerInlineToggleClassName = isShellView
+    ? 'thread-composer-inline-toggle'
+    : 'thread-graph-composer-inline-toggle';
+  const composerPanelButtonClassName = isShellView
+    ? 'thread-composer-panel-button'
+    : 'thread-graph-composer-panel-button';
+  const composerChipButtonClassName = isShellView
+    ? 'thread-composer-chip-button'
+    : 'thread-graph-composer-chip-button';
+  const composerPlanToggleActiveClassName = isShellView
+    ? 'thread-composer-plan-toggle-active'
+    : 'thread-graph-composer-plan-toggle-active';
+  const composerSendButtonClassName = isShellView
+    ? 'thread-composer-send-button'
+    : 'thread-graph-composer-send-button';
+  const composerPromptRegionClassName = isShellView
+    ? 'thread-composer-prompt-region'
+    : 'thread-graph-composer-prompt-region';
+  const promptInputClassName = `${composerInputClassName} min-h-[5.25rem] w-full px-4 pr-14 pt-3 outline-none transition sm:min-h-[5.75rem] ${
     isDragTargetActive
       ? 'is-drag-target border-sky-300/80 bg-sky-300/[0.08] shadow-[0_0_0_1px_rgba(125,211,252,0.2)]'
-      : 'border-stone-700 focus-within:border-[var(--theme-accent-border)]'
+      : ''
+  }`;
+  const graphChatInputGroupClassName = `thread-graph-composer-input-group relative border-0 bg-transparent shadow-none ring-0 ${
+    busy ? 'bg-amber-50/40 dark:bg-amber-400/10' : 'bg-transparent'
+  }`;
+  const graphChatInputClassName = `${composerInputClassName} min-h-[68px] max-h-32 w-full overflow-y-auto px-3 pt-3 text-[16px] leading-relaxed text-slate-800 outline-none transition sm:min-h-[92px] sm:max-h-40 sm:px-4 sm:pt-4 sm:text-[14px] dark:text-slate-100 ${
+    isDragTargetActive
+      ? 'is-drag-target bg-sky-300/[0.08] shadow-[0_0_0_1px_rgba(125,211,252,0.2)]'
+      : ''
   }`;
 
   return (
@@ -2589,13 +2780,70 @@ export function ThreadComposer({
         </button>
       )}
 
-      <form ref={menuRef} onSubmit={handleSubmit} className={formClassName}>
-        <div className="thread-composer-toolbar relative z-30 mb-0 flex items-center gap-2 rounded-full border px-2.5 py-1.5 text-xs shadow-lg shadow-stone-950/8">
+      <form
+        ref={menuRef}
+        data-testid={activeView === 'chat' ? 'chat-composer' : undefined}
+        onSubmit={handleSubmit}
+        className={formClassName}
+      >
+        <div className={`${composerShellClassName} flex w-full flex-col overflow-hidden rounded-[16px] sm:rounded-[18px]`}>
+        <InputGroup className={graphChatInputGroupClassName}>
+          {!isShellView ? (
+            <div
+              data-slot="input-group-control"
+              className={`${composerPromptRegionClassName} relative w-full`}
+            >
+              <div className={graphChatInputClassName}>
+                {prompt.length === 0 && (
+                  <span className="pointer-events-none absolute left-3 top-3 text-slate-500 sm:left-4 sm:top-4 dark:text-slate-400">
+                    {promptPlaceholder}
+                  </span>
+                )}
+                <div
+                  ref={promptRef}
+                  role="textbox"
+                  aria-label="Prompt"
+                  aria-multiline="true"
+                  contentEditable={!disabled}
+                  suppressContentEditableWarning
+                  onInput={() => handlePromptInput()}
+                  onPaste={handlePromptPaste}
+                  onKeyDown={handlePromptKeyDown}
+                  onKeyUp={() => {
+                    selectionSnapshotRef.current = snapshotSelection();
+                  }}
+                  onMouseUp={() => {
+                    selectionSnapshotRef.current = snapshotSelection();
+                  }}
+                  onBlur={() => {
+                    selectionSnapshotRef.current = snapshotSelection();
+                    setIsDragTargetActive(false);
+                    if (isDraftControlled) {
+                      flushControlledDraftToHost();
+                    }
+                  }}
+                  onDragEnter={handlePromptDragEnter}
+                  onDragOver={handlePromptDragOver}
+                  onDragLeave={handlePromptDragLeave}
+                  onDrop={handlePromptDrop}
+                  className={`relative z-[1] min-h-[4.25rem] whitespace-pre-wrap break-words pb-2 outline-none sm:min-h-[4.25rem] ${
+                    disabled ? 'cursor-not-allowed text-slate-500' : ''
+                  }`}
+                />
+              </div>
+            </div>
+          ) : null}
+        <InputGroupAddon
+          align="block-end"
+          className={`${composerToolbarClassName} relative z-30 mb-0 flex items-center gap-2 text-xs`}
+        >
           <div className="flex shrink-0 items-center gap-1.5">
             {!isShellView && (
               <div className="relative">
-                <button
+                <InputGroupButton
                   type="button"
+                  variant="ghost"
+                  size="icon-xs"
                   data-composer-menu-trigger="true"
                   aria-label="Open slash toolbox"
                   title="Open slash toolbox"
@@ -2604,15 +2852,15 @@ export function ThreadComposer({
                       current === 'slash' ? null : 'slash',
                     )
                   }
-                  className="thread-composer-icon-button inline-flex h-7 w-7 items-center justify-center rounded-full border border-stone-700 bg-stone-900/92 text-stone-200 transition hover:bg-stone-800"
+                  className={`${composerIconButtonClassName} h-9 w-9 rounded-full sm:h-8 sm:w-8`}
                 >
                   <SlashIcon />
-                </button>
+                </InputGroupButton>
 
                 {openMenu === 'slash' && (
                   <div
                     data-composer-menu-surface="true"
-                    className="thread-composer-menu absolute bottom-full left-0 z-40 mb-2 w-72 overflow-hidden rounded-2xl border bg-stone-900/72 shadow-2xl shadow-stone-950/20 backdrop-blur-xl"
+                    className={`${composerMenuClassName} absolute bottom-full left-0 z-40 mb-2 w-72 overflow-hidden rounded-2xl border bg-stone-900/72 shadow-2xl shadow-stone-950/20 backdrop-blur-xl`}
                     onClick={(event) => {
                       event.stopPropagation();
                     }}
@@ -2661,7 +2909,7 @@ export function ThreadComposer({
                               type="button"
                               disabled={busy || forkBusy}
                               onClick={() => void handleForkLatest()}
-                              className="thread-composer-menu-item block w-full rounded-xl px-3 py-2 text-left text-sm transition disabled:cursor-not-allowed disabled:opacity-60"
+                              className={`${composerMenuItemClassName} block w-full rounded-xl px-3 py-2 text-left text-sm transition disabled:cursor-not-allowed disabled:opacity-60`}
                             >
                               <div className="flex items-center justify-between gap-3">
                                 <span>Fork from latest</span>
@@ -2678,7 +2926,7 @@ export function ThreadComposer({
                                 setSlashPanelView('forkTurns');
                                 void onOpenForkTurns?.();
                               }}
-                              className="thread-composer-menu-item mt-1 block w-full rounded-xl px-3 py-2 text-left text-sm transition disabled:cursor-not-allowed disabled:opacity-60"
+                              className={`${composerMenuItemClassName} mt-1 block w-full rounded-xl px-3 py-2 text-left text-sm transition disabled:cursor-not-allowed disabled:opacity-60`}
                             >
                               <div className="flex items-center justify-between gap-3">
                                 <span>Fork from selected turn</span>
@@ -2716,7 +2964,7 @@ export function ThreadComposer({
                                     onClick={() =>
                                       void handleForkTurn(turn.turnId)
                                     }
-                                    className="thread-composer-panel-button block w-full rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-3 text-left transition disabled:cursor-not-allowed disabled:opacity-60"
+                                    className={`${composerPanelButtonClassName} block w-full rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-3 text-left transition disabled:cursor-not-allowed disabled:opacity-60`}
                                   >
                                     <div className="flex items-center justify-between gap-3">
                                       <span className="text-sm text-stone-100">
@@ -2772,7 +3020,7 @@ export function ThreadComposer({
                                           className={`inline-flex items-center gap-1 rounded-full border px-2 py-1 normal-case tracking-normal transition ${
                                             copiedSkillName === skill.name
                                               ? 'border-emerald-400/45 bg-emerald-400/12 text-emerald-100'
-                                              : 'thread-composer-chip-button border-stone-700 text-stone-300 hover:border-stone-500'
+                                              : `${composerChipButtonClassName} border-stone-700 text-stone-300 hover:border-stone-500`
                                           }`}
                                           onClick={() =>
                                             void handleCopySkillInvokeName(
@@ -2991,7 +3239,7 @@ export function ThreadComposer({
                                       setHooksPanelMode('list');
                                       setEditingHookTarget(null);
                                     }}
-                                    className="thread-composer-chip-button rounded-full border border-stone-700 px-3 py-1.5 text-xs text-stone-300 transition"
+                                    className={`${composerChipButtonClassName} rounded-full border border-stone-700 px-3 py-1.5 text-xs text-stone-300 transition`}
                                   >
                                     Back
                                   </button>
@@ -3073,7 +3321,7 @@ export function ThreadComposer({
                                             event.stopPropagation();
                                             startEditingHook(hook);
                                           }}
-                                          className="thread-composer-chip-button rounded-full border border-stone-700 px-2 py-0.5 text-[10px] normal-case tracking-normal text-sky-100 transition hover:border-sky-300/35 hover:bg-sky-300/10"
+                                          className={`${composerChipButtonClassName} rounded-full border border-stone-700 px-2 py-0.5 text-[10px] normal-case tracking-normal text-sky-100 transition hover:border-sky-300/35 hover:bg-sky-300/10`}
                                         >
                                           Edit
                                         </button>
@@ -3088,7 +3336,7 @@ export function ThreadComposer({
                                             event.stopPropagation();
                                             void handleUntrustHook(hook);
                                           }}
-                                          className="thread-composer-chip-button rounded-full border border-stone-700 px-2 py-0.5 text-[10px] normal-case tracking-normal text-amber-100 transition hover:border-amber-300/35 hover:bg-amber-300/10 disabled:cursor-not-allowed disabled:opacity-50"
+                                          className={`${composerChipButtonClassName} rounded-full border border-stone-700 px-2 py-0.5 text-[10px] normal-case tracking-normal text-amber-100 transition hover:border-amber-300/35 hover:bg-amber-300/10 disabled:cursor-not-allowed disabled:opacity-50`}
                                         >
                                           Untrust
                                         </button>
@@ -3106,7 +3354,7 @@ export function ThreadComposer({
                                             event.stopPropagation();
                                             void handleTrustHook(hook);
                                           }}
-                                          className="thread-composer-chip-button rounded-full border border-stone-700 px-2 py-0.5 text-[10px] normal-case tracking-normal text-emerald-100 transition hover:border-emerald-300/35 hover:bg-emerald-300/10 disabled:cursor-not-allowed disabled:opacity-50"
+                                          className={`${composerChipButtonClassName} rounded-full border border-stone-700 px-2 py-0.5 text-[10px] normal-case tracking-normal text-emerald-100 transition hover:border-emerald-300/35 hover:bg-emerald-300/10 disabled:cursor-not-allowed disabled:opacity-50`}
                                         >
                                           Trust
                                         </button>
@@ -3196,7 +3444,7 @@ export function ThreadComposer({
                                     setMcpConfigError(null);
                                     setMcpConfigSuccess(null);
                                   }}
-                                  className="thread-composer-panel-button block w-full rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-3 text-left transition"
+                                  className={`${composerPanelButtonClassName} block w-full rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-3 text-left transition`}
                                 >
                                   <div className="flex items-center justify-between gap-3">
                                     <span className="text-sm text-stone-100">
@@ -3218,7 +3466,7 @@ export function ThreadComposer({
                                     event.stopPropagation();
                                     void handlePrepareRawMcpBlock();
                                   }}
-                                  className="thread-composer-panel-button block w-full rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-3 text-left transition"
+                                  className={`${composerPanelButtonClassName} block w-full rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-3 text-left transition`}
                                 >
                                   <div className="flex items-center justify-between gap-3">
                                     <span className="text-sm text-stone-100">
@@ -3269,7 +3517,7 @@ export function ThreadComposer({
                                   <button
                                     type="button"
                                     onClick={() => setMcpPanelMode('add')}
-                                    className="thread-composer-chip-button rounded-full border border-stone-700 px-3 py-1.5 text-xs text-stone-300 transition"
+                                    className={`${composerChipButtonClassName} rounded-full border border-stone-700 px-3 py-1.5 text-xs text-stone-300 transition`}
                                   >
                                     Back
                                   </button>
@@ -3304,7 +3552,7 @@ export function ThreadComposer({
                                   <button
                                     type="button"
                                     onClick={() => setMcpPanelMode('add')}
-                                    className="thread-composer-chip-button rounded-full border border-stone-700 px-3 py-1.5 text-xs text-stone-300 transition"
+                                    className={`${composerChipButtonClassName} rounded-full border border-stone-700 px-3 py-1.5 text-xs text-stone-300 transition`}
                                   >
                                     Back
                                   </button>
@@ -3378,8 +3626,10 @@ export function ThreadComposer({
 
             {!isShellView && (
               <div className="relative">
-                <button
+                <InputGroupButton
                   type="button"
+                  variant="ghost"
+                  size="icon-xs"
                   data-composer-menu-trigger="true"
                   aria-label="Add attachment"
                   title="Add attachment"
@@ -3388,15 +3638,15 @@ export function ThreadComposer({
                       current === 'attachments' ? null : 'attachments',
                     )
                   }
-                  className="thread-composer-icon-button inline-flex h-7 w-7 items-center justify-center rounded-full border border-stone-700 bg-stone-900/92 text-stone-200 transition hover:bg-stone-800"
+                  className={`${composerIconButtonClassName} h-9 w-9 rounded-full sm:h-8 sm:w-8`}
                 >
                   <PlusIcon />
-                </button>
+                </InputGroupButton>
 
                 {openMenu === 'attachments' && (
                   <div
                     data-composer-menu-surface="true"
-                    className="thread-composer-menu absolute left-0 top-full mt-2 w-32 overflow-hidden rounded-2xl border bg-stone-900/72 shadow-2xl shadow-stone-950/20"
+                    className={`${composerMenuClassName} absolute bottom-full left-0 mb-2 w-32 overflow-hidden rounded-2xl border bg-stone-900/72 shadow-2xl shadow-stone-950/20`}
                   >
                     <div className="p-2">
                       <button
@@ -3405,7 +3655,7 @@ export function ThreadComposer({
                           dismissPromptFocus();
                           photoInputRef.current?.click();
                         }}
-                        className="thread-composer-menu-item block w-full rounded-xl px-3 py-2 text-left text-sm transition"
+                        className={`${composerMenuItemClassName} block w-full rounded-xl px-3 py-2 text-left text-sm transition`}
                       >
                         Photo
                       </button>
@@ -3415,7 +3665,7 @@ export function ThreadComposer({
                           dismissPromptFocus();
                           fileInputRef.current?.click();
                         }}
-                        className="thread-composer-menu-item mt-1 block w-full rounded-xl px-3 py-2 text-left text-sm transition"
+                        className={`${composerMenuItemClassName} mt-1 block w-full rounded-xl px-3 py-2 text-left text-sm transition`}
                       >
                         File
                       </button>
@@ -3426,26 +3676,216 @@ export function ThreadComposer({
             )}
 
             {canToggleShellView && (
-              <button
+              <InputGroupButton
                 type="button"
+                variant="ghost"
+                size="icon-xs"
                 aria-label={isShellView ? 'Switch to chat' : 'Switch to shell'}
                 title={isShellView ? 'Switch to chat' : 'Switch to shell'}
                 onClick={() => onToggleView?.()}
-                className="thread-composer-icon-button inline-flex h-7 w-7 items-center justify-center rounded-full border border-stone-700 bg-stone-900/92 text-stone-200 transition hover:bg-stone-800"
+                className={`${composerIconButtonClassName} h-9 w-9 rounded-full sm:h-8 sm:w-8`}
               >
                 {isShellView ? <ChatIcon /> : <TerminalIcon />}
-              </button>
+              </InputGroupButton>
             )}
           </div>
 
           <div className="flex min-w-0 flex-1 items-center justify-end gap-1.5">
+            {!isShellView && (
+              <>
+                <div className="relative min-w-0">
+                  <InputGroupButton
+                    type="button"
+                    variant="ghost"
+                    size="xs"
+                    data-composer-menu-trigger="true"
+                    aria-haspopup="menu"
+                    aria-expanded={openMenu === 'model'}
+                    aria-label={model ?? 'Select model'}
+                    disabled={modelControlsDisabled || modelOptions.length === 0}
+                    onClick={() =>
+                      setOpenMenu((current) =>
+                        current === 'model' ? null : 'model',
+                      )
+                    }
+                    title={
+                      fastMode
+                        ? `Fast mode is on. Turn it off from the slash toolbox to edit model. ${modelContextTitle}`
+                        : modelContextTitle
+                    }
+                    className={`${composerInlineToggleClassName} relative min-w-0 max-w-[8.75rem] overflow-hidden rounded-full px-2.5 text-left text-stone-300 disabled:cursor-not-allowed disabled:text-stone-600 sm:max-w-[11rem]`}
+                  >
+                    <span className="relative z-[1] block min-w-0 truncate whitespace-nowrap [direction:rtl]">
+                      {model ?? 'Select model'}
+                    </span>
+                  </InputGroupButton>
+                  {model ? (
+                    <ContextProgressBar contextUsage={contextUsage} />
+                  ) : null}
+                  {openMenu === 'model' && (
+                    <div
+                      data-composer-menu-surface="true"
+                      className="absolute bottom-full left-0 mb-2 w-max min-w-[9rem] max-w-[14rem] overflow-hidden rounded-2xl border border-stone-700 bg-stone-900 shadow-2xl shadow-stone-950/40"
+                    >
+                      <div className="max-h-72 overflow-auto p-2">
+                        {modelOptions.map((entry) => (
+                          <button
+                            key={entry.id}
+                            type="button"
+                            onClick={() =>
+                              void handleUpdateSettings({
+                                model: entry.model,
+                                reasoningEffort: entry.defaultReasoningEffort,
+                              })
+                            }
+                            className={`block w-full rounded-xl px-3 py-2 text-left transition ${
+                              entry.model === model
+                                ? 'ui-status-warning'
+                                : `${composerMenuItemClassName} text-stone-300`
+                            }`}
+                          >
+                            <p className="text-sm font-medium">{entry.model}</p>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                <div className="relative">
+                  <InputGroupButton
+                    type="button"
+                    variant="ghost"
+                    size="xs"
+                    data-composer-menu-trigger="true"
+                    aria-haspopup="menu"
+                    aria-expanded={openMenu === 'effort'}
+                    disabled={effortControlsDisabled}
+                    onClick={() =>
+                      setOpenMenu((current) =>
+                        current === 'effort' ? null : 'effort',
+                      )
+                    }
+                    title={effortControlTitle}
+                    className={`${composerInlineToggleClassName} rounded-full px-2 disabled:cursor-not-allowed disabled:text-stone-700 ${
+                      effortControlsDisabled
+                        ? 'text-stone-500'
+                        : 'text-stone-300 hover:text-stone-100'
+                    }`}
+                  >
+                    {formatReasoningEffortLabel(reasoningEffort)}
+                  </InputGroupButton>
+                  {openMenu === 'effort' && (
+                    <div
+                      data-composer-menu-surface="true"
+                      className="absolute bottom-full left-0 mb-2 w-max min-w-[8rem] max-w-[12rem] overflow-hidden rounded-2xl border border-stone-700 bg-stone-900 shadow-2xl shadow-stone-950/40"
+                    >
+                      <div className="max-h-72 overflow-auto p-2">
+                        {supportedEfforts.map((entry) => (
+                          <button
+                            key={entry.reasoningEffort}
+                            type="button"
+                            onClick={() =>
+                              void handleUpdateSettings({
+                                reasoningEffort: entry.reasoningEffort,
+                              })
+                            }
+                            className={`block w-full rounded-xl px-3 py-2 text-left transition ${
+                              entry.reasoningEffort === reasoningEffort
+                                ? 'ui-status-warning'
+                                : `${composerMenuItemClassName} text-stone-300`
+                            }`}
+                          >
+                            <p className="text-sm font-medium">
+                              {formatReasoningEffortLabel(entry.reasoningEffort)}
+                            </p>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {slashCapabilities.planMode && (
+                  <InputGroupButton
+                    type="button"
+                    variant="ghost"
+                    size="xs"
+                    aria-pressed={displayedCollaborationMode === 'plan'}
+                    disabled={settingsBusy}
+                    onClick={() =>
+                      void handleUpdateSettings({
+                        collaborationMode:
+                          displayedCollaborationMode === 'plan'
+                            ? 'default'
+                            : 'plan',
+                      })
+                    }
+                    className={`${composerInlineToggleClassName} rounded-full px-2.5 ${
+                      displayedCollaborationMode === 'plan'
+                        ? composerPlanToggleActiveClassName
+                        : 'text-stone-500'
+                    } disabled:cursor-not-allowed disabled:opacity-60`}
+                  >
+                    Plan
+                  </InputGroupButton>
+                )}
+                <InputGroupButton
+                  type={canInterrupt ? 'button' : 'submit'}
+                  variant={canInterrupt ? 'ghost' : 'default'}
+                  size="icon-xs"
+                  aria-label={
+                    canInterrupt
+                      ? interruptLabel
+                      : goalComposeMode
+                        ? 'Set goal'
+                        : 'Send Prompt'
+                  }
+                  title={canInterrupt ? interruptLabel : sendButtonLabel}
+                  onClick={(event) => {
+                    if (!canInterrupt) {
+                      return;
+                    }
+                    event.preventDefault();
+                    void onInterrupt?.();
+                  }}
+                  disabled={
+                    canInterrupt
+                      ? false
+                      : goalBusy || busy || (activeView === 'chat' ? disabled : false)
+                  }
+                  className={`${composerSendButtonClassName} h-9 w-9 rounded-full text-sm font-medium disabled:cursor-not-allowed sm:h-8 sm:w-8 ${
+                    canInterrupt ? 'ui-action-danger' : sendButtonClassName
+                  }`}
+                >
+                  {canInterrupt ? (
+                    <span
+                      aria-hidden="true"
+                      className="block h-2.5 w-2.5 rounded-[2px] bg-current"
+                    />
+                  ) : (
+                    <svg
+                      aria-hidden="true"
+                      viewBox="0 0 16 16"
+                      className="h-4 w-4 fill-none stroke-current"
+                      strokeWidth="1.8"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M8 13V3" />
+                      <path d="m4 7 4-4 4 4" />
+                    </svg>
+                  )}
+                </InputGroupButton>
+              </>
+            )}
             {isShellView && shellPromptLabel && (
-              <span
+              <InputGroupText
                 className="min-w-0 max-w-[12rem] truncate rounded-full px-1.5 py-1 text-stone-400"
                 title={shellPromptLabel}
               >
                 {shellPromptLabel}
-              </span>
+              </InputGroupText>
             )}
 
             {isMobileShell && (
@@ -3611,7 +4051,8 @@ export function ThreadComposer({
               </div>
             )}
           </div>
-        </div>
+        </InputGroupAddon>
+        </InputGroup>
 
         {goalComposeMode && !isShellView && (
           <div className="relative z-20 mb-1.5 flex flex-wrap items-center gap-2 rounded-2xl border border-sky-300/25 bg-sky-300/[0.07] px-3 py-2 text-xs text-sky-50 shadow-sm shadow-stone-950/10">
@@ -3644,8 +4085,8 @@ export function ThreadComposer({
           </div>
         )}
 
-        <div className="relative">
-          {isShellView ? (
+        {isShellView ? (
+        <div className={`${composerPromptRegionClassName} relative`}>
             <textarea
               aria-label="Prompt"
               disabled={false}
@@ -3660,43 +4101,6 @@ export function ThreadComposer({
               placeholder={promptPlaceholder}
               className={`${promptInputClassName} resize-y pb-10`}
             />
-          ) : (
-            <div className={promptInputClassName}>
-              {prompt.length === 0 && (
-                <span className="pointer-events-none absolute left-4 top-2.5 text-stone-500">
-                  {promptPlaceholder}
-                </span>
-              )}
-              <div
-                ref={promptRef}
-                role="textbox"
-                aria-label="Prompt"
-                aria-multiline="true"
-                contentEditable={!disabled}
-                suppressContentEditableWarning
-                onInput={() => handlePromptInput()}
-                onPaste={handlePromptPaste}
-                onKeyDown={handlePromptKeyDown}
-                onKeyUp={() => {
-                  selectionSnapshotRef.current = snapshotSelection();
-                }}
-                onMouseUp={() => {
-                  selectionSnapshotRef.current = snapshotSelection();
-                }}
-                onBlur={() => {
-                  selectionSnapshotRef.current = snapshotSelection();
-                  setIsDragTargetActive(false);
-                }}
-                onDragEnter={handlePromptDragEnter}
-                onDragOver={handlePromptDragOver}
-                onDragLeave={handlePromptDragLeave}
-                onDrop={handlePromptDrop}
-                className={`relative z-[1] min-h-[3.75rem] whitespace-pre-wrap break-words pb-10 outline-none sm:min-h-[3.75rem] ${
-                  disabled ? 'cursor-not-allowed text-stone-500' : ''
-                }`}
-              />
-            </div>
-          )}
           <button
             type="button"
             aria-label={interruptLabel}
@@ -3716,13 +4120,7 @@ export function ThreadComposer({
           </button>
           <button
             type="submit"
-            aria-label={
-              goalComposeMode && !isShellView
-                ? 'Set goal'
-                : isShellView
-                  ? 'Send Shell Input'
-                  : 'Send Prompt'
-            }
+            aria-label="Send Shell Input"
             onMouseDown={(event) => {
               event.preventDefault();
             }}
@@ -3732,148 +4130,13 @@ export function ThreadComposer({
             onTouchStart={(event) => {
               event.preventDefault();
             }}
-            disabled={
-              goalBusy || busy || (activeView === 'chat' ? disabled : false)
-            }
+            disabled={goalBusy || busy}
             className={`absolute bottom-2.5 right-2.5 rounded-full px-3.5 py-1.5 text-sm font-medium shadow-lg shadow-stone-950/30 transition disabled:cursor-not-allowed disabled:bg-stone-700 disabled:text-stone-300 ${sendButtonClassName}`}
           >
             {sendButtonLabel}
           </button>
-          {!isShellView && (
-            <div className="absolute bottom-2.5 left-3 z-30 flex max-w-[calc(100%-7rem)] items-center gap-1.5 text-xs">
-              <div className="relative min-w-0">
-                <button
-                  type="button"
-                  data-composer-menu-trigger="true"
-                  aria-haspopup="menu"
-                  aria-expanded={openMenu === 'model'}
-                  aria-label={model ?? 'Select model'}
-                  disabled={modelControlsDisabled || modelOptions.length === 0}
-                  onClick={() =>
-                    setOpenMenu((current) =>
-                      current === 'model' ? null : 'model',
-                    )
-                  }
-                  title={
-                    fastMode
-                      ? `Fast mode is on. Turn it off from the slash toolbox to edit model. ${modelContextTitle}`
-                      : modelContextTitle
-                  }
-                  className="thread-composer-inline-toggle relative inline-flex min-w-0 max-w-[8.75rem] items-center overflow-hidden rounded-full px-2.5 py-1 text-left text-stone-300 transition disabled:cursor-not-allowed disabled:text-stone-600 sm:max-w-[11rem]"
-                >
-                  <span className="relative z-[1] block min-w-0 truncate whitespace-nowrap [direction:rtl]">
-                    {model ?? 'Select model'}
-                  </span>
-                </button>
-                {model ? (
-                  <ContextProgressBar contextUsage={contextUsage} />
-                ) : null}
-                {openMenu === 'model' && (
-                  <div
-                    data-composer-menu-surface="true"
-                    className="absolute bottom-full left-0 mb-2 w-max min-w-[9rem] max-w-[14rem] overflow-hidden rounded-2xl border border-stone-700 bg-stone-900 shadow-2xl shadow-stone-950/40"
-                  >
-                    <div className="max-h-72 overflow-auto p-2">
-                      {modelOptions.map((entry) => (
-                        <button
-                          key={entry.id}
-                          type="button"
-                          onClick={() =>
-                            void handleUpdateSettings({
-                              model: entry.model,
-                              reasoningEffort: entry.defaultReasoningEffort,
-                            })
-                          }
-                          className={`block w-full rounded-xl px-3 py-2 text-left transition ${
-                            entry.model === model
-                              ? 'ui-status-warning'
-                              : 'thread-composer-menu-item text-stone-300'
-                          }`}
-                        >
-                          <p className="text-sm font-medium">{entry.model}</p>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              <div className="relative">
-                <button
-                  type="button"
-                  data-composer-menu-trigger="true"
-                  aria-haspopup="menu"
-                  aria-expanded={openMenu === 'effort'}
-                  disabled={effortControlsDisabled}
-                  onClick={() =>
-                    setOpenMenu((current) =>
-                      current === 'effort' ? null : 'effort',
-                    )
-                  }
-                  title={effortControlTitle}
-                  className={`thread-composer-inline-toggle rounded-full px-2 py-1 transition disabled:cursor-not-allowed disabled:text-stone-700 ${
-                    effortControlsDisabled
-                      ? 'text-stone-500'
-                      : 'text-stone-300 hover:text-stone-100'
-                  }`}
-                >
-                  {formatReasoningEffortLabel(reasoningEffort)}
-                </button>
-                {openMenu === 'effort' && (
-                  <div
-                    data-composer-menu-surface="true"
-                    className="absolute bottom-full left-0 mb-2 w-max min-w-[8rem] max-w-[12rem] overflow-hidden rounded-2xl border border-stone-700 bg-stone-900 shadow-2xl shadow-stone-950/40"
-                  >
-                    <div className="max-h-72 overflow-auto p-2">
-                      {supportedEfforts.map((entry) => (
-                        <button
-                          key={entry.reasoningEffort}
-                          type="button"
-                          onClick={() =>
-                            void handleUpdateSettings({
-                              reasoningEffort: entry.reasoningEffort,
-                            })
-                          }
-                          className={`block w-full rounded-xl px-3 py-2 text-left transition ${
-                            entry.reasoningEffort === reasoningEffort
-                              ? 'ui-status-warning'
-                              : 'thread-composer-menu-item text-stone-300'
-                          }`}
-                        >
-                          <p className="text-sm font-medium">
-                            {formatReasoningEffortLabel(entry.reasoningEffort)}
-                          </p>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {slashCapabilities.planMode && (
-                <button
-                  type="button"
-                  aria-pressed={displayedCollaborationMode === 'plan'}
-                  disabled={settingsBusy}
-                  onClick={() =>
-                    void handleUpdateSettings({
-                      collaborationMode:
-                        displayedCollaborationMode === 'plan'
-                          ? 'default'
-                          : 'plan',
-                    })
-                  }
-                  className={`thread-composer-inline-toggle rounded-full px-2.5 py-1 transition ${
-                    displayedCollaborationMode === 'plan'
-                      ? 'thread-composer-plan-toggle-active'
-                      : 'text-stone-500'
-                  } disabled:cursor-not-allowed disabled:opacity-60`}
-                >
-                  Plan
-                </button>
-              )}
-            </div>
-          )}
+        </div>
+        ) : null}
         </div>
         {error && (
           <div className="mt-2 rounded-2xl border border-rose-500/40 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">
