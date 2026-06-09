@@ -4057,11 +4057,11 @@ export function ThreadComposer({
         </InputGroup>
 
         {goalComposeMode && !isShellView && (
-          <div className="relative z-20 mb-1.5 flex flex-wrap items-center gap-2 rounded-2xl border border-sky-300/25 bg-sky-300/[0.07] px-3 py-2 text-xs text-sky-50 shadow-sm shadow-stone-950/10">
-            <span className="font-medium uppercase tracking-[0.16em] text-sky-100/90">
+          <div className="thread-goal-compose-card relative z-20 mb-1.5 flex flex-wrap items-center gap-2 rounded-2xl border px-3 py-2 text-xs shadow-sm">
+            <span className="thread-goal-compose-label font-medium uppercase tracking-[0.16em]">
               Goal
             </span>
-            <label className="flex items-center gap-2 text-stone-300">
+            <label className="thread-goal-compose-field flex items-center gap-2">
               <span>Max tokens (k)</span>
               <input
                 aria-label="Goal token budget"
@@ -4069,18 +4069,18 @@ export function ThreadComposer({
                 onChange={(event) => setGoalTokenBudget(event.target.value)}
                 inputMode="numeric"
                 placeholder="Optional"
-                className="h-7 w-24 rounded-full border border-sky-300/25 bg-stone-950/60 px-3 text-xs text-stone-100 outline-none placeholder:text-stone-500 focus:border-sky-300/70"
+                className="thread-goal-compose-input h-7 w-24 rounded-full border px-3 text-xs outline-none"
               />
             </label>
             {goalLocalError ? (
-              <span className="min-w-0 flex-1 text-rose-200">
+              <span className="thread-goal-compose-error min-w-0 flex-1">
                 {goalLocalError}
               </span>
             ) : null}
             <button
               type="button"
               onClick={exitGoalComposeMode}
-              className="rounded-full border border-stone-700/80 px-2.5 py-1 text-[11px] text-stone-300 transition hover:bg-stone-800"
+              className="thread-goal-compose-cancel rounded-full border px-2.5 py-1 text-[11px] transition"
             >
               Cancel
             </button>

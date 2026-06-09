@@ -201,7 +201,7 @@ export function GraphWorkspacePreviewPane({
                   type="button"
                   onClick={onLoadMore}
                   disabled={loadingMore}
-                  className="rounded-md bg-slate-100 px-4 py-1.5 text-xs text-slate-600 hover:bg-slate-200 disabled:opacity-50 dark:bg-[#1d222c] dark:text-slate-300 dark:hover:bg-[#222733]"
+                  className="thread-graph-load-more-button rounded-md px-4 py-1.5 text-xs disabled:opacity-50"
                 >
                   {loadingMore
                     ? 'Loading...'

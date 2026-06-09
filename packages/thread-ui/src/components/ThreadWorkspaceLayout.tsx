@@ -163,6 +163,7 @@ function ThreadCard({
   );
   const resetTimerRef = useRef<number | null>(null);
   const workspaceLabel = workspaceLabels[thread.workspaceId];
+  const roomMetaLabel = workspaceLabel && !currentWorkspaceId ? workspaceLabel : null;
   const isCurrentThread = currentThreadId === thread.id;
 
   useEffect(() => {
@@ -257,18 +258,23 @@ function ThreadCard({
                 event.preventDefault();
                 void handleCopySessionId();
               }}
-              className="thread-card-quiet-button inline-flex h-6 w-6 items-center justify-center rounded-full transition"
+              className="thread-card-quiet-button thread-card-session-copy-button inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full transition"
             >
               <Copy className="h-3.5 w-3.5" />
             </button>
           ) : null}
         </div>
         <div className="mt-1 flex min-w-0 items-center gap-2">
-          <p className="min-w-0 flex-1 truncate text-[11px] text-[var(--theme-fg-muted)]">
-            {workspaceLabel && !currentWorkspaceId
-              ? workspaceLabel
-              : (thread.model ?? "No model")}
-          </p>
+          {roomMetaLabel ? (
+            <p
+              className="thread-graph-room-card-meta min-w-0 flex-1 truncate text-[11px] text-[var(--theme-fg-muted)]"
+              title={roomMetaLabel}
+            >
+              {roomMetaLabel}
+            </p>
+          ) : (
+            <span className="min-w-0 flex-1" aria-hidden="true" />
+          )}
           <span
             className={`shrink-0 rounded-full border px-1.5 py-0.5 text-[9px] uppercase tracking-normal ${threadStatusClassName(thread.status)}`}
           >

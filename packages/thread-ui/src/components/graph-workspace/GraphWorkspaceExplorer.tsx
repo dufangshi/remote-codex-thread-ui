@@ -229,7 +229,7 @@ function WorkspaceTreeRow({
     <div
       className={`thread-graph-tree-row group flex items-center text-sm transition ${
         selected
-          ? 'is-selected bg-slate-950 text-white dark:bg-slate-100 dark:text-[#11141a]'
+          ? 'is-selected'
           : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-[#222733] dark:hover:text-slate-100'
       }`}
     >
@@ -248,7 +248,7 @@ function WorkspaceTreeRow({
           onClick={() => onDownload(node)}
           className={`thread-graph-tree-action mr-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-md transition sm:h-7 sm:w-7 sm:opacity-0 sm:group-hover:opacity-100 sm:focus:opacity-100 ${
             selected
-              ? 'text-white/70 hover:bg-white/10 hover:text-white dark:text-[#11141a]/65 dark:hover:bg-[#11141a]/10 dark:hover:text-[#11141a]'
+              ? 'is-selected'
               : 'text-slate-400 hover:bg-white hover:text-slate-900 dark:text-slate-500 dark:hover:bg-[#1d222c] dark:hover:text-slate-100'
           }`}
           title={`Download ${node.name}`}
@@ -291,14 +291,14 @@ function LiveWorkspaceSection({
               onClick={() => onSelect(node.id)}
               className={`thread-graph-tree-row flex min-h-9 w-full items-center gap-2 px-3 py-2 text-left text-sm transition sm:min-h-0 sm:py-1.5 ${
                 selected
-                  ? 'is-selected bg-slate-950 text-white dark:bg-slate-100 dark:text-[#11141a]'
+                  ? 'is-selected'
                   : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-[#222733] dark:hover:text-slate-100'
               }`}
             >
               <FileCode2
                 className={`h-4 w-4 shrink-0 ${
                   selected
-                    ? 'text-white dark:text-[#11141a]'
+                    ? 'text-current'
                     : 'text-emerald-600 dark:text-emerald-300'
                 }`}
               />
