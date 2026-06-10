@@ -443,9 +443,13 @@ function GraphChatHistoryEventFrame({
               <Badge
                 variant="outline"
                 className={`thread-graph-tool-badge ${statusConfig.className} rounded-full px-2 py-0.5 text-xs font-normal`}
+                title={statusConfig.label}
+                aria-label={`Status: ${statusConfig.label}`}
               >
                 {statusConfig.icon}
-                {statusConfig.label}
+                <span className="thread-graph-status-label">
+                  {statusConfig.label}
+                </span>
               </Badge>
             ) : null}
             {headerMeta}
@@ -517,9 +521,13 @@ function GraphChatHistoryToolFrame({
               <Badge
                 variant="outline"
                 className={`thread-graph-tool-badge ${statusConfig.className} ml-1 sm:ml-2 rounded-full px-2 py-0.5 text-xs font-normal`}
+                title={statusConfig.label}
+                aria-label={`Status: ${statusConfig.label}`}
               >
                 {statusConfig.icon}
-                {statusConfig.label}
+                <span className="thread-graph-status-label">
+                  {statusConfig.label}
+                </span>
               </Badge>
             </div>
           </AccordionTrigger>

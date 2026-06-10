@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { CheckCircle2, Circle, Loader2, XCircle } from 'lucide-react';
 
 type GraphChatMessageKind = 'userMessage' | 'agentMessage';
 
@@ -26,25 +27,40 @@ export function GraphChatMessageStatusBadge({
   }
 
   const normalized = status.toLowerCase();
-  const className =
+  const isRunning =
     normalized.includes('running') ||
     normalized.includes('generating') ||
-    normalized.includes('steering')
-      ? 'ui-status-warning'
-      : normalized.includes('failed') || normalized.includes('error')
-        ? 'ui-status-danger'
-        : normalized.includes('accepted') || normalized.includes('complete')
-          ? 'ui-status-success'
-          : 'ui-status-neutral';
+    normalized.includes('steering');
+  const isFailed = normalized.includes('failed') || normalized.includes('error');
+  const isCompleted =
+    normalized.includes('accepted') || normalized.includes('complete');
+  const className = isRunning
+    ? 'ui-status-warning'
+    : isFailed
+      ? 'ui-status-danger'
+      : isCompleted
+        ? 'ui-status-success'
+        : 'ui-status-neutral';
+  const icon = isRunning ? (
+    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+  ) : isFailed ? (
+    <XCircle className="h-3.5 w-3.5" />
+  ) : isCompleted ? (
+    <CheckCircle2 className="h-3.5 w-3.5" />
+  ) : (
+    <Circle className="h-3.5 w-3.5" />
+  );
 
   return (
     <span
       className={`thread-graph-message-status inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-xs font-normal ${className}`}
+      title={status}
+      aria-label={`Status: ${status}`}
     >
-      {normalized.includes('running') || normalized.includes('generating') ? (
-        <GraphChatRunningDots />
-      ) : null}
-      {status}
+      <span className="thread-graph-message-status-icon inline-flex shrink-0">
+        {isRunning ? <GraphChatRunningDots /> : icon}
+      </span>
+      <span className="thread-graph-status-label">{status}</span>
     </span>
   );
 }
@@ -89,15 +105,15 @@ export function GraphChatMessageFrame({
         }`}
       >
         {!isUser ? (
-          <div className="thread-graph-message-header mb-2 flex flex-col gap-1.5 sm:flex-row sm:items-start sm:justify-between sm:gap-3">
-            <div className="flex min-w-0 flex-wrap items-center gap-2">
+          <div className="thread-graph-message-header mb-2 flex min-w-0 items-center justify-between gap-2">
+            <div className="flex min-w-0 items-center gap-1.5">
               <span className="thread-graph-message-sender rounded-full px-2.5 py-1 text-xs font-semibold tracking-[0.02em]">
                 Assistant
               </span>
               <GraphChatMessageStatusBadge status={status ?? 'Complete'} />
             </div>
             {copyButton || timeNode ? (
-              <div className="thread-graph-message-header-actions flex shrink-0 items-center gap-2 sm:pt-1">
+              <div className="thread-graph-message-header-actions flex shrink-0 items-center gap-1.5 sm:gap-2">
                 {copyButton}
                 {timeNode}
               </div>

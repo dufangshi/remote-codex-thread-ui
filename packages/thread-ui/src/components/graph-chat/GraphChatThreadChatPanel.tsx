@@ -153,12 +153,15 @@ export function GraphChatThreadChatPanel({
       const keyboardInset = viewport
         ? Math.max(
             0,
-            Math.round(
-              window.innerHeight - viewport.height - viewport.offsetTop,
-            ),
+            Math.round(window.innerHeight - viewport.height - viewport.offsetTop),
           )
         : 0;
-      setMobileKeyboardInset(keyboardInset);
+      const viewportDelta = viewport
+        ? Math.max(0, Math.round(window.innerHeight - viewport.height))
+        : keyboardInset;
+      const correctedInset = Math.min(keyboardInset, viewportDelta);
+      const maxReasonableInset = Math.max(0, Math.round(window.innerHeight * 0.52));
+      setMobileKeyboardInset(Math.min(correctedInset, maxReasonableInset));
     };
 
     updateKeyboardInset();
@@ -282,7 +285,9 @@ export function GraphChatThreadChatPanel({
   );
 
   const mobileComposerBottomOffset =
-    isMobileViewport && mobilePromptFocused ? mobileKeyboardInset : 0;
+    isMobileViewport && mobilePromptFocused
+      ? Math.max(0, mobileKeyboardInset - floatingMobileComposerBottomOffset)
+      : 0;
   const effectiveMobileComposerHeight = Math.max(mobileComposerHeight, 144);
   const effectiveMobileComposerOverlap = Math.max(
     mobileComposerOverlap,

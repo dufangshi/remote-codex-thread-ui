@@ -161,9 +161,13 @@ export function GraphChatToolCall({
               </span>
               <span
                 className={`thread-graph-tool-badge ${statusConfig.className}`}
+                title={statusConfig.label}
+                aria-label={`Status: ${statusConfig.label}`}
               >
                 {statusConfig.icon}
-                {statusConfig.label}
+                <span className="thread-graph-status-label">
+                  {statusConfig.label}
+                </span>
               </span>
             </div>
           </AccordionTrigger>

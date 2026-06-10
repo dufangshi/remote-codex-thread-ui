@@ -19,6 +19,7 @@ import type { ThreadDetailUiAdapter } from './adapters';
 import type { ThemeMode } from './app-shell/AppShellNavContext';
 import {
   createDefaultPluginContextValue,
+  PluginContext,
   type PluginContextValue,
 } from './plugins/plugin-context';
 import { usePlugins } from './plugins/usePlugins';
@@ -113,6 +114,7 @@ export interface ThreadDetailSurfaceProps {
   workspaceTitle?: string;
   workspaceActions?: ReactNode;
   workspaceFeatures?: ThreadGraphWorkspaceFeatures;
+  onNewThreadTitle?: (title: string) => Promise<void> | void;
   beforeTimelineContent?: ReactNode;
   errorContent?: ReactNode;
   workspaceMissingContent?: ReactNode;
@@ -178,6 +180,7 @@ export function ThreadDetailSurface({
   workspaceTitle,
   workspaceActions,
   workspaceFeatures,
+  onNewThreadTitle,
   beforeTimelineContent,
   errorContent,
   workspaceMissingContent,
@@ -381,7 +384,7 @@ export function ThreadDetailSurface({
     ))
   );
 
-  return (
+  const surface = (
     <ThreadWorkspaceLayout
       threads={threads}
       status={status}
@@ -412,6 +415,7 @@ export function ThreadDetailSurface({
       workspaceContent={resolvedWorkspaceContent}
       workspaceTitle={workspaceTitle ?? 'Workspace'}
       workspaceActions={workspaceActions}
+      {...(onNewThreadTitle ? { onNewThreadTitle } : {})}
       {...(onCloseAppNavigation ? { onCloseAppNavigation } : {})}
       {...(onShellThemeModeChange
         ? { onThemeModeChange: onShellThemeModeChange }
@@ -432,4 +436,12 @@ export function ThreadDetailSurface({
       {defaultContent}
     </ThreadWorkspaceLayout>
   );
+
+  if (providedPlugins) {
+    return (
+      <PluginContext.Provider value={plugins}>{surface}</PluginContext.Provider>
+    );
+  }
+
+  return surface;
 }

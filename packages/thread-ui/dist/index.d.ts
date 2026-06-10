@@ -452,6 +452,7 @@ interface PluginContextValue {
     getThreadPanels: () => ThreadPanelContribution[];
 }
 declare function mergePluginState(modules: FrontendPluginModule[], serverPlugins: PluginDto[]): PluginDto[];
+declare function createDefaultPluginContextValue(): PluginContextValue;
 declare const PluginContext: react.Context<PluginContextValue>;
 
 interface ThreadGraphWorkspacePanelProps {
@@ -543,6 +544,7 @@ interface ThreadDetailSurfaceProps {
     workspaceTitle?: string;
     workspaceActions?: ReactNode;
     workspaceFeatures?: ThreadGraphWorkspaceFeatures;
+    onNewThreadTitle?: (title: string) => Promise<void> | void;
     beforeTimelineContent?: ReactNode;
     errorContent?: ReactNode;
     workspaceMissingContent?: ReactNode;
@@ -581,7 +583,7 @@ interface ThreadDetailSurfaceProps {
     loadingContent?: ReactNode;
     emptyContent?: ReactNode;
 }
-declare function ThreadDetailSurface({ threads, detail, loading, error, status, plugins: providedPlugins, adapter, metaContent, settingsContent, globalSettingsContent, mobileHeaderAction, appMenuButton, appNavigationMenu, workspaceReturnHref, onWorkspaceReturn, surfaceActions, floatingPanel, workspaceContent, workspaceTitle, workspaceActions, workspaceFeatures, beforeTimelineContent, errorContent, workspaceMissingContent, dialogs, currentThreadId, currentWorkspaceId, currentWorkspaceLabel, onCloseAppNavigation, className, activeView, liveOutput, timelineProps, composerProps, shellComposerProps, useFloatingMobileComposer, floatingMobileComposerBottomOffset, composerHostRef, shellPanelRef, shellEffectiveTheme, shellThemeMode, onShellThemeModeChange, onShellStateChange, shellUnavailableContent, shellDisconnectedContent, timelineComponent: TimelineComponent, shellPanelComponent: ShellPanelComponent, shellContent, loadingContent, emptyContent, }: ThreadDetailSurfaceProps): react.JSX.Element;
+declare function ThreadDetailSurface({ threads, detail, loading, error, status, plugins: providedPlugins, adapter, metaContent, settingsContent, globalSettingsContent, mobileHeaderAction, appMenuButton, appNavigationMenu, workspaceReturnHref, onWorkspaceReturn, surfaceActions, floatingPanel, workspaceContent, workspaceTitle, workspaceActions, workspaceFeatures, onNewThreadTitle, beforeTimelineContent, errorContent, workspaceMissingContent, dialogs, currentThreadId, currentWorkspaceId, currentWorkspaceLabel, onCloseAppNavigation, className, activeView, liveOutput, timelineProps, composerProps, shellComposerProps, useFloatingMobileComposer, floatingMobileComposerBottomOffset, composerHostRef, shellPanelRef, shellEffectiveTheme, shellThemeMode, onShellThemeModeChange, onShellStateChange, shellUnavailableContent, shellDisconnectedContent, timelineComponent: TimelineComponent, shellPanelComponent: ShellPanelComponent, shellContent, loadingContent, emptyContent, }: ThreadDetailSurfaceProps): react.JSX.Element;
 
 declare const builtinFrontendPlugins: FrontendPluginModule[];
 
@@ -621,4 +623,4 @@ interface AppShellSettingsDialogProps {
 }
 declare function AppShellSettingsDialog({ extraContent, importPluginInput, }?: AppShellSettingsDialogProps): react.JSX.Element | null;
 
-export { type AgentBackendId, AppShellMenuButton, AppShellNavContext, type AppShellNavContextValue, type AppShellNavigationItem, AppShellNavigationMenu, type AppShellNavigationMenuProps, AppShellSettingsDialog, type AppShellSettingsDialogProps, type ArtifactRenderContext, ConfirmDialog, ExportTranscriptDialog, type FrontendPluginModule, type InlineCodeRenderContext, InlineXyzRenderer, LongTextDialog, MemoizedThreadGraphWorkspacePanel, PluginContext, type PluginContextValue, PluginProvider, type PromptAttachmentUpload, type SendPromptInput, type ShellSocketConnection, type ShellSocketHandlers, type ThemeMode, ThreadCards, ThreadComposer, type ThreadComposerProps, ThreadDetailSurface, type ThreadDetailSurfaceProps, type ThreadDetailUiAdapter, type ThreadGraphWorkspaceFeatures, ThreadGraphWorkspacePanel, type ThreadPanelContribution, type ThreadShellAdapter, type ThreadShellControlState$1 as ThreadShellControlState, ThreadShellPanel, type ThreadShellPanelHandle, ThreadTimeline, type ThreadTimelineAdapter, type ThreadTimelineProps, type ThreadWorkspaceAdapter, ThreadWorkspaceLayout, type WorkspaceTab, XyzArtifactRenderer, builtinFrontendPlugins, formatLongTimestamp, formatShortTimestamp, hasLikelyMarkdownSyntax, historyItemAccentClassName, historyItemLabel, mergePluginState, threadStatusClassName, threadStatusLabel, turnStatusLabel, useAppShellNav, usePlugins };
+export { type AgentBackendId, AppShellMenuButton, AppShellNavContext, type AppShellNavContextValue, type AppShellNavigationItem, AppShellNavigationMenu, type AppShellNavigationMenuProps, AppShellSettingsDialog, type AppShellSettingsDialogProps, type ArtifactRenderContext, ConfirmDialog, ExportTranscriptDialog, type FrontendPluginModule, type InlineCodeRenderContext, InlineXyzRenderer, LongTextDialog, MemoizedThreadGraphWorkspacePanel, PluginContext, type PluginContextValue, PluginProvider, type PromptAttachmentUpload, type SendPromptInput, type ShellSocketConnection, type ShellSocketHandlers, type ThemeMode, ThreadCards, ThreadComposer, type ThreadComposerProps, ThreadDetailSurface, type ThreadDetailSurfaceProps, type ThreadDetailUiAdapter, type ThreadGraphWorkspaceFeatures, ThreadGraphWorkspacePanel, type ThreadPanelContribution, type ThreadShellAdapter, type ThreadShellControlState$1 as ThreadShellControlState, ThreadShellPanel, type ThreadShellPanelHandle, ThreadTimeline, type ThreadTimelineAdapter, type ThreadTimelineProps, type ThreadWorkspaceAdapter, ThreadWorkspaceLayout, type WorkspaceTab, XyzArtifactRenderer, builtinFrontendPlugins, createDefaultPluginContextValue, formatLongTimestamp, formatShortTimestamp, hasLikelyMarkdownSyntax, historyItemAccentClassName, historyItemLabel, mergePluginState, threadStatusClassName, threadStatusLabel, turnStatusLabel, useAppShellNav, usePlugins };

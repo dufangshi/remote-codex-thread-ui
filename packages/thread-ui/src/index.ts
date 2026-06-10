@@ -56,6 +56,7 @@ export {
 
 export { builtinFrontendPlugins } from './plugins/builtin-plugin-modules';
 export {
+  createDefaultPluginContextValue,
   PluginContext,
   mergePluginState,
   type PluginContextValue,

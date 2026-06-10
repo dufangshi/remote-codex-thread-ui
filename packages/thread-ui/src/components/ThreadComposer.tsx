@@ -2797,7 +2797,11 @@ export function ThreadComposer({
             >
               <div className={graphChatInputClassName}>
                 {prompt.length === 0 && (
-                  <span className="pointer-events-none absolute left-3 top-3 text-slate-500 sm:left-4 sm:top-4 dark:text-slate-400">
+                  <span
+                    className={`pointer-events-none absolute left-3 top-3 truncate text-slate-500 sm:left-4 sm:top-4 dark:text-slate-400 ${
+                      canInterrupt ? 'right-12' : 'right-3 sm:right-4'
+                    }`}
+                  >
                     {promptPlaceholder}
                   </span>
                 )}
@@ -2829,10 +2833,31 @@ export function ThreadComposer({
                   onDragLeave={handlePromptDragLeave}
                   onDrop={handlePromptDrop}
                   className={`relative z-[1] min-h-[4.25rem] whitespace-pre-wrap break-words pb-2 outline-none sm:min-h-[4.25rem] ${
+                    canInterrupt ? 'pr-12' : ''
+                  } ${
                     disabled ? 'cursor-not-allowed text-slate-500' : ''
                   }`}
                 />
               </div>
+              {canInterrupt ? (
+                <InputGroupButton
+                  type="button"
+                  variant="ghost"
+                  size="icon-xs"
+                  aria-label={interruptLabel}
+                  title={interruptLabel}
+                  onClick={(event) => {
+                    event.preventDefault();
+                    void onInterrupt?.();
+                  }}
+                  className="thread-graph-composer-stop-button ui-action-danger absolute right-2 top-2 z-30 h-8 w-8 rounded-full text-sm font-medium"
+                >
+                  <span
+                    aria-hidden="true"
+                    className="block h-2.5 w-2.5 rounded-[2px] bg-current"
+                  />
+                </InputGroupButton>
+              ) : null}
             </div>
           ) : null}
         <InputGroupAddon
@@ -3833,51 +3858,29 @@ export function ThreadComposer({
                   </InputGroupButton>
                 )}
                 <InputGroupButton
-                  type={canInterrupt ? 'button' : 'submit'}
-                  variant={canInterrupt ? 'ghost' : 'default'}
+                  type="submit"
+                  variant="default"
                   size="icon-xs"
                   aria-label={
-                    canInterrupt
-                      ? interruptLabel
-                      : goalComposeMode
-                        ? 'Set goal'
-                        : 'Send Prompt'
+                    goalComposeMode
+                      ? 'Set goal'
+                      : 'Send Prompt'
                   }
-                  title={canInterrupt ? interruptLabel : sendButtonLabel}
-                  onClick={(event) => {
-                    if (!canInterrupt) {
-                      return;
-                    }
-                    event.preventDefault();
-                    void onInterrupt?.();
-                  }}
-                  disabled={
-                    canInterrupt
-                      ? false
-                      : goalBusy || busy || (activeView === 'chat' ? disabled : false)
-                  }
-                  className={`${composerSendButtonClassName} h-9 w-9 rounded-full text-sm font-medium disabled:cursor-not-allowed sm:h-8 sm:w-8 ${
-                    canInterrupt ? 'ui-action-danger' : sendButtonClassName
-                  }`}
+                  title={sendButtonLabel}
+                  disabled={goalBusy || (activeView === 'chat' ? disabled : false)}
+                  className={`${composerSendButtonClassName} h-9 w-9 rounded-full text-sm font-medium disabled:cursor-not-allowed sm:h-8 sm:w-8 ${sendButtonClassName}`}
                 >
-                  {canInterrupt ? (
-                    <span
-                      aria-hidden="true"
-                      className="block h-2.5 w-2.5 rounded-[2px] bg-current"
-                    />
-                  ) : (
-                    <svg
-                      aria-hidden="true"
-                      viewBox="0 0 16 16"
-                      className="h-4 w-4 fill-none stroke-current"
-                      strokeWidth="1.8"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <path d="M8 13V3" />
-                      <path d="m4 7 4-4 4 4" />
-                    </svg>
-                  )}
+                  <svg
+                    aria-hidden="true"
+                    viewBox="0 0 16 16"
+                    className="h-4 w-4 fill-none stroke-current"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M8 13V3" />
+                    <path d="m4 7 4-4 4 4" />
+                  </svg>
                 </InputGroupButton>
               </>
             )}

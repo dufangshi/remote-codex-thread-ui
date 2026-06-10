@@ -979,6 +979,25 @@ export function ThreadWorkspaceLayout({
     layoutMode === "mobile" ||
     (layoutMode === "responsive" && isShellMobileViewport);
   const renderMobileTopbarControls = renderMobileWorkspaceSplit;
+  const shouldShowMobileRoomsButton =
+    renderMobileTopbarControls && !mobileRoomsOpen;
+  const canReturnToWorkspace = Boolean(workspaceReturnHref || onWorkspaceReturn);
+  const workspaceReturnControl = canReturnToWorkspace ? (
+    <a
+      href={workspaceReturnHref ?? "#"}
+      onClick={(event) => {
+        if (onWorkspaceReturn) {
+          event.preventDefault();
+          onWorkspaceReturn();
+        }
+      }}
+      className="thread-icon-button inline-flex h-10 w-10 items-center justify-center rounded-full sm:h-9 sm:w-9"
+      title="Back to workspace"
+      aria-label="Back to workspace"
+    >
+      <ArrowLeft className="h-4 w-4" />
+    </a>
+  ) : null;
 
   return (
     <>
@@ -1056,22 +1075,7 @@ export function ThreadWorkspaceLayout({
                   }`}
                 >
                   {renderSettingsDialog()}
-                  {workspaceReturnHref || onWorkspaceReturn ? (
-                    <a
-                      href={workspaceReturnHref ?? "#"}
-                      onClick={(event) => {
-                        if (onWorkspaceReturn) {
-                          event.preventDefault();
-                          onWorkspaceReturn();
-                        }
-                      }}
-                      className="thread-icon-button inline-flex h-10 w-10 items-center justify-center rounded-full sm:h-9 sm:w-9"
-                      title="Back to workspace"
-                      aria-label="Back to workspace"
-                    >
-                      <ArrowLeft className="h-4 w-4" />
-                    </a>
-                  ) : null}
+                  {workspaceReturnControl}
                   <button
                     type="button"
                     onClick={() => setMobileRoomsOpen(false)}
@@ -1116,9 +1120,7 @@ export function ThreadWorkspaceLayout({
               <div className="thread-topbar-row flex min-h-12 items-center px-3 py-1.5 sm:min-h-12 sm:px-4">
                 <div className="flex w-full items-center justify-between gap-3 sm:gap-4">
                   <div className="flex min-w-0 items-center gap-2 sm:gap-3">
-                    {renderMobileTopbarControls &&
-                    showMobileThreadNavToggle &&
-                    !mobileRoomsOpen ? (
+                    {shouldShowMobileRoomsButton ? (
                       <button
                         type="button"
                         onClick={() => setMobileRoomsOpen(true)}
@@ -1139,30 +1141,17 @@ export function ThreadWorkspaceLayout({
                         <button
                           type="button"
                           onClick={() => {
-                            if (!topbarRoomLabel) {
-                              return;
-                            }
-                            void navigator.clipboard?.writeText(
-                              topbarRoomLabel,
-                            );
+                            setTopbarDetailsOpen((open) => !open);
                           }}
+                          aria-expanded={topbarDetailsOpen}
+                          aria-haspopup="dialog"
                           className="thread-topbar-meta-row flex min-w-0 max-w-full items-center gap-1 text-left text-[11px] leading-none sm:text-xs"
-                          title="Copy room ID"
+                          title="Session and usage"
                         >
                           <span className="shrink-0">Room</span>
                           <span className="truncate font-mono">
                             {topbarRoomLabel}
                           </span>
-                        </button>
-                        <button
-                          type="button"
-                          aria-expanded={topbarDetailsOpen}
-                          aria-haspopup="dialog"
-                          onClick={() => setTopbarDetailsOpen((open) => !open)}
-                          className="thread-topbar-details-trigger inline-flex h-6 shrink-0 items-center rounded-full border px-2 text-[11px] font-medium leading-none transition"
-                          title="Session and usage"
-                        >
-                          Details
                         </button>
                         {topbarDetailsOpen ? (
                           <div
@@ -1170,6 +1159,24 @@ export function ThreadWorkspaceLayout({
                             role="dialog"
                             aria-label="Session and usage"
                           >
+                            <button
+                              type="button"
+                              onClick={() => {
+                                if (!topbarRoomLabel) {
+                                  return;
+                                }
+                                void navigator.clipboard?.writeText(
+                                  topbarRoomLabel,
+                                );
+                              }}
+                              className="thread-topbar-meta-row flex min-w-0 max-w-full items-center gap-2 text-left text-xs leading-5"
+                              title="Copy room ID"
+                            >
+                              <span className="w-12 shrink-0">Room</span>
+                              <span className="truncate font-mono">
+                                {topbarRoomLabel}
+                              </span>
+                            </button>
                             <button
                               type="button"
                               onClick={() => {
