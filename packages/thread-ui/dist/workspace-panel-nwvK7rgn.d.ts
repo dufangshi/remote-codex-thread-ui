@@ -95,6 +95,12 @@ interface ThreadWorkspaceAdapter {
         path: string;
         file: File;
     }) => Promise<ThreadWorkspaceUploadResult>;
+    writeFile?: (input: {
+        threadId: string;
+        workspaceId?: string | null;
+        path: string;
+        content: string;
+    }) => Promise<void> | void;
     downloadNode?: (input: {
         threadId: string;
         workspaceId?: string | null;

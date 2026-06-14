@@ -1,5 +1,5 @@
 // src/components/ThreadGraphWorkspacePanel.tsx
-import { memo as memo2, useEffect as useEffect5, useMemo as useMemo5, useState as useState4 } from "react";
+import { memo as memo2, useEffect as useEffect6, useMemo as useMemo5, useState as useState5 } from "react";
 import {
   BarChart2 as BarChart22,
   BookOpen,
@@ -12,10 +12,10 @@ import {
 
 // src/components/graph-workspace/GraphWorkspaceExplorer.tsx
 import {
-  useEffect as useEffect2,
+  useEffect as useEffect3,
   useMemo as useMemo3,
   useRef as useRef2,
-  useState as useState2
+  useState as useState3
 } from "react";
 import {
   ChevronDown,
@@ -303,8 +303,17 @@ function collectAncestorPaths(path) {
 }
 
 // src/components/graph-workspace/GraphWorkspacePreviewPane.tsx
-import { memo } from "react";
-import { ChevronsRight } from "lucide-react";
+import {
+  memo,
+  useEffect as useEffect2,
+  useState as useState2
+} from "react";
+import {
+  ChevronsRight,
+  Pencil,
+  Save,
+  X
+} from "lucide-react";
 
 // src/components/graph-workspace/GraphWorkspaceCards.tsx
 import { jsx, jsxs } from "react/jsx-runtime";
@@ -1467,7 +1476,12 @@ function GraphMoleculeViewer({
 }
 
 // src/components/graph-workspace/GraphWorkspacePreviewPane.tsx
-import { jsx as jsx11, jsxs as jsxs8 } from "react/jsx-runtime";
+import { Fragment as Fragment2, jsx as jsx11, jsxs as jsxs8 } from "react/jsx-runtime";
+var SMALL_TEXT_FILE_MAX_BYTES = 50 * 1024;
+var SMALL_TEXT_FILE_MAX_LINES = 1e3;
+function isSmallEditableTextFile(file) {
+  return !file.truncated && file.size <= SMALL_TEXT_FILE_MAX_BYTES && file.content.split("\n").length <= SMALL_TEXT_FILE_MAX_LINES;
+}
 function previewTargetTitle(target) {
   if (!target) {
     return null;
@@ -1502,6 +1516,7 @@ function GraphWorkspacePreviewPane({
   error,
   imageUrl,
   loadingMore,
+  onSaveFile,
   onLoadMore,
   onCollapse,
   pdfUrl,
@@ -1510,6 +1525,10 @@ function GraphWorkspacePreviewPane({
   plugins,
   selectedTarget
 }) {
+  const [editing, setEditing] = useState2(false);
+  const [draftContent, setDraftContent] = useState2("");
+  const [saveError, setSaveError] = useState2(null);
+  const [saving, setSaving] = useState2(false);
   const activeNode = selectedTarget?.node ?? null;
   const renderedArtifact = activeNode?.artifact ? plugins.renderArtifact({
     artifact: activeNode.artifact,
@@ -1521,9 +1540,33 @@ function GraphWorkspacePreviewPane({
   const extension = previewFile ? extensionOf(previewFile.path) : "";
   const title = previewTargetTitle(selectedTarget);
   const selectedFileIsMolecule = previewFile !== null && MOLECULAR_EXTENSIONS.has(extension);
+  const canEditFile = Boolean(previewFile && onSaveFile) && !selectedFileIsMolecule && isSmallEditableTextFile(previewFile);
   const isLiveArtifactPreview = selectedTarget?.kind === "live-molecule";
   const isArtifactPreview = Boolean(activeNode?.artifact && renderedArtifact);
   const isMoleculePreview = Boolean(moleculeSnapshot) || isArtifactPreview;
+  useEffect2(() => {
+    setEditing(false);
+    setDraftContent(previewFile?.content ?? "");
+    setSaveError(null);
+  }, [previewFile?.path, previewFile?.content]);
+  async function handleSaveFile() {
+    if (!previewFile || !onSaveFile) {
+      return;
+    }
+    setSaving(true);
+    setSaveError(null);
+    try {
+      await onSaveFile({
+        path: previewFile.path,
+        content: draftContent
+      });
+      setEditing(false);
+    } catch (error2) {
+      setSaveError(error2 instanceof Error ? error2.message : "Failed to save file.");
+    } finally {
+      setSaving(false);
+    }
+  }
   return /* @__PURE__ */ jsxs8(
     "section",
     {
@@ -1572,19 +1615,74 @@ function GraphWorkspacePreviewPane({
               className: "h-full w-full border-0"
             }
           ) }) : selectedTarget.kind === "workspace-file" && previewFile ? /* @__PURE__ */ jsxs8("div", { className: "flex min-h-0 flex-1 flex-col", children: [
-            /* @__PURE__ */ jsxs8("div", { className: "thread-graph-file-preview-header border-b px-4 py-3 text-xs uppercase tracking-[0.12em]", children: [
-              selectedFileIsMolecule ? "molecule" : fileLanguage || extension || "text",
-              " |",
-              " ",
-              previewFile.size.toLocaleString(),
-              " bytes",
-              previewFile.truncated ? /* @__PURE__ */ jsxs8("span", { className: "ml-2 text-amber-500", children: [
-                "showing ",
-                previewFile.nextOffset.toLocaleString(),
-                " bytes"
-              ] }) : null
+            /* @__PURE__ */ jsxs8("div", { className: "thread-graph-file-preview-header flex min-h-12 items-center justify-between gap-3 border-b px-4 py-2", children: [
+              /* @__PURE__ */ jsxs8("div", { className: "min-w-0 text-xs uppercase tracking-[0.12em]", children: [
+                selectedFileIsMolecule ? "molecule" : fileLanguage || extension || "text",
+                " |",
+                " ",
+                previewFile.size.toLocaleString(),
+                " bytes",
+                previewFile.truncated ? /* @__PURE__ */ jsxs8("span", { className: "ml-2 text-amber-500", children: [
+                  "showing ",
+                  previewFile.nextOffset.toLocaleString(),
+                  " bytes"
+                ] }) : null
+              ] }),
+              canEditFile ? /* @__PURE__ */ jsx11("div", { className: "flex shrink-0 items-center gap-1", children: editing ? /* @__PURE__ */ jsxs8(Fragment2, { children: [
+                /* @__PURE__ */ jsx11(
+                  "button",
+                  {
+                    type: "button",
+                    onClick: () => {
+                      setDraftContent(previewFile.content);
+                      setEditing(false);
+                      setSaveError(null);
+                    },
+                    disabled: saving,
+                    className: "thread-graph-explorer-icon-button flex h-8 w-8 items-center justify-center rounded-lg border shadow-none transition disabled:cursor-not-allowed disabled:opacity-50",
+                    title: "Cancel edits",
+                    "aria-label": "Cancel edits",
+                    children: /* @__PURE__ */ jsx11(X, { className: "h-4 w-4" })
+                  }
+                ),
+                /* @__PURE__ */ jsx11(
+                  "button",
+                  {
+                    type: "button",
+                    onClick: () => void handleSaveFile(),
+                    disabled: saving || draftContent === previewFile.content,
+                    className: "thread-graph-explorer-icon-button flex h-8 w-8 items-center justify-center rounded-lg border shadow-none transition disabled:cursor-not-allowed disabled:opacity-50",
+                    title: "Save file",
+                    "aria-label": "Save file",
+                    children: /* @__PURE__ */ jsx11(Save, { className: "h-4 w-4" })
+                  }
+                )
+              ] }) : /* @__PURE__ */ jsx11(
+                "button",
+                {
+                  type: "button",
+                  onClick: () => {
+                    setDraftContent(previewFile.content);
+                    setEditing(true);
+                    setSaveError(null);
+                  },
+                  className: "thread-graph-explorer-icon-button flex h-8 w-8 items-center justify-center rounded-lg border shadow-none transition",
+                  title: "Edit file",
+                  "aria-label": "Edit file",
+                  children: /* @__PURE__ */ jsx11(Pencil, { className: "h-4 w-4" })
+                }
+              ) }) : null
             ] }),
-            /* @__PURE__ */ jsx11(
+            saveError ? /* @__PURE__ */ jsx11("div", { className: "border-b border-rose-200 bg-rose-50 px-4 py-2 text-sm text-rose-700 dark:border-rose-400/25 dark:bg-rose-400/10 dark:text-rose-200", children: saveError }) : null,
+            editing ? /* @__PURE__ */ jsx11(
+              "textarea",
+              {
+                value: draftContent,
+                onChange: (event) => setDraftContent(event.currentTarget.value),
+                spellCheck: false,
+                className: "thread-graph-file-editor min-h-0 flex-1 resize-none border-0 bg-transparent p-4 font-mono text-[12px] leading-5 text-slate-900 outline-none dark:text-slate-100"
+              }
+            ) : /* @__PURE__ */ jsx11(
               GraphWorkspaceCodePreview,
               {
                 content: previewFile.content
@@ -2012,7 +2110,7 @@ function GraphWorkspaceExplorer({
   status,
   workspaceAdapter
 }) {
-  const [adapterTree, setAdapterTree] = useState2(null);
+  const [adapterTree, setAdapterTree] = useState3(null);
   const fallbackTree = useMemo3(
     () => workspaceAdapter && adapterTree ? null : collectWorkspaceItems(detail, artifacts, status, activeView),
     [activeView, adapterTree, artifacts, detail, status, workspaceAdapter]
@@ -2024,10 +2122,10 @@ function GraphWorkspaceExplorer({
     [tree]
   );
   const firstSelectableNode = findFirstPreviewNode(tree);
-  const [selectedNodeId, setSelectedNodeId] = useState2(
+  const [selectedNodeId, setSelectedNodeId] = useState3(
     () => firstSelectableNode?.id ?? null
   );
-  const [expandedPaths, setExpandedPaths] = useState2(
+  const [expandedPaths, setExpandedPaths] = useState3(
     () => /* @__PURE__ */ new Set([
       "",
       "artifacts",
@@ -2036,18 +2134,18 @@ function GraphWorkspaceExplorer({
       ...collectAncestorPaths(firstSelectableNode?.path ?? "")
     ])
   );
-  const [collapsedPanel, setCollapsedPanel] = useState2(null);
-  const [workspaceError, setWorkspaceError] = useState2(null);
-  const [loadingTree, setLoadingTree] = useState2(false);
-  const [previewLoading, setPreviewLoading] = useState2(false);
-  const [loadingMore, setLoadingMore] = useState2(false);
-  const [showGarbageDialog, setShowGarbageDialog] = useState2(false);
-  const [garbageFiles, setGarbageFiles] = useState2([]);
-  const [previewFile, setPreviewFile] = useState2(null);
-  const [imageUrl, setImageUrl] = useState2(null);
-  const [pdfUrl, setPdfUrl] = useState2(null);
-  const [workspaceVersion, setWorkspaceVersion] = useState2(0);
-  const [isMobileViewport, setIsMobileViewport] = useState2(false);
+  const [collapsedPanel, setCollapsedPanel] = useState3(null);
+  const [workspaceError, setWorkspaceError] = useState3(null);
+  const [loadingTree, setLoadingTree] = useState3(false);
+  const [previewLoading, setPreviewLoading] = useState3(false);
+  const [loadingMore, setLoadingMore] = useState3(false);
+  const [showGarbageDialog, setShowGarbageDialog] = useState3(false);
+  const [garbageFiles, setGarbageFiles] = useState3([]);
+  const [previewFile, setPreviewFile] = useState3(null);
+  const [imageUrl, setImageUrl] = useState3(null);
+  const [pdfUrl, setPdfUrl] = useState3(null);
+  const [workspaceVersion, setWorkspaceVersion] = useState3(0);
+  const [isMobileViewport, setIsMobileViewport] = useState3(false);
   const fileInputRef = useRef2(null);
   const workspaceChangeTimerRef = useRef2(null);
   const activeNode = (selectedNodeId ? nodeMap.get(selectedNodeId) : null) ?? firstSelectableNode ?? null;
@@ -2055,7 +2153,7 @@ function GraphWorkspaceExplorer({
     threadId: detail.thread.id,
     workspaceId: detail.workspace.id ?? detail.thread.workspaceId ?? null
   };
-  useEffect2(() => {
+  useEffect3(() => {
     setExpandedPaths(
       /* @__PURE__ */ new Set([
         "",
@@ -2067,14 +2165,14 @@ function GraphWorkspaceExplorer({
       ])
     );
   }, [workspaceIdentity.threadId, workspaceIdentity.workspaceId]);
-  useEffect2(() => {
+  useEffect3(() => {
     return () => {
       if (workspaceChangeTimerRef.current !== null) {
         window.clearTimeout(workspaceChangeTimerRef.current);
       }
     };
   }, []);
-  useEffect2(() => {
+  useEffect3(() => {
     if (typeof window === "undefined" || typeof window.matchMedia !== "function") {
       return;
     }
@@ -2120,7 +2218,7 @@ function GraphWorkspaceExplorer({
       setLoadingTree(false);
     }
   }
-  useEffect2(() => {
+  useEffect3(() => {
     setAdapterTree(null);
     setPreviewFile(null);
     setImageUrl(null);
@@ -2133,7 +2231,7 @@ function GraphWorkspaceExplorer({
     detail.workspace.id,
     detail.thread.workspaceId
   ]);
-  useEffect2(() => {
+  useEffect3(() => {
     if (!workspaceAdapter?.subscribeWorkspaceChanged) {
       return;
     }
@@ -2162,7 +2260,7 @@ function GraphWorkspaceExplorer({
     workspaceIdentity.workspaceId,
     activeNode?.path
   ]);
-  useEffect2(() => {
+  useEffect3(() => {
     const selectedPathCandidate = workspaceAdapter && activeNode?.kind === "file" ? activeNode.path : null;
     if (!selectedPathCandidate) {
       setPreviewFile(null);
@@ -2248,6 +2346,24 @@ function GraphWorkspaceExplorer({
     } finally {
       setLoadingMore(false);
     }
+  }
+  async function handleSaveFile(input) {
+    if (!workspaceAdapter?.writeFile) {
+      return;
+    }
+    setWorkspaceError(null);
+    await workspaceAdapter.writeFile({
+      ...workspaceIdentity,
+      path: input.path,
+      content: input.content
+    });
+    await refreshWorkspaceTree(input.path);
+    const file = await workspaceAdapter.readFile({
+      ...workspaceIdentity,
+      path: input.path,
+      limit: PREVIEW_CHUNK_BYTES
+    });
+    setPreviewFile(file);
   }
   async function handleUpload(event) {
     const file = event.target.files?.[0];
@@ -2363,6 +2479,7 @@ function GraphWorkspaceExplorer({
       imageUrl,
       loadingMore,
       onLoadMore: handleLoadMore,
+      ...workspaceAdapter?.writeFile ? { onSaveFile: handleSaveFile } : {},
       ...!isMobileViewport ? { onCollapse: () => setCollapsedPanel("viewer") } : {},
       pdfUrl,
       previewFile,
@@ -2540,7 +2657,7 @@ function AccordionContent({
 }
 
 // src/components/graph-workspace/GraphGuidePanel.tsx
-import { Fragment as Fragment2, jsx as jsx16, jsxs as jsxs12 } from "react/jsx-runtime";
+import { Fragment as Fragment3, jsx as jsx16, jsxs as jsxs12 } from "react/jsx-runtime";
 function GuideTag({ children }) {
   return /* @__PURE__ */ jsx16("span", { className: "thread-guide-tag inline-flex items-center rounded px-1.5 py-0.5 font-mono text-[10px]", children });
 }
@@ -2657,15 +2774,15 @@ function GraphGuidePanel() {
                     GuideBullets,
                     {
                       items: [
-                        /* @__PURE__ */ jsxs12(Fragment2, { children: [
+                        /* @__PURE__ */ jsxs12(Fragment3, { children: [
                           /* @__PURE__ */ jsx16(GuideTag, { children: ".xyz .extxyz .cif" }),
                           " use the 3D molecule plugin."
                         ] }),
-                        /* @__PURE__ */ jsxs12(Fragment2, { children: [
+                        /* @__PURE__ */ jsxs12(Fragment3, { children: [
                           /* @__PURE__ */ jsx16(GuideTag, { children: ".png .jpg .gif .svg .webp" }),
                           " use inline image preview."
                         ] }),
-                        /* @__PURE__ */ jsxs12(Fragment2, { children: [
+                        /* @__PURE__ */ jsxs12(Fragment3, { children: [
                           /* @__PURE__ */ jsx16(GuideTag, { children: ".py .json .ts .md .csv" }),
                           " use text/code preview."
                         ] }),
@@ -2766,7 +2883,7 @@ function GraphGuidePanel() {
 }
 
 // src/components/graph-workspace/GraphToolUsagePanel.tsx
-import { useEffect as useEffect3, useRef as useRef3, useState as useState3 } from "react";
+import { useEffect as useEffect4, useRef as useRef3, useState as useState4 } from "react";
 import { RefreshCw as RefreshCw3 } from "lucide-react";
 import { jsx as jsx17, jsxs as jsxs13 } from "react/jsx-runtime";
 function formatValue(value) {
@@ -2818,14 +2935,14 @@ function GraphToolUsagePanel({
   toolEvents,
   maxToolCount
 }) {
-  const [expandedEventId, setExpandedEventId] = useState3(
+  const [expandedEventId, setExpandedEventId] = useState4(
     () => toolEvents.at(-1)?.id ?? null
   );
   const bottomRef = useRef3(null);
-  useEffect3(() => {
+  useEffect4(() => {
     setExpandedEventId((current) => current ?? toolEvents.at(-1)?.id ?? null);
   }, [toolEvents]);
-  useEffect3(() => {
+  useEffect4(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
   }, [toolEvents.length]);
   if (!toolCounts.length) {
@@ -2895,7 +3012,7 @@ function GraphToolUsagePanel({
 }
 
 // src/components/graph-chat/GraphVisualization.tsx
-import { useCallback as useCallback2, useEffect as useEffect4, useMemo as useMemo4 } from "react";
+import { useCallback as useCallback2, useEffect as useEffect5, useMemo as useMemo4 } from "react";
 import {
   addEdge,
   Background,
@@ -3217,7 +3334,7 @@ function GraphVisualization({ nodes: inputNodes }) {
     }),
     []
   );
-  useEffect4(() => {
+  useEffect5(() => {
     setFlowNodes(graph.nodes);
     setFlowEdges(graph.edges);
   }, [graph.edges, graph.nodes, setFlowEdges, setFlowNodes]);
@@ -3474,7 +3591,7 @@ function ThreadGraphWorkspacePanel({
     [featureConfig]
   );
   const initialTab = firstEnabledWorkspaceTab(features, featureConfig?.defaultTab);
-  const [activeTab, setActiveTab] = useState4(initialTab);
+  const [activeTab, setActiveTab] = useState5(initialTab);
   const artifacts = useMemo5(() => collectArtifacts(detail), [detail]);
   const toolEvents = useMemo5(() => collectToolEvents(detail), [detail]);
   const toolCounts = useMemo5(() => {
@@ -3513,7 +3630,7 @@ function ThreadGraphWorkspacePanel({
     }
     return tabs;
   }, [features.extensions, features.threadGraph]);
-  useEffect5(() => {
+  useEffect6(() => {
     if (!activeTab || !isWorkspaceTabEnabled(features, activeTab)) {
       setActiveTab(firstEnabledWorkspaceTab(features, featureConfig?.defaultTab));
     }

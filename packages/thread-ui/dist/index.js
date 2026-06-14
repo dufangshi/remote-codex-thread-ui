@@ -1640,9 +1640,21 @@ var init_GraphMoleculeViewer = __esm({
 });
 
 // src/components/graph-workspace/GraphWorkspacePreviewPane.tsx
-import { memo as memo7 } from "react";
-import { ChevronsRight as ChevronsRight2 } from "lucide-react";
-import { jsx as jsx56, jsxs as jsxs44 } from "react/jsx-runtime";
+import {
+  memo as memo7,
+  useEffect as useEffect20,
+  useState as useState25
+} from "react";
+import {
+  ChevronsRight as ChevronsRight2,
+  Pencil as Pencil2,
+  Save,
+  X as X2
+} from "lucide-react";
+import { Fragment as Fragment14, jsx as jsx56, jsxs as jsxs44 } from "react/jsx-runtime";
+function isSmallEditableTextFile(file) {
+  return !file.truncated && file.size <= SMALL_TEXT_FILE_MAX_BYTES && file.content.split("\n").length <= SMALL_TEXT_FILE_MAX_LINES;
+}
 function previewTargetTitle(target) {
   if (!target) {
     return null;
@@ -1672,6 +1684,7 @@ function GraphWorkspacePreviewPane({
   error,
   imageUrl,
   loadingMore,
+  onSaveFile,
   onLoadMore,
   onCollapse,
   pdfUrl,
@@ -1680,6 +1693,10 @@ function GraphWorkspacePreviewPane({
   plugins,
   selectedTarget
 }) {
+  const [editing, setEditing] = useState25(false);
+  const [draftContent, setDraftContent] = useState25("");
+  const [saveError, setSaveError] = useState25(null);
+  const [saving, setSaving] = useState25(false);
   const activeNode = selectedTarget?.node ?? null;
   const renderedArtifact = activeNode?.artifact ? plugins.renderArtifact({
     artifact: activeNode.artifact,
@@ -1691,9 +1708,33 @@ function GraphWorkspacePreviewPane({
   const extension = previewFile ? extensionOf(previewFile.path) : "";
   const title = previewTargetTitle(selectedTarget);
   const selectedFileIsMolecule = previewFile !== null && MOLECULAR_EXTENSIONS.has(extension);
+  const canEditFile = Boolean(previewFile && onSaveFile) && !selectedFileIsMolecule && isSmallEditableTextFile(previewFile);
   const isLiveArtifactPreview = selectedTarget?.kind === "live-molecule";
   const isArtifactPreview = Boolean(activeNode?.artifact && renderedArtifact);
   const isMoleculePreview = Boolean(moleculeSnapshot) || isArtifactPreview;
+  useEffect20(() => {
+    setEditing(false);
+    setDraftContent(previewFile?.content ?? "");
+    setSaveError(null);
+  }, [previewFile?.path, previewFile?.content]);
+  async function handleSaveFile() {
+    if (!previewFile || !onSaveFile) {
+      return;
+    }
+    setSaving(true);
+    setSaveError(null);
+    try {
+      await onSaveFile({
+        path: previewFile.path,
+        content: draftContent
+      });
+      setEditing(false);
+    } catch (error2) {
+      setSaveError(error2 instanceof Error ? error2.message : "Failed to save file.");
+    } finally {
+      setSaving(false);
+    }
+  }
   return /* @__PURE__ */ jsxs44(
     "section",
     {
@@ -1742,19 +1783,74 @@ function GraphWorkspacePreviewPane({
               className: "h-full w-full border-0"
             }
           ) }) : selectedTarget.kind === "workspace-file" && previewFile ? /* @__PURE__ */ jsxs44("div", { className: "flex min-h-0 flex-1 flex-col", children: [
-            /* @__PURE__ */ jsxs44("div", { className: "thread-graph-file-preview-header border-b px-4 py-3 text-xs uppercase tracking-[0.12em]", children: [
-              selectedFileIsMolecule ? "molecule" : fileLanguage || extension || "text",
-              " |",
-              " ",
-              previewFile.size.toLocaleString(),
-              " bytes",
-              previewFile.truncated ? /* @__PURE__ */ jsxs44("span", { className: "ml-2 text-amber-500", children: [
-                "showing ",
-                previewFile.nextOffset.toLocaleString(),
-                " bytes"
-              ] }) : null
+            /* @__PURE__ */ jsxs44("div", { className: "thread-graph-file-preview-header flex min-h-12 items-center justify-between gap-3 border-b px-4 py-2", children: [
+              /* @__PURE__ */ jsxs44("div", { className: "min-w-0 text-xs uppercase tracking-[0.12em]", children: [
+                selectedFileIsMolecule ? "molecule" : fileLanguage || extension || "text",
+                " |",
+                " ",
+                previewFile.size.toLocaleString(),
+                " bytes",
+                previewFile.truncated ? /* @__PURE__ */ jsxs44("span", { className: "ml-2 text-amber-500", children: [
+                  "showing ",
+                  previewFile.nextOffset.toLocaleString(),
+                  " bytes"
+                ] }) : null
+              ] }),
+              canEditFile ? /* @__PURE__ */ jsx56("div", { className: "flex shrink-0 items-center gap-1", children: editing ? /* @__PURE__ */ jsxs44(Fragment14, { children: [
+                /* @__PURE__ */ jsx56(
+                  "button",
+                  {
+                    type: "button",
+                    onClick: () => {
+                      setDraftContent(previewFile.content);
+                      setEditing(false);
+                      setSaveError(null);
+                    },
+                    disabled: saving,
+                    className: "thread-graph-explorer-icon-button flex h-8 w-8 items-center justify-center rounded-lg border shadow-none transition disabled:cursor-not-allowed disabled:opacity-50",
+                    title: "Cancel edits",
+                    "aria-label": "Cancel edits",
+                    children: /* @__PURE__ */ jsx56(X2, { className: "h-4 w-4" })
+                  }
+                ),
+                /* @__PURE__ */ jsx56(
+                  "button",
+                  {
+                    type: "button",
+                    onClick: () => void handleSaveFile(),
+                    disabled: saving || draftContent === previewFile.content,
+                    className: "thread-graph-explorer-icon-button flex h-8 w-8 items-center justify-center rounded-lg border shadow-none transition disabled:cursor-not-allowed disabled:opacity-50",
+                    title: "Save file",
+                    "aria-label": "Save file",
+                    children: /* @__PURE__ */ jsx56(Save, { className: "h-4 w-4" })
+                  }
+                )
+              ] }) : /* @__PURE__ */ jsx56(
+                "button",
+                {
+                  type: "button",
+                  onClick: () => {
+                    setDraftContent(previewFile.content);
+                    setEditing(true);
+                    setSaveError(null);
+                  },
+                  className: "thread-graph-explorer-icon-button flex h-8 w-8 items-center justify-center rounded-lg border shadow-none transition",
+                  title: "Edit file",
+                  "aria-label": "Edit file",
+                  children: /* @__PURE__ */ jsx56(Pencil2, { className: "h-4 w-4" })
+                }
+              ) }) : null
             ] }),
-            /* @__PURE__ */ jsx56(
+            saveError ? /* @__PURE__ */ jsx56("div", { className: "border-b border-rose-200 bg-rose-50 px-4 py-2 text-sm text-rose-700 dark:border-rose-400/25 dark:bg-rose-400/10 dark:text-rose-200", children: saveError }) : null,
+            editing ? /* @__PURE__ */ jsx56(
+              "textarea",
+              {
+                value: draftContent,
+                onChange: (event) => setDraftContent(event.currentTarget.value),
+                spellCheck: false,
+                className: "thread-graph-file-editor min-h-0 flex-1 resize-none border-0 bg-transparent p-4 font-mono text-[12px] leading-5 text-slate-900 outline-none dark:text-slate-100"
+              }
+            ) : /* @__PURE__ */ jsx56(
               GraphWorkspaceCodePreview,
               {
                 content: previewFile.content
@@ -1795,13 +1891,15 @@ function GraphWorkspacePreviewPane({
     }
   );
 }
-var GraphWorkspaceCodePreview;
+var SMALL_TEXT_FILE_MAX_BYTES, SMALL_TEXT_FILE_MAX_LINES, GraphWorkspaceCodePreview;
 var init_GraphWorkspacePreviewPane = __esm({
   "src/components/graph-workspace/GraphWorkspacePreviewPane.tsx"() {
     "use strict";
     init_workspaceTree();
     init_GraphWorkspaceCards();
     init_GraphMoleculeViewer();
+    SMALL_TEXT_FILE_MAX_BYTES = 50 * 1024;
+    SMALL_TEXT_FILE_MAX_LINES = 1e3;
     GraphWorkspaceCodePreview = memo7(function GraphWorkspaceCodePreview2({
       content
     }) {
@@ -1857,10 +1955,10 @@ var init_GraphEmptyGarbageDialog = __esm({
 
 // src/components/graph-workspace/GraphWorkspaceExplorer.tsx
 import {
-  useEffect as useEffect20,
+  useEffect as useEffect21,
   useMemo as useMemo13,
   useRef as useRef14,
-  useState as useState25
+  useState as useState26
 } from "react";
 import {
   ChevronDown,
@@ -2166,7 +2264,7 @@ function GraphWorkspaceExplorer({
   status,
   workspaceAdapter
 }) {
-  const [adapterTree, setAdapterTree] = useState25(null);
+  const [adapterTree, setAdapterTree] = useState26(null);
   const fallbackTree = useMemo13(
     () => workspaceAdapter && adapterTree ? null : collectWorkspaceItems(detail, artifacts, status, activeView),
     [activeView, adapterTree, artifacts, detail, status, workspaceAdapter]
@@ -2178,10 +2276,10 @@ function GraphWorkspaceExplorer({
     [tree]
   );
   const firstSelectableNode = findFirstPreviewNode(tree);
-  const [selectedNodeId, setSelectedNodeId] = useState25(
+  const [selectedNodeId, setSelectedNodeId] = useState26(
     () => firstSelectableNode?.id ?? null
   );
-  const [expandedPaths, setExpandedPaths] = useState25(
+  const [expandedPaths, setExpandedPaths] = useState26(
     () => /* @__PURE__ */ new Set([
       "",
       "artifacts",
@@ -2190,18 +2288,18 @@ function GraphWorkspaceExplorer({
       ...collectAncestorPaths(firstSelectableNode?.path ?? "")
     ])
   );
-  const [collapsedPanel, setCollapsedPanel] = useState25(null);
-  const [workspaceError, setWorkspaceError] = useState25(null);
-  const [loadingTree, setLoadingTree] = useState25(false);
-  const [previewLoading, setPreviewLoading] = useState25(false);
-  const [loadingMore, setLoadingMore] = useState25(false);
-  const [showGarbageDialog, setShowGarbageDialog] = useState25(false);
-  const [garbageFiles, setGarbageFiles] = useState25([]);
-  const [previewFile, setPreviewFile] = useState25(null);
-  const [imageUrl, setImageUrl] = useState25(null);
-  const [pdfUrl, setPdfUrl] = useState25(null);
-  const [workspaceVersion, setWorkspaceVersion] = useState25(0);
-  const [isMobileViewport, setIsMobileViewport] = useState25(false);
+  const [collapsedPanel, setCollapsedPanel] = useState26(null);
+  const [workspaceError, setWorkspaceError] = useState26(null);
+  const [loadingTree, setLoadingTree] = useState26(false);
+  const [previewLoading, setPreviewLoading] = useState26(false);
+  const [loadingMore, setLoadingMore] = useState26(false);
+  const [showGarbageDialog, setShowGarbageDialog] = useState26(false);
+  const [garbageFiles, setGarbageFiles] = useState26([]);
+  const [previewFile, setPreviewFile] = useState26(null);
+  const [imageUrl, setImageUrl] = useState26(null);
+  const [pdfUrl, setPdfUrl] = useState26(null);
+  const [workspaceVersion, setWorkspaceVersion] = useState26(0);
+  const [isMobileViewport, setIsMobileViewport] = useState26(false);
   const fileInputRef = useRef14(null);
   const workspaceChangeTimerRef = useRef14(null);
   const activeNode = (selectedNodeId ? nodeMap.get(selectedNodeId) : null) ?? firstSelectableNode ?? null;
@@ -2209,7 +2307,7 @@ function GraphWorkspaceExplorer({
     threadId: detail.thread.id,
     workspaceId: detail.workspace.id ?? detail.thread.workspaceId ?? null
   };
-  useEffect20(() => {
+  useEffect21(() => {
     setExpandedPaths(
       /* @__PURE__ */ new Set([
         "",
@@ -2221,14 +2319,14 @@ function GraphWorkspaceExplorer({
       ])
     );
   }, [workspaceIdentity.threadId, workspaceIdentity.workspaceId]);
-  useEffect20(() => {
+  useEffect21(() => {
     return () => {
       if (workspaceChangeTimerRef.current !== null) {
         window.clearTimeout(workspaceChangeTimerRef.current);
       }
     };
   }, []);
-  useEffect20(() => {
+  useEffect21(() => {
     if (typeof window === "undefined" || typeof window.matchMedia !== "function") {
       return;
     }
@@ -2274,7 +2372,7 @@ function GraphWorkspaceExplorer({
       setLoadingTree(false);
     }
   }
-  useEffect20(() => {
+  useEffect21(() => {
     setAdapterTree(null);
     setPreviewFile(null);
     setImageUrl(null);
@@ -2287,7 +2385,7 @@ function GraphWorkspaceExplorer({
     detail.workspace.id,
     detail.thread.workspaceId
   ]);
-  useEffect20(() => {
+  useEffect21(() => {
     if (!workspaceAdapter?.subscribeWorkspaceChanged) {
       return;
     }
@@ -2316,7 +2414,7 @@ function GraphWorkspaceExplorer({
     workspaceIdentity.workspaceId,
     activeNode?.path
   ]);
-  useEffect20(() => {
+  useEffect21(() => {
     const selectedPathCandidate = workspaceAdapter && activeNode?.kind === "file" ? activeNode.path : null;
     if (!selectedPathCandidate) {
       setPreviewFile(null);
@@ -2402,6 +2500,24 @@ function GraphWorkspaceExplorer({
     } finally {
       setLoadingMore(false);
     }
+  }
+  async function handleSaveFile(input) {
+    if (!workspaceAdapter?.writeFile) {
+      return;
+    }
+    setWorkspaceError(null);
+    await workspaceAdapter.writeFile({
+      ...workspaceIdentity,
+      path: input.path,
+      content: input.content
+    });
+    await refreshWorkspaceTree(input.path);
+    const file = await workspaceAdapter.readFile({
+      ...workspaceIdentity,
+      path: input.path,
+      limit: PREVIEW_CHUNK_BYTES
+    });
+    setPreviewFile(file);
   }
   async function handleUpload(event) {
     const file = event.target.files?.[0];
@@ -2517,6 +2633,7 @@ function GraphWorkspaceExplorer({
       imageUrl,
       loadingMore,
       onLoadMore: handleLoadMore,
+      ...workspaceAdapter?.writeFile ? { onSaveFile: handleSaveFile } : {},
       ...!isMobileViewport ? { onCollapse: () => setCollapsedPanel("viewer") } : {},
       pdfUrl,
       previewFile,
@@ -2650,7 +2767,7 @@ import {
   Upload as Upload2,
   Zap
 } from "lucide-react";
-import { Fragment as Fragment14, jsx as jsx59, jsxs as jsxs47 } from "react/jsx-runtime";
+import { Fragment as Fragment15, jsx as jsx59, jsxs as jsxs47 } from "react/jsx-runtime";
 function GuideTag({ children }) {
   return /* @__PURE__ */ jsx59("span", { className: "thread-guide-tag inline-flex items-center rounded px-1.5 py-0.5 font-mono text-[10px]", children });
 }
@@ -2767,15 +2884,15 @@ function GraphGuidePanel() {
                     GuideBullets,
                     {
                       items: [
-                        /* @__PURE__ */ jsxs47(Fragment14, { children: [
+                        /* @__PURE__ */ jsxs47(Fragment15, { children: [
                           /* @__PURE__ */ jsx59(GuideTag, { children: ".xyz .extxyz .cif" }),
                           " use the 3D molecule plugin."
                         ] }),
-                        /* @__PURE__ */ jsxs47(Fragment14, { children: [
+                        /* @__PURE__ */ jsxs47(Fragment15, { children: [
                           /* @__PURE__ */ jsx59(GuideTag, { children: ".png .jpg .gif .svg .webp" }),
                           " use inline image preview."
                         ] }),
-                        /* @__PURE__ */ jsxs47(Fragment14, { children: [
+                        /* @__PURE__ */ jsxs47(Fragment15, { children: [
                           /* @__PURE__ */ jsx59(GuideTag, { children: ".py .json .ts .md .csv" }),
                           " use text/code preview."
                         ] }),
@@ -2882,7 +2999,7 @@ var init_GraphGuidePanel = __esm({
 });
 
 // src/components/graph-workspace/GraphToolUsagePanel.tsx
-import { useEffect as useEffect21, useRef as useRef15, useState as useState26 } from "react";
+import { useEffect as useEffect22, useRef as useRef15, useState as useState27 } from "react";
 import { RefreshCw as RefreshCw3 } from "lucide-react";
 import { jsx as jsx60, jsxs as jsxs48 } from "react/jsx-runtime";
 function formatValue(value) {
@@ -2934,14 +3051,14 @@ function GraphToolUsagePanel({
   toolEvents,
   maxToolCount
 }) {
-  const [expandedEventId, setExpandedEventId] = useState26(
+  const [expandedEventId, setExpandedEventId] = useState27(
     () => toolEvents.at(-1)?.id ?? null
   );
   const bottomRef = useRef15(null);
-  useEffect21(() => {
+  useEffect22(() => {
     setExpandedEventId((current) => current ?? toolEvents.at(-1)?.id ?? null);
   }, [toolEvents]);
-  useEffect21(() => {
+  useEffect22(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
   }, [toolEvents.length]);
   if (!toolCounts.length) {
@@ -3306,7 +3423,7 @@ var init_FloatingEdge = __esm({
 });
 
 // src/components/graph-chat/GraphVisualization.tsx
-import { useCallback as useCallback18, useEffect as useEffect22, useMemo as useMemo14 } from "react";
+import { useCallback as useCallback18, useEffect as useEffect23, useMemo as useMemo14 } from "react";
 import {
   addEdge,
   Background,
@@ -3352,7 +3469,7 @@ function GraphVisualization({ nodes: inputNodes }) {
     }),
     []
   );
-  useEffect22(() => {
+  useEffect23(() => {
     setFlowNodes(graph.nodes);
     setFlowEdges(graph.edges);
   }, [graph.edges, graph.nodes, setFlowEdges, setFlowNodes]);
@@ -3400,7 +3517,7 @@ var init_GraphVisualization = __esm({
 });
 
 // src/components/ThreadGraphWorkspacePanel.tsx
-import { memo as memo8, useEffect as useEffect23, useMemo as useMemo15, useState as useState27 } from "react";
+import { memo as memo8, useEffect as useEffect24, useMemo as useMemo15, useState as useState28 } from "react";
 import {
   BarChart2 as BarChart22,
   BookOpen,
@@ -3620,7 +3737,7 @@ function ThreadGraphWorkspacePanel({
     [featureConfig]
   );
   const initialTab = firstEnabledWorkspaceTab(features, featureConfig?.defaultTab);
-  const [activeTab, setActiveTab] = useState27(initialTab);
+  const [activeTab, setActiveTab] = useState28(initialTab);
   const artifacts = useMemo15(() => collectArtifacts(detail), [detail]);
   const toolEvents = useMemo15(() => collectToolEvents(detail), [detail]);
   const toolCounts = useMemo15(() => {
@@ -3659,7 +3776,7 @@ function ThreadGraphWorkspacePanel({
     }
     return tabs;
   }, [features.extensions, features.threadGraph]);
-  useEffect23(() => {
+  useEffect24(() => {
     if (!activeTab || !isWorkspaceTabEnabled(features, activeTab)) {
       setActiveTab(firstEnabledWorkspaceTab(features, featureConfig?.defaultTab));
     }
@@ -8736,7 +8853,8 @@ function formatShortTimestamp(value) {
     month: "short",
     day: "numeric",
     hour: "numeric",
-    minute: "2-digit"
+    minute: "2-digit",
+    second: "2-digit"
   });
 }
 function formatLongTimestamp(value) {
@@ -14411,6 +14529,9 @@ function TurnStatusBar({
 
 // src/components/timeline/TimelineTurnRows.tsx
 import { jsx as jsx42 } from "react/jsx-runtime";
+function timestampForHistoryItem(item, fallback) {
+  return item.createdAt ?? fallback;
+}
 var HistoryItemRow = memo5(function HistoryItemRow2({
   threadId,
   item,
@@ -14648,8 +14769,9 @@ var ThreadTurnRow = memo5(function ThreadTurnRow2({
       onOpenToolCallDetail,
       onOpenDeferredHistoryItemDetail,
       ...onBeforeMessageResize ? { onBeforeMessageResize } : {},
-      timeLabel: turnTimeLabel,
-      timeTitle: turnTimeTitle,
+      fallbackTimestamp: turn.startedAt,
+      fallbackTimeLabel: turnTimeLabel,
+      fallbackTimeTitle: turnTimeTitle,
       ...onSelectArtifact ? { onSelectArtifact } : {},
       ...adapter ? { adapter } : {}
     }
@@ -14727,8 +14849,9 @@ function TimelineHistoryEntries({
   onSelectArtifact,
   onBeforeMessageResize,
   adapter,
-  timeLabel,
-  timeTitle
+  fallbackTimestamp,
+  fallbackTimeLabel,
+  fallbackTimeTitle
 }) {
   return /* @__PURE__ */ jsx42(
     GraphChatHistoryEntries,
@@ -14776,24 +14899,27 @@ function TimelineHistoryEntries({
         },
         entry.key
       ),
-      renderItem: (entry) => /* @__PURE__ */ jsx42(
-        HistoryItemRow,
-        {
-          threadId,
-          item: entry.item,
-          scrollRootRef,
-          timeLabel,
-          timeTitle,
-          onOpenExpandedText,
-          onOpenCommandDetail,
-          onOpenToolCallDetail,
-          onOpenDeferredHistoryItemDetail,
-          ...onBeforeMessageResize ? { onBeforeMessageResize } : {},
-          ...onSelectArtifact ? { onSelectArtifact } : {},
-          ...adapter ? { adapter } : {}
-        },
-        entry.key
-      )
+      renderItem: (entry) => {
+        const timestamp = timestampForHistoryItem(entry.item, fallbackTimestamp ?? null);
+        return /* @__PURE__ */ jsx42(
+          HistoryItemRow,
+          {
+            threadId,
+            item: entry.item,
+            scrollRootRef,
+            timeLabel: entry.item.createdAt ? formatShortTimestamp(timestamp) : fallbackTimeLabel,
+            timeTitle: entry.item.createdAt ? formatLongTimestamp(timestamp) : fallbackTimeTitle,
+            onOpenExpandedText,
+            onOpenCommandDetail,
+            onOpenToolCallDetail,
+            onOpenDeferredHistoryItemDetail,
+            ...onBeforeMessageResize ? { onBeforeMessageResize } : {},
+            ...onSelectArtifact ? { onSelectArtifact } : {},
+            ...adapter ? { adapter } : {}
+          },
+          entry.key
+        );
+      }
     }
   );
 }
@@ -18541,7 +18667,7 @@ var MemoizedThreadGraphWorkspacePanel2 = memo9(
 );
 
 // src/components/ConfirmDialog.tsx
-import { useEffect as useEffect24 } from "react";
+import { useEffect as useEffect25 } from "react";
 import { createPortal as createPortal3 } from "react-dom";
 import { jsx as jsx67, jsxs as jsxs53 } from "react/jsx-runtime";
 function ConfirmDialog({
@@ -18553,7 +18679,7 @@ function ConfirmDialog({
   onCancel,
   onConfirm
 }) {
-  useEffect24(() => {
+  useEffect25(() => {
     if (!open) {
       return;
     }
@@ -18638,7 +18764,7 @@ function ConfirmDialog({
 }
 
 // src/components/ExportTranscriptDialog.tsx
-import { useEffect as useEffect25, useMemo as useMemo16, useState as useState28 } from "react";
+import { useEffect as useEffect26, useMemo as useMemo16, useState as useState29 } from "react";
 import { createPortal as createPortal4 } from "react-dom";
 import { jsx as jsx68, jsxs as jsxs54 } from "react/jsx-runtime";
 function formatTurnTime(value) {
@@ -18679,16 +18805,16 @@ function ExportTranscriptDialog({
     () => turns.slice(0, 10).map((turn) => turn.turnId),
     [turns]
   );
-  const [mode, setMode] = useState28("latest");
-  const [selectedTurnIds, setSelectedTurnIds] = useState28(
+  const [mode, setMode] = useState29("latest");
+  const [selectedTurnIds, setSelectedTurnIds] = useState29(
     () => /* @__PURE__ */ new Set()
   );
-  const [includeTokenAndPrice, setIncludeTokenAndPrice] = useState28(true);
-  const [format, setFormat] = useState28("pdf");
-  const [effectiveTheme, setEffectiveTheme] = useState28(
+  const [includeTokenAndPrice, setIncludeTokenAndPrice] = useState29(true);
+  const [format, setFormat] = useState29("pdf");
+  const [effectiveTheme, setEffectiveTheme] = useState29(
     () => typeof document !== "undefined" && !document.documentElement.classList.contains("dark") ? "light" : "dark"
   );
-  useEffect25(() => {
+  useEffect26(() => {
     if (!open) {
       return;
     }
@@ -18697,12 +18823,12 @@ function ExportTranscriptDialog({
     setIncludeTokenAndPrice(true);
     void onLoadTurns();
   }, [onLoadTurns, open]);
-  useEffect25(() => {
+  useEffect26(() => {
     if (open && turns.length > 0) {
       setSelectedTurnIds(new Set(latestTurnIds));
     }
   }, [latestTurnIds, open, turns.length]);
-  useEffect25(() => {
+  useEffect26(() => {
     if (!open) {
       return;
     }
@@ -18714,7 +18840,7 @@ function ExportTranscriptDialog({
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [busy, onCancel, open]);
-  useEffect25(() => {
+  useEffect26(() => {
     if (!open) {
       return;
     }
@@ -18952,10 +19078,10 @@ import {
 // src/components/graph-chat/GraphChatThreadChatPanel.tsx
 import {
   useCallback as useCallback19,
-  useEffect as useEffect26,
+  useEffect as useEffect27,
   useLayoutEffect as useLayoutEffect6,
   useRef as useRef16,
-  useState as useState29
+  useState as useState30
 } from "react";
 import { jsx as jsx69, jsxs as jsxs55 } from "react/jsx-runtime";
 function formatTokenCount(value) {
@@ -18990,11 +19116,11 @@ function GraphChatThreadChatPanel({
   floatingMobileComposerBottomOffset = 0,
   composerHostRef
 }) {
-  const [isMobileViewport, setIsMobileViewport] = useState29(false);
-  const [mobileComposerHeight, setMobileComposerHeight] = useState29(0);
-  const [mobileComposerOverlap, setMobileComposerOverlap] = useState29(0);
-  const [mobileKeyboardInset, setMobileKeyboardInset] = useState29(0);
-  const [mobilePromptFocused, setMobilePromptFocused] = useState29(false);
+  const [isMobileViewport, setIsMobileViewport] = useState30(false);
+  const [mobileComposerHeight, setMobileComposerHeight] = useState30(0);
+  const [mobileComposerOverlap, setMobileComposerOverlap] = useState30(0);
+  const [mobileKeyboardInset, setMobileKeyboardInset] = useState30(0);
+  const [mobilePromptFocused, setMobilePromptFocused] = useState30(false);
   const internalComposerHostRef = useRef16(null);
   const timelineTailVisibilityChange = timelineProps?.onTailVisibilityChange;
   const hasPendingRequests = detail.pendingRequests.length > 0;
@@ -19004,7 +19130,7 @@ function GraphChatThreadChatPanel({
     },
     [timelineTailVisibilityChange]
   );
-  useEffect26(() => {
+  useEffect27(() => {
     if (typeof window === "undefined" || typeof window.matchMedia !== "function") {
       return;
     }
@@ -19016,7 +19142,7 @@ function GraphChatThreadChatPanel({
       mediaQuery.removeEventListener("change", updateViewport);
     };
   }, []);
-  useEffect26(() => {
+  useEffect27(() => {
     if (typeof window === "undefined") {
       return;
     }
@@ -19094,7 +19220,7 @@ function GraphChatThreadChatPanel({
     composerProps,
     hasPendingRequests
   ]);
-  useEffect26(() => {
+  useEffect27(() => {
     if (!isMobileViewport) {
       setMobilePromptFocused(false);
       return;
@@ -19483,9 +19609,9 @@ function ThreadDetailSurface({
 // src/plugins/PluginProvider.tsx
 import {
   useCallback as useCallback20,
-  useEffect as useEffect27,
+  useEffect as useEffect28,
   useMemo as useMemo18,
-  useState as useState30
+  useState as useState31
 } from "react";
 import { jsx as jsx71 } from "react/jsx-runtime";
 var DEFAULT_PLUGIN_PROVIDER_ADAPTER = {};
@@ -19495,11 +19621,11 @@ function PluginProvider({
   builtinPlugins = DEFAULT_BUILTIN_PLUGINS,
   children
 }) {
-  const [plugins, setPlugins] = useState30(
+  const [plugins, setPlugins] = useState31(
     () => mergePluginState(builtinPlugins, [])
   );
-  const [loading, setLoading] = useState30(false);
-  const [error, setError] = useState30(null);
+  const [loading, setLoading] = useState31(false);
+  const [error, setError] = useState31(null);
   const refresh = useCallback20(async () => {
     setLoading(true);
     setError(null);
@@ -19512,7 +19638,7 @@ function PluginProvider({
       setLoading(false);
     }
   }, [adapter, builtinPlugins]);
-  useEffect27(() => {
+  useEffect28(() => {
     void refresh();
   }, [refresh]);
   const setPluginEnabled = useCallback20(
@@ -19637,7 +19763,7 @@ function PluginProvider({
 }
 
 // src/app-shell/AppShellNavigation.tsx
-import { useEffect as useEffect28, useRef as useRef17, useState as useState31 } from "react";
+import { useEffect as useEffect29, useRef as useRef17, useState as useState32 } from "react";
 import { jsx as jsx72, jsxs as jsxs57 } from "react/jsx-runtime";
 function MenuIcon() {
   return /* @__PURE__ */ jsx72("svg", { "aria-hidden": "true", viewBox: "0 0 16 16", className: "h-4 w-4 fill-current", children: /* @__PURE__ */ jsx72("path", { d: "M2 3.25h12v1.5H2Zm0 4h12v1.5H2Zm0 4h12v1.5H2Z" }) });
@@ -19691,7 +19817,7 @@ function AppShellNavigationMenu({
 }) {
   const shellNav = useAppShellNav();
   const menuRef = useRef17(null);
-  useEffect28(() => {
+  useEffect29(() => {
     if (!shellNav?.navOpen) {
       return;
     }
@@ -19782,15 +19908,15 @@ function AppShellSettingsDialog({
 } = {}) {
   const shellNav = useAppShellNav();
   const plugins = usePlugins();
-  const [pluginImportDraft, setPluginImportDraft] = useState31("");
-  const [pluginImportState, setPluginImportState] = useState31({
+  const [pluginImportDraft, setPluginImportDraft] = useState32("");
+  const [pluginImportState, setPluginImportState] = useState32({
     busy: false,
     message: null,
     error: null
   });
   const selectedThemeMode = shellNav?.themeMode ?? "system";
   const effectiveTheme = shellNav?.effectiveTheme ?? "dark";
-  useEffect28(() => {
+  useEffect29(() => {
     if (!shellNav?.settingsOpen) {
       return;
     }

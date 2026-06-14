@@ -87,6 +87,10 @@ type OpenDeferredHistoryItemDetailHandler = (
   errorText: string,
 ) => void;
 
+function timestampForHistoryItem(item: ThreadHistoryItemDto, fallback: string | null) {
+  return item.createdAt ?? fallback;
+}
+
 interface HistoryItemRowProps {
   threadId: string | undefined;
   item: ThreadHistoryItemDto;
@@ -427,8 +431,9 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
       onOpenToolCallDetail={onOpenToolCallDetail}
       onOpenDeferredHistoryItemDetail={onOpenDeferredHistoryItemDetail}
       {...(onBeforeMessageResize ? { onBeforeMessageResize } : {})}
-      timeLabel={turnTimeLabel}
-      timeTitle={turnTimeTitle}
+      fallbackTimestamp={turn.startedAt}
+      fallbackTimeLabel={turnTimeLabel}
+      fallbackTimeTitle={turnTimeTitle}
       {...(onSelectArtifact ? { onSelectArtifact } : {})}
       {...(adapter ? { adapter } : {})}
     />
@@ -500,8 +505,9 @@ interface TimelineHistoryEntriesProps {
   onToggleGroupedItem: (groupKey: string) => void;
   threadId: string | undefined;
   scrollRootRef: RefObject<HTMLDivElement | null>;
-  timeLabel?: string | null | undefined;
-  timeTitle?: string | null | undefined;
+  fallbackTimestamp?: string | null | undefined;
+  fallbackTimeLabel?: string | null | undefined;
+  fallbackTimeTitle?: string | null | undefined;
   onOpenExpandedText: OpenExpandedTextHandler;
   onOpenCommandDetail: OpenCommandDetailHandler;
   onOpenToolCallDetail: OpenToolCallDetailHandler;
@@ -524,8 +530,9 @@ function TimelineHistoryEntries({
   onSelectArtifact,
   onBeforeMessageResize,
   adapter,
-  timeLabel,
-  timeTitle,
+  fallbackTimestamp,
+  fallbackTimeLabel,
+  fallbackTimeTitle,
 }: TimelineHistoryEntriesProps) {
   return (
     <GraphChatHistoryEntries<TimelineHistoryEntry>
@@ -568,23 +575,34 @@ function TimelineHistoryEntries({
           onOpen={onOpenExpandedText}
         />
       )}
-      renderItem={(entry) => (
-        <HistoryItemRow
-          key={entry.key}
-          threadId={threadId}
-          item={entry.item}
-          scrollRootRef={scrollRootRef}
-          timeLabel={timeLabel}
-          timeTitle={timeTitle}
-          onOpenExpandedText={onOpenExpandedText}
-          onOpenCommandDetail={onOpenCommandDetail}
-          onOpenToolCallDetail={onOpenToolCallDetail}
-          onOpenDeferredHistoryItemDetail={onOpenDeferredHistoryItemDetail}
-          {...(onBeforeMessageResize ? { onBeforeMessageResize } : {})}
-          {...(onSelectArtifact ? { onSelectArtifact } : {})}
-          {...(adapter ? { adapter } : {})}
-        />
-      )}
+      renderItem={(entry) => {
+        const timestamp = timestampForHistoryItem(entry.item, fallbackTimestamp ?? null);
+        return (
+          <HistoryItemRow
+            key={entry.key}
+            threadId={threadId}
+            item={entry.item}
+            scrollRootRef={scrollRootRef}
+            timeLabel={
+              entry.item.createdAt
+                ? formatShortTimestamp(timestamp)
+                : fallbackTimeLabel
+            }
+            timeTitle={
+              entry.item.createdAt
+                ? formatLongTimestamp(timestamp)
+                : fallbackTimeTitle
+            }
+            onOpenExpandedText={onOpenExpandedText}
+            onOpenCommandDetail={onOpenCommandDetail}
+            onOpenToolCallDetail={onOpenToolCallDetail}
+            onOpenDeferredHistoryItemDetail={onOpenDeferredHistoryItemDetail}
+            {...(onBeforeMessageResize ? { onBeforeMessageResize } : {})}
+            {...(onSelectArtifact ? { onSelectArtifact } : {})}
+            {...(adapter ? { adapter } : {})}
+          />
+        );
+      }}
     />
   );
 }

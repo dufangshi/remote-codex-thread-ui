@@ -726,6 +726,26 @@ export function GraphWorkspaceExplorer({
     }
   }
 
+  async function handleSaveFile(input: { path: string; content: string }) {
+    if (!workspaceAdapter?.writeFile) {
+      return;
+    }
+
+    setWorkspaceError(null);
+    await workspaceAdapter.writeFile({
+      ...workspaceIdentity,
+      path: input.path,
+      content: input.content,
+    });
+    await refreshWorkspaceTree(input.path);
+    const file = await workspaceAdapter.readFile({
+      ...workspaceIdentity,
+      path: input.path,
+      limit: PREVIEW_CHUNK_BYTES,
+    });
+    setPreviewFile(file);
+  }
+
   async function handleUpload(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
     event.target.value = '';
@@ -856,6 +876,9 @@ export function GraphWorkspaceExplorer({
       imageUrl={imageUrl}
       loadingMore={loadingMore}
       onLoadMore={handleLoadMore}
+      {...(workspaceAdapter?.writeFile
+        ? { onSaveFile: handleSaveFile }
+        : {})}
       {...(!isMobileViewport
         ? { onCollapse: () => setCollapsedPanel('viewer') }
         : {})}
