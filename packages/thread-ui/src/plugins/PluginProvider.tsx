@@ -13,11 +13,13 @@ import type {
   ThreadArtifactDto,
 } from '@remote-codex/shared';
 import {
-  builtinFrontendPlugins,
-} from './builtin-plugin-modules';
-import { PluginContext, mergePluginState, type PluginContextValue } from './plugin-context';
+  PluginContext,
+  mergePluginState,
+  type PluginContextValue,
+} from './plugin-context';
 import type {
   ArtifactRenderContext,
+  FrontendPluginModule,
   InlineCodeRenderContext,
 } from './plugin-types';
 
@@ -31,15 +33,20 @@ export interface PluginProviderAdapter {
   deletePlugin?: (pluginId: string) => Promise<PluginDto> | PluginDto;
 }
 
+const DEFAULT_PLUGIN_PROVIDER_ADAPTER: PluginProviderAdapter = {};
+const DEFAULT_BUILTIN_PLUGINS: FrontendPluginModule[] = [];
+
 export function PluginProvider({
-  adapter = {},
+  adapter = DEFAULT_PLUGIN_PROVIDER_ADAPTER,
+  builtinPlugins = DEFAULT_BUILTIN_PLUGINS,
   children,
 }: {
   adapter?: PluginProviderAdapter;
+  builtinPlugins?: FrontendPluginModule[];
   children: ReactNode;
 }) {
   const [plugins, setPlugins] = useState<PluginDto[]>(() =>
-    mergePluginState(builtinFrontendPlugins, []),
+    mergePluginState(builtinPlugins, []),
   );
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -51,13 +58,13 @@ export function PluginProvider({
       const serverPlugins = adapter.fetchPlugins
         ? await adapter.fetchPlugins()
         : [];
-      setPlugins(mergePluginState(builtinFrontendPlugins, serverPlugins));
+      setPlugins(mergePluginState(builtinPlugins, serverPlugins));
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Unable to load plugins.');
     } finally {
       setLoading(false);
     }
-  }, [adapter]);
+  }, [adapter, builtinPlugins]);
 
   useEffect(() => {
     void refresh();
@@ -115,10 +122,10 @@ export function PluginProvider({
     const enabledIds = new Set(
       plugins.filter((plugin) => plugin.enabled).map((plugin) => plugin.id),
     );
-    return builtinFrontendPlugins.filter((module) =>
+    return builtinPlugins.filter((module) =>
       enabledIds.has(module.manifest.id),
     );
-  }, [plugins]);
+  }, [builtinPlugins, plugins]);
 
   const renderArtifact = useCallback(
     (context: ArtifactRenderContext) => {

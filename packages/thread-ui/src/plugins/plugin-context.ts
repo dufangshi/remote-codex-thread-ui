@@ -5,7 +5,6 @@ import type {
   PluginDto,
   ThreadArtifactDto,
 } from '@remote-codex/shared';
-import { builtinFrontendPlugins } from './builtin-plugin-modules';
 import type {
   ArtifactRenderContext,
   FrontendPluginModule,
@@ -46,9 +45,11 @@ export function mergePluginState(
   return merged;
 }
 
-export function createDefaultPluginContextValue(): PluginContextValue {
-  const plugins = mergePluginState(builtinFrontendPlugins, []);
-  const enabledModules = builtinFrontendPlugins;
+export function createDefaultPluginContextValue(
+  modules: FrontendPluginModule[] = [],
+): PluginContextValue {
+  const plugins = mergePluginState(modules, []);
+  const enabledModules = modules;
   const renderArtifact: PluginContextValue['renderArtifact'] = (context) => {
     const module = enabledModules.find(
       (entry) =>

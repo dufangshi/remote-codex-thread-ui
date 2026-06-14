@@ -1,6 +1,6 @@
 import {
   xyzViewerPluginManifest,
-} from '@remote-codex/plugin-xyz-viewer';
+} from '@remote-codex/plugin-xyz-viewer/manifest';
 import { terminalPluginManifest } from '@remote-codex/plugin-terminal';
 import type { FrontendPluginModule } from './plugin-types';
 import {

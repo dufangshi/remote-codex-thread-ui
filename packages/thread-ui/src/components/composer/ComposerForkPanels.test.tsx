@@ -1,0 +1,133 @@
+/**
+ * @vitest-environment jsdom
+ */
+import { flushSync } from 'react-dom';
+import { createRoot, type Root } from 'react-dom/client';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+
+import {
+  ComposerForkPanel,
+  ComposerForkTurnsPanel,
+} from './ComposerForkPanels';
+
+let root: Root | null = null;
+let container: HTMLDivElement | null = null;
+
+function renderNode(node: React.ReactNode) {
+  container = document.createElement('div');
+  document.body.appendChild(container);
+  root = createRoot(container);
+
+  flushSync(() => {
+    root?.render(node);
+  });
+
+  return container;
+}
+
+describe('ComposerForkPanels', () => {
+  beforeEach(() => {
+    (
+      globalThis as typeof globalThis & {
+        IS_REACT_ACT_ENVIRONMENT: boolean;
+      }
+    ).IS_REACT_ACT_ENVIRONMENT = true;
+  });
+
+  afterEach(() => {
+    if (root) {
+      flushSync(() => {
+        root?.unmount();
+      });
+    }
+    container?.remove();
+    root = null;
+    container = null;
+  });
+
+  it('renders fork actions and opens turn selection', () => {
+    const onForkLatest = vi.fn();
+    const onSelectForkTurnPanel = vi.fn();
+    const view = renderNode(
+      <ComposerForkPanel
+        busy={false}
+        forkBusy={false}
+        composerMenuItemClassName="menu-item"
+        onForkLatest={onForkLatest}
+        onSelectForkTurnPanel={onSelectForkTurnPanel}
+      />,
+    );
+
+    view
+      .querySelector<HTMLButtonElement>('button:nth-of-type(1)')
+      ?.click();
+    view
+      .querySelector<HTMLButtonElement>('button:nth-of-type(2)')
+      ?.click();
+
+    expect(onForkLatest).toHaveBeenCalledTimes(1);
+    expect(onSelectForkTurnPanel).toHaveBeenCalledTimes(1);
+  });
+
+  it('renders fork turn states and invokes selected turn', () => {
+    const onForkTurn = vi.fn();
+    const view = renderNode(
+      <ComposerForkTurnsPanel
+        forkTurnOptionsState={{
+          status: 'ready',
+          error: null,
+          data: [
+            {
+              turnId: 'turn-1',
+              turnIndex: 3,
+              status: 'completed',
+              startedAt: '2026-06-10T00:00:00.000Z',
+            },
+          ],
+        }}
+        forkBusy={false}
+        composerPanelButtonClassName="panel-button"
+        onForkTurn={onForkTurn}
+      />,
+    );
+
+    expect(view.textContent).toContain('Turn 3');
+    view.querySelector<HTMLButtonElement>('button')?.click();
+
+    expect(onForkTurn).toHaveBeenCalledWith('turn-1');
+  });
+
+  it('renders empty and loading states', () => {
+    const view = renderNode(
+      <ComposerForkTurnsPanel
+        forkTurnOptionsState={{
+          status: 'loading',
+          error: null,
+          data: null,
+        }}
+        forkBusy={false}
+        composerPanelButtonClassName="panel-button"
+        onForkTurn={vi.fn()}
+      />,
+    );
+
+    expect(view.textContent).toContain('Loading turns...');
+
+    flushSync(() => {
+      root?.render(
+        <ComposerForkTurnsPanel
+          forkTurnOptionsState={{
+            status: 'ready',
+            error: null,
+            data: [],
+          }}
+          forkBusy={false}
+          composerPanelButtonClassName="panel-button"
+          onForkTurn={vi.fn()}
+        />,
+      );
+    });
+
+    expect(view.textContent).toContain('No turns available to fork yet.');
+  });
+});

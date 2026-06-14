@@ -1,0 +1,258 @@
+import type { ThreadMcpServersDto } from '@remote-codex/shared';
+
+import { authStatusLabel } from './composerPresentation';
+import type { McpPanelMode, SlashPanelState } from './types';
+
+interface ComposerMcpPanelProps {
+  mcpPanelMode: McpPanelMode;
+  mcpState: SlashPanelState<ThreadMcpServersDto>;
+  mcpConfigEditing: boolean;
+  mcpConfigPath: string | null;
+  mcpConfigError: string | null;
+  mcpConfigSuccess: string | null;
+  mcpConfigBusy: boolean;
+  mcpHttpName: string;
+  mcpHttpUrl: string;
+  mcpRawBlock: string;
+  composerPanelButtonClassName: string;
+  composerChipButtonClassName: string;
+  onSetMcpPanelMode: (mode: McpPanelMode) => void;
+  onClearMcpConfigStatus: () => void;
+  onSetMcpHttpName: (value: string) => void;
+  onSetMcpHttpUrl: (value: string) => void;
+  onSetMcpRawBlock: (value: string) => void;
+  onPrepareRawMcpBlock: () => Promise<void> | void;
+  onSaveHttpMcp: () => Promise<void> | void;
+  onSaveRawMcpBlock: () => Promise<void> | void;
+}
+
+export function ComposerMcpPanel({
+  mcpPanelMode,
+  mcpState,
+  mcpConfigEditing,
+  mcpConfigPath,
+  mcpConfigError,
+  mcpConfigSuccess,
+  mcpConfigBusy,
+  mcpHttpName,
+  mcpHttpUrl,
+  mcpRawBlock,
+  composerPanelButtonClassName,
+  composerChipButtonClassName,
+  onSetMcpPanelMode,
+  onClearMcpConfigStatus,
+  onSetMcpHttpName,
+  onSetMcpHttpUrl,
+  onSetMcpRawBlock,
+  onPrepareRawMcpBlock,
+  onSaveHttpMcp,
+  onSaveRawMcpBlock,
+}: ComposerMcpPanelProps) {
+  return (
+    <div className="p-2">
+      <div className="mb-2 flex items-center justify-between gap-2">
+        <div className="min-w-0">
+          <p className="text-xs text-stone-400">MCP config source</p>
+          <p className="truncate text-[11px] text-stone-500">
+            {mcpConfigPath ?? '<provider config>'}
+          </p>
+        </div>
+        {mcpPanelMode === 'list' && mcpConfigEditing ? (
+          <button
+            type="button"
+            onClick={(event) => {
+              event.stopPropagation();
+              onSetMcpPanelMode('add');
+              onClearMcpConfigStatus();
+            }}
+            className="shrink-0 rounded-full border border-sky-300/35 px-3 py-1.5 text-xs text-sky-100 transition hover:bg-sky-300/10"
+          >
+            Add MCP
+          </button>
+        ) : null}
+      </div>
+      {mcpState.status === 'loading' && !mcpState.data ? (
+        <p className="rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-3 text-sm text-stone-400">
+          Loading MCP servers...
+        </p>
+      ) : null}
+      {mcpState.error ? (
+        <p className="mb-2 rounded-xl border border-rose-500/35 bg-rose-500/10 px-3 py-3 text-sm text-rose-100/90">
+          {mcpState.error}
+        </p>
+      ) : null}
+      {mcpConfigError ? (
+        <p className="mb-2 rounded-xl border border-rose-500/35 bg-rose-500/10 px-3 py-3 text-sm text-rose-100/90">
+          {mcpConfigError}
+        </p>
+      ) : null}
+      {mcpConfigSuccess ? (
+        <p className="mb-2 rounded-xl border border-emerald-500/35 bg-emerald-500/10 px-3 py-3 text-sm text-emerald-100/90">
+          {mcpConfigSuccess}
+        </p>
+      ) : null}
+      {mcpPanelMode === 'add' ? (
+        <div className="space-y-2">
+          <button
+            type="button"
+            onClick={(event) => {
+              event.stopPropagation();
+              onSetMcpPanelMode('http');
+              onClearMcpConfigStatus();
+            }}
+            className={`${composerPanelButtonClassName} block w-full rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-3 text-left transition`}
+          >
+            <div className="flex items-center justify-between gap-3">
+              <span className="text-sm text-stone-100">
+                HTTP / Streamable HTTP
+              </span>
+              <span className="text-[11px] uppercase tracking-[0.16em] text-stone-500">
+                Form
+              </span>
+            </div>
+            <p className="mt-1 text-xs text-stone-400">
+              Add an MCP server with a name and URL, then write the matching
+              block into provider config.
+            </p>
+          </button>
+          <button
+            type="button"
+            onClick={(event) => {
+              event.stopPropagation();
+              void onPrepareRawMcpBlock();
+            }}
+            className={`${composerPanelButtonClassName} block w-full rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-3 text-left transition`}
+          >
+            <div className="flex items-center justify-between gap-3">
+              <span className="text-sm text-stone-100">
+                stdio / raw block
+              </span>
+              <span className="text-[11px] uppercase tracking-[0.16em] text-stone-500">
+                TOML
+              </span>
+            </div>
+            <p className="mt-1 text-xs text-stone-400">
+              Write a single `[mcp_servers.name]` block, then save it back into
+              provider config.
+            </p>
+          </button>
+        </div>
+      ) : null}
+      {mcpPanelMode === 'http' ? (
+        <div className="space-y-2 rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-3">
+          <div>
+            <label className="mb-1 block text-xs text-stone-400">
+              MCP name
+            </label>
+            <input
+              aria-label="MCP name"
+              value={mcpHttpName}
+              onChange={(event) => onSetMcpHttpName(event.target.value)}
+              placeholder="openaiDeveloperDocs"
+              className="w-full rounded-lg border border-stone-700 bg-stone-950 px-3 py-2 text-sm text-stone-100 outline-none placeholder:text-stone-500 focus:border-sky-300/50"
+            />
+          </div>
+          <div>
+            <label className="mb-1 block text-xs text-stone-400">URL</label>
+            <input
+              aria-label="URL"
+              value={mcpHttpUrl}
+              onChange={(event) => onSetMcpHttpUrl(event.target.value)}
+              placeholder="https://developers.openai.com/mcp"
+              className="w-full rounded-lg border border-stone-700 bg-stone-950 px-3 py-2 text-sm text-stone-100 outline-none placeholder:text-stone-500 focus:border-sky-300/50"
+            />
+          </div>
+          <div className="flex items-center justify-between gap-2 pt-1">
+            <button
+              type="button"
+              onClick={() => onSetMcpPanelMode('add')}
+              className={`${composerChipButtonClassName} rounded-full border border-stone-700 px-3 py-1.5 text-xs text-stone-300 transition`}
+            >
+              Back
+            </button>
+            <button
+              type="button"
+              onClick={() => void onSaveHttpMcp()}
+              disabled={mcpConfigBusy}
+              className="ui-status-info rounded-full px-3 py-1.5 text-xs transition disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {mcpConfigBusy ? 'Saving...' : 'Write HTTP MCP'}
+            </button>
+          </div>
+        </div>
+      ) : null}
+      {mcpPanelMode === 'stdio' ? (
+        <div className="space-y-2 rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-3">
+          <label className="block text-xs text-stone-400">
+            MCP block for provider config
+          </label>
+          <textarea
+            aria-label="MCP block for provider config"
+            value={mcpRawBlock}
+            onChange={(event) => onSetMcpRawBlock(event.target.value)}
+            rows={8}
+            className="w-full rounded-lg border border-stone-700 bg-stone-950 px-3 py-2 text-sm text-stone-100 outline-none placeholder:text-stone-500 focus:border-sky-300/50"
+          />
+          <div className="flex items-center justify-between gap-2 pt-1">
+            <button
+              type="button"
+              onClick={() => onSetMcpPanelMode('add')}
+              className={`${composerChipButtonClassName} rounded-full border border-stone-700 px-3 py-1.5 text-xs text-stone-300 transition`}
+            >
+              Back
+            </button>
+            <button
+              type="button"
+              onClick={() => void onSaveRawMcpBlock()}
+              disabled={mcpConfigBusy}
+              className="ui-status-info rounded-full px-3 py-1.5 text-xs transition disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {mcpConfigBusy ? 'Saving...' : 'Write raw block'}
+            </button>
+          </div>
+        </div>
+      ) : null}
+      {mcpPanelMode === 'list' && mcpState.data?.servers.length ? (
+        <div className="space-y-2">
+          {mcpState.data.servers.map((server) => (
+            <div
+              key={server.name}
+              className="rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-2.5"
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-medium text-stone-100">
+                    {server.name}
+                  </p>
+                  <p className="mt-0.5 text-xs text-stone-400">
+                    {server.tools.length} tools · {server.resourceCount}{' '}
+                    resources · {server.resourceTemplateCount} templates
+                  </p>
+                </div>
+                <span className="shrink-0 rounded-full border border-stone-700 px-2 py-1 text-[10px] uppercase tracking-[0.14em] text-stone-300">
+                  {authStatusLabel(server.authStatus)}
+                </span>
+              </div>
+              {server.tools.length > 0 ? (
+                <p className="mt-2 line-clamp-2 text-xs text-stone-500">
+                  {server.tools
+                    .slice(0, 4)
+                    .map((tool) => tool.title ?? tool.name)
+                    .join(' · ')}
+                </p>
+              ) : null}
+            </div>
+          ))}
+        </div>
+      ) : null}
+      {mcpPanelMode === 'list' &&
+      mcpState.status !== 'loading' &&
+      !mcpState.error &&
+      (mcpState.data?.servers.length ?? 0) === 0 ? (
+        <p className="rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-3 text-sm text-stone-400">
+          No MCP servers available right now.
+        </p>
+      ) : null}
+    </div>
+  );
+}

@@ -1,0 +1,607 @@
+.thread-ui-shell .thread-workspace-panel {
+  background: var(--theme-panel);
+}
+
+.thread-ui-shell .thread-workspace-card {
+  background: var(--theme-surface);
+}
+
+.thread-ui-shell .thread-workspace-collapse-tab,
+.thread-ui-shell .thread-workspace-small-toggle,
+.thread-ui-shell .thread-workspace-expand-fab,
+.thread-ui-shell .thread-graph-panel-expand-fab {
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid var(--theme-border);
+  border-radius: 999px;
+  background: color-mix(in oklch, var(--theme-panel) 92%, transparent);
+  color: var(--theme-fg-soft);
+  box-shadow: 0 10px 26px color-mix(in oklch, var(--theme-bg) 62%, transparent);
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease,
+    transform 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.thread-ui-shell .thread-workspace-collapse-tab:hover,
+.thread-ui-shell .thread-workspace-small-toggle:hover,
+.thread-ui-shell .thread-workspace-expand-fab:hover,
+.thread-ui-shell .thread-graph-panel-expand-fab:hover {
+  border-color: var(--theme-border-strong);
+  background: var(--theme-hover);
+  color: var(--theme-fg);
+  box-shadow: 0 14px 30px color-mix(in oklch, var(--theme-bg) 72%, transparent);
+}
+
+.thread-ui-shell .thread-workspace-collapse-tab {
+  position: absolute;
+  left: -1rem;
+  top: 50%;
+  z-index: 30;
+  transform: translateY(-50%);
+}
+
+.thread-ui-shell .thread-workspace-collapse-tab:hover {
+  transform: translateY(-50%) translateX(-1px);
+}
+
+.thread-ui-shell .thread-workspace-expand-fab {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  z-index: 30;
+  transform: translateY(-50%);
+}
+
+.thread-ui-shell .thread-workspace-expand-fab:hover {
+  transform: translateY(-50%) translateX(-1px);
+}
+
+.thread-ui-shell .thread-chat-usage-footer {
+  background: var(--theme-surface);
+  color: rgb(148 163 184);
+}
+
+.thread-ui-shell.thread-ui-theme-dark .thread-chat-usage-footer,
+.thread-ui-shell[data-theme-effective="dark"] .thread-chat-usage-footer,
+.thread-ui-shell.dark .thread-chat-usage-footer {
+  background: var(--theme-surface);
+  color: rgb(100 116 139);
+}
+
+.thread-ui-shell .thread-graph-composer-host {
+  border-top: 1px solid rgb(226 232 240);
+  background: var(--theme-surface);
+  padding: 0.5rem 0.75rem calc(env(safe-area-inset-bottom) + 0.5rem);
+}
+
+.thread-ui-shell.thread-ui-theme-dark .thread-graph-composer-host,
+.thread-ui-shell[data-theme-effective="dark"] .thread-graph-composer-host,
+.thread-ui-shell.dark .thread-graph-composer-host {
+  border-top-color: #2a2f3a;
+  background: var(--theme-surface);
+}
+
+.thread-ui-shell .thread-graph-composer-host > .thread-composer-layer,
+.thread-ui-shell .thread-graph-composer-host > .thread-graph-composer-layer {
+  width: 100%;
+}
+
+.thread-ui-shell .thread-split-chat-pane,
+.thread-ui-shell .thread-split-workspace-pane {
+  width: 100%;
+  min-height: 0;
+}
+
+.thread-ui-shell .thread-split-chat-pane {
+  min-width: 0;
+}
+
+.thread-ui-shell .thread-split-region,
+.thread-ui-shell .thread-split-container {
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.thread-ui-shell .thread-graph-shell-desktop-split {
+  display: none !important;
+}
+
+.thread-ui-shell .thread-graph-shell-mobile-split {
+  display: block !important;
+}
+
+.thread-ui-shell[data-thread-layout="desktop"]
+  .thread-graph-shell-desktop-split {
+  display: flex !important;
+}
+
+.thread-ui-shell[data-thread-layout="desktop"]
+  .thread-graph-shell-mobile-split {
+  display: none !important;
+}
+
+.thread-ui-shell[data-thread-layout="desktop"]
+  .thread-graph-shell-desktop-split
+  .thread-split-chat-pane,
+.thread-ui-shell[data-thread-layout="desktop"]
+  .thread-graph-shell-desktop-split
+  .thread-split-workspace-pane,
+.thread-ui-shell .thread-graph-shell-desktop-split .thread-split-chat-pane,
+.thread-ui-shell
+  .thread-graph-shell-desktop-split
+  .thread-split-workspace-pane {
+  min-width: 0;
+  height: 100%;
+}
+
+.thread-ui-shell[data-thread-layout="desktop"]
+  .thread-graph-shell-desktop-split
+  .thread-split-chat-pane,
+.thread-ui-shell[data-thread-layout="desktop"]
+  .thread-graph-shell-desktop-split
+  .thread-split-workspace-pane {
+  flex: 1 1 0;
+  min-width: 0;
+  width: auto;
+}
+
+.thread-ui-shell[data-thread-layout="desktop"] {
+  padding: 0.5rem;
+}
+
+.thread-ui-shell[data-thread-layout="desktop"].thread-ui-viewport-constrained {
+  height: 100svh;
+  max-height: 100svh;
+}
+
+.thread-ui-shell[data-thread-layout="desktop"] .thread-shell-frame {
+  display: grid;
+  grid-template-columns: 264px minmax(0, 1fr);
+  gap: 0.5rem;
+  height: 100%;
+  min-height: 0;
+}
+
+.thread-ui-shell[data-thread-layout="desktop"] .thread-desktop-only-flex {
+  display: flex !important;
+}
+
+.thread-ui-shell[data-thread-layout="desktop"]
+  .thread-desktop-only-inline-flex {
+  display: inline-flex !important;
+}
+
+.thread-ui-shell[data-thread-layout="desktop"] .thread-mobile-only-block,
+.thread-ui-shell[data-thread-layout="desktop"] .thread-mobile-only-grid,
+.thread-ui-shell[data-thread-layout="desktop"] .thread-mobile-only-inline-flex {
+  display: none !important;
+}
+
+.thread-ui-shell[data-thread-layout="desktop"] .thread-mobile-chat-hidden,
+.thread-ui-shell[data-thread-layout="desktop"] .thread-mobile-workspace-hidden {
+  display: block !important;
+}
+
+.thread-ui-shell[data-thread-layout="desktop"]
+  .thread-desktop-collapsed-hidden {
+  display: none;
+}
+
+.thread-ui-shell[data-thread-layout="desktop"]
+  .thread-shell-frame.is-rail-collapsed {
+  grid-template-columns: 56px minmax(0, 1fr);
+}
+
+.thread-ui-shell[data-thread-layout="desktop"] .thread-rooms-rail {
+  position: static;
+  z-index: auto;
+  width: auto;
+  min-width: 0;
+  height: 100%;
+  transform: none;
+  translate: 0 0;
+  pointer-events: auto;
+  border: 1px solid var(--theme-border);
+  border-radius: 12px;
+  box-shadow: var(--theme-shadow);
+}
+
+.thread-ui-shell[data-thread-layout="desktop"] .thread-rooms-rail-header {
+  height: 4rem;
+  align-items: center;
+  padding-bottom: 0;
+}
+
+.thread-ui-shell[data-thread-layout="desktop"] .thread-shell-card {
+  border: 1px solid var(--theme-border);
+  border-radius: 12px;
+}
+
+.thread-ui-shell[data-thread-layout="desktop"] .thread-topbar-row {
+  min-height: 4rem;
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+}
+
+.thread-ui-shell[data-thread-layout="desktop"] .thread-mobile-view-switch {
+  display: none !important;
+}
+
+.thread-ui-shell[data-thread-layout="desktop"] .thread-split-region {
+  padding: 0.5rem;
+}
+
+.thread-ui-shell[data-thread-layout="desktop"]
+  .thread-split-container.has-workspace {
+  display: flex;
+  align-items: stretch;
+  min-width: 0;
+  min-height: 0;
+}
+
+.thread-ui-shell[data-thread-layout="desktop"] .thread-split-chat-pane {
+  flex: 0 0 var(--thread-chat-percent, 54%);
+  min-width: min(31rem, 100%);
+  width: auto;
+  height: 100%;
+  display: block;
+}
+
+.thread-ui-shell[data-thread-layout="desktop"] .thread-split-workspace-pane {
+  flex: 0 0 var(--thread-workspace-percent, 46%);
+  min-width: 19rem;
+  width: auto;
+  height: 100%;
+  display: block;
+}
+
+.thread-ui-shell[data-thread-layout="desktop"] .thread-resize-handle {
+  display: flex !important;
+}
+
+@media (min-width: 640px) {
+  .thread-ui-shell:not([data-thread-layout="mobile"]) {
+    padding: 0.5rem;
+  }
+
+  .thread-ui-shell:not(
+      [data-thread-layout="mobile"]
+    ).thread-ui-viewport-constrained {
+    height: 100svh;
+    max-height: 100svh;
+  }
+
+  .thread-ui-shell:not([data-thread-layout="mobile"]) .thread-shell-frame {
+    display: grid;
+    grid-template-columns: 264px minmax(0, 1fr);
+    gap: 0.5rem;
+    height: 100%;
+    min-height: 0;
+  }
+
+  .thread-ui-shell:not([data-thread-layout="mobile"])
+    .thread-desktop-only-flex {
+    display: flex !important;
+  }
+
+  .thread-ui-shell:not([data-thread-layout="mobile"])
+    .thread-desktop-only-inline-flex {
+    display: inline-flex !important;
+  }
+
+  .thread-ui-shell:not([data-thread-layout="mobile"]) .thread-mobile-only-block,
+  .thread-ui-shell:not([data-thread-layout="mobile"]) .thread-mobile-only-grid,
+  .thread-ui-shell:not([data-thread-layout="mobile"])
+    .thread-mobile-only-inline-flex {
+    display: none !important;
+  }
+
+  .thread-ui-shell:not([data-thread-layout="mobile"])
+    .thread-mobile-chat-hidden,
+  .thread-ui-shell:not([data-thread-layout="mobile"])
+    .thread-mobile-workspace-hidden {
+    display: block !important;
+  }
+
+  .thread-ui-shell:not([data-thread-layout="mobile"])
+    .thread-desktop-collapsed-hidden {
+    display: none;
+  }
+
+  .thread-ui-shell:not([data-thread-layout="mobile"])
+    .thread-shell-frame.is-rail-collapsed {
+    grid-template-columns: 56px minmax(0, 1fr);
+  }
+
+  .thread-ui-shell:not([data-thread-layout="mobile"]) .thread-rooms-rail {
+    position: static;
+    z-index: auto;
+    width: auto;
+    min-width: 0;
+    height: 100%;
+    transform: none;
+    translate: 0 0;
+    pointer-events: auto;
+    border: 1px solid var(--theme-border);
+    border-radius: 12px;
+    box-shadow: var(--theme-shadow);
+  }
+
+  .thread-ui-shell:not([data-thread-layout="mobile"])
+    .thread-rooms-rail-header {
+    height: 4rem;
+    align-items: center;
+    padding-bottom: 0;
+  }
+
+  .thread-ui-shell:not([data-thread-layout="mobile"]) .thread-shell-card {
+    border: 1px solid var(--theme-border);
+    border-radius: 12px;
+  }
+
+  .thread-ui-shell:not([data-thread-layout="mobile"]) .thread-topbar-row {
+    min-height: 4rem;
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+  }
+
+  .thread-ui-shell:not([data-thread-layout="mobile"])
+    .thread-mobile-view-switch {
+    display: none !important;
+  }
+
+  .thread-ui-shell:not([data-thread-layout="mobile"]) .thread-split-region {
+    padding: 0.5rem;
+  }
+
+  .thread-ui-shell:not([data-thread-layout="mobile"])
+    .thread-split-container.has-workspace {
+    display: flex;
+    align-items: stretch;
+    min-width: 0;
+    min-height: 0;
+  }
+
+  .thread-ui-shell:not([data-thread-layout="mobile"]) .thread-split-chat-pane {
+    flex: 0 0 var(--thread-chat-percent, 54%);
+    min-width: min(31rem, 100%);
+    width: auto;
+    height: 100%;
+    display: block;
+  }
+
+  .thread-ui-shell:not([data-thread-layout="mobile"])
+    .thread-split-workspace-pane {
+    flex: 0 0 var(--thread-workspace-percent, 46%);
+    min-width: 19rem;
+    width: auto;
+    height: 100%;
+    display: block;
+  }
+
+  .thread-ui-shell:not([data-thread-layout="mobile"]) .thread-resize-handle {
+    display: flex !important;
+  }
+
+  .thread-ui-shell:not([data-thread-layout="mobile"])
+    .thread-graph-shell-desktop-split {
+    display: flex !important;
+  }
+
+  .thread-ui-shell:not([data-thread-layout="mobile"])
+    .thread-graph-shell-mobile-split {
+    display: none !important;
+  }
+
+  .thread-ui-shell:not([data-thread-layout="mobile"])
+    .thread-graph-shell-desktop-split
+    .thread-split-chat-pane,
+  .thread-ui-shell:not([data-thread-layout="mobile"])
+    .thread-graph-shell-desktop-split
+    .thread-split-workspace-pane {
+    flex: 1 1 0;
+    min-width: 0;
+    width: auto;
+  }
+
+  .thread-ui-shell:not([data-thread-layout="mobile"])
+    .thread-graph-shell-desktop-split
+    .thread-split-chat-pane {
+    min-width: 0;
+  }
+
+  .thread-ui-shell:not([data-thread-layout="mobile"])
+    .thread-graph-shell-desktop-split
+    .thread-split-workspace-pane {
+    min-width: 0;
+  }
+}
+
+.thread-ui-shell .thread-resize-handle span {
+  background: var(--theme-border);
+}
+
+.thread-ui-shell .thread-resize-handle:hover span,
+.thread-ui-shell .thread-resize-handle:focus-visible span {
+  background: var(--theme-border-strong);
+  box-shadow: 0 0 0 3px
+    color-mix(in oklch, var(--theme-accent-border) 24%, transparent);
+}
+
+.thread-ui-shell .thread-graph-right-tabs {
+  border-color: var(--theme-border);
+  background: var(--theme-surface);
+}
+
+.thread-ui-shell .thread-graph-right-tab-secondary {
+  border-color: var(--theme-border);
+}
+
+.thread-ui-shell .thread-workspace-tab,
+.thread-ui-shell .thread-graph-right-tab {
+  color: var(--theme-fg-muted);
+}
+
+.thread-ui-shell .thread-workspace-tab:hover,
+.thread-ui-shell .thread-graph-right-tab:hover {
+  background: var(--theme-hover);
+  color: var(--theme-fg);
+}
+
+.thread-ui-shell .thread-workspace-tab.is-active,
+.thread-ui-shell .thread-graph-right-tab.is-active {
+  background: var(--theme-surface-strong);
+  color: var(--theme-fg);
+}
+
+.thread-ui-shell .thread-graph-visualization-panel {
+  background: var(--theme-surface);
+  color: var(--theme-fg);
+}
+
+.thread-ui-shell .thread-graph-flow {
+  overflow: hidden;
+  border: 1px solid var(--theme-border);
+  border-radius: 12px;
+  background: var(--theme-surface);
+}
+
+.thread-ui-shell .thread-graph-flow-node {
+  position: relative;
+  min-width: 8rem;
+  max-width: 12rem;
+  border: 1px solid var(--theme-border-strong);
+  border-radius: 8px;
+  background: var(--theme-panel);
+  padding: 0.85rem 1rem;
+  color: var(--theme-fg);
+  text-align: center;
+  box-shadow: var(--theme-shadow);
+}
+
+.thread-ui-shell .thread-graph-flow .react-flow {
+  background: var(--theme-surface);
+  color: var(--theme-fg);
+}
+
+.thread-ui-shell .thread-graph-flow .react-flow__edge-path {
+  stroke: var(--theme-border-contrast);
+}
+
+.thread-ui-shell .thread-graph-flow .react-flow__background {
+  background: var(--theme-surface);
+}
+
+.thread-ui-shell .thread-graph-flow .react-flow__controls {
+  overflow: hidden;
+  border: 1px solid var(--theme-border);
+  border-radius: 8px;
+  box-shadow: var(--theme-shadow);
+}
+
+.thread-ui-shell .thread-graph-flow .react-flow__controls-button {
+  border-bottom-color: var(--theme-border);
+  background: var(--theme-panel);
+  color: var(--theme-fg-soft);
+}
+
+.thread-ui-shell .thread-graph-flow .react-flow__controls-button:hover {
+  background: var(--theme-hover);
+  color: var(--theme-fg);
+}
+
+.thread-ui-shell .thread-graph-flow .react-flow__controls-button svg {
+  fill: currentColor;
+}
+
+.thread-ui-shell .thread-guide-section {
+  color: var(--theme-fg);
+}
+
+.thread-ui-shell .thread-guide-icon,
+.thread-ui-shell .thread-guide-tag {
+  background: var(--theme-surface-strong);
+  color: var(--theme-fg-muted);
+}
+
+.thread-ui-shell .thread-graph-workspace-mobile-tabs,
+.thread-ui-shell .thread-graph-workspace-mobile-explorer {
+  border-color: var(--theme-border);
+  background: var(--theme-surface);
+}
+
+.thread-ui-shell .thread-graph-workspace-mobile-stack,
+.thread-ui-shell .thread-graph-workspace-mobile-viewer {
+  background: var(--theme-surface);
+  color: var(--theme-fg);
+}
+
+.thread-ui-shell .thread-graph-workspace-resizable {
+  height: 100%;
+  min-width: 0;
+}
+
+.thread-ui-shell .thread-graph-workspace-explorer-pane {
+  min-width: 0;
+}
+
+.thread-ui-shell .thread-graph-workspace-viewer-pane {
+  min-width: 0;
+}
+
+.thread-ui-shell .thread-graph-workspace-resize-handle::after {
+  background: var(--theme-border);
+}
+
+.thread-ui-shell .thread-graph-workspace-resize-handle:hover::after,
+.thread-ui-shell .thread-graph-workspace-resize-handle:focus-visible::after {
+  background: var(--theme-border-contrast);
+}
+
+.thread-ui-shell .thread-graph-explorer,
+.thread-ui-shell .thread-graph-viewer {
+  border-color: var(--theme-border);
+  background: var(--theme-surface);
+  color: var(--theme-fg);
+}
+
+.thread-ui-shell .thread-graph-explorer-header,
+.thread-ui-shell .thread-graph-viewer-header {
+  border-color: var(--theme-border);
+  background: var(--theme-surface);
+  color: var(--theme-fg);
+}
+
+.thread-ui-shell .thread-graph-explorer h2,
+.thread-ui-shell .thread-graph-viewer h2 {
+  color: var(--theme-fg);
+}
+
+.thread-ui-shell .thread-graph-explorer-icon-button,
+.thread-ui-shell .thread-graph-explorer-collapse-button,
+.thread-ui-shell .thread-graph-viewer-header button {
+  border-color: var(--theme-border);
+  background: var(--theme-surface-strong);
+  color: var(--theme-fg-soft);
+}
+
+.thread-ui-shell .thread-graph-explorer-icon-button:hover,
+.thread-ui-shell .thread-graph-explorer-collapse-button:hover,
+.thread-ui-shell .thread-graph-viewer-header button:hover {
+  border-color: var(--theme-border-strong);
+  background: var(--theme-hover);
+  color: var(--theme-fg);
+}
+
+.thread-ui-shell .thread-graph-panel-expand-fab {
+  position: absolute;
+  top: 50%;
+  z-index: 30;
+  display: inline-flex;
+  transform: translateY(-50%);

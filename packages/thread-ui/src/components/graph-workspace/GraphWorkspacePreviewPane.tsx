@@ -1,7 +1,6 @@
 import { memo } from 'react';
 import { ChevronsRight } from 'lucide-react';
 
-import type { ThreadArtifactDto } from '@remote-codex/shared';
 import type { ThreadWorkspaceFilePreview } from '../../adapters';
 import type { PluginContextValue } from '../../plugins/plugin-context';
 import {

@@ -1,0 +1,321 @@
+import type {
+  AgentBackendToolboxItemSchemaDto,
+  AgentHookDto,
+  AgentHookEventNameDto,
+  ThreadForkTurnOptionDto,
+  ThreadHooksDto,
+  ThreadMcpServersDto,
+  ThreadSkillsDto,
+  UpdateThreadHookInput,
+} from '@remote-codex/shared';
+import type { MouseEvent } from 'react';
+
+import { InputGroupButton } from '../graph-ui/InputGroup';
+import { SlashIcon } from './composerPresentation';
+import { ComposerForkPanel, ComposerForkTurnsPanel } from './ComposerForkPanels';
+import { ComposerHooksPanel } from './ComposerHooksPanel';
+import { ComposerMcpPanel } from './ComposerMcpPanel';
+import { ComposerSkillsPanel } from './ComposerSkillsPanel';
+import type {
+  HookScope,
+  HooksPanelMode,
+  McpPanelMode,
+  SlashPanelState,
+  SlashPanelView,
+} from './types';
+
+export function ComposerSlashToolboxMenu({
+  open,
+  slashPanelView,
+  availableToolboxItems,
+  busy,
+  forkBusy,
+  forkTurnOptionsState,
+  skillsState,
+  copiedSkillName,
+  hooksPanelMode,
+  hooksState,
+  hostConfigFilesAvailable,
+  hookTrustAvailable,
+  hookConfigBusy,
+  hookConfigError,
+  hookConfigSuccess,
+  editingHookTarget,
+  hookScope,
+  hookEventName,
+  hookMatcher,
+  hookCommand,
+  hookTimeoutSec,
+  hookStatusMessage,
+  mcpPanelMode,
+  mcpState,
+  mcpConfigEditing,
+  mcpConfigPath,
+  mcpConfigError,
+  mcpConfigSuccess,
+  mcpConfigBusy,
+  mcpHttpName,
+  mcpHttpUrl,
+  mcpRawBlock,
+  iconButtonClassName,
+  menuClassName,
+  menuItemClassName,
+  panelButtonClassName,
+  chipButtonClassName,
+  onToggle,
+  onToolboxItemClick,
+  toolboxItemDisabled,
+  toolboxItemClassName,
+  toolboxItemStatus,
+  onSetSlashPanelView,
+  onOpenForkTurns,
+  onForkLatest,
+  onForkTurn,
+  onCopySkillInvokeName,
+  onResetHookForm,
+  onSetHooksPanelMode,
+  onClearHookConfigStatus,
+  onSetEditingHookTarget,
+  onSetHookScope,
+  onSetHookEventName,
+  onSetHookMatcher,
+  onSetHookCommand,
+  onSetHookTimeoutSec,
+  onSetHookStatusMessage,
+  onSaveHook,
+  onStartEditingHook,
+  onTrustHook,
+  onUntrustHook,
+  onSetMcpPanelMode,
+  onClearMcpConfigStatus,
+  onSetMcpHttpName,
+  onSetMcpHttpUrl,
+  onSetMcpRawBlock,
+  onPrepareRawMcpBlock,
+  onSaveHttpMcp,
+  onSaveRawMcpBlock,
+}: {
+  open: boolean;
+  slashPanelView: SlashPanelView;
+  availableToolboxItems: AgentBackendToolboxItemSchemaDto[];
+  busy: boolean;
+  forkBusy: boolean;
+  forkTurnOptionsState: SlashPanelState<ThreadForkTurnOptionDto[]>;
+  skillsState: SlashPanelState<ThreadSkillsDto>;
+  copiedSkillName: string | null;
+  hooksPanelMode: HooksPanelMode;
+  hooksState: SlashPanelState<ThreadHooksDto>;
+  hostConfigFilesAvailable: boolean;
+  hookTrustAvailable: boolean;
+  hookConfigBusy: boolean;
+  hookConfigError: string | null;
+  hookConfigSuccess: string | null;
+  editingHookTarget: UpdateThreadHookInput['target'] | null;
+  hookScope: HookScope;
+  hookEventName: AgentHookEventNameDto;
+  hookMatcher: string;
+  hookCommand: string;
+  hookTimeoutSec: string;
+  hookStatusMessage: string;
+  mcpPanelMode: McpPanelMode;
+  mcpState: SlashPanelState<ThreadMcpServersDto>;
+  mcpConfigEditing: boolean;
+  mcpConfigPath: string | null;
+  mcpConfigError: string | null;
+  mcpConfigSuccess: string | null;
+  mcpConfigBusy: boolean;
+  mcpHttpName: string;
+  mcpHttpUrl: string;
+  mcpRawBlock: string;
+  iconButtonClassName: string;
+  menuClassName: string;
+  menuItemClassName: string;
+  panelButtonClassName: string;
+  chipButtonClassName: string;
+  onToggle: () => void;
+  onToolboxItemClick: (
+    item: AgentBackendToolboxItemSchemaDto,
+    event: MouseEvent<HTMLButtonElement>,
+  ) => void;
+  toolboxItemDisabled: (item: AgentBackendToolboxItemSchemaDto) => boolean;
+  toolboxItemClassName: (item: AgentBackendToolboxItemSchemaDto) => string;
+  toolboxItemStatus: (item: AgentBackendToolboxItemSchemaDto) => string;
+  onSetSlashPanelView: (view: SlashPanelView) => void;
+  onOpenForkTurns: () => Promise<void> | void;
+  onForkLatest: () => Promise<void> | void;
+  onForkTurn: (turnId: string) => Promise<void> | void;
+  onCopySkillInvokeName: (skillName: string) => Promise<void> | void;
+  onResetHookForm: () => void;
+  onSetHooksPanelMode: (mode: HooksPanelMode) => void;
+  onClearHookConfigStatus: () => void;
+  onSetEditingHookTarget: (
+    target: UpdateThreadHookInput['target'] | null,
+  ) => void;
+  onSetHookScope: (scope: HookScope) => void;
+  onSetHookEventName: (eventName: AgentHookEventNameDto) => void;
+  onSetHookMatcher: (value: string) => void;
+  onSetHookCommand: (value: string) => void;
+  onSetHookTimeoutSec: (value: string) => void;
+  onSetHookStatusMessage: (value: string) => void;
+  onSaveHook: () => Promise<void> | void;
+  onStartEditingHook: (hook: AgentHookDto) => void;
+  onTrustHook: (hook: AgentHookDto) => Promise<void> | void;
+  onUntrustHook: (hook: AgentHookDto) => Promise<void> | void;
+  onSetMcpPanelMode: (mode: McpPanelMode) => void;
+  onClearMcpConfigStatus: () => void;
+  onSetMcpHttpName: (value: string) => void;
+  onSetMcpHttpUrl: (value: string) => void;
+  onSetMcpRawBlock: (value: string) => void;
+  onPrepareRawMcpBlock: () => Promise<void> | void;
+  onSaveHttpMcp: () => Promise<void> | void;
+  onSaveRawMcpBlock: () => Promise<void> | void;
+}) {
+  return (
+    <div className="relative">
+      <InputGroupButton
+        type="button"
+        variant="ghost"
+        size="icon-xs"
+        data-composer-menu-trigger="true"
+        aria-label="Open slash toolbox"
+        title="Open slash toolbox"
+        onClick={onToggle}
+        className={`${iconButtonClassName} h-9 w-9 rounded-full sm:h-8 sm:w-8`}
+      >
+        <SlashIcon />
+      </InputGroupButton>
+
+      {open && (
+        <div
+          data-composer-menu-surface="true"
+          className={`${menuClassName} absolute bottom-full left-0 z-40 mb-2 w-72 overflow-hidden rounded-2xl border bg-stone-900/72 shadow-2xl shadow-stone-950/20 backdrop-blur-xl`}
+          onClick={(event) => {
+            event.stopPropagation();
+          }}
+          onMouseDown={(event) => {
+            event.stopPropagation();
+          }}
+          onPointerDown={(event) => {
+            event.stopPropagation();
+          }}
+          onTouchStart={(event) => {
+            event.stopPropagation();
+          }}
+        >
+          {slashPanelView === 'root' ? (
+            <div className="p-2">
+              {availableToolboxItems.map((item, index) => (
+                <button
+                  key={`${item.action}:${item.command}`}
+                  type="button"
+                  disabled={toolboxItemDisabled(item)}
+                  onClick={(event) => onToolboxItemClick(item, event)}
+                  className={`${toolboxItemClassName(item)} ${
+                    index === 0 ? 'mt-0' : ''
+                  }`}
+                  title={item.description ?? item.label}
+                >
+                  <div className="flex items-center justify-between gap-3">
+                    <span>{item.command}</span>
+                    <span className="text-[11px] uppercase tracking-[0.16em] text-stone-400">
+                      {toolboxItemStatus(item)}
+                    </span>
+                  </div>
+                </button>
+              ))}
+              {availableToolboxItems.length === 0 ? (
+                <p className="px-3 py-2 text-sm text-stone-400">
+                  No backend tools are available for this thread.
+                </p>
+              ) : null}
+            </div>
+          ) : (
+            <div className="max-h-80 overflow-auto">
+              {slashPanelView === 'fork' ? (
+                <ComposerForkPanel
+                  busy={busy}
+                  forkBusy={forkBusy}
+                  composerMenuItemClassName={menuItemClassName}
+                  onForkLatest={onForkLatest}
+                  onSelectForkTurnPanel={() => {
+                    onSetSlashPanelView('forkTurns');
+                    return onOpenForkTurns();
+                  }}
+                />
+              ) : slashPanelView === 'forkTurns' ? (
+                <ComposerForkTurnsPanel
+                  forkTurnOptionsState={forkTurnOptionsState}
+                  forkBusy={forkBusy}
+                  composerPanelButtonClassName={panelButtonClassName}
+                  onForkTurn={onForkTurn}
+                />
+              ) : slashPanelView === 'skills' ? (
+                <ComposerSkillsPanel
+                  skillsState={skillsState}
+                  copiedSkillName={copiedSkillName}
+                  composerChipButtonClassName={chipButtonClassName}
+                  onCopySkillInvokeName={onCopySkillInvokeName}
+                />
+              ) : slashPanelView === 'hooks' ? (
+                <ComposerHooksPanel
+                  hooksPanelMode={hooksPanelMode}
+                  hooksState={hooksState}
+                  hostConfigFilesAvailable={hostConfigFilesAvailable}
+                  hookTrustAvailable={hookTrustAvailable}
+                  hookConfigBusy={hookConfigBusy}
+                  hookConfigError={hookConfigError}
+                  hookConfigSuccess={hookConfigSuccess}
+                  editingHookTarget={editingHookTarget}
+                  hookScope={hookScope}
+                  hookEventName={hookEventName}
+                  hookMatcher={hookMatcher}
+                  hookCommand={hookCommand}
+                  hookTimeoutSec={hookTimeoutSec}
+                  hookStatusMessage={hookStatusMessage}
+                  composerChipButtonClassName={chipButtonClassName}
+                  onResetHookForm={onResetHookForm}
+                  onSetHooksPanelMode={onSetHooksPanelMode}
+                  onClearHookConfigStatus={onClearHookConfigStatus}
+                  onSetEditingHookTarget={onSetEditingHookTarget}
+                  onSetHookScope={onSetHookScope}
+                  onSetHookEventName={onSetHookEventName}
+                  onSetHookMatcher={onSetHookMatcher}
+                  onSetHookCommand={onSetHookCommand}
+                  onSetHookTimeoutSec={onSetHookTimeoutSec}
+                  onSetHookStatusMessage={onSetHookStatusMessage}
+                  onSaveHook={onSaveHook}
+                  onStartEditingHook={onStartEditingHook}
+                  onTrustHook={onTrustHook}
+                  onUntrustHook={onUntrustHook}
+                />
+              ) : (
+                <ComposerMcpPanel
+                  mcpPanelMode={mcpPanelMode}
+                  mcpState={mcpState}
+                  mcpConfigEditing={mcpConfigEditing}
+                  mcpConfigPath={mcpConfigPath}
+                  mcpConfigError={mcpConfigError}
+                  mcpConfigSuccess={mcpConfigSuccess}
+                  mcpConfigBusy={mcpConfigBusy}
+                  mcpHttpName={mcpHttpName}
+                  mcpHttpUrl={mcpHttpUrl}
+                  mcpRawBlock={mcpRawBlock}
+                  composerPanelButtonClassName={panelButtonClassName}
+                  composerChipButtonClassName={chipButtonClassName}
+                  onSetMcpPanelMode={onSetMcpPanelMode}
+                  onClearMcpConfigStatus={onClearMcpConfigStatus}
+                  onSetMcpHttpName={onSetMcpHttpName}
+                  onSetMcpHttpUrl={onSetMcpHttpUrl}
+                  onSetMcpRawBlock={onSetMcpRawBlock}
+                  onPrepareRawMcpBlock={onPrepareRawMcpBlock}
+                  onSaveHttpMcp={onSaveHttpMcp}
+                  onSaveRawMcpBlock={onSaveRawMcpBlock}
+                />
+              )}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}

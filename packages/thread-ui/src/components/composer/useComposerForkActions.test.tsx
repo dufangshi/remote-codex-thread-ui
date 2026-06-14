@@ -1,0 +1,167 @@
+/**
+ * @vitest-environment jsdom
+ */
+import { flushSync } from 'react-dom';
+import { createRoot } from 'react-dom/client';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+
+import {
+  useComposerForkActions,
+  type UseComposerForkActionsInput,
+  type UseComposerForkActionsResult,
+} from './useComposerForkActions';
+
+let latestResult: UseComposerForkActionsResult | null = null;
+
+function HookHarness(props: UseComposerForkActionsInput) {
+  latestResult = useComposerForkActions(props);
+  return null;
+}
+
+function renderHookHarness(
+  input: Partial<UseComposerForkActionsInput> = {},
+) {
+  const container = document.createElement('div');
+  document.body.appendChild(container);
+  const root = createRoot(container);
+  const closeMenu = input.closeMenu ?? vi.fn();
+  const props: UseComposerForkActionsInput = {
+    slashPanelView: 'forkTurns',
+    closeMenu,
+    ...input,
+  };
+
+  flushSync(() => {
+    root.render(<HookHarness {...props} />);
+  });
+
+  return {
+    closeMenu,
+    rerender(nextInput: Partial<UseComposerForkActionsInput>) {
+      Object.assign(props, nextInput);
+      flushSync(() => {
+        root.render(<HookHarness {...props} />);
+      });
+    },
+    unmount() {
+      flushSync(() => {
+        root.unmount();
+      });
+      container.remove();
+    },
+  };
+}
+
+async function runForkAction(action: () => Promise<void> | undefined) {
+  let actionPromise: Promise<void> | undefined;
+  flushSync(() => {
+    actionPromise = action();
+  });
+
+  expect(latestResult?.forkBusy).toBe(true);
+  await actionPromise;
+  await new Promise((resolve) => window.setTimeout(resolve, 0));
+  flushSync(() => {});
+}
+
+async function flushEffects() {
+  await new Promise((resolve) => window.setTimeout(resolve, 0));
+  flushSync(() => {});
+}
+
+describe('useComposerForkActions', () => {
+  beforeEach(() => {
+    latestResult = null;
+    (
+      globalThis as typeof globalThis & {
+        IS_REACT_ACT_ENVIRONMENT: boolean;
+      }
+    ).IS_REACT_ACT_ENVIRONMENT = true;
+  });
+
+  afterEach(() => {
+    latestResult = null;
+    vi.restoreAllMocks();
+  });
+
+  it('ignores fork latest when no handler is available', async () => {
+    const harness = renderHookHarness();
+
+    await latestResult?.forkLatest();
+
+    expect(latestResult?.forkBusy).toBe(false);
+    expect(harness.closeMenu).not.toHaveBeenCalled();
+    harness.unmount();
+  });
+
+  it('sets busy, forks latest, closes the menu, and clears busy', async () => {
+    const onForkLatest = vi.fn();
+    const harness = renderHookHarness({ onForkLatest });
+
+    await runForkAction(() => latestResult?.forkLatest());
+
+    expect(onForkLatest).toHaveBeenCalledTimes(1);
+    expect(harness.closeMenu).toHaveBeenCalledTimes(1);
+    expect(latestResult?.forkBusy).toBe(false);
+    harness.unmount();
+  });
+
+  it('sets busy, forks a selected turn, closes the menu, and clears busy', async () => {
+    const onForkTurn = vi.fn();
+    const harness = renderHookHarness({ onForkTurn });
+
+    await runForkAction(() => latestResult?.forkTurn('turn-1'));
+
+    expect(onForkTurn).toHaveBeenCalledWith('turn-1');
+    expect(harness.closeMenu).toHaveBeenCalledTimes(1);
+    expect(latestResult?.forkBusy).toBe(false);
+    harness.unmount();
+  });
+
+  it('keeps the menu open but clears busy when fork latest fails', async () => {
+    const onForkLatest = vi.fn(async () => {
+      throw new Error('fork failed');
+    });
+    const harness = renderHookHarness({ onForkLatest });
+
+    await expect(
+      runForkAction(() => latestResult?.forkLatest()),
+    ).rejects.toThrow('fork failed');
+    await new Promise((resolve) => window.setTimeout(resolve, 0));
+    flushSync(() => {});
+
+    expect(harness.closeMenu).not.toHaveBeenCalled();
+    expect(latestResult?.forkBusy).toBe(false);
+    harness.unmount();
+  });
+
+  it('clears busy when leaving the fork-turns panel', async () => {
+    let resolveFork: undefined | (() => void);
+    const onForkTurn = vi.fn(
+      () =>
+        new Promise<void>((resolve) => {
+          resolveFork = resolve;
+        }),
+    );
+    const harness = renderHookHarness({
+      slashPanelView: 'forkTurns',
+      onForkTurn,
+    });
+
+    let actionPromise: Promise<void> | undefined;
+    flushSync(() => {
+      actionPromise = latestResult?.forkTurn('turn-1');
+    });
+    expect(latestResult?.forkBusy).toBe(true);
+
+    harness.rerender({ slashPanelView: 'root' });
+    await flushEffects();
+    expect(latestResult?.forkBusy).toBe(false);
+
+    if (resolveFork) {
+      resolveFork();
+    }
+    await actionPromise;
+    harness.unmount();
+  });
+});

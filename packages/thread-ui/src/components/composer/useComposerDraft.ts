@@ -1,0 +1,187 @@
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type Dispatch,
+  type SetStateAction,
+} from 'react';
+
+import type { PromptAttachmentUpload } from '../../types';
+import {
+  draftSignature,
+  type ComposerAttachmentDraft,
+  type ComposerDraft,
+} from './composerUtils';
+
+export type DraftSyncMode = 'deferred' | 'immediate';
+
+export const DRAFT_SYNC_DELAY_MS = 180;
+
+type DraftHostState = {
+  prompt: string;
+  attachments: PromptAttachmentUpload[];
+};
+
+type DraftUpdater = (current: ComposerDraft) => ComposerDraft;
+
+export interface UseComposerDraftInput {
+  isShellView: boolean;
+  draftPrompt?: string | undefined;
+  draftAttachments?: PromptAttachmentUpload[] | undefined;
+  onDraftChange?:
+    | Dispatch<SetStateAction<DraftHostState>>
+    | undefined;
+}
+
+export interface UseComposerDraftResult {
+  prompt: string;
+  attachments: ComposerAttachmentDraft[];
+  isDraftControlled: boolean;
+  updateDraft: (updater: DraftUpdater, syncMode?: DraftSyncMode) => void;
+  flushControlledDraftToHost: (nextDraft?: ComposerDraft) => void;
+}
+
+function toComposerDraft(
+  prompt: string | undefined,
+  attachments: PromptAttachmentUpload[] | undefined,
+): ComposerDraft {
+  return {
+    prompt: prompt ?? '',
+    attachments: (attachments ?? []) as ComposerAttachmentDraft[],
+  };
+}
+
+export function useComposerDraft({
+  isShellView,
+  draftPrompt,
+  draftAttachments,
+  onDraftChange,
+}: UseComposerDraftInput): UseComposerDraftResult {
+  const [internalDraft, setInternalDraft] = useState<ComposerDraft>({
+    prompt: '',
+    attachments: [],
+  });
+  const [localControlledDraft, setLocalControlledDraft] =
+    useState<ComposerDraft>(() => toComposerDraft(draftPrompt, draftAttachments));
+  const draftSyncTimerRef = useRef<number | null>(null);
+  const latestLocalDraftRef = useRef<ComposerDraft>(localControlledDraft);
+  const lastSentDraftSignatureRef = useRef(draftSignature(localControlledDraft));
+  const isDraftControlled =
+    !isShellView &&
+    draftPrompt !== undefined &&
+    draftAttachments !== undefined &&
+    typeof onDraftChange === 'function';
+  const controlledPropsSignature = isDraftControlled
+    ? draftSignature(toComposerDraft(draftPrompt, draftAttachments))
+    : '';
+  const lastRenderedControlledPropsSignatureRef = useRef(
+    controlledPropsSignature,
+  );
+
+  useLayoutEffect(() => {
+    if (!isDraftControlled) {
+      lastRenderedControlledPropsSignatureRef.current = '';
+      return;
+    }
+
+    const hostDraft = toComposerDraft(draftPrompt, draftAttachments);
+    const hostSignature = draftSignature(hostDraft);
+
+    if (hostSignature === lastRenderedControlledPropsSignatureRef.current) {
+      return;
+    }
+
+    lastRenderedControlledPropsSignatureRef.current = hostSignature;
+    lastSentDraftSignatureRef.current = hostSignature;
+    latestLocalDraftRef.current = hostDraft;
+    if (draftSyncTimerRef.current !== null) {
+      window.clearTimeout(draftSyncTimerRef.current);
+      draftSyncTimerRef.current = null;
+    }
+    setLocalControlledDraft(hostDraft);
+  }, [draftAttachments, draftPrompt, isDraftControlled]);
+
+  const sendDraftToHost = useCallback((nextDraft: ComposerDraft) => {
+    if (!isDraftControlled || !onDraftChange) {
+      return;
+    }
+
+    const signature = draftSignature(nextDraft);
+    if (signature === lastSentDraftSignatureRef.current) {
+      return;
+    }
+
+    lastSentDraftSignatureRef.current = signature;
+    onDraftChange(() => ({
+      prompt: nextDraft.prompt,
+      attachments: nextDraft.attachments as PromptAttachmentUpload[],
+    }));
+  }, [isDraftControlled, onDraftChange]);
+
+  useEffect(() => {
+    return () => {
+      sendDraftToHost(latestLocalDraftRef.current);
+      if (draftSyncTimerRef.current !== null) {
+        window.clearTimeout(draftSyncTimerRef.current);
+      }
+    };
+  }, [sendDraftToHost]);
+
+  const syncControlledDraftToHost = useCallback((
+    nextDraft: ComposerDraft,
+    mode: DraftSyncMode,
+  ) => {
+    if (!isDraftControlled) {
+      return;
+    }
+
+    if (draftSyncTimerRef.current !== null) {
+      window.clearTimeout(draftSyncTimerRef.current);
+      draftSyncTimerRef.current = null;
+    }
+
+    if (mode === 'immediate') {
+      sendDraftToHost(nextDraft);
+      return;
+    }
+
+    draftSyncTimerRef.current = window.setTimeout(() => {
+      draftSyncTimerRef.current = null;
+      sendDraftToHost(latestLocalDraftRef.current);
+    }, DRAFT_SYNC_DELAY_MS);
+  }, [isDraftControlled, sendDraftToHost]);
+
+  const flushControlledDraftToHost = useCallback(
+    (nextDraft = latestLocalDraftRef.current) => {
+      syncControlledDraftToHost(nextDraft, 'immediate');
+    },
+    [syncControlledDraftToHost],
+  );
+
+  const updateDraft = useCallback((
+    updater: DraftUpdater,
+    syncMode: DraftSyncMode = 'immediate',
+  ) => {
+    if (isDraftControlled) {
+      const nextDraft = updater(latestLocalDraftRef.current);
+      latestLocalDraftRef.current = nextDraft;
+      setLocalControlledDraft(nextDraft);
+      syncControlledDraftToHost(nextDraft, syncMode);
+      return;
+    }
+
+    setInternalDraft((current) => updater(current));
+  }, [isDraftControlled, syncControlledDraftToHost]);
+
+  const currentDraft = isDraftControlled ? localControlledDraft : internalDraft;
+
+  return {
+    prompt: currentDraft.prompt,
+    attachments: currentDraft.attachments,
+    isDraftControlled,
+    updateDraft,
+    flushControlledDraftToHost,
+  };
+}

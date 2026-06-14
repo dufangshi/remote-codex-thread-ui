@@ -1,4 +1,9 @@
-import './styles.css';
+import './styles/base.css';
+import './styles/timeline-shell.css';
+import './styles/layout-workspace.css';
+import './styles/history-markdown.css';
+import './styles/composer-plan.css';
+import './styles/export-dialog.css';
 
 export type {
   ShellSocketConnection,
@@ -34,8 +39,9 @@ export {
   MemoizedThreadGraphWorkspacePanel,
   ThreadGraphWorkspacePanel,
   type ThreadGraphWorkspaceFeatures,
+  type ThreadGraphWorkspacePanelProps,
   type WorkspaceTab,
-} from './components/ThreadGraphWorkspacePanel';
+} from './components/ThreadGraphWorkspacePanelLazy';
 export { ConfirmDialog } from './components/ConfirmDialog';
 export { ExportTranscriptDialog } from './components/ExportTranscriptDialog';
 export { LongTextDialog } from './components/LongTextDialog';
@@ -54,7 +60,6 @@ export {
   type ThreadDetailSurfaceProps,
 } from './ThreadDetailSurface';
 
-export { builtinFrontendPlugins } from './plugins/builtin-plugin-modules';
 export {
   createDefaultPluginContextValue,
   PluginContext,
@@ -69,10 +74,6 @@ export type {
   InlineCodeRenderContext,
   ThreadPanelContribution,
 } from './plugins/plugin-types';
-export {
-  InlineXyzRenderer,
-  XyzArtifactRenderer,
-} from './plugins/xyz-plugin-renderers';
 export {
   AppShellNavContext,
   useAppShellNav,

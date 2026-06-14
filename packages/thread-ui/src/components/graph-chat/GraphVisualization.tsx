@@ -2,11 +2,13 @@ import { useCallback, useEffect, useMemo } from 'react';
 import {
   addEdge,
   Background,
+  type Connection,
   Controls,
   type Edge,
   Handle,
   MarkerType,
   type Node,
+  type NodeProps,
   Position,
   ReactFlow,
   ReactFlowProvider,
@@ -21,6 +23,7 @@ import { buildGraph, type GraphChatInputNode } from './FloatingHelper';
 
 type GraphChatFlowNode = Node<{ label: React.ReactNode }, 'styledNode'>;
 type GraphChatFlowEdge = Edge;
+type StyledNodeProps = NodeProps<GraphChatFlowNode>;
 
 interface GraphVisualizationProps {
   nodes: GraphChatInputNode[];
@@ -35,7 +38,7 @@ export function GraphVisualization({ nodes: inputNodes }: GraphVisualizationProp
   const edgeTypes = useMemo(() => ({ floating: FloatingEdge }), []);
   const nodeTypes = useMemo(
     () => ({
-      styledNode: ({ data, isConnectable }: any) => (
+      styledNode: ({ data, isConnectable }: StyledNodeProps) => (
         <div className="thread-graph-flow-node">
           {data.label}
           <Handle
@@ -62,7 +65,7 @@ export function GraphVisualization({ nodes: inputNodes }: GraphVisualizationProp
   }, [graph.edges, graph.nodes, setFlowEdges, setFlowNodes]);
 
   const onConnect = useCallback(
-    (params: any) =>
+    (params: Connection) =>
       setFlowEdges((edges) =>
         addEdge(
           {

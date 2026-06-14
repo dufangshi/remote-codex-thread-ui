@@ -2,7 +2,6 @@ import {
   useCallback,
   useEffect,
   useLayoutEffect,
-  useMemo,
   useRef,
   useState,
   type ComponentType,
@@ -66,23 +65,6 @@ function formatThreadUsageParts(usage: GraphChatThreadUsageSummary) {
   )} / cache ${formatTokenCount(usage.cache)}`;
 }
 
-function buildChatContentRevision(detail: ThreadDetailDto, liveOutput: string) {
-  const latestTurn = detail.turns.at(-1);
-  const latestLiveItem = detail.liveItems?.items.at(-1);
-  const latestPendingRequest = detail.pendingRequests.at(-1);
-  return [
-    detail.thread.id,
-    detail.turns.length,
-    latestTurn?.id ?? '',
-    latestTurn?.items.length ?? 0,
-    detail.liveItems?.items.length ?? 0,
-    latestLiveItem?.id ?? '',
-    detail.pendingRequests.length,
-    latestPendingRequest?.id ?? '',
-    liveOutput ? liveOutput.length : 0,
-  ].join(':');
-}
-
 export function GraphChatThreadChatPanel({
   detail,
   adapter,
@@ -98,29 +80,17 @@ export function GraphChatThreadChatPanel({
   floatingMobileComposerBottomOffset = 0,
   composerHostRef,
 }: GraphChatThreadChatPanelProps) {
-  const [isTailVisible, setIsTailVisible] = useState(true);
   const [isMobileViewport, setIsMobileViewport] = useState(false);
   const [mobileComposerHeight, setMobileComposerHeight] = useState(0);
   const [mobileComposerOverlap, setMobileComposerOverlap] = useState(0);
   const [mobileKeyboardInset, setMobileKeyboardInset] = useState(0);
   const [mobilePromptFocused, setMobilePromptFocused] = useState(false);
-  const lastRevisionRef = useRef<string | null>(null);
   const internalComposerHostRef = useRef<HTMLDivElement | null>(null);
-  const contentRevision = useMemo(
-    () => buildChatContentRevision(detail, liveOutput),
-    [detail, liveOutput],
-  );
   const timelineTailVisibilityChange = timelineProps?.onTailVisibilityChange;
   const hasPendingRequests = detail.pendingRequests.length > 0;
 
-  useEffect(() => {
-    lastRevisionRef.current = null;
-    setIsTailVisible(true);
-  }, [detail.thread.id]);
-
   const handleTailVisibilityChange = useCallback(
     (nextIsTailVisible: boolean) => {
-      setIsTailVisible(nextIsTailVisible);
       timelineTailVisibilityChange?.(nextIsTailVisible);
     },
     [timelineTailVisibilityChange],

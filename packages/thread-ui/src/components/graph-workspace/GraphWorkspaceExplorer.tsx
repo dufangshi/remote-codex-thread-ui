@@ -644,7 +644,6 @@ export function GraphWorkspaceExplorer({
     const selectedPath = selectedPathCandidate;
 
     let cancelled = false;
-    let objectUrl: string | null = null;
     async function loadPreview() {
       if (!workspaceAdapter) {
         return;
@@ -695,9 +694,6 @@ export function GraphWorkspaceExplorer({
     void loadPreview();
     return () => {
       cancelled = true;
-      if (objectUrl) {
-        URL.revokeObjectURL(objectUrl);
-      }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [workspaceAdapter, activeNode?.id, workspaceVersion]);

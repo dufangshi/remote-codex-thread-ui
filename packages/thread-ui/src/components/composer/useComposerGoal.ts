@@ -1,0 +1,142 @@
+import {
+  useCallback,
+  useState,
+  type RefObject,
+} from 'react';
+
+import type {
+  ThreadGoalDto,
+  ThreadGoalStatusDto,
+} from '@remote-codex/shared';
+import {
+  formatGoalTokenBudgetThousands,
+  parseGoalTokenBudgetThousands,
+  type ComposerDraft,
+} from './composerUtils';
+
+interface UseComposerGoalInput {
+  prompt: string;
+  goalTokenBudgetSource: ThreadGoalDto | null | undefined;
+  promptRef: RefObject<HTMLElement | null>;
+  onOpenGoal?: () => Promise<void> | void;
+  onUpdateGoal?: (input: {
+    objective?: string | null;
+    status?: ThreadGoalStatusDto | null;
+    tokenBudget?: number | null;
+  }) => Promise<void> | void;
+  updateDraft: (updater: (current: ComposerDraft) => ComposerDraft) => void;
+  closeMenu: () => void;
+  resetSlashPanel: () => void;
+}
+
+export interface UseComposerGoalResult {
+  goalComposeMode: boolean;
+  goalTokenBudget: string;
+  goalBusy: boolean;
+  goalLocalError: string | null;
+  setGoalTokenBudget: (value: string) => void;
+  submitGoal: () => Promise<boolean>;
+  enterGoalComposeMode: () => void;
+  exitGoalComposeMode: () => void;
+}
+
+export function useComposerGoal({
+  prompt,
+  goalTokenBudgetSource,
+  promptRef,
+  onOpenGoal,
+  onUpdateGoal,
+  updateDraft,
+  closeMenu,
+  resetSlashPanel,
+}: UseComposerGoalInput): UseComposerGoalResult {
+  const [goalComposeMode, setGoalComposeMode] = useState(false);
+  const [goalTokenBudget, setGoalTokenBudget] = useState('');
+  const [goalBusy, setGoalBusy] = useState(false);
+  const [goalLocalError, setGoalLocalError] = useState<string | null>(null);
+
+  const submitGoal = useCallback(async () => {
+    const objective = prompt.trim();
+    if (!objective) {
+      setGoalLocalError('Goal objective cannot be empty.');
+      return false;
+    }
+
+    const normalizedBudget = goalTokenBudget.trim();
+    const tokenBudget = parseGoalTokenBudgetThousands(normalizedBudget);
+    if (
+      normalizedBudget.length > 0 &&
+      (tokenBudget === null ||
+        !Number.isInteger(tokenBudget) ||
+        tokenBudget <= 0)
+    ) {
+      setGoalLocalError('Token budget must be a positive number in thousands.');
+      return false;
+    }
+
+    if (!onUpdateGoal) {
+      setGoalLocalError('/goal is unavailable in this view.');
+      return false;
+    }
+
+    setGoalBusy(true);
+    setGoalLocalError(null);
+    try {
+      await onUpdateGoal({
+        objective,
+        status: 'active',
+        tokenBudget,
+      });
+      setGoalTokenBudget('');
+      setGoalComposeMode(false);
+      updateDraft(() => ({
+        prompt: '',
+        attachments: [],
+      }));
+      return true;
+    } catch (error) {
+      setGoalLocalError(
+        error instanceof Error ? error.message : 'Unable to set goal.',
+      );
+      return false;
+    } finally {
+      setGoalBusy(false);
+    }
+  }, [goalTokenBudget, onUpdateGoal, prompt, updateDraft]);
+
+  const enterGoalComposeMode = useCallback(() => {
+    closeMenu();
+    resetSlashPanel();
+    setGoalComposeMode(true);
+    setGoalTokenBudget(
+      formatGoalTokenBudgetThousands(goalTokenBudgetSource?.tokenBudget),
+    );
+    setGoalLocalError(null);
+    void onOpenGoal?.();
+    requestAnimationFrame(() => {
+      promptRef.current?.focus();
+    });
+  }, [
+    closeMenu,
+    goalTokenBudgetSource?.tokenBudget,
+    onOpenGoal,
+    promptRef,
+    resetSlashPanel,
+  ]);
+
+  const exitGoalComposeMode = useCallback(() => {
+    setGoalComposeMode(false);
+    setGoalLocalError(null);
+  }, []);
+
+  return {
+    goalComposeMode,
+    goalTokenBudget,
+    goalBusy,
+    goalLocalError,
+    setGoalTokenBudget,
+    submitGoal,
+    enterGoalComposeMode,
+    exitGoalComposeMode,
+  };
+}

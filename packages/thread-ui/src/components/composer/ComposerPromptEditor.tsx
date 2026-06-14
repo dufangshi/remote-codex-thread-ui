@@ -1,0 +1,111 @@
+import type {
+  ClipboardEvent,
+  DragEvent,
+  KeyboardEvent,
+  RefObject,
+} from 'react';
+
+import { InputGroupButton } from '../graph-ui/InputGroup';
+
+interface ComposerPromptEditorProps {
+  promptRef: RefObject<HTMLDivElement | null>;
+  prompt: string;
+  disabled: boolean;
+  promptPlaceholder: string;
+  canInterrupt: boolean;
+  interruptLabel: string;
+  composerPromptRegionClassName: string;
+  graphChatInputClassName: string;
+  onInterrupt?: () => Promise<void> | void;
+  onInput: () => void;
+  onPaste: (event: ClipboardEvent<HTMLDivElement>) => void;
+  onKeyDown: (event: KeyboardEvent<HTMLDivElement>) => void;
+  onKeyUp: () => void;
+  onMouseUp: () => void;
+  onBlur: () => void;
+  onDragEnter: (event: DragEvent<HTMLDivElement>) => void;
+  onDragOver: (event: DragEvent<HTMLDivElement>) => void;
+  onDragLeave: (event: DragEvent<HTMLDivElement>) => void;
+  onDrop: (event: DragEvent<HTMLDivElement>) => void;
+}
+
+export function ComposerPromptEditor({
+  promptRef,
+  prompt,
+  disabled,
+  promptPlaceholder,
+  canInterrupt,
+  interruptLabel,
+  composerPromptRegionClassName,
+  graphChatInputClassName,
+  onInterrupt,
+  onInput,
+  onPaste,
+  onKeyDown,
+  onKeyUp,
+  onMouseUp,
+  onBlur,
+  onDragEnter,
+  onDragOver,
+  onDragLeave,
+  onDrop,
+}: ComposerPromptEditorProps) {
+  return (
+    <div
+      data-slot="input-group-control"
+      className={`${composerPromptRegionClassName} relative w-full`}
+    >
+      <div className={graphChatInputClassName}>
+        {prompt.length === 0 && (
+          <span
+            className={`pointer-events-none absolute left-3 top-3 truncate text-slate-500 sm:left-4 sm:top-4 dark:text-slate-400 ${
+              canInterrupt ? 'right-12' : 'right-3 sm:right-4'
+            }`}
+          >
+            {promptPlaceholder}
+          </span>
+        )}
+        <div
+          ref={promptRef}
+          role="textbox"
+          aria-label="Prompt"
+          aria-multiline="true"
+          contentEditable={!disabled}
+          suppressContentEditableWarning
+          onInput={onInput}
+          onPaste={onPaste}
+          onKeyDown={onKeyDown}
+          onKeyUp={onKeyUp}
+          onMouseUp={onMouseUp}
+          onBlur={onBlur}
+          onDragEnter={onDragEnter}
+          onDragOver={onDragOver}
+          onDragLeave={onDragLeave}
+          onDrop={onDrop}
+          className={`relative z-[1] min-h-[4.25rem] whitespace-pre-wrap break-words pb-2 outline-none sm:min-h-[4.25rem] ${
+            canInterrupt ? 'pr-12' : ''
+          } ${disabled ? 'cursor-not-allowed text-slate-500' : ''}`}
+        />
+      </div>
+      {canInterrupt ? (
+        <InputGroupButton
+          type="button"
+          variant="ghost"
+          size="icon-xs"
+          aria-label={interruptLabel}
+          title={interruptLabel}
+          onClick={(event) => {
+            event.preventDefault();
+            void onInterrupt?.();
+          }}
+          className="thread-graph-composer-stop-button ui-action-danger absolute right-2 top-2 z-30 h-8 w-8 rounded-full text-sm font-medium"
+        >
+          <span
+            aria-hidden="true"
+            className="block h-2.5 w-2.5 rounded-[2px] bg-current"
+          />
+        </InputGroupButton>
+      ) : null}
+    </div>
+  );
+}

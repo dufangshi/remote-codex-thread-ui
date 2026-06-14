@@ -1,0 +1,116 @@
+.thread-export-dialog-root {
+  --export-bg: rgb(248 250 252);
+  --export-panel: rgb(255 255 255);
+  --export-surface: rgb(241 245 249);
+  --export-surface-strong: rgb(226 232 240);
+  --export-border: rgb(203 213 225);
+  --export-fg: rgb(15 23 42);
+  --export-fg-soft: rgb(51 65 85);
+  --export-fg-muted: rgb(100 116 139);
+  --export-accent: rgb(217 119 6);
+  --export-accent-bg: rgb(254 243 199);
+  --export-accent-border: rgb(251 191 36);
+  --export-shadow: rgb(15 23 42 / 0.16);
+  color: var(--export-fg);
+}
+
+.thread-export-dialog-root.thread-ui-theme-dark,
+.thread-export-dialog-root[data-theme-effective="dark"] {
+  --export-bg: #12151c;
+  --export-panel: #181d25;
+  --export-surface: #1d222c;
+  --export-surface-strong: #262c38;
+  --export-border: #343b48;
+  --export-fg: rgb(241 245 249);
+  --export-fg-soft: rgb(203 213 225);
+  --export-fg-muted: rgb(148 163 184);
+  --export-accent: rgb(245 158 11);
+  --export-accent-bg: rgb(245 158 11 / 0.16);
+  --export-accent-border: rgb(245 158 11 / 0.34);
+  --export-shadow: rgb(0 0 0 / 0.36);
+}
+
+.thread-export-dialog-backdrop {
+  background: color-mix(in oklch, var(--export-bg) 68%, transparent);
+}
+
+.thread-export-dialog-root.thread-ui-theme-dark .thread-export-dialog-backdrop,
+.thread-export-dialog-root[data-theme-effective="dark"]
+  .thread-export-dialog-backdrop {
+  background: rgb(2 6 23 / 0.74);
+}
+
+.thread-export-dialog-panel {
+  border-color: var(--export-border);
+  background: var(--export-panel);
+  box-shadow: 0 26px 80px var(--export-shadow);
+}
+
+.thread-export-dialog-header,
+.thread-export-dialog-footer,
+.thread-export-dialog-box-header {
+  border-color: var(--export-border);
+}
+
+.thread-export-dialog-title,
+.thread-export-dialog-strong,
+.thread-export-dialog-body-text {
+  color: var(--export-fg);
+}
+
+.thread-export-dialog-subtitle,
+.thread-export-dialog-status-pill {
+  color: var(--export-fg-muted);
+}
+
+.thread-export-dialog-icon-button,
+.thread-export-dialog-secondary-button,
+.thread-export-dialog-segment,
+.thread-export-dialog-box,
+.thread-export-dialog-status-pill {
+  border-color: var(--export-border);
+  background: var(--export-surface);
+}
+
+.thread-export-dialog-segment,
+.thread-export-dialog-box {
+  background: color-mix(
+    in oklch,
+    var(--export-surface) 72%,
+    var(--export-panel)
+  );
+}
+
+.thread-export-dialog-icon-button,
+.thread-export-dialog-secondary-button {
+  color: var(--export-fg-soft);
+}
+
+.thread-export-dialog-icon-button:hover:not(:disabled),
+.thread-export-dialog-secondary-button:hover:not(:disabled),
+.thread-export-dialog-turn-row:hover {
+  background: var(--export-surface-strong);
+  color: var(--export-fg);
+}
+
+.thread-export-dialog-muted-action {
+  color: var(--export-fg-muted);
+}
+
+.thread-export-dialog-muted-action:hover {
+  color: var(--export-fg);
+}
+
+.thread-export-dialog-root .ui-status-warning {
+  border: 1px solid var(--export-accent-border);
+  background: var(--export-accent-bg);
+  color: color-mix(in oklch, var(--export-accent) 72%, var(--export-fg));
+}
+
+.thread-export-dialog-checkbox {
+  accent-color: var(--export-accent);
+}
+
+.thread-export-dialog-turn-row {
+  color: var(--export-fg-soft);
+}

@@ -8,19 +8,40 @@ export type GraphChatInputNode = {
   out_node_id?: string | string[];
 };
 
-function getNodeIntersection(intersectionNode: any, targetNode: any) {
-  const { width: intersectionNodeWidth, height: intersectionNodeHeight } =
-    intersectionNode.measured;
+type FlowNodeGeometry = {
+  measured: {
+    width?: number;
+    height?: number;
+  };
+  internals: {
+    positionAbsolute: {
+      x: number;
+      y: number;
+    };
+  };
+};
+
+function getNodeIntersection(
+  intersectionNode: FlowNodeGeometry,
+  targetNode: FlowNodeGeometry,
+) {
+  const intersectionNodeWidth = Math.max(intersectionNode.measured.width ?? 1, 1);
+  const intersectionNodeHeight = Math.max(
+    intersectionNode.measured.height ?? 1,
+    1,
+  );
   const intersectionNodePosition = intersectionNode.internals.positionAbsolute;
   const targetPosition = targetNode.internals.positionAbsolute;
+  const targetNodeWidth = Math.max(targetNode.measured.width ?? 1, 1);
+  const targetNodeHeight = Math.max(targetNode.measured.height ?? 1, 1);
 
   const w = intersectionNodeWidth / 2;
   const h = intersectionNodeHeight / 2;
 
   const x2 = intersectionNodePosition.x + w;
   const y2 = intersectionNodePosition.y + h;
-  const x1 = targetPosition.x + targetNode.measured.width / 2;
-  const y1 = targetPosition.y + targetNode.measured.height / 2;
+  const x1 = targetPosition.x + targetNodeWidth / 2;
+  const y1 = targetPosition.y + targetNodeHeight / 2;
 
   const xx1 = (x1 - x2) / (2 * w) - (y1 - y2) / (2 * h);
   const yy1 = (x1 - x2) / (2 * w) + (y1 - y2) / (2 * h);
@@ -33,7 +54,10 @@ function getNodeIntersection(intersectionNode: any, targetNode: any) {
   return { x, y };
 }
 
-function getEdgePosition(node: any, intersectionPoint: { x: number; y: number }) {
+function getEdgePosition(
+  node: FlowNodeGeometry,
+  intersectionPoint: { x: number; y: number },
+) {
   const n = { ...node.internals.positionAbsolute, ...node };
   const nx = Math.round(n.x);
   const ny = Math.round(n.y);
@@ -43,20 +67,20 @@ function getEdgePosition(node: any, intersectionPoint: { x: number; y: number })
   if (px <= nx + 1) {
     return Position.Left;
   }
-  if (px >= nx + n.measured.width - 1) {
+  if (px >= nx + (node.measured.width ?? 1) - 1) {
     return Position.Right;
   }
   if (py <= ny + 1) {
     return Position.Top;
   }
-  if (py >= n.y + n.measured.height - 1) {
+  if (py >= n.y + (node.measured.height ?? 1) - 1) {
     return Position.Bottom;
   }
 
   return Position.Top;
 }
 
-export function getEdgeParams(source: any, target: any) {
+export function getEdgeParams(source: FlowNodeGeometry, target: FlowNodeGeometry) {
   const sourceIntersectionPoint = getNodeIntersection(source, target);
   const targetIntersectionPoint = getNodeIntersection(target, source);
 

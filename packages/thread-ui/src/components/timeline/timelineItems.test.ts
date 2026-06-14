@@ -1,0 +1,201 @@
+import { describe, expect, it } from 'vitest';
+
+import type { ThreadHistoryItemDto } from '@remote-codex/shared';
+import {
+  getLiveOutputTailForTurn,
+  groupTimelineHistoryItems,
+  isRunningHistoryStatus,
+  mergeLiveTurnItems,
+  parseHookPromptText,
+  prepareTurnItemsForRendering,
+  sortTurnItemsByRecordedSequence,
+} from './timelineItems';
+
+function item(
+  id: string,
+  kind: ThreadHistoryItemDto['kind'],
+  extra: Partial<ThreadHistoryItemDto> = {},
+): ThreadHistoryItemDto {
+  return {
+    id,
+    kind,
+    text: id,
+    ...extra,
+  };
+}
+
+describe('timeline item utilities', () => {
+  it('keeps leading unsequenced user messages before sequenced history', () => {
+    const leadingUser = item('user-1', 'userMessage');
+    const later = item('later', 'agentMessage', { sequence: 20 });
+    const earlier = item('earlier', 'commandExecution', { sequence: 10 });
+
+    expect(
+      sortTurnItemsByRecordedSequence([leadingUser, later, earlier]).map(
+        (entry) => entry.id,
+      ),
+    ).toEqual(['user-1', 'earlier', 'later']);
+  });
+
+  it('keeps unsequenced blocks after the previous sequenced item from their original position', () => {
+    const first = item('first', 'agentMessage', { sequence: 1 });
+    const unsequencedA = item('unsequenced-a', 'fileRead');
+    const unsequencedB = item('unsequenced-b', 'fileChange');
+    const last = item('last', 'agentMessage', { sequence: 10 });
+
+    expect(
+      sortTurnItemsByRecordedSequence([
+        last,
+        unsequencedA,
+        unsequencedB,
+        first,
+      ]).map((entry) => entry.id),
+    ).toEqual(['first', 'last', 'unsequenced-a', 'unsequenced-b']);
+  });
+
+  it('places an unsequenced block between neighboring sequenced items when it is already between them', () => {
+    const first = item('first', 'agentMessage', { sequence: 1 });
+    const unsequencedA = item('unsequenced-a', 'fileRead');
+    const unsequencedB = item('unsequenced-b', 'fileChange');
+    const last = item('last', 'agentMessage', { sequence: 10 });
+
+    expect(
+      sortTurnItemsByRecordedSequence([
+        first,
+        unsequencedA,
+        unsequencedB,
+        last,
+      ]).map((entry) => entry.id),
+    ).toEqual(['first', 'unsequenced-a', 'unsequenced-b', 'last']);
+  });
+
+  it('merges live items over persisted items while preserving useful fallback text', () => {
+    const persisted = item('tool', 'toolCall', {
+      text: 'persisted text',
+      detailText: 'persisted detail',
+      previewText: 'persisted preview',
+      status: 'Running',
+      sequence: 1,
+    });
+    const live = item('tool', 'toolCall', {
+      text: '',
+      status: 'Completed',
+    });
+    const appended = item('new-live', 'agentMessage', { sequence: 2 });
+
+    const merged = mergeLiveTurnItems([persisted], [live, appended]);
+
+    expect(merged).toHaveLength(2);
+    expect(merged[0]).toMatchObject({
+      id: 'tool',
+      text: 'persisted text',
+      detailText: 'persisted detail',
+      previewText: 'persisted preview',
+      status: 'Completed',
+      sequence: 1,
+    });
+    expect(merged[1]?.id).toBe('new-live');
+  });
+
+  it('moves active steer messages after their generated tail and marks awaiting steers', () => {
+    const primary = item('primary-user', 'userMessage');
+    const steer = item('steer', 'userMessage');
+    const command = item('command', 'commandExecution');
+    const trailing = item('trailing-steer', 'userMessage');
+
+    const prepared = prepareTurnItemsForRendering(
+      [primary, steer, command, trailing],
+      true,
+    );
+
+    expect(prepared.map((entry) => entry.id)).toEqual([
+      'primary-user',
+      'command',
+      'steer',
+      'trailing-steer',
+    ]);
+    expect(prepared.at(-1)).toMatchObject({
+      id: 'trailing-steer',
+      status: 'Awaiting response',
+    });
+  });
+
+  it('groups consecutive tool-like history items and attaches reasoning to agent messages', () => {
+    const entries = groupTimelineHistoryItems([
+      item('reason-before', 'reasoning'),
+      item('agent', 'agentMessage'),
+      item('cmd-1', 'commandExecution'),
+      item('cmd-2', 'commandExecution'),
+      item('file-1', 'fileRead'),
+      item('file-2', 'fileRead'),
+      item('search', 'webSearch'),
+      item('plain', 'other'),
+    ]);
+
+    expect(entries.map((entry) => entry.kind)).toEqual([
+      'item',
+      'commandGroup',
+      'fileReadGroup',
+      'item',
+      'item',
+    ]);
+    const agentEntry = entries[0];
+    expect(agentEntry?.kind).toBe('item');
+    if (agentEntry?.kind === 'item') {
+      expect(agentEntry.item).toMatchObject({
+        id: 'agent',
+        reasoningItems: [{ id: 'reason-before' }],
+      });
+    }
+    const commandGroup = entries[1];
+    expect(commandGroup?.kind).toBe('commandGroup');
+    if (commandGroup?.kind === 'commandGroup') {
+      expect(commandGroup.items.map((entry) => entry.id)).toEqual([
+        'cmd-1',
+        'cmd-2',
+      ]);
+    }
+  });
+
+  it('extracts live output tails after materialized agent text', () => {
+    const persisted = [
+      item('agent-1', 'agentMessage', { text: 'Hello' }),
+      item('agent-2', 'agentMessage', { text: ' world' }),
+    ];
+
+    expect(getLiveOutputTailForTurn('Hello world again', persisted)).toBe(
+      ' again',
+    );
+    expect(getLiveOutputTailForTurn('Hello world', persisted)).toBe('');
+    expect(getLiveOutputTailForTurn('Different stream', persisted)).toBe(
+      'Different stream',
+    );
+  });
+
+  it('parses hook prompt output with XML entities and source paths', () => {
+    const parsed = parseHookPromptText(
+      '<hook_prompt hook_run_id="stop:abc:/tmp/hooks.json">warn &amp; stop</hook_prompt>',
+    );
+
+    expect(parsed).toMatchObject({
+      id: 'live-hook-prompt:stop:abc:/tmp/hooks.json',
+      kind: 'hook',
+      text: 'Stop hook',
+      detailText: 'warn & stop',
+      hookEventName: 'stop',
+      hookEventLabel: 'Stop',
+      hookSource: 'project',
+      hookSourcePath: '/tmp/hooks.json',
+      hookOutputEntries: [{ kind: 'warning', text: 'warn & stop' }],
+    });
+    expect(parseHookPromptText('plain output')).toBeNull();
+  });
+
+  it('recognizes running history statuses', () => {
+    expect(isRunningHistoryStatus('Running')).toBe(true);
+    expect(isRunningHistoryStatus('in_progress')).toBe(true);
+    expect(isRunningHistoryStatus('InProgress')).toBe(true);
+    expect(isRunningHistoryStatus('Completed')).toBe(false);
+    expect(isRunningHistoryStatus(null)).toBe(false);
+  });
+});

@@ -28,7 +28,7 @@ import { collectArtifacts } from './graph-workspace/workspaceTree';
 import { GraphVisualization } from './graph-chat/GraphVisualization';
 import type { GraphChatInputNode } from './graph-chat/FloatingHelper';
 
-interface ThreadGraphWorkspacePanelProps {
+export interface ThreadGraphWorkspacePanelProps {
   detail: ThreadDetailDto;
   status: AgentRuntimeStatusDto | null;
   plugins: PluginContextValue;

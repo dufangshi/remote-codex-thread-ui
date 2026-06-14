@@ -38,9 +38,9 @@ import {
   type ThreadShellPanelHandle,
 } from './components/ThreadShellPanel';
 import {
-  MemoizedThreadGraphWorkspacePanel,
+  ThreadGraphWorkspacePanel,
   type ThreadGraphWorkspaceFeatures,
-} from './components/ThreadGraphWorkspacePanel';
+} from './components/ThreadGraphWorkspacePanelLazy';
 import {
   GraphChatThreadChatPanel,
   type GraphChatThreadUsageSummary,
@@ -214,23 +214,28 @@ export function ThreadDetailSurface({
   const contextPlugins = usePlugins();
   const plugins =
     providedPlugins ?? contextPlugins ?? createDefaultPluginContextValue();
+  const {
+    getImageAssetUrl,
+    loadHistoryItemDetail,
+    openThread,
+  } = adapter;
   const timelineAdapter = useMemo(
     () => ({
-      ...(adapter.getImageAssetUrl
+      ...(getImageAssetUrl
         ? {
             getImageAssetUrl: (input: { threadId: string; path: string }) =>
-              adapter.getImageAssetUrl?.(input.path) ?? '',
+              getImageAssetUrl(input.path),
           }
         : {}),
-      onOpenLinkedThread: adapter.openThread,
-      ...(adapter.loadHistoryItemDetail
-        ? { onLoadHistoryItemDetail: adapter.loadHistoryItemDetail }
+      onOpenLinkedThread: openThread,
+      ...(loadHistoryItemDetail
+        ? { onLoadHistoryItemDetail: loadHistoryItemDetail }
         : {}),
     }),
     [
-      adapter.getImageAssetUrl,
-      adapter.loadHistoryItemDetail,
-      adapter.openThread,
+      getImageAssetUrl,
+      loadHistoryItemDetail,
+      openThread,
     ],
   );
   const terminalPanelEnabled = plugins
@@ -257,7 +262,7 @@ export function ThreadDetailSurface({
   const resolvedWorkspaceContent =
     workspaceContent ??
     (detail ? (
-      <MemoizedThreadGraphWorkspacePanel
+      <ThreadGraphWorkspacePanel
         detail={detail}
         status={status}
         plugins={plugins}

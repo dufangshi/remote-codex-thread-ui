@@ -1,13 +1,25 @@
-import { useMemo, useState } from 'react';
+import { Suspense, lazy, useMemo, useState } from 'react';
 
 import { type MoleculeViewerSnapshot } from '@remote-codex/plugin-xyz-viewer';
-import { XyzMoleculeViewer } from '@remote-codex/plugin-xyz-viewer/frontend';
-import '@remote-codex/plugin-xyz-viewer/styles.css';
 import { looksLikeMoleculeStructure } from '@remote-codex/plugin-runtime';
 import type {
   ArtifactRenderContext,
   InlineCodeRenderContext,
 } from './plugin-types';
+
+const LazyXyzMoleculeViewer = lazy(async () => {
+  await import('@remote-codex/plugin-xyz-viewer/styles.css');
+  const module = await import('@remote-codex/plugin-xyz-viewer/frontend');
+  return { default: module.XyzMoleculeViewer };
+});
+
+function XyzViewerFallback() {
+  return (
+    <div className="flex h-full min-h-[12rem] items-center justify-center rounded-[0.9rem] border border-[var(--theme-border)] bg-[var(--theme-surface-strong)] px-4 text-sm text-[var(--theme-fg-muted)]">
+      Loading molecule viewer...
+    </div>
+  );
+}
 
 function isMoleculeViewerSnapshot(value: unknown): value is MoleculeViewerSnapshot {
   if (!value || typeof value !== 'object') {
@@ -54,11 +66,13 @@ export function XyzArtifactRenderer({
       </button>
       {expanded && source && (
         <div className="h-[min(56vh,34rem)] min-h-[26rem]">
-          <XyzMoleculeViewer
-            source={source}
-            moleculeId={artifact.id}
-            title={artifact.title}
-          />
+          <Suspense fallback={<XyzViewerFallback />}>
+            <LazyXyzMoleculeViewer
+              source={source}
+              moleculeId={artifact.id}
+              title={artifact.title}
+            />
+          </Suspense>
         </div>
       )}
       {expanded && !source && (
@@ -122,11 +136,13 @@ export function InlineXyzRenderer({
       </div>
       {expanded && (
         <div className="h-[min(52vh,32rem)] min-h-[24rem]">
-          <XyzMoleculeViewer
-            source={source}
-            moleculeId={source.uuid}
-            title={`${format.toUpperCase()} molecule`}
-          />
+          <Suspense fallback={<XyzViewerFallback />}>
+            <LazyXyzMoleculeViewer
+              source={source}
+              moleculeId={source.uuid}
+              title={`${format.toUpperCase()} molecule`}
+            />
+          </Suspense>
         </div>
       )}
       {sourceOpen && (

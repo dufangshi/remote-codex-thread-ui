@@ -1,0 +1,740 @@
+.thread-ui-shell,
+.thread-graph-dialog {
+  color-scheme: light;
+  --radius: 0.625rem;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --thread-gc-bg: #eef2f7;
+  --thread-gc-panel: #f8fafc;
+  --thread-gc-workspace: #f3f6fb;
+  --thread-gc-surface: #edf2f7;
+  --thread-gc-muted: #e6edf5;
+  --thread-gc-hover: #e8eef6;
+  --thread-gc-border: rgb(203 213 225 / 0.82);
+  --thread-gc-border-strong: rgb(174 187 204);
+  --thread-gc-border-contrast: rgb(123 139 161);
+  --thread-gc-fg: rgb(15 23 42);
+  --thread-gc-fg-soft: rgb(51 65 85);
+  --thread-gc-fg-muted: rgb(148 163 184);
+  --thread-gc-primary: rgb(2 6 23);
+  --thread-gc-primary-hover: rgb(30 41 59);
+  --thread-gc-primary-fg: #f8fafc;
+  --thread-gc-accent-soft: rgb(241 245 249);
+  --thread-gc-accent-strong: rgb(15 23 42);
+  --thread-gc-accent-border: rgb(203 213 225);
+  --thread-gc-shadow: 0 10px 30px rgb(15 23 42 / 0.04);
+  --theme-bg: var(--thread-gc-bg);
+  --theme-panel: var(--thread-gc-panel);
+  --theme-surface: var(--thread-gc-workspace);
+  --theme-surface-strong: var(--thread-gc-surface);
+  --theme-muted: var(--thread-gc-muted);
+  --theme-hover: var(--thread-gc-hover);
+  --theme-border: var(--thread-gc-border);
+  --theme-border-strong: var(--thread-gc-border-strong);
+  --theme-border-contrast: var(--thread-gc-border-contrast);
+  --theme-fg: var(--thread-gc-fg);
+  --theme-fg-soft: var(--thread-gc-fg-soft);
+  --theme-fg-muted: var(--thread-gc-fg-muted);
+  --theme-accent-solid: var(--thread-gc-primary);
+  --theme-accent-solid-hover: var(--thread-gc-primary-hover);
+  --theme-accent-solid-fg: var(--thread-gc-primary-fg);
+  --theme-accent-soft: var(--thread-gc-accent-soft);
+  --theme-accent-strong: var(--thread-gc-accent-strong);
+  --theme-accent-border: var(--thread-gc-accent-border);
+  --theme-shadow: var(--thread-gc-shadow);
+  background: var(--theme-bg);
+  color: var(--theme-fg);
+  isolation: isolate;
+  font-family:
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    "Noto Sans CJK SC",
+    "Noto Sans SC",
+    "Microsoft YaHei",
+    "PingFang SC",
+    "Hiragino Sans GB",
+    sans-serif;
+}
+
+.thread-graph-dialog {
+  background: var(--theme-panel);
+  color: var(--theme-fg);
+}
+
+.thread-ui-shell.thread-ui-viewport-constrained {
+  height: 100svh;
+  max-height: 100svh;
+  min-height: 0;
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+.thread-ui-shell.thread-ui-theme-dark,
+.thread-ui-shell[data-theme-effective="dark"],
+:root[data-theme-effective="dark"] .thread-ui-shell,
+.thread-ui-shell.dark,
+.thread-ui-shell[data-theme="dark"],
+.thread-ui-shell[data-theme-mode="dark"],
+.thread-ui-shell[data-theme-mode="system"][data-system-theme="dark"],
+.thread-graph-dialog[data-theme-effective="dark"],
+.thread-graph-dialog[data-theme-mode="dark"],
+.thread-graph-dialog[data-theme-mode="system"][data-system-theme="dark"] {
+  color-scheme: dark;
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.205 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.922 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.556 0 0);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --thread-gc-bg: #101217;
+  --thread-gc-panel: #171a22;
+  --thread-gc-workspace: #151820;
+  --thread-gc-surface: #1d222c;
+  --thread-gc-muted: #222733;
+  --thread-gc-hover: #222733;
+  --thread-gc-border: #2a2f3a;
+  --thread-gc-border-strong: #303642;
+  --thread-gc-border-contrast: #475063;
+  --thread-gc-fg: rgb(241 245 249);
+  --thread-gc-fg-soft: rgb(203 213 225);
+  --thread-gc-fg-muted: rgb(148 163 184);
+  --thread-gc-primary: rgb(241 245 249);
+  --thread-gc-primary-hover: rgb(203 213 225);
+  --thread-gc-primary-fg: #11141a;
+  --thread-gc-accent-soft: #222733;
+  --thread-gc-accent-strong: rgb(241 245 249);
+  --thread-gc-accent-border: #303642;
+  --thread-gc-shadow: 0 18px 40px rgb(0 0 0 / 0.28);
+}
+
+.thread-ui-shell *,
+.thread-ui-shell *::before,
+.thread-ui-shell *::after {
+  box-sizing: border-box;
+}
+
+.thread-ui-shell .thread-main-panel,
+.thread-ui-shell .thread-detail-surface,
+.thread-ui-shell .thread-sidebar-surface,
+.thread-ui-shell .thread-workspace-panel,
+.thread-ui-shell .thread-workspace-card {
+  border-color: var(--theme-border);
+  background: var(--theme-panel);
+  color: var(--theme-fg);
+}
+
+.thread-ui-shell .thread-sidebar-surface {
+  background: color-mix(in oklch, var(--theme-panel) 92%, var(--theme-surface));
+  color: var(--theme-fg);
+}
+
+.thread-ui-shell .thread-graph-rooms-surface,
+.thread-ui-shell .thread-topbar-surface {
+  border-color: var(--theme-border);
+  background: var(--theme-panel);
+  color: var(--theme-fg);
+}
+
+.thread-ui-shell.thread-ui-theme-dark .thread-graph-rooms-surface,
+.thread-ui-shell[data-theme-effective="dark"] .thread-graph-rooms-surface,
+:root[data-theme-effective="dark"] .thread-ui-shell .thread-graph-rooms-surface,
+.thread-ui-shell.dark .thread-graph-rooms-surface,
+.thread-ui-shell.thread-ui-theme-dark .thread-topbar-surface,
+.thread-ui-shell[data-theme-effective="dark"] .thread-topbar-surface,
+:root[data-theme-effective="dark"] .thread-ui-shell .thread-topbar-surface,
+.thread-ui-shell.dark .thread-topbar-surface {
+  border-color: #2a2f3a;
+  background: #171a22;
+  color: rgb(241 245 249);
+  box-shadow: 0 18px 40px rgb(0 0 0 / 0.28);
+}
+
+.thread-ui-shell[data-theme-effective="light"] .thread-graph-rooms-surface,
+:root[data-theme-effective="light"] .thread-ui-shell .thread-graph-rooms-surface,
+.thread-ui-shell[data-theme-effective="light"] .thread-topbar-surface,
+:root[data-theme-effective="light"] .thread-ui-shell .thread-topbar-surface {
+  border-color: rgb(226 232 240 / 0.8);
+  background: rgb(255 255 255);
+  color: rgb(15 23 42);
+  box-shadow: 0 10px 30px rgb(15 23 42 / 0.04);
+}
+
+.thread-ui-shell[data-theme-effective="dark"] .thread-mobile-scrim,
+:root[data-theme-effective="dark"] .thread-ui-shell .thread-mobile-scrim,
+.thread-ui-shell.thread-ui-theme-dark .thread-mobile-scrim,
+.thread-ui-shell.dark .thread-mobile-scrim {
+  background: rgb(0 0 0 / 0.55);
+}
+
+.thread-ui-shell .thread-shell-frame {
+  display: block;
+  height: 100%;
+  min-height: 0;
+  width: 100%;
+}
+
+.thread-ui-shell .thread-rooms-rail {
+  transform: none;
+  translate: -100% 0;
+  overflow-x: hidden;
+}
+
+.thread-ui-shell .thread-rooms-rail.translate-x-0 {
+  transform: none;
+  translate: 0 0;
+}
+
+.thread-ui-shell .thread-shell-main {
+  height: 100%;
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.thread-ui-shell .thread-shell-card {
+  border-color: transparent;
+}
+
+.thread-ui-shell .thread-desktop-only-flex,
+.thread-ui-shell .thread-desktop-only-inline-flex,
+.thread-ui-shell .thread-mobile-chat-hidden,
+.thread-ui-shell .thread-mobile-workspace-hidden {
+  display: none;
+}
+
+.thread-ui-shell .thread-mobile-only-block {
+  display: block;
+}
+
+.thread-ui-shell .thread-mobile-only-grid {
+  display: grid;
+}
+
+.thread-ui-shell .thread-mobile-only-inline-flex {
+  display: inline-flex;
+}
+
+.thread-ui-shell .thread-main-panel,
+.thread-ui-shell .thread-shell-card {
+  height: 100%;
+  min-height: 0;
+}
+
+.thread-ui-shell .thread-topbar-surface {
+  min-height: 3.5rem;
+}
+
+.thread-ui-shell .thread-icon-button,
+.thread-ui-shell .thread-secondary-action {
+  border-color: var(--theme-border);
+  background: transparent;
+  color: var(--theme-fg-soft);
+}
+
+.thread-ui-shell .thread-icon-button:hover,
+.thread-ui-shell .thread-secondary-action:hover {
+  background: var(--theme-hover);
+  color: var(--theme-fg);
+}
+
+.thread-ui-shell .thread-topbar-meta-row {
+  color: var(--theme-fg-muted);
+}
+
+.thread-ui-shell button.thread-topbar-meta-row:hover {
+  color: var(--theme-fg);
+}
+
+.thread-ui-shell .thread-topbar-meta-row[aria-expanded="true"] {
+  color: var(--theme-fg);
+}
+
+.thread-ui-shell .thread-topbar-details-trigger {
+  border-color: var(--theme-border);
+  background: var(--theme-surface);
+  color: var(--theme-fg-soft);
+}
+
+.thread-ui-shell .thread-topbar-details-trigger:hover,
+.thread-ui-shell .thread-topbar-details-trigger[aria-expanded="true"] {
+  border-color: var(--theme-border-strong);
+  background: var(--theme-hover);
+  color: var(--theme-fg);
+}
+
+.thread-ui-shell .thread-topbar-details-popover {
+  border-color: var(--theme-border);
+  background: var(--theme-panel);
+  color: var(--theme-fg);
+  box-shadow: var(--theme-shadow);
+}
+
+.thread-ui-shell .thread-topbar-meta-row .font-mono {
+  color: var(--theme-fg-soft);
+}
+
+.thread-ui-shell button.thread-topbar-meta-row:hover .font-mono {
+  color: var(--theme-fg);
+}
+
+.thread-ui-shell .thread-graph-topbar-actions {
+  border-color: var(--theme-border);
+  background: var(--theme-surface);
+}
+
+.thread-ui-shell .thread-graph-topbar-actions > * {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.thread-ui-shell .thread-graph-topbar-actions button,
+.thread-ui-shell .thread-graph-topbar-actions a {
+  min-width: 2rem;
+  height: 2rem;
+  border-radius: 0.375rem;
+  border-color: transparent;
+  background: transparent;
+  color: var(--theme-fg-soft);
+  box-shadow: none;
+}
+
+.thread-ui-shell .thread-graph-topbar-actions button:hover,
+.thread-ui-shell .thread-graph-topbar-actions a:hover {
+  background: var(--theme-hover);
+  color: var(--theme-fg);
+}
+
+.thread-ui-shell .thread-graph-topbar-actions button:disabled,
+.thread-ui-shell .thread-graph-topbar-actions a[aria-disabled="true"] {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.thread-ui-shell .thread-graph-dialog,
+.thread-graph-dialog {
+  border-color: var(--theme-border);
+  color: var(--theme-fg);
+}
+
+.thread-ui-shell .thread-graph-settings-dialog,
+.thread-graph-settings-dialog,
+.thread-graph-create-thread-dialog {
+  border-color: var(--theme-border);
+  background: var(--theme-panel);
+  color: var(--theme-fg);
+}
+
+.thread-ui-shell .thread-graph-settings-dialog [data-slot="dialog-description"],
+.thread-graph-settings-dialog [data-slot="dialog-description"],
+.thread-graph-create-thread-dialog [data-slot="dialog-description"] {
+  color: var(--theme-fg-muted);
+}
+
+.thread-ui-shell .thread-graph-settings-dialog [data-slot="dialog-close"],
+.thread-graph-settings-dialog [data-slot="dialog-close"],
+.thread-graph-create-thread-dialog [data-slot="dialog-close"] {
+  color: var(--theme-fg-muted);
+}
+
+.thread-ui-shell .thread-graph-settings-dialog [data-slot="dialog-close"]:hover,
+.thread-graph-settings-dialog [data-slot="dialog-close"]:hover,
+.thread-graph-create-thread-dialog [data-slot="dialog-close"]:hover {
+  color: var(--theme-fg);
+}
+
+.thread-ui-shell .thread-graph-settings-card,
+.thread-ui-shell .thread-graph-theme-mode-group,
+.thread-ui-shell .thread-graph-settings-tabs,
+.thread-graph-settings-dialog .thread-graph-settings-card,
+.thread-graph-settings-dialog .thread-graph-theme-mode-group,
+.thread-graph-settings-dialog .thread-graph-settings-tabs {
+  border-color: var(--theme-border);
+  background: var(--theme-surface);
+}
+
+.thread-ui-shell .thread-graph-theme-mode-button,
+.thread-ui-shell .thread-graph-settings-tab-button,
+.thread-graph-settings-dialog .thread-graph-theme-mode-button,
+.thread-graph-settings-dialog .thread-graph-settings-tab-button {
+  color: var(--theme-fg-muted);
+}
+
+.thread-ui-shell .thread-graph-theme-mode-button:hover:not(:disabled),
+.thread-ui-shell .thread-graph-settings-tab-button:hover:not(:disabled),
+.thread-graph-settings-dialog
+  .thread-graph-theme-mode-button:hover:not(:disabled),
+.thread-graph-settings-dialog
+  .thread-graph-settings-tab-button:hover:not(:disabled) {
+  background: var(--theme-hover);
+  color: var(--theme-fg);
+}
+
+.thread-ui-shell .thread-graph-theme-mode-button.is-selected,
+.thread-ui-shell .thread-graph-settings-tab-button.is-active,
+.thread-graph-settings-dialog .thread-graph-theme-mode-button.is-selected,
+.thread-graph-settings-dialog .thread-graph-settings-tab-button.is-active {
+  background: var(--theme-accent-solid);
+  color: var(--theme-accent-solid-fg);
+  box-shadow: 0 1px 2px rgb(15 23 42 / 0.08);
+}
+
+.thread-ui-shell .thread-graph-theme-mode-button:disabled,
+.thread-ui-shell .thread-graph-settings-tab-button:disabled,
+.thread-graph-settings-dialog .thread-graph-theme-mode-button:disabled,
+.thread-graph-settings-dialog .thread-graph-settings-tab-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.thread-graph-settings-dialog .thread-graph-settings-body {
+  max-height: min(62vh, 42rem);
+  color: var(--theme-fg);
+}
+
+.thread-graph-settings-dialog .thread-graph-settings-global-content {
+  color: var(--theme-fg);
+}
+
+.thread-graph-settings-dialog .thread-graph-settings-body dt,
+.thread-graph-settings-dialog .thread-graph-settings-body .text-stone-500,
+.thread-graph-settings-dialog .thread-graph-settings-body .text-slate-500,
+.thread-graph-settings-dialog .thread-graph-settings-body .text-stone-400,
+.thread-graph-settings-dialog .thread-graph-settings-body .text-slate-400 {
+  color: var(--theme-fg-muted) !important;
+}
+
+.thread-graph-settings-dialog .thread-graph-settings-body dd,
+.thread-graph-settings-dialog .thread-graph-settings-body .text-stone-100,
+.thread-graph-settings-dialog .thread-graph-settings-body .text-stone-200,
+.thread-graph-settings-dialog .thread-graph-settings-body .text-stone-300,
+.thread-graph-settings-dialog .thread-graph-settings-body .text-slate-100,
+.thread-graph-settings-dialog .thread-graph-settings-body .text-slate-200,
+.thread-graph-settings-dialog .thread-graph-settings-body .text-slate-300 {
+  color: var(--theme-fg) !important;
+}
+
+.thread-graph-settings-dialog .thread-graph-settings-body .bg-stone-950,
+.thread-graph-settings-dialog .thread-graph-settings-body .bg-stone-900,
+.thread-graph-settings-dialog .thread-graph-settings-body .bg-slate-950,
+.thread-graph-settings-dialog .thread-graph-settings-body .bg-slate-900 {
+  background: var(--theme-surface-strong) !important;
+}
+
+.thread-graph-settings-dialog .thread-graph-settings-body .border-stone-800,
+.thread-graph-settings-dialog .thread-graph-settings-body .border-stone-700,
+.thread-graph-settings-dialog .thread-graph-settings-body .border-slate-800,
+.thread-graph-settings-dialog .thread-graph-settings-body .border-slate-700 {
+  border-color: var(--theme-border) !important;
+}
+
+.thread-graph-create-thread-input {
+  border-color: var(--theme-border);
+  background: var(--theme-surface);
+  color: var(--theme-fg);
+}
+
+.thread-graph-create-thread-input::placeholder {
+  color: var(--theme-fg-muted);
+}
+
+.thread-graph-create-thread-input:focus {
+  border-color: var(--theme-border-contrast);
+  box-shadow: 0 0 0 2px
+    color-mix(in srgb, var(--theme-border-contrast) 18%, transparent);
+}
+
+.thread-graph-create-thread-submit {
+  background: var(--theme-accent-solid);
+  color: var(--theme-accent-solid-fg);
+}
+
+.thread-graph-create-thread-submit:hover:not(:disabled) {
+  background: var(--theme-accent-solid-hover);
+}
+
+.thread-ui-shell .ui-action-danger {
+  border: 1px solid color-mix(in oklch, rgb(244 63 94) 48%, var(--theme-border));
+  background: color-mix(in oklch, rgb(244 63 94) 18%, var(--theme-panel));
+  color: color-mix(in oklch, rgb(254 226 226) 86%, var(--theme-fg));
+}
+
+.thread-ui-shell .ui-action-danger:hover {
+  background: color-mix(in oklch, rgb(244 63 94) 26%, var(--theme-panel));
+  color: rgb(254 226 226);
+}
+
+.thread-ui-shell .thread-mobile-segment {
+  background: var(--theme-surface-strong);
+  color: var(--theme-fg-soft);
+}
+
+.thread-ui-shell .thread-mobile-segment:hover {
+  background: var(--theme-hover);
+  color: var(--theme-fg);
+}
+
+.thread-ui-shell .thread-mobile-segment.is-active {
+  background: var(--theme-accent-solid);
+  color: var(--theme-accent-solid-fg);
+}
+
+.thread-ui-shell .thread-sidebar-card {
+  border-color: transparent;
+  background: var(--theme-surface-strong);
+  color: var(--theme-fg-soft);
+}
+
+.thread-ui-shell .thread-graph-room-card {
+  border-color: rgb(226 232 240 / 0.9);
+  background: rgb(248 250 252);
+  color: rgb(51 65 85);
+}
+
+.thread-ui-shell[data-theme-effective="light"] .thread-graph-room-card {
+  border-color: rgb(226 232 240 / 0.9);
+  background: rgb(248 250 252);
+  color: rgb(51 65 85);
+}
+
+.thread-ui-shell .thread-sidebar-card:hover {
+  border-color: var(--theme-border);
+  background: var(--theme-panel);
+  color: var(--theme-fg);
+}
+
+.thread-ui-shell .thread-graph-room-card:hover {
+  border-color: rgb(203 213 225);
+  background: rgb(255 255 255);
+  color: rgb(15 23 42);
+}
+
+.thread-ui-shell[data-theme-effective="light"] .thread-graph-room-card:hover {
+  border-color: rgb(203 213 225);
+  background: rgb(255 255 255);
+  color: rgb(15 23 42);
+}
+
+.thread-ui-shell .thread-sidebar-card-active {
+  border-color: var(--theme-accent-solid);
+  background: var(--theme-accent-solid);
+  color: var(--theme-accent-solid-fg);
+  box-shadow: 0 12px 30px oklch(0.22 0.024 255 / 0.18);
+}
+
+.thread-ui-shell .thread-graph-room-card.is-active {
+  border-color: rgb(203 213 225);
+  background: rgb(241 245 249);
+  color: rgb(15 23 42);
+  box-shadow: 0 8px 22px rgb(15 23 42 / 0.06);
+}
+
+.thread-ui-shell[data-theme-effective="light"]
+  .thread-graph-room-card.is-active {
+  border-color: rgb(203 213 225);
+  background: rgb(241 245 249);
+  color: rgb(15 23 42);
+  box-shadow: 0 8px 22px rgb(15 23 42 / 0.06);
+}
+
+.thread-ui-shell.thread-ui-theme-dark .thread-graph-room-card.is-active,
+.thread-ui-shell[data-theme-effective="dark"] .thread-graph-room-card.is-active,
+.thread-ui-shell.dark .thread-graph-room-card.is-active {
+  border-color: #3c4556;
+  background: #262c38;
+  color: rgb(241 245 249);
+  box-shadow: 0 10px 24px rgb(0 0 0 / 0.18);
+}
+
+.thread-ui-shell.thread-ui-theme-dark .thread-graph-room-card,
+.thread-ui-shell[data-theme-effective="dark"] .thread-graph-room-card,
+.thread-ui-shell.dark .thread-graph-room-card {
+  border-color: transparent;
+  background: #1d222c;
+  color: rgb(203 213 225);
+}
+
+.thread-ui-shell.thread-ui-theme-dark .thread-graph-room-card:hover,
+.thread-ui-shell[data-theme-effective="dark"] .thread-graph-room-card:hover,
+.thread-ui-shell.dark .thread-graph-room-card:hover {
+  border-color: #343b48;
+  background: #222733;
+  color: rgb(241 245 249);
+}
+
+.thread-ui-shell .thread-sidebar-card-icon {
+  background: var(--theme-panel);
+  color: var(--theme-fg-muted);
+}
+
+.thread-ui-shell .thread-graph-room-card-icon {
+  background: rgb(255 255 255);
+  color: rgb(100 116 139);
+}
+
+.thread-ui-shell[data-theme-effective="light"] .thread-graph-room-card-icon {
+  background: rgb(255 255 255);
+  color: rgb(100 116 139);
+}
+
+.thread-ui-shell .thread-sidebar-card-icon.is-active {
+  background: color-mix(
+    in oklch,
+    var(--theme-accent-solid-fg) 16%,
+    transparent
+  );
+  color: var(--theme-accent-solid-fg);
+}
+
+.thread-ui-shell .thread-graph-room-card-icon.is-active {
+  background: rgb(226 232 240);
+  color: rgb(15 23 42);
+}
+
+.thread-ui-shell[data-theme-effective="light"]
+  .thread-graph-room-card-icon.is-active {
+  background: rgb(226 232 240);
+  color: rgb(15 23 42);
+}
+
+.thread-ui-shell.thread-ui-theme-dark .thread-graph-room-card-icon.is-active,
+.thread-ui-shell[data-theme-effective="dark"]
+  .thread-graph-room-card-icon.is-active,
+.thread-ui-shell.dark .thread-graph-room-card-icon.is-active {
+  background: #12151c;
+  color: rgb(226 232 240);
+}
+
+.thread-ui-shell.thread-ui-theme-dark .thread-graph-room-card-icon,
+.thread-ui-shell[data-theme-effective="dark"] .thread-graph-room-card-icon,
+.thread-ui-shell.dark .thread-graph-room-card-icon {
+  background: #12151c;
+  color: rgb(148 163 184);
+}
+
+.thread-ui-shell .thread-sidebar-card-active .thread-sidebar-card-title,
+.thread-ui-shell .thread-sidebar-card-active p,
+.thread-ui-shell .thread-sidebar-card-active span,
+.thread-ui-shell .thread-sidebar-card-active button,
+.thread-ui-shell
+  .thread-graph-room-card.is-active
+  .thread-graph-room-card-title,
+.thread-ui-shell .thread-graph-room-card.is-active p,
+.thread-ui-shell .thread-graph-room-card.is-active button {
+  color: inherit;
+}
+
+.thread-ui-shell .thread-card-quiet-button {
+  color: var(--theme-fg-muted);
+}
+
+.thread-ui-shell .thread-card-quiet-button:hover {
+  background: color-mix(in oklch, var(--theme-hover) 80%, transparent);
+  color: var(--theme-fg);
+}
+
+.thread-ui-shell .thread-card-session-copy-button {
+  opacity: 0;
+}
+
+.thread-ui-shell .thread-graph-room-card:hover .thread-card-session-copy-button,
+.thread-ui-shell .thread-card-session-copy-button:focus-visible,
+.thread-ui-shell .thread-card-session-copy-button:active {
+  opacity: 1;
+}
+
+.thread-ui-shell .thread-card-danger-button {
+  color: oklch(0.62 0.16 25);
+}
+
+.thread-ui-shell .thread-card-danger-button:hover {
+  background: rgb(254 226 226);
+}
+
+.thread-ui-shell.thread-ui-theme-dark .thread-card-danger-button:hover,
+.thread-ui-shell[data-theme-effective="dark"] .thread-card-danger-button:hover,
+.thread-ui-shell.dark .thread-card-danger-button:hover {
+  background: rgb(127 29 29 / 0.32);
+}
+
+.thread-ui-shell .thread-new-thread-button,
+.thread-ui-shell .thread-graph-new-room-button {
+  min-width: 0;
+}
+
+.thread-ui-shell .thread-graph-new-room-strip {
+  border-color: var(--theme-border);
+}
+
+.thread-ui-shell .thread-graph-new-room-button {
+  background: var(--theme-accent-solid);
+  color: var(--theme-accent-solid-fg);
+  transition:
+    background-color 160ms ease,
+    transform 160ms ease;
+}
+
+.thread-ui-shell .thread-graph-new-room-button:hover {
+  background: var(--theme-accent-solid-hover);
+  transform: translateY(-1px);
+}
+
+.thread-ui-shell.thread-ui-theme-dark .thread-graph-new-room-button,
+.thread-ui-shell[data-theme-effective="dark"] .thread-graph-new-room-button,
+.thread-ui-shell.dark .thread-graph-new-room-button {
+  border: 1px solid #343b48;
+  background: #222733;
+  color: rgb(241 245 249);
+}
+
+.thread-ui-shell.thread-ui-theme-dark .thread-graph-new-room-button:hover,
+.thread-ui-shell[data-theme-effective="dark"]
+  .thread-graph-new-room-button:hover,
+.thread-ui-shell.dark .thread-graph-new-room-button:hover {
+  border-color: #465164;
+  background: #2b313d;
+}
+

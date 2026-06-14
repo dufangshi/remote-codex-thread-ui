@@ -1,0 +1,1044 @@
+
+.thread-ui-shell .timeline-soft-text,
+.thread-ui-shell .thread-message-prose :where(blockquote) {
+  color: var(--theme-fg-soft);
+}
+
+.thread-ui-shell .timeline-meta-text,
+.thread-ui-shell .thread-message-prose :where(figcaption) {
+  color: var(--theme-fg-muted);
+}
+
+.thread-ui-shell .timeline-overlay-badge,
+.thread-ui-shell .ui-status-neutral,
+.thread-ui-shell .ui-status-info,
+.thread-ui-shell .ui-status-warning,
+.thread-ui-shell .ui-status-success,
+.thread-ui-shell .ui-status-danger {
+  border-color: transparent;
+  box-shadow: none;
+}
+
+.thread-ui-shell .timeline-command-status-complete,
+.thread-ui-shell .timeline-command-status-pending,
+.thread-ui-shell .timeline-delta-badge,
+.thread-ui-shell .timeline-live-plan-step {
+  border-color: var(--theme-border);
+  background: var(--theme-muted);
+  color: var(--theme-fg-soft);
+}
+
+.thread-ui-shell .ui-status-neutral {
+  background: var(--theme-muted);
+  color: var(--theme-fg-soft);
+}
+
+.thread-ui-shell.thread-ui-theme-dark .ui-status-neutral,
+.thread-ui-shell[data-theme-effective="dark"] .ui-status-neutral,
+.thread-ui-shell.dark .ui-status-neutral {
+  border-color: #303642;
+  background: #151923;
+  color: rgb(203 213 225);
+}
+
+.thread-ui-shell.thread-ui-theme-dark
+  .thread-graph-room-card.is-active
+  .ui-status-neutral,
+.thread-ui-shell[data-theme-effective="dark"]
+  .thread-graph-room-card.is-active
+  .ui-status-neutral,
+.thread-ui-shell.dark .thread-graph-room-card.is-active .ui-status-neutral {
+  border-color: #424b5e;
+  background: #1a1f2a;
+  color: rgb(203 213 225);
+}
+
+.thread-ui-shell .ui-status-info {
+  background: oklch(0.94 0.03 235);
+  color: oklch(0.43 0.09 242);
+}
+
+.thread-ui-shell .ui-status-warning {
+  background: oklch(0.94 0.048 84);
+  color: oklch(0.46 0.08 75);
+}
+
+.thread-ui-shell .ui-status-success {
+  background: oklch(0.94 0.052 155);
+  color: oklch(0.43 0.095 155);
+}
+
+.thread-ui-shell .ui-status-danger {
+  background: oklch(0.94 0.04 25);
+  color: oklch(0.48 0.125 24);
+}
+
+.thread-ui-shell.thread-ui-theme-dark .ui-status-info,
+.thread-ui-shell[data-theme-effective="dark"] .ui-status-info,
+.thread-ui-shell.dark .ui-status-info {
+  background: oklch(0.3 0.042 235);
+  color: oklch(0.77 0.1 235);
+}
+
+.thread-ui-shell.thread-ui-theme-dark .ui-status-warning,
+.thread-ui-shell[data-theme-effective="dark"] .ui-status-warning,
+.thread-ui-shell.dark .ui-status-warning {
+  background: oklch(0.31 0.045 75);
+  color: oklch(0.83 0.11 80);
+}
+
+.thread-ui-shell.thread-ui-theme-dark .ui-status-success,
+.thread-ui-shell[data-theme-effective="dark"] .ui-status-success,
+.thread-ui-shell.dark .ui-status-success {
+  background: oklch(0.31 0.05 155);
+  color: oklch(0.8 0.115 155);
+}
+
+.thread-ui-shell.thread-ui-theme-dark .ui-status-danger,
+.thread-ui-shell[data-theme-effective="dark"] .ui-status-danger,
+.thread-ui-shell.dark .ui-status-danger {
+  background: oklch(0.31 0.052 25);
+  color: oklch(0.78 0.12 25);
+}
+
+.thread-ui-shell .thread-message-icon-user,
+.thread-ui-shell .thread-message-icon-agent {
+  border-color: transparent;
+  background: var(--theme-muted);
+  color: var(--theme-fg-muted);
+}
+
+.thread-ui-shell .thread-graph-thinking-trigger {
+  display: inline-flex;
+  align-items: center;
+  color: rgb(148 163 184);
+}
+
+.thread-ui-shell .thread-graph-thinking-trigger:hover,
+.thread-ui-shell .thread-graph-thinking-trigger[data-state="open"] {
+  color: rgb(125 211 252);
+}
+
+.thread-ui-shell .thread-graph-thinking-label {
+  min-width: 0;
+}
+
+.thread-ui-shell .thread-graph-thinking-body {
+  border-color: rgb(42 47 58);
+  background: #1b1f29;
+  color: rgb(203 213 225);
+}
+
+.thread-ui-shell[data-theme-effective="light"] .thread-graph-thinking-trigger {
+  color: rgb(100 116 139);
+}
+
+.thread-ui-shell[data-theme-effective="light"]
+  .thread-graph-thinking-trigger:hover,
+.thread-ui-shell[data-theme-effective="light"]
+  .thread-graph-thinking-trigger[data-state="open"] {
+  color: rgb(3 105 161);
+}
+
+.thread-ui-shell[data-theme-effective="light"] .thread-graph-thinking-body {
+  border-color: rgb(226 232 240);
+  background: rgb(248 250 252);
+  color: rgb(51 65 85);
+}
+
+.thread-ui-shell .timeline-corner-copy-visual {
+  border-color: var(--theme-border);
+  background: color-mix(in oklch, var(--theme-panel) 88%, transparent);
+  color: var(--theme-fg-muted);
+}
+
+.thread-ui-shell .thread-composer-form {
+  border-color: var(--theme-border);
+  background: var(--theme-surface);
+}
+
+.thread-ui-shell .thread-composer-toolbar,
+.thread-ui-shell .thread-composer-input,
+.thread-ui-shell .thread-composer-menu {
+  border-color: var(--theme-border);
+  background: var(--theme-panel);
+  color: var(--theme-fg);
+}
+
+.thread-ui-shell .thread-composer-toolbar {
+  border-radius: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  order: 2;
+  min-height: 2.75rem;
+  padding: 0.25rem 0.75rem 0.65rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.thread-ui-shell .thread-composer-prompt-region {
+  order: 1;
+}
+
+.thread-ui-shell .thread-composer-input {
+  position: relative;
+  min-height: 5.25rem !important;
+  max-height: 12rem !important;
+  border: 0;
+  border-radius: 0;
+  background: transparent !important;
+  box-shadow: none;
+  overflow: visible;
+  padding-top: 0.7rem;
+  padding-bottom: 0.45rem;
+}
+
+.thread-ui-shell .thread-composer-input:focus-within {
+  border-color: transparent;
+  box-shadow: none;
+}
+
+.thread-ui-shell .thread-composer-input [contenteditable],
+.thread-ui-shell .thread-composer-input textarea {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  background: transparent !important;
+  color: var(--theme-fg);
+  font-size: 1rem;
+  line-height: 1.55;
+}
+
+.thread-ui-shell .thread-composer-input [contenteditable] {
+  min-height: 4.15rem !important;
+  max-height: 9.5rem !important;
+  overflow-y: auto;
+}
+
+.thread-ui-shell .thread-composer-input textarea {
+  min-height: 4.15rem !important;
+  max-height: 9.5rem !important;
+  overflow-y: auto;
+  resize: none;
+}
+
+.thread-ui-shell .thread-composer-shell {
+  border: 1px solid var(--theme-border);
+  background: #fbfcfd;
+  box-shadow: 0 4px 18px oklch(0.22 0.024 255 / 0.04);
+}
+
+.thread-ui-shell .thread-composer-send-button {
+  flex: 0 0 auto;
+}
+
+.thread-ui-shell .thread-goal-compose-card {
+  border-color: color-mix(in oklch, var(--theme-accent-solid) 18%, var(--theme-border));
+  background: color-mix(in oklch, var(--theme-accent-solid) 7%, var(--theme-panel));
+  color: var(--theme-fg-soft);
+  box-shadow: 0 8px 18px rgb(15 23 42 / 0.05);
+}
+
+.thread-ui-shell .thread-goal-compose-label {
+  color: color-mix(in oklch, var(--theme-accent-solid) 68%, var(--theme-fg));
+}
+
+.thread-ui-shell .thread-goal-compose-field {
+  color: var(--theme-fg-soft);
+}
+
+.thread-ui-shell .thread-goal-compose-input {
+  border-color: color-mix(in oklch, var(--theme-accent-solid) 20%, var(--theme-border));
+  background: var(--theme-panel);
+  color: var(--theme-fg);
+}
+
+.thread-ui-shell .thread-goal-compose-input::placeholder {
+  color: var(--theme-fg-muted);
+}
+
+.thread-ui-shell .thread-goal-compose-input:focus {
+  border-color: color-mix(in oklch, var(--theme-accent-solid) 48%, var(--theme-border));
+}
+
+.thread-ui-shell .thread-goal-compose-cancel {
+  border-color: var(--theme-border);
+  background: var(--theme-surface-strong);
+  color: var(--theme-fg-soft);
+}
+
+.thread-ui-shell .thread-goal-compose-cancel:hover {
+  background: var(--theme-hover);
+  color: var(--theme-fg);
+}
+
+.thread-ui-shell .thread-goal-compose-error {
+  color: rgb(190 18 60);
+}
+
+.thread-ui-shell.thread-ui-theme-dark .thread-goal-compose-card,
+.thread-ui-shell[data-theme-effective="dark"] .thread-goal-compose-card,
+.thread-ui-shell.dark .thread-goal-compose-card {
+  border-color: rgb(125 211 252 / 0.25);
+  background: rgb(125 211 252 / 0.07);
+  color: rgb(226 232 240);
+  box-shadow: 0 8px 18px rgb(0 0 0 / 0.18);
+}
+
+.thread-ui-shell.thread-ui-theme-dark .thread-goal-compose-label,
+.thread-ui-shell[data-theme-effective="dark"] .thread-goal-compose-label,
+.thread-ui-shell.dark .thread-goal-compose-label {
+  color: rgb(224 242 254 / 0.9);
+}
+
+.thread-ui-shell.thread-ui-theme-dark .thread-goal-compose-field,
+.thread-ui-shell[data-theme-effective="dark"] .thread-goal-compose-field,
+.thread-ui-shell.dark .thread-goal-compose-field {
+  color: rgb(203 213 225);
+}
+
+.thread-ui-shell.thread-ui-theme-dark .thread-goal-compose-input,
+.thread-ui-shell[data-theme-effective="dark"] .thread-goal-compose-input,
+.thread-ui-shell.dark .thread-goal-compose-input {
+  border-color: rgb(125 211 252 / 0.25);
+  background: rgb(2 6 23 / 0.46);
+  color: rgb(241 245 249);
+}
+
+.thread-ui-shell.thread-ui-theme-dark .thread-goal-compose-cancel,
+.thread-ui-shell[data-theme-effective="dark"] .thread-goal-compose-cancel,
+.thread-ui-shell.dark .thread-goal-compose-cancel {
+  border-color: #343b48;
+  background: #1d222c;
+  color: rgb(203 213 225);
+}
+
+.thread-ui-shell.thread-ui-theme-dark .thread-goal-compose-cancel:hover,
+.thread-ui-shell[data-theme-effective="dark"] .thread-goal-compose-cancel:hover,
+.thread-ui-shell.dark .thread-goal-compose-cancel:hover {
+  background: #222733;
+  color: rgb(241 245 249);
+}
+
+.thread-ui-shell.thread-ui-theme-dark .thread-goal-compose-error,
+.thread-ui-shell[data-theme-effective="dark"] .thread-goal-compose-error,
+.thread-ui-shell.dark .thread-goal-compose-error {
+  color: rgb(254 205 211);
+}
+
+@media (min-width: 640px) {
+  .thread-ui-shell:not([data-thread-layout="mobile"]) .thread-composer-shell {
+    border-radius: 16px;
+  }
+
+  .thread-ui-shell:not([data-thread-layout="mobile"]) .thread-composer-input {
+    min-height: 5.75rem !important;
+    max-height: 12.5rem !important;
+    padding-top: 0.9rem;
+  }
+
+  .thread-ui-shell:not([data-thread-layout="mobile"])
+    .thread-composer-input
+    [contenteditable],
+  .thread-ui-shell:not([data-thread-layout="mobile"])
+    .thread-composer-input
+    textarea {
+    min-height: 4.5rem !important;
+    max-height: 10rem !important;
+    font-size: 0.875rem;
+  }
+}
+
+.thread-ui-shell:not([data-thread-layout="mobile"]) .thread-composer-form {
+  padding: 0.5rem 1rem 0.75rem;
+}
+
+.thread-ui-shell.thread-ui-theme-dark .thread-composer-shell,
+.thread-ui-shell[data-theme-effective="dark"] .thread-composer-shell,
+.thread-ui-shell.dark .thread-composer-shell {
+  border-color: #303642;
+  background: #181b23;
+  box-shadow: 0 8px 24px oklch(0 0 0 / 0.22);
+}
+
+.thread-ui-shell.thread-ui-theme-dark .thread-composer-toolbar,
+.thread-ui-shell[data-theme-effective="dark"] .thread-composer-toolbar,
+.thread-ui-shell.dark .thread-composer-toolbar,
+.thread-ui-shell.thread-ui-theme-dark .thread-composer-input,
+.thread-ui-shell[data-theme-effective="dark"] .thread-composer-input,
+.thread-ui-shell.dark .thread-composer-input {
+  border-color: #303642 !important;
+  background: transparent !important;
+  color: rgb(241 245 249) !important;
+  box-shadow: none !important;
+}
+
+.thread-ui-shell.thread-ui-theme-dark .thread-composer-input [contenteditable],
+.thread-ui-shell[data-theme-effective="dark"]
+  .thread-composer-input
+  [contenteditable],
+.thread-ui-shell.dark .thread-composer-input [contenteditable],
+.thread-ui-shell.thread-ui-theme-dark .thread-composer-input textarea,
+.thread-ui-shell[data-theme-effective="dark"] .thread-composer-input textarea,
+.thread-ui-shell.dark .thread-composer-input textarea {
+  background: transparent !important;
+  color: rgb(241 245 249) !important;
+}
+
+.thread-ui-shell .thread-graph-composer-form {
+  border-color: var(--theme-border);
+  background: var(--theme-surface);
+}
+
+.thread-ui-shell.thread-ui-theme-dark .thread-graph-composer-form,
+.thread-ui-shell[data-theme-effective="dark"] .thread-graph-composer-form,
+.thread-ui-shell.dark .thread-graph-composer-form {
+  border-color: var(--theme-border);
+  background: var(--theme-surface);
+}
+
+.thread-ui-shell .thread-graph-composer-shell {
+  border: 1px solid var(--theme-border);
+  background: var(--theme-panel);
+  box-shadow: 0 4px 18px oklch(0.22 0.024 255 / 0.04);
+  overflow: visible !important;
+}
+
+.thread-ui-shell.thread-ui-theme-dark .thread-graph-composer-shell,
+.thread-ui-shell[data-theme-effective="dark"] .thread-graph-composer-shell,
+.thread-ui-shell.dark .thread-graph-composer-shell {
+  border-color: var(--theme-border-strong);
+  background: var(--theme-panel);
+  box-shadow: 0 8px 24px oklch(0 0 0 / 0.22);
+}
+
+.thread-ui-shell .thread-graph-composer-input-group {
+  order: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  height: auto;
+  min-height: 0;
+  color: rgb(30 41 59);
+  overflow: visible !important;
+}
+
+.thread-ui-shell.thread-ui-theme-dark .thread-graph-composer-input-group,
+.thread-ui-shell[data-theme-effective="dark"]
+  .thread-graph-composer-input-group,
+.thread-ui-shell.dark .thread-graph-composer-input-group {
+  color: rgb(241 245 249);
+}
+
+.thread-ui-shell .thread-graph-composer-prompt-region {
+  order: 1;
+}
+
+.thread-ui-shell .thread-graph-composer-input {
+  position: relative;
+  border: 0;
+  background: transparent;
+  color: rgb(30 41 59);
+  box-shadow: none;
+  overflow-y: auto;
+}
+
+.thread-ui-shell.thread-ui-theme-dark .thread-graph-composer-input,
+.thread-ui-shell[data-theme-effective="dark"] .thread-graph-composer-input,
+.thread-ui-shell.dark .thread-graph-composer-input {
+  color: rgb(241 245 249);
+}
+
+.thread-ui-shell .thread-graph-composer-input [contenteditable] {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  overflow-y: auto;
+  background: transparent;
+  color: inherit;
+}
+
+.thread-ui-shell .thread-graph-composer-input .thread-composer-attachment-chip,
+.thread-ui-shell .thread-composer-input .thread-composer-attachment-chip {
+  box-sizing: border-box;
+  flex: 0 0 auto;
+  width: max-content !important;
+  max-width: min(100%, 7.25rem) !important;
+  vertical-align: middle;
+}
+
+.thread-ui-shell .thread-graph-composer-input .thread-composer-attachment-chip-photo,
+.thread-ui-shell .thread-composer-input .thread-composer-attachment-chip-photo {
+  display: inline-flex !important;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.25rem;
+  padding: 0.35rem !important;
+}
+
+.thread-ui-shell .thread-graph-composer-input .thread-composer-attachment-thumb,
+.thread-ui-shell .thread-composer-input .thread-composer-attachment-thumb {
+  display: block;
+  width: 5.75rem !important;
+  height: 3.75rem !important;
+  max-width: 100%;
+  border-radius: 0.6rem !important;
+  object-fit: cover;
+}
+
+.thread-ui-shell .thread-graph-composer-input .thread-composer-attachment-caption,
+.thread-ui-shell .thread-composer-input .thread-composer-attachment-caption {
+  display: block !important;
+  width: 100%;
+  max-width: 5.75rem !important;
+  margin-left: 0 !important;
+  overflow: hidden;
+  color: rgb(3 105 161);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.thread-ui-shell.thread-ui-theme-dark
+  .thread-graph-composer-input
+  .thread-composer-attachment-caption,
+.thread-ui-shell[data-theme-effective="dark"]
+  .thread-graph-composer-input
+  .thread-composer-attachment-caption,
+:root[data-theme-effective="dark"]
+  .thread-ui-shell
+  .thread-graph-composer-input
+  .thread-composer-attachment-caption,
+.thread-ui-shell.dark
+  .thread-graph-composer-input
+  .thread-composer-attachment-caption,
+.thread-ui-shell.thread-ui-theme-dark
+  .thread-composer-input
+  .thread-composer-attachment-caption,
+.thread-ui-shell[data-theme-effective="dark"]
+  .thread-composer-input
+  .thread-composer-attachment-caption,
+:root[data-theme-effective="dark"]
+  .thread-ui-shell
+  .thread-composer-input
+  .thread-composer-attachment-caption,
+.thread-ui-shell.dark
+  .thread-composer-input
+  .thread-composer-attachment-caption {
+  color: rgb(125 211 252);
+}
+
+.thread-ui-shell .thread-graph-composer-toolbar {
+  order: 2;
+  width: 100%;
+  min-height: 2.75rem;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: 0.5rem;
+  border: 0;
+  background: transparent;
+  padding: 0 0.5rem 0.5rem;
+  color: rgb(100 116 139);
+  box-shadow: none;
+  overflow: visible !important;
+}
+
+@media (min-width: 640px) {
+  .thread-ui-shell:not([data-thread-layout="mobile"])
+    .thread-graph-composer-toolbar {
+    flex-wrap: nowrap;
+    padding: 0 0.75rem 0.75rem;
+  }
+}
+
+.thread-ui-shell.thread-ui-theme-dark .thread-graph-composer-toolbar,
+.thread-ui-shell[data-theme-effective="dark"] .thread-graph-composer-toolbar,
+.thread-ui-shell.dark .thread-graph-composer-toolbar {
+  color: rgb(148 163 184);
+}
+
+.thread-ui-shell .thread-graph-composer-send-button {
+  flex: 0 0 auto;
+}
+
+.thread-ui-shell .thread-graph-composer-stop-button {
+  border-color: rgb(244 63 94 / 0.28) !important;
+  box-shadow: 0 8px 18px rgb(15 23 42 / 0.14);
+}
+
+.thread-ui-shell
+  .thread-graph-composer-prompt-region
+  .thread-graph-composer-stop-button {
+  position: absolute;
+}
+
+@media (max-width: 639px) {
+  .thread-ui-shell .thread-graph-composer-form {
+    padding: 0.35rem 0.55rem calc(env(safe-area-inset-bottom) + 0.35rem) !important;
+  }
+
+  .thread-ui-shell .thread-graph-composer-shell {
+    border-radius: 14px !important;
+  }
+
+  .thread-ui-shell .thread-graph-composer-input {
+    min-height: 3.65rem !important;
+    max-height: 7.5rem !important;
+    padding: 0.65rem 0.75rem 0.2rem !important;
+  }
+
+  .thread-ui-shell .thread-graph-composer-input [contenteditable] {
+    min-height: 3rem !important;
+    padding-right: 2.5rem;
+  }
+
+  .thread-ui-shell .thread-graph-composer-toolbar {
+    min-height: 2.35rem;
+    gap: 0.3rem;
+    padding: 0 0.45rem 0.45rem;
+  }
+
+  .thread-ui-shell .thread-graph-composer-toolbar > .flex {
+    min-width: 0;
+    gap: 0.3rem;
+  }
+
+  .thread-ui-shell .thread-graph-composer-icon-button,
+  .thread-ui-shell .thread-graph-composer-send-button {
+    width: 1.95rem !important;
+    height: 1.95rem !important;
+  }
+
+  .thread-ui-shell .thread-graph-composer-inline-toggle {
+    height: 1.95rem;
+    max-width: 6.75rem !important;
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+    font-size: 0.6875rem;
+  }
+
+  .thread-ui-shell .thread-graph-composer-stop-button {
+    top: 0.45rem !important;
+    right: 0.45rem !important;
+    width: 1.8rem !important;
+    height: 1.8rem !important;
+  }
+}
+
+.thread-ui-shell .thread-composer-icon-button,
+.thread-ui-shell .thread-composer-inline-toggle,
+.thread-ui-shell .thread-composer-chip-button,
+.thread-ui-shell .thread-composer-menu-item,
+.thread-ui-shell .thread-composer-panel-button,
+.thread-ui-shell .thread-graph-composer-icon-button,
+.thread-ui-shell .thread-graph-composer-inline-toggle,
+.thread-ui-shell .thread-graph-composer-chip-button,
+.thread-ui-shell .thread-graph-composer-menu-item,
+.thread-ui-shell .thread-graph-composer-panel-button {
+  border-color: var(--theme-border) !important;
+  background: transparent !important;
+  color: var(--theme-fg-soft) !important;
+}
+
+.thread-ui-shell .thread-composer-icon-button:hover,
+.thread-ui-shell .thread-composer-inline-toggle:hover,
+.thread-ui-shell .thread-composer-chip-button:hover,
+.thread-ui-shell .thread-composer-menu-item:hover,
+.thread-ui-shell .thread-composer-panel-button:hover,
+.thread-ui-shell .thread-graph-composer-icon-button:hover,
+.thread-ui-shell .thread-graph-composer-inline-toggle:hover,
+.thread-ui-shell .thread-graph-composer-chip-button:hover,
+.thread-ui-shell .thread-graph-composer-menu-item:hover,
+.thread-ui-shell .thread-graph-composer-panel-button:hover {
+  background: var(--theme-hover) !important;
+  color: var(--theme-fg) !important;
+}
+
+.thread-ui-shell .thread-composer-icon-button,
+.thread-ui-shell .thread-graph-composer-icon-button {
+  background: var(--theme-muted) !important;
+}
+
+.thread-ui-shell.thread-ui-theme-dark .thread-composer-icon-button,
+.thread-ui-shell[data-theme-effective="dark"] .thread-composer-icon-button,
+.thread-ui-shell.dark .thread-composer-icon-button,
+.thread-ui-shell.thread-ui-theme-dark .thread-graph-composer-icon-button,
+.thread-ui-shell[data-theme-effective="dark"]
+  .thread-graph-composer-icon-button,
+.thread-ui-shell.dark .thread-graph-composer-icon-button {
+  border-color: #303642 !important;
+  background: #222733 !important;
+  color: rgb(203 213 225) !important;
+}
+
+.thread-ui-shell.thread-ui-theme-dark .thread-composer-icon-button:hover,
+.thread-ui-shell[data-theme-effective="dark"]
+  .thread-composer-icon-button:hover,
+.thread-ui-shell.dark .thread-composer-icon-button:hover,
+.thread-ui-shell.thread-ui-theme-dark .thread-graph-composer-icon-button:hover,
+.thread-ui-shell[data-theme-effective="dark"]
+  .thread-graph-composer-icon-button:hover,
+.thread-ui-shell.dark .thread-graph-composer-icon-button:hover {
+  background: #2b313d !important;
+  color: rgb(241 245 249) !important;
+}
+
+.thread-ui-shell .thread-composer-menu,
+.thread-ui-shell .thread-graph-composer-menu {
+  border-radius: 12px;
+  border-color: var(--theme-border) !important;
+  background: color-mix(in oklch, var(--theme-panel) 96%, transparent) !important;
+  color: var(--theme-fg) !important;
+  box-shadow: 0 16px 38px oklch(0.22 0.024 255 / 0.16);
+  z-index: 80;
+}
+
+.thread-ui-shell [data-composer-menu-surface="true"] {
+  border-color: var(--theme-border) !important;
+  background: color-mix(in oklch, var(--theme-panel) 96%, transparent) !important;
+  color: var(--theme-fg) !important;
+  box-shadow: 0 16px 38px oklch(0.22 0.024 255 / 0.16) !important;
+}
+
+.thread-ui-shell .thread-graph-composer-menu {
+  max-height: min(27rem, calc(100svh - 8rem));
+  overflow: auto !important;
+}
+
+.thread-ui-shell
+  :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface="true"])
+  :where(input, textarea, select) {
+  border-color: var(--theme-border) !important;
+  background: var(--theme-panel) !important;
+  color: var(--theme-fg) !important;
+}
+
+.thread-ui-shell
+  :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface="true"])
+  :where(input, textarea)::placeholder {
+  color: var(--theme-fg-muted) !important;
+}
+
+.thread-ui-shell
+  :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface="true"])
+  :where(input, textarea, select):focus {
+  border-color: color-mix(
+    in oklch,
+    var(--theme-accent-solid) 38%,
+    var(--theme-border)
+  ) !important;
+}
+
+.thread-ui-shell
+  :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface="true"])
+  :where(.border-sky-300\/35, .border-emerald-400\/45) {
+  border-color: color-mix(
+    in oklch,
+    var(--theme-accent-solid) 24%,
+    var(--theme-border)
+  ) !important;
+}
+
+.thread-ui-shell
+  :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface="true"])
+  :where(.bg-sky-300\/10, .bg-sky-300\/12, .bg-emerald-400\/12) {
+  background: color-mix(
+    in oklch,
+    var(--theme-accent-solid) 8%,
+    var(--theme-panel)
+  ) !important;
+}
+
+.thread-ui-shell
+  :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface="true"])
+  :where(.text-rose-100\/90, .text-rose-200) {
+  color: rgb(190 18 60) !important;
+}
+
+.thread-ui-shell
+  :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface="true"])
+  :where(.text-amber-100\/85, .text-amber-100\/60) {
+  color: rgb(146 64 14) !important;
+}
+
+.thread-ui-shell.thread-ui-theme-dark .thread-composer-menu,
+.thread-ui-shell[data-theme-effective="dark"] .thread-composer-menu,
+:root[data-theme-effective="dark"] .thread-ui-shell .thread-composer-menu,
+.thread-ui-shell.dark .thread-composer-menu,
+.thread-ui-shell.thread-ui-theme-dark .thread-graph-composer-menu,
+.thread-ui-shell[data-theme-effective="dark"] .thread-graph-composer-menu,
+:root[data-theme-effective="dark"] .thread-ui-shell .thread-graph-composer-menu,
+.thread-ui-shell.dark .thread-graph-composer-menu,
+.thread-ui-shell.thread-ui-theme-dark [data-composer-menu-surface="true"],
+.thread-ui-shell[data-theme-effective="dark"] [data-composer-menu-surface="true"],
+:root[data-theme-effective="dark"]
+  .thread-ui-shell
+  [data-composer-menu-surface="true"],
+.thread-ui-shell.dark [data-composer-menu-surface="true"] {
+  border-color: #303642 !important;
+  background: rgb(23 26 34 / 0.96) !important;
+  color: rgb(241 245 249) !important;
+  box-shadow: 0 18px 48px rgb(0 0 0 / 0.28) !important;
+}
+
+.thread-ui-shell.thread-ui-theme-dark
+  :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface="true"])
+  :where(input, textarea, select),
+.thread-ui-shell[data-theme-effective="dark"]
+  :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface="true"])
+  :where(input, textarea, select),
+:root[data-theme-effective="dark"]
+  .thread-ui-shell
+  :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface="true"])
+  :where(input, textarea, select),
+.thread-ui-shell.dark
+  :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface="true"])
+  :where(input, textarea, select) {
+  border-color: #303642 !important;
+  background: #11141a !important;
+  color: rgb(241 245 249) !important;
+}
+
+.thread-ui-shell.thread-ui-theme-dark
+  :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface="true"])
+  :where(.text-rose-100\/90, .text-rose-200),
+.thread-ui-shell[data-theme-effective="dark"]
+  :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface="true"])
+  :where(.text-rose-100\/90, .text-rose-200),
+:root[data-theme-effective="dark"]
+  .thread-ui-shell
+  :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface="true"])
+  :where(.text-rose-100\/90, .text-rose-200),
+.thread-ui-shell.dark
+  :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface="true"])
+  :where(.text-rose-100\/90, .text-rose-200) {
+  color: rgb(254 205 211) !important;
+}
+
+.thread-ui-shell.thread-ui-theme-dark
+  :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface="true"])
+  :where(.text-amber-100\/85, .text-amber-100\/60),
+.thread-ui-shell[data-theme-effective="dark"]
+  :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface="true"])
+  :where(.text-amber-100\/85, .text-amber-100\/60),
+:root[data-theme-effective="dark"]
+  .thread-ui-shell
+  :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface="true"])
+  :where(.text-amber-100\/85, .text-amber-100\/60),
+.thread-ui-shell.dark
+  :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface="true"])
+  :where(.text-amber-100\/85, .text-amber-100\/60) {
+  color: rgb(253 230 138) !important;
+}
+
+.thread-ui-shell .thread-composer-plan-toggle-active,
+.thread-ui-shell .thread-graph-composer-plan-toggle-active {
+  background: var(--theme-accent-soft);
+  color: var(--theme-accent-strong);
+}
+
+.thread-ui-shell .thread-jump-latest-badge {
+  border-color: var(--theme-border);
+  background: var(--theme-panel);
+  color: var(--theme-fg-muted);
+}
+
+.thread-ui-shell .ui-action-primary {
+  background: var(--theme-accent-solid);
+  color: var(--theme-accent-solid-fg);
+}
+
+.thread-ui-shell .ui-action-primary:hover {
+  background: var(--theme-accent-solid-hover);
+}
+
+.thread-ui-shell .ui-action-info {
+  background: oklch(0.46 0.1 235);
+  color: oklch(0.98 0.005 235);
+}
+
+.thread-ui-shell .ui-action-danger {
+  background: oklch(0.56 0.16 25);
+  color: oklch(0.98 0.005 25);
+}
+
+.thread-ui-shell .thread-composer-send-button.ui-action-danger,
+.thread-ui-shell .thread-graph-composer-send-button.ui-action-danger {
+  border: 1px solid var(--theme-border) !important;
+  background: var(--theme-muted) !important;
+  color: var(--theme-fg-soft) !important;
+}
+
+.thread-ui-shell.thread-ui-theme-dark
+  .thread-composer-send-button.ui-action-danger,
+.thread-ui-shell[data-theme-effective="dark"]
+  .thread-composer-send-button.ui-action-danger,
+.thread-ui-shell.dark .thread-composer-send-button.ui-action-danger,
+.thread-ui-shell.thread-ui-theme-dark
+  .thread-graph-composer-send-button.ui-action-danger,
+.thread-ui-shell[data-theme-effective="dark"]
+  .thread-graph-composer-send-button.ui-action-danger,
+.thread-ui-shell.dark .thread-graph-composer-send-button.ui-action-danger {
+  border-color: #303642 !important;
+  background: #222733 !important;
+  color: rgb(241 245 249) !important;
+}
+
+.thread-ui-shell .thread-composer-send-button.ui-action-danger:hover,
+.thread-ui-shell .thread-graph-composer-send-button.ui-action-danger:hover {
+  background: var(--theme-hover) !important;
+  color: var(--theme-fg) !important;
+}
+
+.thread-ui-shell .thread-empty-surface,
+.thread-ui-shell .timeline-pending-card,
+.thread-ui-shell .timeline-note-card,
+.thread-ui-shell .timeline-activity-card,
+.thread-ui-shell .timeline-live-plan-card,
+.thread-ui-shell .timeline-question-section,
+.thread-ui-shell .timeline-live-plan-step,
+.thread-ui-shell .timeline-detail-row {
+  border-color: var(--theme-border);
+  background: var(--theme-panel);
+  color: var(--theme-fg);
+}
+
+.thread-ui-shell .prose,
+.thread-ui-shell .prose :where(p, li, strong, code, pre, blockquote) {
+  color: inherit;
+}
+
+.thread-ui-shell .prose img {
+  max-width: min(28rem, 100%);
+  height: auto;
+  border-radius: 10px;
+  border: 1px solid var(--theme-border);
+  box-shadow: 0 12px 35px oklch(0.22 0.024 255 / 0.14);
+  margin-top: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.thread-ui-shell .thread-graph-plan-card {
+  border-color: rgb(42 47 58);
+  background: #1b1f29;
+  color: rgb(241 245 249);
+  box-shadow: none;
+}
+
+.thread-ui-shell .thread-graph-plan-step {
+  border-color: rgb(48 54 66);
+  background: #181b23;
+  color: rgb(241 245 249);
+}
+
+.thread-ui-shell .thread-graph-plan-explanation {
+  color: rgb(148 163 184);
+}
+
+.thread-ui-shell .thread-graph-plan-badge {
+  border-color: transparent;
+  background: rgb(56 189 248 / 0.12);
+  color: rgb(186 230 253);
+  box-shadow: none;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+}
+
+.thread-ui-shell .thread-graph-plan-status {
+  height: 1.75rem;
+  min-width: 1.75rem;
+  padding: 0;
+  border-color: transparent;
+  box-shadow: none;
+}
+
+.thread-ui-shell .thread-graph-plan-status.is-completed {
+  background: rgb(52 211 153 / 0.14);
+  color: rgb(167 243 208);
+}
+
+.thread-ui-shell .thread-graph-plan-status.is-running {
+  background: rgb(56 189 248 / 0.14);
+  color: rgb(186 230 253);
+}
+
+.thread-ui-shell .thread-graph-plan-status.is-pending,
+.thread-ui-shell .thread-graph-plan-status.is-unknown {
+  background: #2b313d;
+  color: rgb(203 213 225);
+}
+
+.thread-ui-shell .thread-graph-plan-status.is-failed {
+  background: rgb(251 113 133 / 0.14);
+  color: rgb(254 205 211);
+}
+
+.thread-ui-shell[data-theme-effective="light"] .thread-graph-plan-card {
+  border-color: rgb(226 232 240);
+  background: rgb(248 250 252);
+  color: rgb(15 23 42);
+}
+
+.thread-ui-shell[data-theme-effective="light"] .thread-graph-plan-step {
+  border-color: rgb(226 232 240);
+  background: rgb(255 255 255);
+  color: rgb(15 23 42);
+}
+
+.thread-ui-shell[data-theme-effective="light"] .thread-graph-plan-explanation {
+  color: rgb(100 116 139);
+}
+
+.thread-ui-shell[data-theme-effective="light"] .thread-graph-plan-badge {
+  background: rgb(14 165 233 / 0.1);
+  color: rgb(3 105 161);
+}
+
+.thread-ui-shell[data-theme-effective="light"]
+  .thread-graph-plan-status.is-completed {
+  background: rgb(16 185 129 / 0.12);
+  color: rgb(4 120 87);
+}
+
+.thread-ui-shell[data-theme-effective="light"]
+  .thread-graph-plan-status.is-running {
+  background: rgb(14 165 233 / 0.12);
+  color: rgb(3 105 161);
+}
+
+.thread-ui-shell[data-theme-effective="light"]
+  .thread-graph-plan-status.is-pending,
+.thread-ui-shell[data-theme-effective="light"]
+  .thread-graph-plan-status.is-unknown {
+  background: rgb(226 232 240);
+  color: rgb(71 85 105);
+}
+
+.thread-ui-shell[data-theme-effective="light"]
+  .thread-graph-plan-status.is-failed {
+  background: rgb(244 63 94 / 0.12);
+  color: rgb(190 18 60);
+}
+
+.thread-ui-shell .thread-graph-event {
+  background: transparent !important;
+  color: var(--theme-fg) !important;
+}
+
+.thread-ui-shell .thread-graph-event-card {
+  background: var(--theme-surface) !important;
+  color: var(--theme-fg) !important;
+}
+
+.thread-ui-shell .thread-graph-plan-card,
+.thread-ui-shell .thread-graph-plan-step,
+.thread-ui-shell .thread-graph-plan-step-text {
+  color: rgb(241 245 249) !important;
+}
+
+.thread-ui-shell[data-theme-effective="light"] .thread-graph-plan-card,
+.thread-ui-shell[data-theme-effective="light"] .thread-graph-plan-step,
+.thread-ui-shell[data-theme-effective="light"] .thread-graph-plan-step-text {
+  color: rgb(15 23 42) !important;
+}
+
