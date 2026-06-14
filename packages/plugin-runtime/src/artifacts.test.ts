@@ -8,7 +8,7 @@ import {
 import type {
   PluginManifestDto,
   ThreadTurnDto,
-} from '../../shared/src/index';
+} from '@remote-codex/shared';
 
 const xyzViewerManifest: PluginManifestDto = {
   id: 'remote-codex.xyz-viewer',

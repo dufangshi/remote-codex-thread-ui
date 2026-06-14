@@ -3,7 +3,7 @@ import type {
   ThreadArtifactDto,
   ThreadHistoryItemDto,
   ThreadTurnDto,
-} from '../../shared/src/index';
+} from '@remote-codex/shared';
 import type {
   ArtifactExtractionContext,
   ArtifactExtractionResult,

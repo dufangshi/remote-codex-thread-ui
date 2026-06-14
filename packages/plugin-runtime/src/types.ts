@@ -4,7 +4,7 @@ import type {
   ThreadArtifactDto,
   ThreadHistoryItemDto,
   ThreadTurnDto,
-} from '../../shared/src/index';
+} from '@remote-codex/shared';
 
 export type RemoteCodexPluginManifest = PluginManifestDto;
 

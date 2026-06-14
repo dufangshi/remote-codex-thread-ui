@@ -44,6 +44,7 @@ export interface XyzMoleculeViewerProps {
   moleculeId?: string | null;
   title?: string | null;
   className?: string;
+  screenshotRequestId?: string | null;
   onScreenshot?: (screenshot: MoleculeScreenshot) => void;
   onSelectionChange?: (selection: MoleculeAtomSelection) => void;
 }
@@ -106,6 +107,7 @@ export function XyzMoleculeViewer({
   moleculeId = null,
   title = 'Molecule Viewer',
   className = '',
+  screenshotRequestId = null,
   onScreenshot,
   onSelectionChange,
 }: XyzMoleculeViewerProps) {
@@ -403,6 +405,13 @@ export function XyzMoleculeViewer({
 
     onScreenshot?.({ moleculeId, image });
   }, [moleculeId, onScreenshot]);
+
+  useEffect(() => {
+    if (!screenshotRequestId) {
+      return;
+    }
+    void captureScreenshot();
+  }, [captureScreenshot, screenshotRequestId]);
 
   const resetCamera = useCallback(() => {
     const viewer = viewerRef.current;
