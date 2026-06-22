@@ -18,6 +18,8 @@ export interface AppShellNavContextValue {
   effectiveTheme: 'light' | 'dark';
   defaultBackend: AgentBackendId;
   setDefaultBackend: (backend: AgentBackendId) => void;
+  autoCollapseCompletedTurns?: boolean;
+  setAutoCollapseCompletedTurns?: (enabled: boolean) => void;
 }
 
 export const AppShellNavContext = createContext<AppShellNavContextValue | null>(

@@ -10,6 +10,7 @@ import type {
   ThreadPendingSteerDto,
   ThreadTurnDto,
 } from '@remote-codex/shared';
+import { useAppShellNav } from '../app-shell/AppShellNavContext';
 import { LongTextDialog } from './LongTextDialog';
 import type { ThreadTimelineAdapter } from '../adapters';
 import { GraphChatCompactMessageItem as CompactMessageItem } from './graph-chat/GraphChatCompactMessageItem';
@@ -92,6 +93,34 @@ export interface ThreadTimelineProps {
     detail: ThreadHistoryItemDetailDto;
   }) => void;
   adapter?: ThreadTimelineAdapter | undefined;
+  autoCollapseCompletedTurns?: boolean;
+}
+
+function isTerminalTurnStatus(status: TimelineTurn['status']) {
+  return status === 'completed' || status === 'failed' || status === 'interrupted';
+}
+
+function mergeOptimisticTurnItems(
+  turn: TimelineTurn,
+  optimisticTurn: TimelineTurn | null,
+) {
+  if (!optimisticTurn || optimisticTurn.id !== turn.id || optimisticTurn.items.length === 0) {
+    return turn;
+  }
+
+  const materializedItemIds = new Set(turn.items.map((item) => item.id));
+  const optimisticOnlyItems = optimisticTurn.items.filter(
+    (item) => !materializedItemIds.has(item.id),
+  );
+
+  if (optimisticOnlyItems.length === 0) {
+    return turn;
+  }
+
+  return {
+    ...turn,
+    items: [...optimisticOnlyItems, ...turn.items],
+  };
 }
 
 function ThreadTimelineComponent({
@@ -123,8 +152,14 @@ function ThreadTimelineComponent({
   onSelectArtifact,
   onSelectHistoryItemDetail,
   adapter,
+  autoCollapseCompletedTurns,
 }: ThreadTimelineProps) {
-  const [collapsedTurns, setCollapsedTurns] = useState<Record<string, boolean>>(
+  const shellNav = useAppShellNav();
+  const effectiveAutoCollapseCompletedTurns =
+    autoCollapseCompletedTurns ??
+    shellNav?.autoCollapseCompletedTurns ??
+    false;
+  const [collapsedTurnOverrides, setCollapsedTurnOverrides] = useState<Record<string, boolean>>(
     {},
   );
   const loadHistoryItemDetail =
@@ -183,12 +218,32 @@ function ThreadTimelineComponent({
     ],
   });
 
-  const handleToggleCollapse = useCallback((turnId: string) => {
-    setCollapsedTurns((current) => ({
+  const handleToggleCollapse = useCallback((turnId: string, currentCollapsed: boolean) => {
+    setCollapsedTurnOverrides((current) => ({
       ...current,
-      [turnId]: !current[turnId],
+      [turnId]: !currentCollapsed,
     }));
   }, []);
+
+  const collapsedStateForTurn = useCallback((
+    turn: TimelineTurn,
+    input: {
+      forceActive: boolean;
+      hasLiveActivity: boolean;
+    },
+  ) => {
+    const override = collapsedTurnOverrides[turn.id];
+    if (override !== undefined) {
+      return override;
+    }
+
+    return Boolean(
+      effectiveAutoCollapseCompletedTurns &&
+      isTerminalTurnStatus(turn.status) &&
+      !input.forceActive &&
+      !input.hasLiveActivity,
+    );
+  }, [collapsedTurnOverrides, effectiveAutoCollapseCompletedTurns]);
 
   const visibleTurns = serverManagedHistory ? turns : turns.slice(startIndex);
   const optimisticAbsoluteIndex = effectiveTotalTurnCount + 1;
@@ -291,7 +346,7 @@ function ThreadTimelineComponent({
       <section className={`flex min-h-0 flex-1 flex-col ${className}`.trim()}>
         <div
           ref={scrollContainerRef}
-          data-testid="chat-scroll-container"
+          data-testid="thread-scroll-container"
           onScroll={handleScroll}
           className="thread-graph-scroll-container min-h-0 flex-1 overflow-y-auto overscroll-contain"
           style={bottomSpacer > 0 ? { paddingBottom: bottomSpacer } : undefined}
@@ -368,22 +423,39 @@ function ThreadTimelineComponent({
                       onRespondToRequest={onRespondToRequest ?? undefined}
                     />
                   ) : null}
-                  <ThreadTurnRow
-                    threadId={threadId}
-                    {...(adapter ? { adapter } : {})}
-                    turn={turn}
-                    absoluteIndex={visibleTurnAbsoluteOffset + visibleIndex + 1}
-                    isCollapsed={collapsedTurns[turn.id] ?? false}
-                    livePlan={livePlan?.turnId === turn.id ? livePlan : null}
-                    liveItems={liveItemsTargetTurnId === turn.id ? liveItems?.items ?? null : null}
-                    liveOutput={liveOutputTargetTurnId === turn.id ? liveOutput : ''}
-                    forceActive={
+                  {(() => {
+                    const displayTurn = mergeOptimisticTurnItems(turn, optimisticTurn);
+                    const rowLivePlan = livePlan?.turnId === turn.id ? livePlan : null;
+                    const rowLiveItems =
+                      liveItemsTargetTurnId === turn.id ? liveItems?.items ?? null : null;
+                    const rowLiveOutput =
+                      liveOutputTargetTurnId === turn.id ? liveOutput : '';
+                    const rowForceActive =
                       activeTurnId === turn.id ||
                       (
                         shouldForceLatestVisibleTurnActive &&
                         latestVisibleTurnId === turn.id
-                      )
-                    }
+                      );
+                    const rowHasLiveActivity =
+                      Boolean(rowLivePlan) ||
+                      Boolean(rowLiveOutput) ||
+                      Boolean(rowLiveItems && rowLiveItems.length > 0);
+                    const rowCollapsed = collapsedStateForTurn(displayTurn, {
+                      forceActive: rowForceActive,
+                      hasLiveActivity: rowHasLiveActivity,
+                    });
+
+                    return (
+                  <ThreadTurnRow
+                    threadId={threadId}
+                    {...(adapter ? { adapter } : {})}
+                    turn={displayTurn}
+                    absoluteIndex={visibleTurnAbsoluteOffset + visibleIndex + 1}
+                    isCollapsed={rowCollapsed}
+                    livePlan={rowLivePlan}
+                    liveItems={rowLiveItems}
+                    liveOutput={rowLiveOutput}
+                    forceActive={rowForceActive}
                     onToggleCollapse={handleToggleCollapse}
                     onOpenExpandedText={handleOpenExpandedText}
                     onOpenCommandDetail={handleOpenCommandDetail}
@@ -394,6 +466,8 @@ function ThreadTimelineComponent({
                     scrollRootRef={scrollContainerRef}
                     articleRef={undefined}
                   />
+                    );
+                  })()}
                   {(activityNoteAnchors.afterTurnId.get(turn.id)?.length ?? 0) > 0 ? (
                     <ActivityNoteSection
                       notes={activityNoteAnchors.afterTurnId.get(turn.id) ?? []}
@@ -430,22 +504,33 @@ function ThreadTimelineComponent({
                       onRespondToRequest={onRespondToRequest ?? undefined}
                     />
                   ) : null}
+                  {(() => {
+                    const rowLiveOutput = liveOutputAttachedToOptimisticTurn ? liveOutput : '';
+                    const rowForceActive =
+                      activeTurnId === optimisticTurn.id ||
+                      (
+                        shouldForceLatestVisibleTurnActive &&
+                        latestVisibleTurnId === optimisticTurn.id
+                      );
+                    const rowHasLiveActivity =
+                      Boolean(optimisticLiveItems && optimisticLiveItems.length > 0) ||
+                      Boolean(rowLiveOutput);
+                    const rowCollapsed = collapsedStateForTurn(optimisticTurn, {
+                      forceActive: rowForceActive,
+                      hasLiveActivity: rowHasLiveActivity,
+                    });
+
+                    return (
                   <ThreadTurnRow
                     threadId={threadId}
                     {...(adapter ? { adapter } : {})}
                     turn={optimisticTurn}
                     absoluteIndex={optimisticAbsoluteIndex}
-                    isCollapsed={collapsedTurns[optimisticTurn.id] ?? false}
+                    isCollapsed={rowCollapsed}
                     livePlan={null}
                     liveItems={optimisticLiveItems}
-                    liveOutput={liveOutputAttachedToOptimisticTurn ? liveOutput : ''}
-                    forceActive={
-                      activeTurnId === optimisticTurn.id ||
-                      (
-                        shouldForceLatestVisibleTurnActive &&
-                        latestVisibleTurnId === optimisticTurn.id
-                      )
-                    }
+                    liveOutput={rowLiveOutput}
+                    forceActive={rowForceActive}
                     onToggleCollapse={handleToggleCollapse}
                     onOpenExpandedText={handleOpenExpandedText}
                     onOpenCommandDetail={handleOpenCommandDetail}
@@ -455,6 +540,8 @@ function ThreadTimelineComponent({
                     {...(onSelectArtifact ? { onSelectArtifact } : {})}
                     scrollRootRef={scrollContainerRef}
                   />
+                    );
+                  })()}
                   {(activityNoteAnchors.afterTurnId.get(optimisticTurn.id)?.length ?? 0) > 0 ? (
                     <ActivityNoteSection
                       notes={activityNoteAnchors.afterTurnId.get(optimisticTurn.id) ?? []}
@@ -527,7 +614,7 @@ function ThreadTimelineComponent({
               {...(adapter ? { adapter } : {})}
               turn={unattachedLiveTurn}
               absoluteIndex={unattachedLiveTurnIndex}
-              isCollapsed={collapsedTurns[unattachedLiveTurn.id] ?? false}
+              isCollapsed={collapsedTurnOverrides[unattachedLiveTurn.id] ?? false}
               livePlan={livePlan?.turnId === unattachedLiveTurn.id ? livePlan : null}
               liveItems={unattachedLiveItems}
               liveOutput=""

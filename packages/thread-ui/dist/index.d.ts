@@ -99,6 +99,8 @@ interface AppShellNavContextValue {
     effectiveTheme: 'light' | 'dark';
     defaultBackend: AgentBackendId;
     setDefaultBackend: (backend: AgentBackendId) => void;
+    autoCollapseCompletedTurns?: boolean;
+    setAutoCollapseCompletedTurns?: (enabled: boolean) => void;
 }
 declare const AppShellNavContext: react.Context<AppShellNavContextValue | null>;
 declare function useAppShellNav(): AppShellNavContextValue | null;
@@ -230,8 +232,9 @@ interface ThreadTimelineProps {
         detail: ThreadHistoryItemDetailDto;
     }) => void;
     adapter?: ThreadTimelineAdapter | undefined;
+    autoCollapseCompletedTurns?: boolean;
 }
-declare function ThreadTimelineComponent({ threadId, turns, totalTurnCount, pendingRequests, activeTurnId, threadRunning, pendingSteers, livePlan, liveItems, respondingRequestId, onRespondToRequest, liveOutput, scrollRequestKey, bottomSpacer, className, onTailVisibilityChange, loadingEarlier, onLoadEarlier, ephemeralUserNote, answeredRequestNotes, activityNotes, optimisticSteers, optimisticTurn, onLoadHistoryItemDetail, onOpenThread, onSelectArtifact, onSelectHistoryItemDetail, adapter, }: ThreadTimelineProps): react.JSX.Element;
+declare function ThreadTimelineComponent({ threadId, turns, totalTurnCount, pendingRequests, activeTurnId, threadRunning, pendingSteers, livePlan, liveItems, respondingRequestId, onRespondToRequest, liveOutput, scrollRequestKey, bottomSpacer, className, onTailVisibilityChange, loadingEarlier, onLoadEarlier, ephemeralUserNote, answeredRequestNotes, activityNotes, optimisticSteers, optimisticTurn, onLoadHistoryItemDetail, onOpenThread, onSelectArtifact, onSelectHistoryItemDetail, adapter, autoCollapseCompletedTurns, }: ThreadTimelineProps): react.JSX.Element;
 declare const ThreadTimeline: react.MemoExoticComponent<typeof ThreadTimelineComponent>;
 
 interface ThreadShellControlState {

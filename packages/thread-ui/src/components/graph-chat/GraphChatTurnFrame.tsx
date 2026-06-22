@@ -4,6 +4,7 @@ export interface GraphChatTurnFrameProps {
   absoluteIndex: number;
   body: ReactNode;
   collapsed: boolean;
+  collapsedBody?: ReactNode;
   error?: string | null;
   footer?: ReactNode;
   headerStatus?: ReactNode;
@@ -20,6 +21,7 @@ export function GraphChatTurnFrame({
   absoluteIndex,
   body,
   collapsed,
+  collapsedBody,
   error,
   footer,
   headerStatus,
@@ -88,12 +90,10 @@ export function GraphChatTurnFrame({
         <p className="mt-1 text-[11px] text-rose-200 sm:hidden">{error}</p>
       ) : null}
 
-      {!collapsed ? (
-        <div className="thread-graph-turn-body mt-2 space-y-2">
-          {body}
-          {footer}
-        </div>
-      ) : null}
+      <div className="thread-graph-turn-body mt-2 space-y-2">
+        {collapsed ? collapsedBody : body}
+        {!collapsed ? footer : null}
+      </div>
     </article>
   );
 }

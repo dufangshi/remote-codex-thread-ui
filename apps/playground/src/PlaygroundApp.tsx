@@ -139,6 +139,7 @@ export function PlaygroundApp() {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [activeView, setActiveView] = useState<'chat' | 'shell'>('chat');
   const [followTail, setFollowTail] = useState(true);
+  const [autoCollapseCompletedTurns, setAutoCollapseCompletedTurns] = useState(true);
   const [scrollRequestKey, setScrollRequestKey] = useState(0);
   const [shellState, setShellState] = useState<ThreadShellControlState | null>(
     null,
@@ -184,8 +185,10 @@ export function PlaygroundApp() {
       effectiveTheme: 'dark',
       defaultBackend: 'codex',
       setDefaultBackend: () => {},
+      autoCollapseCompletedTurns,
+      setAutoCollapseCompletedTurns,
     }),
-    [menuOpen, settingsOpen],
+    [autoCollapseCompletedTurns, menuOpen, settingsOpen],
   );
 
   return (

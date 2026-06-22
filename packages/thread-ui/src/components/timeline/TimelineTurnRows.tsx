@@ -6,6 +6,7 @@ import {
   type RefCallback,
   type RefObject,
 } from 'react';
+import { ChevronRight } from 'lucide-react';
 
 import type { ThreadHistoryItemDto } from '@remote-codex/shared';
 
@@ -339,7 +340,7 @@ interface ThreadTurnRowProps {
   liveItems: ThreadHistoryItemDto[] | null;
   liveOutput: string;
   forceActive?: boolean;
-  onToggleCollapse: (turnId: string) => void;
+  onToggleCollapse: (turnId: string, currentCollapsed: boolean) => void;
   onOpenExpandedText: OpenExpandedTextHandler;
   onOpenCommandDetail: OpenCommandDetailHandler;
   onOpenToolCallDetail: OpenToolCallDetailHandler;
@@ -349,6 +350,66 @@ interface ThreadTurnRowProps {
   scrollRootRef: RefObject<HTMLDivElement | null>;
   articleRef?: RefCallback<HTMLElement> | undefined;
   isLatestVisibleTurn?: boolean;
+}
+
+function isTerminalTurnStatus(status: TimelineTurn['status']) {
+  return status === 'completed' || status === 'failed' || status === 'interrupted';
+}
+
+function itemCreatedAtMillis(item: ThreadHistoryItemDto) {
+  const millis = Date.parse(item.createdAt ?? '');
+  return Number.isFinite(millis) ? millis : null;
+}
+
+function latestItemTimestamp(items: ThreadHistoryItemDto[]) {
+  let latest: number | null = null;
+  for (const item of items) {
+    const millis = itemCreatedAtMillis(item);
+    if (millis === null) {
+      continue;
+    }
+    latest = latest === null ? millis : Math.max(latest, millis);
+  }
+  return latest;
+}
+
+function formatWorkedDuration(startedAt: string | null | undefined, items: ThreadHistoryItemDto[]) {
+  const startMillis = Date.parse(startedAt ?? '');
+  const endMillis = latestItemTimestamp(items);
+  if (!Number.isFinite(startMillis) || endMillis === null || endMillis < startMillis) {
+    return 'Worked';
+  }
+
+  const totalSeconds = Math.max(1, Math.round((endMillis - startMillis) / 1000));
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+
+  if (hours > 0) {
+    return `Worked for ${hours}h ${minutes}m`;
+  }
+  if (minutes > 0) {
+    return `Worked for ${minutes}m ${seconds}s`;
+  }
+  return `Worked for ${seconds}s`;
+}
+
+function collapsedSummaryMessages(items: ThreadHistoryItemDto[]) {
+  const users = items.filter(
+    (item): item is ThreadHistoryItemDto & { kind: 'userMessage' } =>
+      item.kind === 'userMessage',
+  );
+  const finalAgent = [...items]
+    .reverse()
+    .find(
+      (item): item is ThreadHistoryItemDto & { kind: 'agentMessage' } =>
+        item.kind === 'agentMessage' && item.text.trim().length > 0,
+    );
+
+  return {
+    users,
+    finalAgent,
+  };
 }
 
 export const ThreadTurnRow = memo(function ThreadTurnRow({
@@ -471,6 +532,71 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
   const footerNode = activeForRendering ? (
     <TurnStatusBar turn={activeFooterTurn} variant="footer" />
   ) : null;
+  const collapsedSummary = useMemo(
+    () => collapsedSummaryMessages(mergedItems),
+    [mergedItems],
+  );
+  const workedLabel = useMemo(
+    () => formatWorkedDuration(turn.startedAt, mergedItems),
+    [mergedItems, turn.startedAt],
+  );
+  const collapsedSummaryNode = isTerminalTurnStatus(turn.status) ? (
+    <div className="thread-graph-turn-collapsed-summary space-y-2">
+      {collapsedSummary.users.map((item) => (
+        <CompactMessageItem
+          key={item.id}
+          threadId={threadId}
+          item={item}
+          scrollRootRef={scrollRootRef}
+          timeLabel={
+            item.createdAt
+              ? formatShortTimestamp(item.createdAt)
+              : turnTimeLabel
+          }
+          timeTitle={
+            item.createdAt
+              ? formatLongTimestamp(item.createdAt)
+              : turnTimeTitle
+          }
+          {...(onBeforeMessageResize
+            ? { onBeforeMessageResize }
+            : {})}
+          {...(adapter ? { adapter } : {})}
+        />
+      ))}
+      <button
+        type="button"
+        className="thread-graph-worked-summary group flex w-full items-center gap-2 py-2 text-left text-sm transition"
+        onClick={() => onToggleCollapse(turn.id, true)}
+        aria-label={`${workedLabel}. Expand turn ${absoluteIndex}`}
+      >
+        <span className="thread-graph-worked-label shrink-0">{workedLabel}</span>
+        <ChevronRight className="h-4 w-4 shrink-0 transition group-hover:translate-x-0.5" />
+        <span className="thread-graph-worked-rule h-px min-w-0 flex-1" aria-hidden="true" />
+      </button>
+      {collapsedSummary.finalAgent ? (
+        <CompactMessageItem
+          threadId={threadId}
+          item={collapsedSummary.finalAgent}
+          scrollRootRef={scrollRootRef}
+          timeLabel={
+            collapsedSummary.finalAgent.createdAt
+              ? formatShortTimestamp(collapsedSummary.finalAgent.createdAt)
+              : turnTimeLabel
+          }
+          timeTitle={
+            collapsedSummary.finalAgent.createdAt
+              ? formatLongTimestamp(collapsedSummary.finalAgent.createdAt)
+              : turnTimeTitle
+          }
+          {...(onBeforeMessageResize
+            ? { onBeforeMessageResize }
+            : {})}
+          {...(adapter ? { adapter } : {})}
+        />
+      ) : null}
+    </div>
+  ) : null;
   const turnBody = (
     <GraphChatTurnBody
       footer={footerNode}
@@ -486,10 +612,11 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
       absoluteIndex={absoluteIndex}
       body={turnBody}
       collapsed={isCollapsed}
+      collapsedBody={collapsedSummaryNode}
       error={turn.error}
       headerStatus={<TurnStatusBar turn={turn} />}
       isActive={activeForRendering}
-      onToggleCollapse={() => onToggleCollapse(turn.id)}
+      onToggleCollapse={() => onToggleCollapse(turn.id, isCollapsed)}
       refCallback={articleRef}
       startedAt={turn.startedAt}
       timeLabel={turnTimeLabel}

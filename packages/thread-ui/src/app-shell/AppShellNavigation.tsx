@@ -212,6 +212,8 @@ export function AppShellSettingsDialog({
   });
   const selectedThemeMode = shellNav?.themeMode ?? 'system';
   const effectiveTheme = shellNav?.effectiveTheme ?? 'dark';
+  const autoCollapseCompletedTurns =
+    shellNav?.autoCollapseCompletedTurns ?? true;
 
   useEffect(() => {
     if (!shellNav?.settingsOpen) {
@@ -361,6 +363,34 @@ export function AppShellSettingsDialog({
                 })}
               </div>
             </div>
+
+            {shellNav?.setAutoCollapseCompletedTurns ? (
+              <div className="rounded-[1.1rem] border border-[var(--theme-border)] bg-[var(--theme-surface)] px-3 py-3">
+                <div className="flex items-start justify-between gap-4">
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium text-[var(--theme-fg)]">
+                      Thread timeline
+                    </p>
+                    <p className="mt-1 text-xs leading-5 text-[var(--theme-fg-muted)]">
+                      Collapse completed turns into prompt, elapsed work, and final reply.
+                    </p>
+                  </div>
+                  <label className="inline-flex min-h-10 shrink-0 items-center gap-2 text-xs font-medium text-[var(--theme-fg-soft)]">
+                    <input
+                      type="checkbox"
+                      checked={autoCollapseCompletedTurns}
+                      onChange={(event) =>
+                        shellNav.setAutoCollapseCompletedTurns?.(
+                          event.currentTarget.checked,
+                        )
+                      }
+                      className="h-4 w-4 accent-[var(--theme-accent-solid)]"
+                    />
+                    <span>Auto collapse</span>
+                  </label>
+                </div>
+              </div>
+            ) : null}
 
             <div className="rounded-[1.1rem] border border-[var(--theme-border)] bg-[var(--theme-surface)] px-3 py-3">
               <div className="flex items-start justify-between gap-3">

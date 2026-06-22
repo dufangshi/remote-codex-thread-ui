@@ -77,6 +77,18 @@
   color: var(--theme-fg-muted);
 }
 
+.thread-ui-shell .thread-graph-worked-summary {
+  color: var(--theme-fg-muted);
+}
+
+.thread-ui-shell .thread-graph-worked-summary:hover {
+  color: var(--theme-fg-soft);
+}
+
+.thread-ui-shell .thread-graph-worked-rule {
+  background: var(--theme-border);
+}
+
 .thread-ui-shell
   :where(.text-stone-100, .text-stone-200, .text-stone-300) {
   color: var(--theme-fg) !important;
@@ -350,4 +362,3 @@
 .thread-ui-shell .thread-graph-history-group-list {
   border-color: var(--theme-border);
 }
-
