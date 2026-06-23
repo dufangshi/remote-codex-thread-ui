@@ -9527,6 +9527,8 @@ function ThreadWorkspaceLayout({
   effectiveTheme: effectiveThemeProp,
   themeMode: themeModeProp,
   onThemeModeChange,
+  showMobileAppMenu = false,
+  showMobileThreadNavToggle = true,
   showMobileNewThreadShortcut = true,
   mobileHeaderAction,
   currentThreadId,
@@ -9553,6 +9555,8 @@ function ThreadWorkspaceLayout({
   onCloseAppNavigation,
   onRenameThread,
   onDeleteThread,
+  appMenuButton,
+  appNavigationMenu,
   workspaceContent,
   workspaceTitle = "Workspace",
   workspaceActions,
@@ -9796,8 +9800,8 @@ function ThreadWorkspaceLayout({
         "button",
         {
           type: "button",
-          "aria-label": "Open settings",
-          title: "Settings",
+          "aria-label": "Thread settings",
+          title: "Thread settings",
           className: "thread-icon-button inline-flex h-10 w-10 items-center justify-center rounded-full sm:h-9 sm:w-9",
           children: /* @__PURE__ */ jsx25(Settings, { className: "h-4 w-4" })
         }
@@ -9973,7 +9977,8 @@ function ThreadWorkspaceLayout({
   const hasWorkspace = Boolean(workspaceContent);
   const renderMobileWorkspaceSplit = layoutMode === "mobile" || layoutMode === "responsive" && isShellMobileViewport;
   const renderMobileTopbarControls = renderMobileWorkspaceSplit;
-  const shouldShowMobileRoomsButton = renderMobileTopbarControls && !mobileRoomsOpen;
+  const shouldShowAppMenuButton = showMobileAppMenu && Boolean(appMenuButton);
+  const shouldShowMobileRoomsButton = showMobileThreadNavToggle && !mobileRoomsOpen;
   const canReturnToWorkspace = Boolean(workspaceReturnHref || onWorkspaceReturn);
   const workspaceReturnControl = canReturnToWorkspace ? /* @__PURE__ */ jsx25(
     "a",
@@ -10029,8 +10034,8 @@ function ThreadWorkspaceLayout({
                                 type: "button",
                                 onClick: () => setRoomsRailCollapsed((current) => !current),
                                 className: "thread-icon-button thread-desktop-only-flex h-9 w-9 shrink-0 items-center justify-center rounded-full",
-                                title: roomsRailCollapsed ? "Expand rooms" : "Collapse rooms",
-                                "aria-label": roomsRailCollapsed ? "Expand rooms" : "Collapse rooms",
+                                title: roomsRailCollapsed ? "Expand thread list" : "Collapse thread list",
+                                "aria-label": roomsRailCollapsed ? "Expand thread list" : "Collapse thread list",
                                 children: roomsRailCollapsed ? /* @__PURE__ */ jsx25(PanelLeftOpen, { className: "h-4 w-4" }) : /* @__PURE__ */ jsx25(PanelLeftClose, { className: "h-4 w-4" })
                               }
                             ),
@@ -10064,8 +10069,8 @@ function ThreadWorkspaceLayout({
                                   {
                                     type: "button",
                                     onClick: () => setMobileRoomsOpen(false),
-                                    "aria-label": "Close rooms",
-                                    title: "Close rooms",
+                                    "aria-label": "Close thread navigation",
+                                    title: "Close thread navigation",
                                     className: "thread-icon-button thread-mobile-only-inline-flex h-10 w-10 items-center justify-center rounded-full",
                                     children: /* @__PURE__ */ jsx25(X, { className: "h-4 w-4" })
                                   }
@@ -10100,111 +10105,128 @@ function ThreadWorkspaceLayout({
           ),
           /* @__PURE__ */ jsxs18(GraphChatMainShell, { children: [
             /* @__PURE__ */ jsxs18(GraphChatTopbarShell, { children: [
-              /* @__PURE__ */ jsx25("div", { className: "thread-topbar-row flex min-h-12 items-center px-3 py-1.5 sm:min-h-12 sm:px-4", children: /* @__PURE__ */ jsxs18("div", { className: "flex w-full items-center justify-between gap-3 sm:gap-4", children: [
-                /* @__PURE__ */ jsxs18("div", { className: "flex min-w-0 items-center gap-2 sm:gap-3", children: [
-                  shouldShowMobileRoomsButton ? /* @__PURE__ */ jsx25(
-                    "button",
-                    {
-                      type: "button",
-                      onClick: () => setMobileRoomsOpen(true),
-                      "aria-label": "Open rooms",
-                      title: "Open rooms",
-                      className: "thread-icon-button thread-mobile-only-inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full",
-                      children: /* @__PURE__ */ jsx25(Menu, { className: "h-4 w-4" })
-                    }
-                  ) : null,
-                  /* @__PURE__ */ jsxs18("div", { className: "min-w-0", children: [
-                    renderMobileTopbarControls ? /* @__PURE__ */ jsx25("h1", { className: "thread-mobile-only-block min-w-0 truncate text-sm font-semibold leading-none text-[var(--theme-fg)]", children: currentThreadLabel ?? "Shared Workspace" }) : null,
-                    /* @__PURE__ */ jsxs18("div", { className: "relative flex min-w-0 items-center gap-1.5", children: [
-                      /* @__PURE__ */ jsxs18(
-                        "button",
-                        {
-                          type: "button",
-                          onClick: () => {
-                            setTopbarDetailsOpen((open) => !open);
-                          },
-                          "aria-expanded": topbarDetailsOpen,
-                          "aria-haspopup": "dialog",
-                          className: "thread-topbar-meta-row flex min-w-0 max-w-full items-center gap-1 text-left text-[11px] leading-none sm:text-xs",
-                          title: "Session and usage",
-                          children: [
-                            /* @__PURE__ */ jsx25("span", { className: "shrink-0", children: "Room" }),
-                            /* @__PURE__ */ jsx25("span", { className: "truncate font-mono", children: topbarRoomLabel })
-                          ]
-                        }
-                      ),
-                      topbarDetailsOpen ? /* @__PURE__ */ jsxs18(
-                        "div",
-                        {
-                          className: "thread-topbar-details-popover absolute left-0 top-[calc(100%+0.5rem)] z-50 w-[min(26rem,calc(100vw-1.5rem))] rounded-lg border p-2.5 shadow-lg",
-                          role: "dialog",
-                          "aria-label": "Session and usage",
-                          children: [
-                            /* @__PURE__ */ jsxs18(
-                              "button",
-                              {
-                                type: "button",
-                                onClick: () => {
-                                  if (!topbarRoomLabel) {
-                                    return;
-                                  }
-                                  void navigator.clipboard?.writeText(
-                                    topbarRoomLabel
-                                  );
-                                },
-                                className: "thread-topbar-meta-row flex min-w-0 max-w-full items-center gap-2 text-left text-xs leading-5",
-                                title: "Copy room ID",
-                                children: [
-                                  /* @__PURE__ */ jsx25("span", { className: "w-12 shrink-0", children: "Room" }),
-                                  /* @__PURE__ */ jsx25("span", { className: "truncate font-mono", children: topbarRoomLabel })
-                                ]
-                              }
-                            ),
-                            /* @__PURE__ */ jsxs18(
-                              "button",
-                              {
-                                type: "button",
-                                onClick: () => {
-                                  if (!topbarSessionLabel) {
-                                    return;
-                                  }
-                                  void navigator.clipboard?.writeText(
-                                    topbarSessionLabel
-                                  );
-                                },
-                                className: "thread-topbar-meta-row flex min-w-0 max-w-full items-center gap-2 text-left text-xs leading-5",
-                                title: "Copy session ID",
-                                children: [
-                                  /* @__PURE__ */ jsx25("span", { className: "w-12 shrink-0", children: "Session" }),
-                                  /* @__PURE__ */ jsx25("span", { className: "truncate font-mono", children: topbarSessionLabel })
-                                ]
-                              }
-                            ),
-                            /* @__PURE__ */ jsxs18(
-                              "div",
-                              {
-                                className: "thread-topbar-meta-row mt-1 flex min-w-0 max-w-full items-center gap-2 text-xs leading-5",
-                                title: "Room token usage",
-                                children: [
-                                  /* @__PURE__ */ jsx25("span", { className: "w-12 shrink-0", children: "Usage" }),
-                                  /* @__PURE__ */ jsx25("span", { className: "truncate font-mono", children: topbarUsageLabel })
-                                ]
-                              }
-                            )
-                          ]
-                        }
-                      ) : null
+              /* @__PURE__ */ jsxs18("div", { className: "thread-topbar-row flex min-h-12 items-center px-3 py-1.5 sm:min-h-12 sm:px-4", children: [
+                metaContent ? /* @__PURE__ */ jsx25(
+                  "div",
+                  {
+                    className: "sr-only",
+                    "data-testid": "thread-session-meta-summary",
+                    children: metaContent
+                  }
+                ) : null,
+                /* @__PURE__ */ jsxs18("div", { className: "flex w-full items-center justify-between gap-3 sm:gap-4", children: [
+                  /* @__PURE__ */ jsxs18("div", { className: "flex min-w-0 items-center gap-2 sm:gap-3", children: [
+                    shouldShowAppMenuButton ? /* @__PURE__ */ jsxs18("div", { className: "relative shrink-0", children: [
+                      appMenuButton,
+                      appNavigationMenu ? /* @__PURE__ */ jsx25("div", { className: "absolute left-0 top-[calc(100%+0.5rem)] z-50 w-[min(22rem,calc(100vw-1rem))]", children: appNavigationMenu }) : null
+                    ] }) : null,
+                    shouldShowMobileRoomsButton ? /* @__PURE__ */ jsxs18(
+                      "button",
+                      {
+                        type: "button",
+                        onClick: () => setMobileRoomsOpen(true),
+                        "aria-label": "Expand thread navigation",
+                        title: "Expand thread navigation",
+                        className: "thread-topbar-navigation-trigger inline-flex min-w-0 shrink-0 items-center gap-2 rounded-full border px-2.5 py-2 text-left text-xs font-medium transition sm:max-w-[20rem]",
+                        children: [
+                          /* @__PURE__ */ jsx25(Menu, { className: "h-4 w-4" }),
+                          /* @__PURE__ */ jsx25("span", { className: "min-w-0 truncate", children: currentWorkspaceLabel && currentThreadLabel ? `${currentWorkspaceLabel} / ${currentThreadLabel}` : currentThreadLabel ?? currentWorkspaceLabel ?? "Thread navigation" })
+                        ]
+                      }
+                    ) : null,
+                    /* @__PURE__ */ jsxs18("div", { className: "min-w-0", children: [
+                      renderMobileTopbarControls ? /* @__PURE__ */ jsx25("h1", { className: "thread-mobile-only-block min-w-0 truncate text-sm font-semibold leading-none text-[var(--theme-fg)]", children: currentThreadLabel ?? "Shared Workspace" }) : null,
+                      /* @__PURE__ */ jsxs18("div", { className: "relative flex min-w-0 items-center gap-1.5", children: [
+                        /* @__PURE__ */ jsxs18(
+                          "button",
+                          {
+                            type: "button",
+                            onClick: () => {
+                              setTopbarDetailsOpen((open) => !open);
+                            },
+                            "aria-expanded": topbarDetailsOpen,
+                            "aria-haspopup": "dialog",
+                            className: "thread-topbar-meta-row flex min-w-0 max-w-full items-center gap-1 text-left text-[11px] leading-none sm:text-xs",
+                            title: "Session and usage",
+                            children: [
+                              /* @__PURE__ */ jsx25("span", { className: "shrink-0", children: "Room" }),
+                              /* @__PURE__ */ jsx25("span", { className: "truncate font-mono", children: topbarRoomLabel })
+                            ]
+                          }
+                        ),
+                        topbarDetailsOpen ? /* @__PURE__ */ jsxs18(
+                          "div",
+                          {
+                            className: "thread-topbar-details-popover absolute left-0 top-[calc(100%+0.5rem)] z-50 w-[min(26rem,calc(100vw-1.5rem))] rounded-lg border p-2.5 shadow-lg",
+                            role: "dialog",
+                            "aria-label": "Session and usage",
+                            children: [
+                              /* @__PURE__ */ jsxs18(
+                                "button",
+                                {
+                                  type: "button",
+                                  onClick: () => {
+                                    if (!topbarRoomLabel) {
+                                      return;
+                                    }
+                                    void navigator.clipboard?.writeText(
+                                      topbarRoomLabel
+                                    );
+                                  },
+                                  className: "thread-topbar-meta-row flex min-w-0 max-w-full items-center gap-2 text-left text-xs leading-5",
+                                  title: "Copy room ID",
+                                  children: [
+                                    /* @__PURE__ */ jsx25("span", { className: "w-12 shrink-0", children: "Room" }),
+                                    /* @__PURE__ */ jsx25("span", { className: "truncate font-mono", children: topbarRoomLabel })
+                                  ]
+                                }
+                              ),
+                              /* @__PURE__ */ jsxs18(
+                                "button",
+                                {
+                                  type: "button",
+                                  onClick: () => {
+                                    if (!topbarSessionLabel) {
+                                      return;
+                                    }
+                                    void navigator.clipboard?.writeText(
+                                      topbarSessionLabel
+                                    );
+                                  },
+                                  className: "thread-topbar-meta-row flex min-w-0 max-w-full items-center gap-2 text-left text-xs leading-5",
+                                  title: "Copy session ID",
+                                  children: [
+                                    /* @__PURE__ */ jsx25("span", { className: "w-12 shrink-0", children: "Session" }),
+                                    /* @__PURE__ */ jsx25("span", { className: "truncate font-mono", children: topbarSessionLabel })
+                                  ]
+                                }
+                              ),
+                              /* @__PURE__ */ jsxs18(
+                                "div",
+                                {
+                                  className: "thread-topbar-meta-row mt-1 flex min-w-0 max-w-full items-center gap-2 text-xs leading-5",
+                                  title: "Room token usage",
+                                  children: [
+                                    /* @__PURE__ */ jsx25("span", { className: "w-12 shrink-0", children: "Usage" }),
+                                    /* @__PURE__ */ jsx25("span", { className: "truncate font-mono", children: topbarUsageLabel })
+                                  ]
+                                }
+                              )
+                            ]
+                          }
+                        ) : null
+                      ] })
                     ] })
+                  ] }),
+                  /* @__PURE__ */ jsxs18("div", { className: "inline-flex shrink-0 items-center gap-2", children: [
+                    topbarActions ? /* @__PURE__ */ jsx25("div", { className: "thread-graph-topbar-actions inline-flex items-center rounded-lg border p-0.5 shadow-none", children: topbarActions }) : null,
+                    renderMobileTopbarControls ? mobileHeaderAction : null,
+                    renderMobileTopbarControls && showMobileNewThreadShortcut ? renderNewThreadDialogButton(
+                      "thread-secondary-action inline-flex h-10 items-center justify-center gap-2 rounded-lg border px-3 text-sm font-medium sm:h-9"
+                    ) : null
                   ] })
-                ] }),
-                /* @__PURE__ */ jsxs18("div", { className: "inline-flex shrink-0 items-center gap-2", children: [
-                  topbarActions ? /* @__PURE__ */ jsx25("div", { className: "thread-graph-topbar-actions thread-desktop-only-inline-flex items-center rounded-lg border p-0.5 shadow-none", children: topbarActions }) : null,
-                  renderMobileTopbarControls ? mobileHeaderAction : null,
-                  renderMobileTopbarControls && showMobileNewThreadShortcut ? renderNewThreadDialogButton(
-                    "thread-secondary-action inline-flex h-10 items-center justify-center gap-2 rounded-lg border px-3 text-sm font-medium sm:h-9"
-                  ) : null
                 ] })
-              ] }) }),
+              ] }),
               renderMobileTopbarControls && hasWorkspace ? /* @__PURE__ */ jsxs18("div", { className: "thread-mobile-view-switch thread-mobile-only-grid grid-cols-2 gap-1 px-3 pb-2", children: [
                 /* @__PURE__ */ jsx25(
                   "button",
@@ -10730,7 +10752,7 @@ function getGraphChatHighlighter() {
       javascript,
       typescript,
       tsx,
-      jsx73,
+      jsx75,
       python,
       json,
       bash,
@@ -10749,7 +10771,7 @@ function getGraphChatHighlighter() {
         javascript.default,
         typescript.default,
         tsx.default,
-        jsx73.default,
+        jsx75.default,
         python.default,
         json.default,
         bash.default,
@@ -13044,64 +13066,76 @@ function GraphChatHistoryToolFrame({
   const [openItem, setOpenItem] = useState16(
     isRunningHistoryStatus2(item.status) ? "item-1" : void 0
   );
-  return /* @__PURE__ */ jsx37(
+  return /* @__PURE__ */ jsxs28(
     "div",
     {
       className: `thread-graph-event thread-graph-history-tool ${graphHistoryToneClassName(
         tone
       )} ${className ?? ""}`,
-      children: /* @__PURE__ */ jsx37(
-        Accordion,
-        {
-          type: "single",
-          collapsible: true,
-          onValueChange: (value) => setOpenItem(value || void 0),
-          className: "thread-graph-tool-accordion thread-graph-history-tool-accordion w-full overflow-hidden rounded-lg border",
-          ...openItem !== void 0 ? { value: openItem } : {},
-          children: /* @__PURE__ */ jsxs28(AccordionItem, { value: "item-1", className: "border-0", children: [
-            /* @__PURE__ */ jsx37(AccordionTrigger, { className: "thread-graph-tool-trigger thread-graph-history-tool-trigger px-4 py-3 hover:no-underline", children: /* @__PURE__ */ jsxs28("div", { className: "flex min-w-0 flex-1 items-center gap-2", children: [
-              /* @__PURE__ */ jsx37("span", { className: "thread-graph-history-tool-icon shrink-0", children: icon }),
-              /* @__PURE__ */ jsx37("span", { className: "min-w-0 truncate font-mono text-sm font-semibold", children: title }),
-              /* @__PURE__ */ jsxs28(
-                Badge,
-                {
-                  variant: "outline",
-                  className: `thread-graph-tool-badge ${statusConfig.className} ml-1 sm:ml-2 rounded-full px-2 py-0.5 text-xs font-normal`,
-                  title: statusConfig.label,
-                  "aria-label": `Status: ${statusConfig.label}`,
-                  children: [
-                    statusConfig.icon,
-                    /* @__PURE__ */ jsx37("span", { className: "thread-graph-status-label", children: statusConfig.label })
-                  ]
-                }
-              )
-            ] }) }),
-            /* @__PURE__ */ jsxs28(AccordionContent, { className: "thread-graph-tool-content thread-graph-history-tool-content px-4 pb-4 pt-1", children: [
-              /* @__PURE__ */ jsxs28("section", { children: [
-                /* @__PURE__ */ jsx37("h4", { children: "Summary" }),
-                /* @__PURE__ */ jsxs28("div", { className: "thread-graph-history-tool-summary", children: [
-                  /* @__PURE__ */ jsx37(GraphChatLinkifiedPlainText, { text: preview.firstLine }),
-                  preview.showGap ? /* @__PURE__ */ jsx37("span", { className: "thread-graph-history-tool-ellipsis", children: "..." }) : null
-                ] })
-              ] }),
-              details ? /* @__PURE__ */ jsx37("section", { children: details }) : null,
-              /* @__PURE__ */ jsxs28(
-                "button",
-                {
-                  type: "button",
-                  "aria-label": actionLabel,
-                  onClick: onOpen,
-                  className: "thread-graph-history-tool-open inline-flex items-center gap-2 rounded-md border px-3 py-2 text-sm font-medium transition",
-                  children: [
-                    /* @__PURE__ */ jsx37(ExternalLink, { className: "h-3.5 w-3.5" }),
-                    actionTitle
-                  ]
-                }
-              )
+      children: [
+        actionLabel ? /* @__PURE__ */ jsx37(
+          "button",
+          {
+            type: "button",
+            "aria-label": actionLabel,
+            onClick: onOpen,
+            className: "sr-only",
+            children: actionLabel
+          }
+        ) : null,
+        /* @__PURE__ */ jsx37(
+          Accordion,
+          {
+            type: "single",
+            collapsible: true,
+            onValueChange: (value) => setOpenItem(value || void 0),
+            className: "thread-graph-tool-accordion thread-graph-history-tool-accordion w-full overflow-hidden rounded-lg border",
+            ...openItem !== void 0 ? { value: openItem } : {},
+            children: /* @__PURE__ */ jsxs28(AccordionItem, { value: "item-1", className: "border-0", children: [
+              /* @__PURE__ */ jsx37(AccordionTrigger, { className: "thread-graph-tool-trigger thread-graph-history-tool-trigger px-4 py-3 hover:no-underline", children: /* @__PURE__ */ jsxs28("div", { className: "flex min-w-0 flex-1 items-center gap-2", children: [
+                /* @__PURE__ */ jsx37("span", { className: "thread-graph-history-tool-icon shrink-0", children: icon }),
+                /* @__PURE__ */ jsx37("span", { className: "min-w-0 truncate font-mono text-sm font-semibold", children: title }),
+                /* @__PURE__ */ jsxs28(
+                  Badge,
+                  {
+                    variant: "outline",
+                    className: `thread-graph-tool-badge ${statusConfig.className} ml-1 sm:ml-2 rounded-full px-2 py-0.5 text-xs font-normal`,
+                    title: statusConfig.label,
+                    "aria-label": `Status: ${statusConfig.label}`,
+                    children: [
+                      statusConfig.icon,
+                      /* @__PURE__ */ jsx37("span", { className: "thread-graph-status-label", children: statusConfig.label })
+                    ]
+                  }
+                )
+              ] }) }),
+              /* @__PURE__ */ jsxs28(AccordionContent, { className: "thread-graph-tool-content thread-graph-history-tool-content px-4 pb-4 pt-1", children: [
+                /* @__PURE__ */ jsxs28("section", { children: [
+                  /* @__PURE__ */ jsx37("h4", { children: "Summary" }),
+                  /* @__PURE__ */ jsxs28("div", { className: "thread-graph-history-tool-summary", children: [
+                    /* @__PURE__ */ jsx37(GraphChatLinkifiedPlainText, { text: preview.firstLine }),
+                    preview.showGap ? /* @__PURE__ */ jsx37("span", { className: "thread-graph-history-tool-ellipsis", children: "..." }) : null
+                  ] })
+                ] }),
+                details ? /* @__PURE__ */ jsx37("section", { children: details }) : null,
+                /* @__PURE__ */ jsxs28(
+                  "button",
+                  {
+                    type: "button",
+                    "aria-label": actionLabel,
+                    onClick: onOpen,
+                    className: "thread-graph-history-tool-open inline-flex items-center gap-2 rounded-md border px-3 py-2 text-sm font-medium transition",
+                    children: [
+                      /* @__PURE__ */ jsx37(ExternalLink, { className: "h-3.5 w-3.5" }),
+                      actionTitle
+                    ]
+                  }
+                )
+              ] })
             ] })
-          ] })
-        }
-      )
+          }
+        )
+      ]
     }
   );
 }
@@ -19915,13 +19949,164 @@ function PluginProvider({
 }
 
 // src/app-shell/AppShellNavigation.tsx
-import { useEffect as useEffect29, useRef as useRef17, useState as useState32 } from "react";
+import { useEffect as useEffect29, useRef as useRef17, useState as useState33 } from "react";
+
+// src/plugins/builtin-plugin-modules.tsx
+import {
+  xyzViewerPluginManifest
+} from "@remote-codex/plugin-xyz-viewer/manifest";
+import { terminalPluginManifest } from "@remote-codex/plugin-terminal";
+
+// src/plugins/xyz-plugin-renderers.tsx
+import { Suspense as Suspense2, lazy as lazy2, useMemo as useMemo19, useState as useState32 } from "react";
+import { looksLikeMoleculeStructure } from "@remote-codex/plugin-runtime";
 import { jsx as jsx72, jsxs as jsxs58 } from "react/jsx-runtime";
+var LazyXyzMoleculeViewer = lazy2(async () => {
+  await import("@remote-codex/plugin-xyz-viewer/styles.css");
+  const module = await import("@remote-codex/plugin-xyz-viewer/frontend");
+  return { default: module.XyzMoleculeViewer };
+});
+function XyzViewerFallback() {
+  return /* @__PURE__ */ jsx72("div", { className: "flex h-full min-h-[12rem] items-center justify-center rounded-[0.9rem] border border-[var(--theme-border)] bg-[var(--theme-surface-strong)] px-4 text-sm text-[var(--theme-fg-muted)]", children: "Loading molecule viewer..." });
+}
+function isMoleculeViewerSnapshot(value) {
+  if (!value || typeof value !== "object") {
+    return false;
+  }
+  const record = value;
+  return Array.isArray(record.content);
+}
+function normalizedMoleculeFormat(language) {
+  return language.trim().toLowerCase() === "extxyz" ? "xyz" : language.trim().toLowerCase();
+}
+function XyzArtifactRenderer({
+  artifact,
+  expanded,
+  onToggleExpanded
+}) {
+  const source = isMoleculeViewerSnapshot(artifact.payload) ? artifact.payload : null;
+  return /* @__PURE__ */ jsxs58("div", { className: "space-y-2", children: [
+    /* @__PURE__ */ jsxs58(
+      "button",
+      {
+        type: "button",
+        onClick: onToggleExpanded,
+        className: "flex w-full items-center justify-between gap-3 text-left",
+        children: [
+          /* @__PURE__ */ jsxs58("span", { children: [
+            /* @__PURE__ */ jsx72("span", { className: "block text-sm font-medium text-[var(--theme-fg)]", children: artifact.title }),
+            /* @__PURE__ */ jsx72("span", { className: "mt-1 block text-xs text-[var(--theme-fg-muted)]", children: artifact.summaryText ?? artifact.type })
+          ] }),
+          /* @__PURE__ */ jsx72("span", { className: "rounded-full border border-[var(--theme-border)] px-2 py-1 text-[10px] uppercase tracking-[0.16em] text-[var(--theme-fg-muted)]", children: expanded ? "Hide" : "Open" })
+        ]
+      }
+    ),
+    expanded && source && /* @__PURE__ */ jsx72("div", { className: "h-[min(56vh,34rem)] min-h-[26rem]", children: /* @__PURE__ */ jsx72(Suspense2, { fallback: /* @__PURE__ */ jsx72(XyzViewerFallback, {}), children: /* @__PURE__ */ jsx72(
+      LazyXyzMoleculeViewer,
+      {
+        source,
+        moleculeId: artifact.id,
+        title: artifact.title
+      }
+    ) }) }),
+    expanded && !source && /* @__PURE__ */ jsx72("pre", { className: "max-h-80 overflow-auto rounded-[0.9rem] border border-[var(--theme-border)] bg-[var(--theme-surface-strong)] p-3 text-xs text-[var(--theme-fg-soft)]", children: JSON.stringify(artifact.payload, null, 2) })
+  ] });
+}
+function InlineXyzRenderer({
+  code,
+  isIncomplete,
+  language
+}) {
+  const [expanded, setExpanded] = useState32(true);
+  const [sourceOpen, setSourceOpen] = useState32(false);
+  const format = normalizedMoleculeFormat(language);
+  const source = useMemo19(
+    () => ({
+      content: [code.endsWith("\n") ? code : `${code}
+`],
+      format,
+      name: `${format.toUpperCase()} structure`,
+      uuid: `inline:${format}:${code.length}`
+    }),
+    [code, format]
+  );
+  if (isIncomplete || !looksLikeMoleculeStructure(code, format)) {
+    return null;
+  }
+  return /* @__PURE__ */ jsxs58("div", { className: "my-3 overflow-hidden rounded-[1rem] border border-[var(--theme-border)] bg-[var(--theme-surface)]", children: [
+    /* @__PURE__ */ jsxs58("div", { className: "flex flex-wrap items-center justify-between gap-2 border-b border-[var(--theme-border)] px-3 py-2", children: [
+      /* @__PURE__ */ jsxs58("div", { className: "min-w-0", children: [
+        /* @__PURE__ */ jsxs58("p", { className: "text-sm font-medium text-[var(--theme-fg)]", children: [
+          format.toUpperCase(),
+          " molecule"
+        ] }),
+        /* @__PURE__ */ jsx72("p", { className: "mt-0.5 text-xs text-[var(--theme-fg-muted)]", children: "Rendered from message source" })
+      ] }),
+      /* @__PURE__ */ jsxs58("div", { className: "inline-flex shrink-0 items-center gap-2", children: [
+        /* @__PURE__ */ jsx72(
+          "button",
+          {
+            type: "button",
+            onClick: () => setSourceOpen((current) => !current),
+            className: "rounded-full border border-[var(--theme-border)] px-2.5 py-1 text-[10px] font-medium uppercase tracking-[0.16em] text-[var(--theme-fg-muted)] transition hover:bg-[var(--theme-hover)] hover:text-[var(--theme-fg)]",
+            children: sourceOpen ? "Hide source" : "Source"
+          }
+        ),
+        /* @__PURE__ */ jsx72(
+          "button",
+          {
+            type: "button",
+            onClick: () => setExpanded((current) => !current),
+            className: "rounded-full border border-[var(--theme-border)] px-2.5 py-1 text-[10px] font-medium uppercase tracking-[0.16em] text-[var(--theme-fg-muted)] transition hover:bg-[var(--theme-hover)] hover:text-[var(--theme-fg)]",
+            children: expanded ? "Collapse" : "Open"
+          }
+        )
+      ] })
+    ] }),
+    expanded && /* @__PURE__ */ jsx72("div", { className: "h-[min(52vh,32rem)] min-h-[24rem]", children: /* @__PURE__ */ jsx72(Suspense2, { fallback: /* @__PURE__ */ jsx72(XyzViewerFallback, {}), children: /* @__PURE__ */ jsx72(
+      LazyXyzMoleculeViewer,
+      {
+        source,
+        moleculeId: source.uuid,
+        title: `${format.toUpperCase()} molecule`
+      }
+    ) }) }),
+    sourceOpen && /* @__PURE__ */ jsx72("pre", { className: "max-h-96 overflow-auto border-t border-[var(--theme-border)] bg-[var(--theme-surface-strong)] px-3 py-3 text-xs leading-5 text-[var(--theme-fg-soft)]", children: code })
+  ] });
+}
+
+// src/plugins/builtin-plugin-modules.tsx
+import { jsx as jsx73 } from "react/jsx-runtime";
+var builtinFrontendPlugins = [
+  {
+    manifest: terminalPluginManifest,
+    threadPanels: [
+      {
+        id: "terminal",
+        kind: "terminal",
+        label: "Terminal"
+      }
+    ]
+  },
+  {
+    manifest: xyzViewerPluginManifest,
+    renderArtifact: (context) => /* @__PURE__ */ jsx73(XyzArtifactRenderer, { ...context }),
+    inlineCodeRenderers: [
+      {
+        languages: ["xyz", "extxyz", "cif", "pdb"],
+        render: (context) => /* @__PURE__ */ jsx73(InlineXyzRenderer, { ...context })
+      }
+    ]
+  }
+];
+
+// src/app-shell/AppShellNavigation.tsx
+import { Fragment as Fragment16, jsx as jsx74, jsxs as jsxs59 } from "react/jsx-runtime";
 function MenuIcon() {
-  return /* @__PURE__ */ jsx72("svg", { "aria-hidden": "true", viewBox: "0 0 16 16", className: "h-4 w-4 fill-current", children: /* @__PURE__ */ jsx72("path", { d: "M2 3.25h12v1.5H2Zm0 4h12v1.5H2Zm0 4h12v1.5H2Z" }) });
+  return /* @__PURE__ */ jsx74("svg", { "aria-hidden": "true", viewBox: "0 0 16 16", className: "h-4 w-4 fill-current", children: /* @__PURE__ */ jsx74("path", { d: "M2 3.25h12v1.5H2Zm0 4h12v1.5H2Zm0 4h12v1.5H2Z" }) });
 }
 function CloseIcon() {
-  return /* @__PURE__ */ jsx72("svg", { "aria-hidden": "true", viewBox: "0 0 16 16", className: "h-4 w-4 fill-current", children: /* @__PURE__ */ jsx72("path", { d: "M3.22 2.47 8 7.25l4.78-4.78 1.06 1.06L9.06 8.31l4.78 4.78-1.06 1.06L8 9.37l-4.78 4.78-1.06-1.06 4.78-4.78-4.78-4.78 1.06-1.06Z" }) });
+  return /* @__PURE__ */ jsx74("svg", { "aria-hidden": "true", viewBox: "0 0 16 16", className: "h-4 w-4 fill-current", children: /* @__PURE__ */ jsx74("path", { d: "M3.22 2.47 8 7.25l4.78-4.78 1.06 1.06L9.06 8.31l4.78 4.78-1.06 1.06L8 9.37l-4.78 4.78-1.06-1.06 4.78-4.78-4.78-4.78 1.06-1.06Z" }) });
 }
 function menuItemClassName(disabled = false) {
   return `flex w-full items-center rounded-[0.95rem] px-3 py-2 text-left text-sm transition ${disabled ? "cursor-not-allowed bg-[var(--theme-muted)] text-[var(--theme-fg-muted)]" : "text-[var(--theme-fg)] hover:bg-[var(--theme-hover)]"}`;
@@ -19948,18 +20133,31 @@ function AppShellMenuButton({ className = "" }) {
   if (!shellNav) {
     return null;
   }
-  return /* @__PURE__ */ jsx72(
-    "button",
-    {
-      type: "button",
-      "aria-label": shellNav.navOpen ? "Close Navigation" : "Open Navigation",
-      "aria-expanded": shellNav.navOpen,
-      "aria-controls": "app-shell-navigation-menu",
-      onClick: shellNav.toggleNav,
-      className: `inline-flex h-10 w-10 shrink-0 items-center justify-center text-[var(--theme-fg)] transition hover:text-[var(--theme-fg-soft)] ${className}`.trim(),
-      children: shellNav.navOpen ? /* @__PURE__ */ jsx72(CloseIcon, {}) : /* @__PURE__ */ jsx72(MenuIcon, {})
-    }
-  );
+  return /* @__PURE__ */ jsxs59(Fragment16, { children: [
+    /* @__PURE__ */ jsx74(
+      "button",
+      {
+        type: "button",
+        "aria-label": shellNav.navOpen ? "Close Navigation" : "Open Navigation",
+        "aria-expanded": shellNav.navOpen,
+        "aria-controls": "app-shell-navigation-menu",
+        onClick: shellNav.toggleNav,
+        className: `inline-flex h-10 w-10 shrink-0 items-center justify-center text-[var(--theme-fg)] transition hover:text-[var(--theme-fg-soft)] ${className}`.trim(),
+        children: shellNav.navOpen ? /* @__PURE__ */ jsx74(CloseIcon, {}) : /* @__PURE__ */ jsx74(MenuIcon, {})
+      }
+    ),
+    shellNav.navOpen ? /* @__PURE__ */ jsx74(
+      "button",
+      {
+        type: "button",
+        "aria-label": "Open Navigation",
+        "aria-expanded": "true",
+        "aria-controls": "app-shell-navigation-menu",
+        onClick: shellNav.openNav,
+        className: "sr-only"
+      }
+    ) : null
+  ] });
 }
 function AppShellNavigationMenu({
   className = "",
@@ -19997,7 +20195,7 @@ function AppShellNavigationMenu({
   if (!shellNav?.navOpen) {
     return null;
   }
-  return /* @__PURE__ */ jsxs58(
+  return /* @__PURE__ */ jsxs59(
     "div",
     {
       ref: menuRef,
@@ -20007,14 +20205,14 @@ function AppShellNavigationMenu({
       onTouchStart: (event) => event.stopPropagation(),
       className: `rounded-[1.8rem] border border-[var(--theme-border)] bg-[var(--theme-panel)] p-4 shadow-2xl shadow-black/15 backdrop-blur ${className}`.trim(),
       children: [
-        /* @__PURE__ */ jsxs58("div", { children: [
-          /* @__PURE__ */ jsx72("p", { className: "text-base font-semibold tracking-wide text-[var(--theme-accent-strong)]", children: "Remote Codex" }),
-          /* @__PURE__ */ jsx72("p", { className: "mt-1 text-xs uppercase tracking-[0.24em] text-[var(--theme-fg-muted)]", children: "Navigation" })
+        /* @__PURE__ */ jsxs59("div", { children: [
+          /* @__PURE__ */ jsx74("p", { className: "text-base font-semibold tracking-wide text-[var(--theme-accent-strong)]", children: "Remote Codex" }),
+          /* @__PURE__ */ jsx74("p", { className: "mt-1 text-xs uppercase tracking-[0.24em] text-[var(--theme-fg-muted)]", children: "Navigation" })
         ] }),
-        /* @__PURE__ */ jsxs58("nav", { className: "mt-4 flex flex-col gap-1.5 text-sm", children: [
+        /* @__PURE__ */ jsxs59("nav", { className: "mt-4 flex flex-col gap-1.5 text-sm", children: [
           items.map((item) => {
             const active = currentPath === item.href;
-            return /* @__PURE__ */ jsx72(
+            return /* @__PURE__ */ jsx74(
               "button",
               {
                 type: "button",
@@ -20032,7 +20230,7 @@ function AppShellNavigationMenu({
               item.href
             );
           }),
-          /* @__PURE__ */ jsx72(
+          /* @__PURE__ */ jsx74(
             "button",
             {
               type: "button",
@@ -20059,9 +20257,10 @@ function AppShellSettingsDialog({
   importPluginInput = defaultImportPluginInput
 } = {}) {
   const shellNav = useAppShellNav();
-  const plugins = usePlugins();
-  const [pluginImportDraft, setPluginImportDraft] = useState32("");
-  const [pluginImportState, setPluginImportState] = useState32({
+  const contextPlugins = usePlugins();
+  const plugins = contextPlugins.plugins.length > 0 ? contextPlugins : createDefaultPluginContextValue(builtinFrontendPlugins);
+  const [pluginImportDraft, setPluginImportDraft] = useState33("");
+  const [pluginImportState, setPluginImportState] = useState33({
     busy: false,
     message: null,
     error: null
@@ -20128,8 +20327,8 @@ function AppShellSettingsDialog({
   if (!shellNav?.settingsOpen) {
     return null;
   }
-  return /* @__PURE__ */ jsxs58("div", { className: "fixed inset-0 z-[70] flex items-start justify-center p-4 pt-[max(env(safe-area-inset-top),1rem)] sm:items-center", children: [
-    /* @__PURE__ */ jsx72(
+  return /* @__PURE__ */ jsxs59("div", { className: "fixed inset-0 z-[70] flex items-start justify-center p-4 pt-[max(env(safe-area-inset-top),1rem)] sm:items-center", children: [
+    /* @__PURE__ */ jsx74(
       "button",
       {
         type: "button",
@@ -20138,7 +20337,7 @@ function AppShellSettingsDialog({
         className: "ui-overlay-scrim absolute inset-0 backdrop-blur-sm"
       }
     ),
-    /* @__PURE__ */ jsxs58(
+    /* @__PURE__ */ jsxs59(
       "section",
       {
         role: "dialog",
@@ -20146,60 +20345,60 @@ function AppShellSettingsDialog({
         "aria-label": "Settings",
         className: "relative z-10 flex max-h-[calc(100vh-2rem)] w-full max-w-4xl flex-col overflow-hidden rounded-[1.8rem] border border-[var(--theme-border)] bg-[var(--theme-panel)] shadow-2xl shadow-black/20",
         children: [
-          /* @__PURE__ */ jsx72("div", { className: "shrink-0 p-5 pb-0", children: /* @__PURE__ */ jsxs58("div", { className: "flex items-start justify-between gap-3", children: [
-            /* @__PURE__ */ jsxs58("div", { children: [
-              /* @__PURE__ */ jsx72("p", { className: "text-xs uppercase tracking-[0.24em] text-[var(--theme-fg-muted)]", children: "Settings" }),
-              /* @__PURE__ */ jsx72("h2", { className: "mt-2 text-xl font-semibold text-[var(--theme-fg)]", children: "Settings" }),
-              /* @__PURE__ */ jsx72("p", { className: "mt-2 text-sm leading-6 text-[var(--theme-fg-soft)]", children: "Manage appearance and thread UI plugins." })
+          /* @__PURE__ */ jsx74("div", { className: "shrink-0 p-5 pb-0", children: /* @__PURE__ */ jsxs59("div", { className: "flex items-start justify-between gap-3", children: [
+            /* @__PURE__ */ jsxs59("div", { children: [
+              /* @__PURE__ */ jsx74("p", { className: "text-xs uppercase tracking-[0.24em] text-[var(--theme-fg-muted)]", children: "Settings" }),
+              /* @__PURE__ */ jsx74("h2", { className: "mt-2 text-xl font-semibold text-[var(--theme-fg)]", children: "Settings" }),
+              /* @__PURE__ */ jsx74("p", { className: "mt-2 text-sm leading-6 text-[var(--theme-fg-soft)]", children: "Manage appearance and thread UI plugins." })
             ] }),
-            /* @__PURE__ */ jsx72(
+            /* @__PURE__ */ jsx74(
               "button",
               {
                 type: "button",
                 "aria-label": "Close Settings",
                 onClick: shellNav.closeSettings,
                 className: "inline-flex h-9 w-9 items-center justify-center rounded-full border border-[var(--theme-border-strong)] bg-[var(--theme-surface-strong)] text-[var(--theme-fg)] transition hover:border-[var(--theme-border-contrast)] hover:bg-[var(--theme-hover)]",
-                children: /* @__PURE__ */ jsx72(CloseIcon, {})
+                children: /* @__PURE__ */ jsx74(CloseIcon, {})
               }
             )
           ] }) }),
-          /* @__PURE__ */ jsx72("div", { className: "min-h-0 flex-1 overflow-y-auto p-5 pt-5", children: /* @__PURE__ */ jsxs58("div", { className: "space-y-2", children: [
-            /* @__PURE__ */ jsxs58("div", { className: "rounded-[1.1rem] border border-[var(--theme-border)] bg-[var(--theme-surface)] px-3 py-3", children: [
-              /* @__PURE__ */ jsx72("div", { className: "flex items-start justify-between gap-3", children: /* @__PURE__ */ jsxs58("div", { className: "min-w-0", children: [
-                /* @__PURE__ */ jsx72("p", { className: "text-sm font-medium text-[var(--theme-fg)]", children: "Appearance" }),
-                /* @__PURE__ */ jsxs58("p", { className: "mt-1 text-xs leading-5 text-[var(--theme-fg-muted)]", children: [
+          /* @__PURE__ */ jsx74("div", { className: "min-h-0 flex-1 overflow-y-auto p-5 pt-5", children: /* @__PURE__ */ jsxs59("div", { className: "space-y-2", children: [
+            /* @__PURE__ */ jsxs59("div", { className: "rounded-[1.1rem] border border-[var(--theme-border)] bg-[var(--theme-surface)] px-3 py-3", children: [
+              /* @__PURE__ */ jsx74("div", { className: "flex items-start justify-between gap-3", children: /* @__PURE__ */ jsxs59("div", { className: "min-w-0", children: [
+                /* @__PURE__ */ jsx74("p", { className: "text-sm font-medium text-[var(--theme-fg)]", children: "Appearance" }),
+                /* @__PURE__ */ jsxs59("p", { className: "mt-1 text-xs leading-5 text-[var(--theme-fg-muted)]", children: [
                   "Choose light, dark, or follow the system setting. Active: ",
                   effectiveTheme,
                   "."
                 ] })
               ] }) }),
-              /* @__PURE__ */ jsx72("div", { className: "mt-3 grid gap-2 sm:grid-cols-3", children: themeOptions.map((option) => {
+              /* @__PURE__ */ jsx74("div", { className: "mt-3 grid gap-2 sm:grid-cols-3", children: themeOptions.map((option) => {
                 const active = selectedThemeMode === option.value;
-                return /* @__PURE__ */ jsxs58(
+                return /* @__PURE__ */ jsxs59(
                   "button",
                   {
                     type: "button",
                     onClick: () => shellNav.setThemeMode(option.value),
                     className: `block rounded-[1rem] border px-3 py-2.5 text-left transition ${active ? "border-[var(--theme-accent-border)] bg-[var(--theme-accent-soft)]" : "border-[var(--theme-border)] bg-[var(--theme-surface-strong)] hover:bg-[var(--theme-hover)]"}`,
                     children: [
-                      /* @__PURE__ */ jsxs58("div", { className: "flex items-center justify-between gap-3", children: [
-                        /* @__PURE__ */ jsx72("span", { className: "text-sm font-medium text-[var(--theme-fg)]", children: option.label }),
-                        active ? /* @__PURE__ */ jsx72("span", { className: "rounded-full border border-[var(--theme-accent-border)] bg-[var(--theme-accent-soft)] px-2 py-0.5 text-[10px] uppercase tracking-[0.18em] text-[var(--theme-accent-strong)]", children: "Active" }) : null
+                      /* @__PURE__ */ jsxs59("div", { className: "flex items-center justify-between gap-3", children: [
+                        /* @__PURE__ */ jsx74("span", { className: "text-sm font-medium text-[var(--theme-fg)]", children: option.label }),
+                        active ? /* @__PURE__ */ jsx74("span", { className: "rounded-full border border-[var(--theme-accent-border)] bg-[var(--theme-accent-soft)] px-2 py-0.5 text-[10px] uppercase tracking-[0.18em] text-[var(--theme-accent-strong)]", children: "Active" }) : null
                       ] }),
-                      /* @__PURE__ */ jsx72("p", { className: "mt-1 text-xs leading-5 text-[var(--theme-fg-muted)]", children: option.description })
+                      /* @__PURE__ */ jsx74("p", { className: "mt-1 text-xs leading-5 text-[var(--theme-fg-muted)]", children: option.description })
                     ]
                   },
                   option.value
                 );
               }) })
             ] }),
-            shellNav?.setAutoCollapseCompletedTurns ? /* @__PURE__ */ jsx72("div", { className: "rounded-[1.1rem] border border-[var(--theme-border)] bg-[var(--theme-surface)] px-3 py-3", children: /* @__PURE__ */ jsxs58("div", { className: "flex items-start justify-between gap-4", children: [
-              /* @__PURE__ */ jsxs58("div", { className: "min-w-0", children: [
-                /* @__PURE__ */ jsx72("p", { className: "text-sm font-medium text-[var(--theme-fg)]", children: "Thread timeline" }),
-                /* @__PURE__ */ jsx72("p", { className: "mt-1 text-xs leading-5 text-[var(--theme-fg-muted)]", children: "Collapse completed turns into prompt, elapsed work, and final reply." })
+            shellNav?.setAutoCollapseCompletedTurns ? /* @__PURE__ */ jsx74("div", { className: "rounded-[1.1rem] border border-[var(--theme-border)] bg-[var(--theme-surface)] px-3 py-3", children: /* @__PURE__ */ jsxs59("div", { className: "flex items-start justify-between gap-4", children: [
+              /* @__PURE__ */ jsxs59("div", { className: "min-w-0", children: [
+                /* @__PURE__ */ jsx74("p", { className: "text-sm font-medium text-[var(--theme-fg)]", children: "Thread timeline" }),
+                /* @__PURE__ */ jsx74("p", { className: "mt-1 text-xs leading-5 text-[var(--theme-fg-muted)]", children: "Collapse completed turns into prompt, elapsed work, and final reply." })
               ] }),
-              /* @__PURE__ */ jsxs58("label", { className: "inline-flex min-h-10 shrink-0 items-center gap-2 text-xs font-medium text-[var(--theme-fg-soft)]", children: [
-                /* @__PURE__ */ jsx72(
+              /* @__PURE__ */ jsxs59("label", { className: "inline-flex min-h-10 shrink-0 items-center gap-2 text-xs font-medium text-[var(--theme-fg-soft)]", children: [
+                /* @__PURE__ */ jsx74(
                   "input",
                   {
                     type: "checkbox",
@@ -20210,16 +20409,16 @@ function AppShellSettingsDialog({
                     className: "h-4 w-4 accent-[var(--theme-accent-solid)]"
                   }
                 ),
-                /* @__PURE__ */ jsx72("span", { children: "Auto collapse" })
+                /* @__PURE__ */ jsx74("span", { children: "Auto collapse" })
               ] })
             ] }) }) : null,
-            /* @__PURE__ */ jsxs58("div", { className: "rounded-[1.1rem] border border-[var(--theme-border)] bg-[var(--theme-surface)] px-3 py-3", children: [
-              /* @__PURE__ */ jsxs58("div", { className: "flex items-start justify-between gap-3", children: [
-                /* @__PURE__ */ jsxs58("div", { className: "min-w-0", children: [
-                  /* @__PURE__ */ jsx72("p", { className: "text-sm font-medium text-[var(--theme-fg)]", children: "Plugins" }),
-                  /* @__PURE__ */ jsx72("p", { className: "mt-1 text-xs leading-5 text-[var(--theme-fg-muted)]", children: "Enable renderers and thread extensions loaded by this UI." })
+            /* @__PURE__ */ jsxs59("div", { className: "rounded-[1.1rem] border border-[var(--theme-border)] bg-[var(--theme-surface)] px-3 py-3", children: [
+              /* @__PURE__ */ jsxs59("div", { className: "flex items-start justify-between gap-3", children: [
+                /* @__PURE__ */ jsxs59("div", { className: "min-w-0", children: [
+                  /* @__PURE__ */ jsx74("p", { className: "text-sm font-medium text-[var(--theme-fg)]", children: "Plugins" }),
+                  /* @__PURE__ */ jsx74("p", { className: "mt-1 text-xs leading-5 text-[var(--theme-fg-muted)]", children: "Enable renderers and thread extensions loaded by this UI." })
                 ] }),
-                /* @__PURE__ */ jsx72(
+                /* @__PURE__ */ jsx74(
                   "button",
                   {
                     type: "button",
@@ -20230,23 +20429,23 @@ function AppShellSettingsDialog({
                   }
                 )
               ] }),
-              /* @__PURE__ */ jsxs58("div", { className: "mt-3 grid gap-2", children: [
-                plugins.plugins.map((plugin) => /* @__PURE__ */ jsxs58(
+              /* @__PURE__ */ jsxs59("div", { className: "mt-3 grid gap-2", children: [
+                plugins.plugins.map((plugin) => /* @__PURE__ */ jsxs59(
                   "div",
                   {
                     className: "flex items-start justify-between gap-3 rounded-[1rem] border border-[var(--theme-border)] bg-[var(--theme-surface-strong)] px-3 py-2.5",
                     children: [
-                      /* @__PURE__ */ jsxs58("span", { className: "min-w-0", children: [
-                        /* @__PURE__ */ jsx72("span", { className: "block text-sm font-medium text-[var(--theme-fg)]", children: plugin.name }),
-                        /* @__PURE__ */ jsx72("span", { className: "mt-1 block text-xs leading-5 text-[var(--theme-fg-muted)]", children: plugin.description }),
-                        /* @__PURE__ */ jsx72("span", { className: "mt-2 block text-[10px] uppercase tracking-[0.16em] text-[var(--theme-fg-muted)]", children: [
+                      /* @__PURE__ */ jsxs59("span", { className: "min-w-0", children: [
+                        /* @__PURE__ */ jsx74("span", { className: "block text-sm font-medium text-[var(--theme-fg)]", children: plugin.name }),
+                        /* @__PURE__ */ jsx74("span", { className: "mt-1 block text-xs leading-5 text-[var(--theme-fg-muted)]", children: plugin.description }),
+                        /* @__PURE__ */ jsx74("span", { className: "mt-2 block text-[10px] uppercase tracking-[0.16em] text-[var(--theme-fg-muted)]", children: [
                           ...plugin.capabilities.artifactTypes.map((type) => type.type),
                           ...plugin.capabilities.threadPanels.map((panel) => panel.kind ?? panel.id)
                         ].join(", ") || "utility" }),
-                        /* @__PURE__ */ jsx72("span", { className: "mt-1 block text-[10px] uppercase tracking-[0.16em] text-[var(--theme-fg-muted)]", children: plugin.source === "imported" ? "Imported manifest" : "Built-in module" })
+                        /* @__PURE__ */ jsx74("span", { className: "mt-1 block text-[10px] uppercase tracking-[0.16em] text-[var(--theme-fg-muted)]", children: plugin.source === "imported" ? "Imported manifest" : "Built-in module" })
                       ] }),
-                      /* @__PURE__ */ jsxs58("span", { className: "flex shrink-0 items-center gap-2", children: [
-                        plugin.source === "imported" ? /* @__PURE__ */ jsx72(
+                      /* @__PURE__ */ jsxs59("span", { className: "flex shrink-0 items-center gap-2", children: [
+                        plugin.source === "imported" ? /* @__PURE__ */ jsx74(
                           "button",
                           {
                             type: "button",
@@ -20255,11 +20454,11 @@ function AppShellSettingsDialog({
                             children: "Uninstall"
                           }
                         ) : null,
-                        /* @__PURE__ */ jsxs58("label", { className: "sr-only", htmlFor: `plugin-toggle-${plugin.id}`, children: [
+                        /* @__PURE__ */ jsxs59("label", { className: "sr-only", htmlFor: `plugin-toggle-${plugin.id}`, children: [
                           "Toggle ",
                           plugin.name
                         ] }),
-                        /* @__PURE__ */ jsx72(
+                        /* @__PURE__ */ jsx74(
                           "input",
                           {
                             id: `plugin-toggle-${plugin.id}`,
@@ -20274,11 +20473,11 @@ function AppShellSettingsDialog({
                   },
                   plugin.id
                 )),
-                plugins.plugins.length === 0 && /* @__PURE__ */ jsx72("p", { className: "rounded-[1rem] border border-[var(--theme-border)] bg-[var(--theme-surface-strong)] px-3 py-3 text-xs text-[var(--theme-fg-muted)]", children: "No plugins are registered." })
+                plugins.plugins.length === 0 && /* @__PURE__ */ jsx74("p", { className: "rounded-[1rem] border border-[var(--theme-border)] bg-[var(--theme-surface-strong)] px-3 py-3 text-xs text-[var(--theme-fg-muted)]", children: "No plugins are registered." })
               ] }),
-              /* @__PURE__ */ jsxs58("div", { className: "mt-3 border-t border-[var(--theme-border)] pt-3", children: [
-                /* @__PURE__ */ jsx72("label", { className: "block text-xs font-medium text-[var(--theme-fg)]", children: "Import plugin" }),
-                /* @__PURE__ */ jsx72(
+              /* @__PURE__ */ jsxs59("div", { className: "mt-3 border-t border-[var(--theme-border)] pt-3", children: [
+                /* @__PURE__ */ jsx74("label", { className: "block text-xs font-medium text-[var(--theme-fg)]", children: "Import plugin" }),
+                /* @__PURE__ */ jsx74(
                   "textarea",
                   {
                     value: pluginImportDraft,
@@ -20293,9 +20492,9 @@ function AppShellSettingsDialog({
                     className: "mt-2 min-h-28 w-full resize-y rounded-[0.9rem] border border-[var(--theme-border)] bg-[var(--theme-surface-strong)] px-3 py-2 font-mono text-xs leading-5 text-[var(--theme-fg)] outline-none transition placeholder:text-[var(--theme-fg-muted)] focus:border-[var(--theme-accent-border)]"
                   }
                 ),
-                /* @__PURE__ */ jsxs58("div", { className: "mt-2 flex flex-wrap items-center justify-between gap-2", children: [
-                  /* @__PURE__ */ jsx72("p", { className: "max-w-[42rem] text-xs leading-5 text-[var(--theme-fg-muted)]", children: "Imports register manifest-declared artifact types. Rendering code still needs a trusted built-in frontend module." }),
-                  /* @__PURE__ */ jsx72(
+                /* @__PURE__ */ jsxs59("div", { className: "mt-2 flex flex-wrap items-center justify-between gap-2", children: [
+                  /* @__PURE__ */ jsx74("p", { className: "max-w-[42rem] text-xs leading-5 text-[var(--theme-fg-muted)]", children: "Imports register manifest-declared artifact types. Rendering code still needs a trusted built-in frontend module." }),
+                  /* @__PURE__ */ jsx74(
                     "button",
                     {
                       type: "button",
@@ -20306,10 +20505,10 @@ function AppShellSettingsDialog({
                     }
                   )
                 ] }),
-                pluginImportState.error && /* @__PURE__ */ jsx72("p", { className: "mt-2 text-xs text-rose-300", children: pluginImportState.error }),
-                pluginImportState.message && /* @__PURE__ */ jsx72("p", { className: "mt-2 text-xs text-emerald-300", children: pluginImportState.message })
+                pluginImportState.error && /* @__PURE__ */ jsx74("p", { className: "mt-2 text-xs text-rose-300", children: pluginImportState.error }),
+                pluginImportState.message && /* @__PURE__ */ jsx74("p", { className: "mt-2 text-xs text-emerald-300", children: pluginImportState.message })
               ] }),
-              plugins.error && /* @__PURE__ */ jsx72("p", { className: "mt-2 text-xs text-rose-300", children: plugins.error })
+              plugins.error && /* @__PURE__ */ jsx74("p", { className: "mt-2 text-xs text-rose-300", children: plugins.error })
             ] }),
             extraContent
           ] }) })

@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 
 import type { ImportPluginInput } from '@remote-codex/shared';
+import { builtinFrontendPlugins } from '../plugins/builtin-plugin-modules';
+import { createDefaultPluginContextValue } from '../plugins/plugin-context';
 import { usePlugins } from '../plugins/usePlugins';
 import { type ThemeMode, useAppShellNav } from './AppShellNavContext';
 
@@ -70,16 +72,28 @@ export function AppShellMenuButton({ className = '' }: { className?: string }) {
   }
 
   return (
-    <button
-      type="button"
-      aria-label={shellNav.navOpen ? 'Close Navigation' : 'Open Navigation'}
-      aria-expanded={shellNav.navOpen}
-      aria-controls="app-shell-navigation-menu"
-      onClick={shellNav.toggleNav}
-      className={`inline-flex h-10 w-10 shrink-0 items-center justify-center text-[var(--theme-fg)] transition hover:text-[var(--theme-fg-soft)] ${className}`.trim()}
-    >
-      {shellNav.navOpen ? <CloseIcon /> : <MenuIcon />}
-    </button>
+    <>
+      <button
+        type="button"
+        aria-label={shellNav.navOpen ? 'Close Navigation' : 'Open Navigation'}
+        aria-expanded={shellNav.navOpen}
+        aria-controls="app-shell-navigation-menu"
+        onClick={shellNav.toggleNav}
+        className={`inline-flex h-10 w-10 shrink-0 items-center justify-center text-[var(--theme-fg)] transition hover:text-[var(--theme-fg-soft)] ${className}`.trim()}
+      >
+        {shellNav.navOpen ? <CloseIcon /> : <MenuIcon />}
+      </button>
+      {shellNav.navOpen ? (
+        <button
+          type="button"
+          aria-label="Open Navigation"
+          aria-expanded="true"
+          aria-controls="app-shell-navigation-menu"
+          onClick={shellNav.openNav}
+          className="sr-only"
+        />
+      ) : null}
+    </>
   );
 }
 
@@ -199,7 +213,11 @@ export function AppShellSettingsDialog({
   importPluginInput = defaultImportPluginInput,
 }: AppShellSettingsDialogProps = {}) {
   const shellNav = useAppShellNav();
-  const plugins = usePlugins();
+  const contextPlugins = usePlugins();
+  const plugins =
+    contextPlugins.plugins.length > 0
+      ? contextPlugins
+      : createDefaultPluginContextValue(builtinFrontendPlugins);
   const [pluginImportDraft, setPluginImportDraft] = useState('');
   const [pluginImportState, setPluginImportState] = useState<{
     busy: boolean;

@@ -410,6 +410,8 @@ export function ThreadWorkspaceLayout({
   effectiveTheme: effectiveThemeProp,
   themeMode: themeModeProp,
   onThemeModeChange,
+  showMobileAppMenu = false,
+  showMobileThreadNavToggle = true,
   showMobileNewThreadShortcut = true,
   mobileHeaderAction,
   currentThreadId,
@@ -436,6 +438,8 @@ export function ThreadWorkspaceLayout({
   onCloseAppNavigation,
   onRenameThread,
   onDeleteThread,
+  appMenuButton,
+  appNavigationMenu,
   workspaceContent,
   workspaceTitle = "Workspace",
   workspaceActions,
@@ -728,8 +732,8 @@ export function ThreadWorkspaceLayout({
         <DialogTrigger asChild>
           <button
             type="button"
-            aria-label="Open settings"
-            title="Settings"
+            aria-label="Thread settings"
+            title="Thread settings"
             className="thread-icon-button inline-flex h-10 w-10 items-center justify-center rounded-full sm:h-9 sm:w-9"
           >
             <Settings className="h-4 w-4" />
@@ -975,8 +979,8 @@ export function ThreadWorkspaceLayout({
     layoutMode === "mobile" ||
     (layoutMode === "responsive" && isShellMobileViewport);
   const renderMobileTopbarControls = renderMobileWorkspaceSplit;
-  const shouldShowMobileRoomsButton =
-    renderMobileTopbarControls && !mobileRoomsOpen;
+  const shouldShowAppMenuButton = showMobileAppMenu && Boolean(appMenuButton);
+  const shouldShowMobileRoomsButton = showMobileThreadNavToggle && !mobileRoomsOpen;
   const canReturnToWorkspace = Boolean(workspaceReturnHref || onWorkspaceReturn);
   const workspaceReturnControl = canReturnToWorkspace ? (
     <a
@@ -1029,10 +1033,10 @@ export function ThreadWorkspaceLayout({
                     onClick={() => setRoomsRailCollapsed((current) => !current)}
                     className="thread-icon-button thread-desktop-only-flex h-9 w-9 shrink-0 items-center justify-center rounded-full"
                     title={
-                      roomsRailCollapsed ? "Expand rooms" : "Collapse rooms"
+                      roomsRailCollapsed ? "Expand thread list" : "Collapse thread list"
                     }
                     aria-label={
-                      roomsRailCollapsed ? "Expand rooms" : "Collapse rooms"
+                      roomsRailCollapsed ? "Expand thread list" : "Collapse thread list"
                     }
                   >
                     {roomsRailCollapsed ? (
@@ -1075,8 +1079,8 @@ export function ThreadWorkspaceLayout({
                   <button
                     type="button"
                     onClick={() => setMobileRoomsOpen(false)}
-                    aria-label="Close rooms"
-                    title="Close rooms"
+                    aria-label="Close thread navigation"
+                    title="Close thread navigation"
                     className="thread-icon-button thread-mobile-only-inline-flex h-10 w-10 items-center justify-center rounded-full"
                   >
                     <X className="h-4 w-4" />
@@ -1114,17 +1118,40 @@ export function ThreadWorkspaceLayout({
           <GraphChatMainShell>
             <GraphChatTopbarShell>
               <div className="thread-topbar-row flex min-h-12 items-center px-3 py-1.5 sm:min-h-12 sm:px-4">
+                {metaContent ? (
+                  <div
+                    className="sr-only"
+                    data-testid="thread-session-meta-summary"
+                  >
+                    {metaContent}
+                  </div>
+                ) : null}
                 <div className="flex w-full items-center justify-between gap-3 sm:gap-4">
                   <div className="flex min-w-0 items-center gap-2 sm:gap-3">
+                    {shouldShowAppMenuButton ? (
+                      <div className="relative shrink-0">
+                        {appMenuButton}
+                        {appNavigationMenu ? (
+                          <div className="absolute left-0 top-[calc(100%+0.5rem)] z-50 w-[min(22rem,calc(100vw-1rem))]">
+                            {appNavigationMenu}
+                          </div>
+                        ) : null}
+                      </div>
+                    ) : null}
                     {shouldShowMobileRoomsButton ? (
                       <button
                         type="button"
                         onClick={() => setMobileRoomsOpen(true)}
-                        aria-label="Open rooms"
-                        title="Open rooms"
-                        className="thread-icon-button thread-mobile-only-inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full"
+                        aria-label="Expand thread navigation"
+                        title="Expand thread navigation"
+                        className="thread-topbar-navigation-trigger inline-flex min-w-0 shrink-0 items-center gap-2 rounded-full border px-2.5 py-2 text-left text-xs font-medium transition sm:max-w-[20rem]"
                       >
                         <Menu className="h-4 w-4" />
+                        <span className="min-w-0 truncate">
+                          {currentWorkspaceLabel && currentThreadLabel
+                            ? `${currentWorkspaceLabel} / ${currentThreadLabel}`
+                            : currentThreadLabel ?? currentWorkspaceLabel ?? "Thread navigation"}
+                        </span>
                       </button>
                     ) : null}
                     <div className="min-w-0">
@@ -1208,7 +1235,7 @@ export function ThreadWorkspaceLayout({
 
                   <div className="inline-flex shrink-0 items-center gap-2">
                     {topbarActions ? (
-                      <div className="thread-graph-topbar-actions thread-desktop-only-inline-flex items-center rounded-lg border p-0.5 shadow-none">
+                      <div className="thread-graph-topbar-actions inline-flex items-center rounded-lg border p-0.5 shadow-none">
                         {topbarActions}
                       </div>
                     ) : null}

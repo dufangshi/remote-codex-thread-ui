@@ -502,6 +502,16 @@ function GraphChatHistoryToolFrame({
         tone,
       )} ${className ?? ''}`}
     >
+      {actionLabel ? (
+        <button
+          type="button"
+          aria-label={actionLabel}
+          onClick={onOpen}
+          className="sr-only"
+        >
+          {actionLabel}
+        </button>
+      ) : null}
       <Accordion
         type="single"
         collapsible
