@@ -29,6 +29,9 @@ export interface WorkspaceTreeNode {
   preview?: string;
   detail?: string;
   size?: number;
+  hasChildren?: boolean;
+  childrenLoaded?: boolean;
+  truncated?: boolean;
   workspaceNode?: ThreadWorkspaceTreeNode;
 }
 
@@ -85,15 +88,64 @@ export function workspaceTreeNodeToGraphNode(
 ): WorkspaceTreeNode {
   const kind: WorkspaceNodeKind =
     node.kind === 'directory' ? 'directory' : 'file';
+  const children = (node.children ?? []).map(workspaceTreeNodeToGraphNode);
   return {
     id: `workspace:${node.path}`,
     name: node.name,
     path: node.path,
     kind,
     ...(node.size !== undefined ? { size: node.size } : {}),
+    ...(node.hasChildren !== undefined
+      ? { hasChildren: node.hasChildren }
+      : kind === 'directory'
+        ? { hasChildren: children.length > 0 }
+        : {}),
+    ...(node.childrenLoaded !== undefined
+      ? { childrenLoaded: node.childrenLoaded }
+      : kind === 'directory'
+        ? { childrenLoaded: node.children !== undefined }
+        : {}),
+    ...(node.truncated !== undefined ? { truncated: node.truncated } : {}),
     workspaceNode: node,
-    children: (node.children ?? []).map(workspaceTreeNodeToGraphNode),
+    children,
   };
+}
+
+export function replaceWorkspaceNodeChildren(
+  node: WorkspaceTreeNode,
+  targetPath: string,
+  children: WorkspaceTreeNode[],
+  options: { truncated?: boolean } = {},
+): WorkspaceTreeNode {
+  if (node.path === targetPath) {
+    return {
+      ...node,
+      children,
+      hasChildren: children.length > 0,
+      childrenLoaded: true,
+      truncated: options.truncated ?? node.truncated,
+    };
+  }
+
+  if (node.children.length === 0) {
+    return node;
+  }
+
+  let changed = false;
+  const nextChildren = node.children.map((child) => {
+    const nextChild = replaceWorkspaceNodeChildren(
+      child,
+      targetPath,
+      children,
+      options,
+    );
+    if (nextChild !== child) {
+      changed = true;
+    }
+    return nextChild;
+  });
+
+  return changed ? { ...node, children: nextChildren } : node;
 }
 
 export function findFirstWorkspaceFile(

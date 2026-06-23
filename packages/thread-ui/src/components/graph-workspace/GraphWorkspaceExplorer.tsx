@@ -41,6 +41,7 @@ import {
   findFirstWorkspaceFile,
   flattenWorkspaceNodes,
   hasWorkspacePath,
+  replaceWorkspaceNodeChildren,
   workspaceTreeNodeToGraphNode,
   type WorkspaceTreeNode,
 } from './workspaceTree';
@@ -153,6 +154,7 @@ function iconForWorkspaceNode(node: WorkspaceTreeNode, expanded: boolean) {
 function WorkspaceTreeRow({
   depth,
   expandedPaths,
+  loadingPaths,
   node,
   onDownload,
   onSelect,
@@ -161,6 +163,7 @@ function WorkspaceTreeRow({
 }: {
   depth: number;
   expandedPaths: Set<string>;
+  loadingPaths: Set<string>;
   node: WorkspaceTreeNode;
   onDownload?: ((node: WorkspaceTreeNode) => void) | undefined;
   onSelect: (nodeId: string) => void;
@@ -170,6 +173,7 @@ function WorkspaceTreeRow({
   const isDirectory = node.kind === 'directory';
   const expanded =
     isDirectory && (node.path === '' || expandedPaths.has(node.path));
+  const loadingChildren = isDirectory && loadingPaths.has(node.path);
   const selected = selectedNodeId === node.id;
   const paddingLeft = `${depth * 0.75 + 0.5}rem`;
 
@@ -190,6 +194,11 @@ function WorkspaceTreeRow({
             )}
             {iconForWorkspaceNode(node, expanded)}
             <span className="truncate">{node.name}</span>
+            {loadingChildren ? (
+              <span className="ml-auto shrink-0 text-xs text-slate-400 dark:text-slate-500">
+                Loading
+              </span>
+            ) : null}
           </button>
           {onDownload ? (
             <button
@@ -212,6 +221,7 @@ function WorkspaceTreeRow({
                 key={child.id}
                 depth={depth + 1}
                 expandedPaths={expandedPaths}
+                loadingPaths={loadingPaths}
                 node={child}
                 {...(onDownload ? { onDownload } : {})}
                 onSelect={onSelect}
@@ -219,6 +229,14 @@ function WorkspaceTreeRow({
                 selectedNodeId={selectedNodeId}
               />
             ))}
+            {node.truncated ? (
+              <div
+                className="px-2 py-1 text-xs text-slate-400 dark:text-slate-500"
+                style={{ paddingLeft: `${(depth + 1) * 0.75 + 0.5}rem` }}
+              >
+                More items not shown
+              </div>
+            ) : null}
           </div>
         ) : null}
       </div>
@@ -316,6 +334,7 @@ function WorkspaceExplorerPanel({
   canUpload,
   onCollapse,
   expandedPaths,
+  loadingPaths,
   loading,
   onDownload,
   onEmptyGarbage,
@@ -331,6 +350,7 @@ function WorkspaceExplorerPanel({
   canUpload?: boolean;
   onCollapse?: (() => void) | undefined;
   expandedPaths: Set<string>;
+  loadingPaths: Set<string>;
   loading?: boolean;
   onDownload?: ((node: WorkspaceTreeNode) => void) | undefined;
   onEmptyGarbage?: (() => void) | undefined;
@@ -422,6 +442,7 @@ function WorkspaceExplorerPanel({
         <WorkspaceTreeRow
           depth={0}
           expandedPaths={expandedPaths}
+          loadingPaths={loadingPaths}
           node={visibleTree}
           {...(onDownload ? { onDownload } : {})}
           onSelect={onSelect}
@@ -490,6 +511,9 @@ export function GraphWorkspaceExplorer({
   >(null);
   const [workspaceError, setWorkspaceError] = useState<string | null>(null);
   const [loadingTree, setLoadingTree] = useState(false);
+  const [loadingDirectoryPaths, setLoadingDirectoryPaths] = useState<Set<string>>(
+    () => new Set(),
+  );
   const [previewLoading, setPreviewLoading] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
   const [showGarbageDialog, setShowGarbageDialog] = useState(false);
@@ -557,7 +581,7 @@ export function GraphWorkspaceExplorer({
     setWorkspaceError(null);
     try {
       const nextTree = workspaceTreeNodeToGraphNode(
-        await workspaceAdapter.listTree(workspaceIdentity),
+        await workspaceAdapter.listTree({ ...workspaceIdentity, path: '' }),
       );
       setAdapterTree(nextTree);
       const firstFile = findFirstWorkspaceFile(nextTree);
@@ -582,8 +606,73 @@ export function GraphWorkspaceExplorer({
     }
   }
 
+  async function loadDirectoryChildren(path: string) {
+    if (!workspaceAdapter || !adapterTree) {
+      return;
+    }
+
+    setLoadingDirectoryPaths((current) => {
+      if (current.has(path)) {
+        return current;
+      }
+      const next = new Set(current);
+      next.add(path);
+      return next;
+    });
+    setWorkspaceError(null);
+
+    try {
+      const loadedNode = workspaceTreeNodeToGraphNode(
+        await workspaceAdapter.listTree({ ...workspaceIdentity, path }),
+      );
+      setAdapterTree((current) =>
+        current
+          ? replaceWorkspaceNodeChildren(current, path, loadedNode.children, {
+              truncated: loadedNode.truncated,
+            })
+          : current,
+      );
+      setWorkspaceVersion((version) => version + 1);
+    } catch (error) {
+      setWorkspaceError(
+        error instanceof Error ? error.message : 'Failed to load directory',
+      );
+    } finally {
+      setLoadingDirectoryPaths((current) => {
+        if (!current.has(path)) {
+          return current;
+        }
+        const next = new Set(current);
+        next.delete(path);
+        return next;
+      });
+    }
+  }
+
+  useEffect(() => {
+    if (!workspaceAdapter || !adapterTree) {
+      return;
+    }
+    for (const node of nodeMap.values()) {
+      if (
+        node.path &&
+        node.kind === 'directory' &&
+        expandedPaths.has(node.path) &&
+        node.hasChildren &&
+        !node.childrenLoaded &&
+        !loadingDirectoryPaths.has(node.path)
+      ) {
+        void loadDirectoryChildren(node.path);
+      }
+    }
+    // loadDirectoryChildren is intentionally omitted; this effect reacts to the
+    // current tree snapshot and expanded path set.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [adapterTree, expandedPaths, nodeMap, workspaceAdapter]);
+
   useEffect(() => {
     setAdapterTree(null);
+    setLoadingDirectoryPaths(new Set());
     setPreviewFile(null);
     setImageUrl(null);
     setPdfUrl(null);
@@ -838,6 +927,12 @@ export function GraphWorkspaceExplorer({
     if (!path) {
       return;
     }
+    const node = nodeMap.get(`workspace:${path}`);
+    const shouldLoad =
+      node?.kind === 'directory' &&
+      node.hasChildren &&
+      !node.childrenLoaded &&
+      !loadingDirectoryPaths.has(path);
     setExpandedPaths((current) => {
       const next = new Set(current);
       if (next.has(path)) {
@@ -848,6 +943,9 @@ export function GraphWorkspaceExplorer({
       writeExpandedPaths(workspaceIdentity, next);
       return next;
     });
+    if (!expandedPaths.has(path) && shouldLoad) {
+      void loadDirectoryChildren(path);
+    }
   }
 
   const explorerPanel = (
@@ -858,6 +956,7 @@ export function GraphWorkspaceExplorer({
         ? { onCollapse: () => setCollapsedPanel('explorer') }
         : {})}
       expandedPaths={expandedPaths}
+      loadingPaths={loadingDirectoryPaths}
       loading={loadingTree}
       {...explorerActions}
       onSelect={(nodeId) => {

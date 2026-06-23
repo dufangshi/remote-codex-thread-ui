@@ -33,6 +33,9 @@ export interface ThreadWorkspaceTreeNode {
   path: string;
   kind: 'file' | 'directory';
   size?: number;
+  hasChildren?: boolean;
+  childrenLoaded?: boolean;
+  truncated?: boolean;
   children?: ThreadWorkspaceTreeNode[];
 }
 
@@ -66,6 +69,7 @@ export interface ThreadWorkspaceAdapter {
   listTree(input: {
     threadId: string;
     workspaceId?: string | null;
+    path?: string | null;
   }): Promise<ThreadWorkspaceTreeNode>;
   readFile(input: {
     threadId: string;

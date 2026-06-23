@@ -221,15 +221,47 @@ function fileNameFromPath(path) {
 }
 function workspaceTreeNodeToGraphNode(node) {
   const kind = node.kind === "directory" ? "directory" : "file";
+  const children = (node.children ?? []).map(workspaceTreeNodeToGraphNode);
   return {
     id: `workspace:${node.path}`,
     name: node.name,
     path: node.path,
     kind,
     ...node.size !== void 0 ? { size: node.size } : {},
+    ...node.hasChildren !== void 0 ? { hasChildren: node.hasChildren } : kind === "directory" ? { hasChildren: children.length > 0 } : {},
+    ...node.childrenLoaded !== void 0 ? { childrenLoaded: node.childrenLoaded } : kind === "directory" ? { childrenLoaded: node.children !== void 0 } : {},
+    ...node.truncated !== void 0 ? { truncated: node.truncated } : {},
     workspaceNode: node,
-    children: (node.children ?? []).map(workspaceTreeNodeToGraphNode)
+    children
   };
+}
+function replaceWorkspaceNodeChildren(node, targetPath, children, options = {}) {
+  if (node.path === targetPath) {
+    return {
+      ...node,
+      children,
+      hasChildren: children.length > 0,
+      childrenLoaded: true,
+      truncated: options.truncated ?? node.truncated
+    };
+  }
+  if (node.children.length === 0) {
+    return node;
+  }
+  let changed = false;
+  const nextChildren = node.children.map((child) => {
+    const nextChild = replaceWorkspaceNodeChildren(
+      child,
+      targetPath,
+      children,
+      options
+    );
+    if (nextChild !== child) {
+      changed = true;
+    }
+    return nextChild;
+  });
+  return changed ? { ...node, children: nextChildren } : node;
 }
 function findFirstWorkspaceFile(node) {
   if (node.kind === "file") {
@@ -2028,6 +2060,7 @@ function iconForWorkspaceNode(node, expanded) {
 function WorkspaceTreeRow({
   depth,
   expandedPaths,
+  loadingPaths,
   node,
   onDownload,
   onSelect,
@@ -2036,6 +2069,7 @@ function WorkspaceTreeRow({
 }) {
   const isDirectory = node.kind === "directory";
   const expanded = isDirectory && (node.path === "" || expandedPaths.has(node.path));
+  const loadingChildren = isDirectory && loadingPaths.has(node.path);
   const selected = selectedNodeId === node.id;
   const paddingLeft = `${depth * 0.75 + 0.5}rem`;
   if (isDirectory) {
@@ -2051,7 +2085,8 @@ function WorkspaceTreeRow({
             children: [
               expanded ? /* @__PURE__ */ jsx58(ChevronDown, { className: "h-3.5 w-3.5 shrink-0 text-slate-400 dark:text-slate-500" }) : /* @__PURE__ */ jsx58(ChevronRight2, { className: "h-3.5 w-3.5 shrink-0 text-slate-400 dark:text-slate-500" }),
               iconForWorkspaceNode(node, expanded),
-              /* @__PURE__ */ jsx58("span", { className: "truncate", children: node.name })
+              /* @__PURE__ */ jsx58("span", { className: "truncate", children: node.name }),
+              loadingChildren ? /* @__PURE__ */ jsx58("span", { className: "ml-auto shrink-0 text-xs text-slate-400 dark:text-slate-500", children: "Loading" }) : null
             ]
           }
         ),
@@ -2067,19 +2102,30 @@ function WorkspaceTreeRow({
           }
         ) : null
       ] }),
-      expanded ? /* @__PURE__ */ jsx58("div", { children: node.children.map((child) => /* @__PURE__ */ jsx58(
-        WorkspaceTreeRow,
-        {
-          depth: depth + 1,
-          expandedPaths,
-          node: child,
-          ...onDownload ? { onDownload } : {},
-          onSelect,
-          onToggle,
-          selectedNodeId
-        },
-        child.id
-      )) }) : null
+      expanded ? /* @__PURE__ */ jsxs47("div", { children: [
+        node.children.map((child) => /* @__PURE__ */ jsx58(
+          WorkspaceTreeRow,
+          {
+            depth: depth + 1,
+            expandedPaths,
+            loadingPaths,
+            node: child,
+            ...onDownload ? { onDownload } : {},
+            onSelect,
+            onToggle,
+            selectedNodeId
+          },
+          child.id
+        )),
+        node.truncated ? /* @__PURE__ */ jsx58(
+          "div",
+          {
+            className: "px-2 py-1 text-xs text-slate-400 dark:text-slate-500",
+            style: { paddingLeft: `${(depth + 1) * 0.75 + 0.5}rem` },
+            children: "More items not shown"
+          }
+        ) : null
+      ] }) : null
     ] });
   }
   return /* @__PURE__ */ jsxs47(
@@ -2155,6 +2201,7 @@ function WorkspaceExplorerPanel({
   canUpload,
   onCollapse,
   expandedPaths,
+  loadingPaths,
   loading,
   onDownload,
   onEmptyGarbage,
@@ -2245,6 +2292,7 @@ function WorkspaceExplorerPanel({
         {
           depth: 0,
           expandedPaths,
+          loadingPaths,
           node: visibleTree,
           ...onDownload ? { onDownload } : {},
           onSelect,
@@ -2291,6 +2339,9 @@ function GraphWorkspaceExplorer({
   const [collapsedPanel, setCollapsedPanel] = useState26(null);
   const [workspaceError, setWorkspaceError] = useState26(null);
   const [loadingTree, setLoadingTree] = useState26(false);
+  const [loadingDirectoryPaths, setLoadingDirectoryPaths] = useState26(
+    () => /* @__PURE__ */ new Set()
+  );
   const [previewLoading, setPreviewLoading] = useState26(false);
   const [loadingMore, setLoadingMore] = useState26(false);
   const [showGarbageDialog, setShowGarbageDialog] = useState26(false);
@@ -2348,7 +2399,7 @@ function GraphWorkspaceExplorer({
     setWorkspaceError(null);
     try {
       const nextTree = workspaceTreeNodeToGraphNode(
-        await workspaceAdapter.listTree(workspaceIdentity)
+        await workspaceAdapter.listTree({ ...workspaceIdentity, path: "" })
       );
       setAdapterTree(nextTree);
       const firstFile = findFirstWorkspaceFile(nextTree);
@@ -2372,8 +2423,57 @@ function GraphWorkspaceExplorer({
       setLoadingTree(false);
     }
   }
+  async function loadDirectoryChildren(path) {
+    if (!workspaceAdapter || !adapterTree) {
+      return;
+    }
+    setLoadingDirectoryPaths((current) => {
+      if (current.has(path)) {
+        return current;
+      }
+      const next = new Set(current);
+      next.add(path);
+      return next;
+    });
+    setWorkspaceError(null);
+    try {
+      const loadedNode = workspaceTreeNodeToGraphNode(
+        await workspaceAdapter.listTree({ ...workspaceIdentity, path })
+      );
+      setAdapterTree(
+        (current) => current ? replaceWorkspaceNodeChildren(current, path, loadedNode.children, {
+          truncated: loadedNode.truncated
+        }) : current
+      );
+      setWorkspaceVersion((version) => version + 1);
+    } catch (error) {
+      setWorkspaceError(
+        error instanceof Error ? error.message : "Failed to load directory"
+      );
+    } finally {
+      setLoadingDirectoryPaths((current) => {
+        if (!current.has(path)) {
+          return current;
+        }
+        const next = new Set(current);
+        next.delete(path);
+        return next;
+      });
+    }
+  }
+  useEffect21(() => {
+    if (!workspaceAdapter || !adapterTree) {
+      return;
+    }
+    for (const node of nodeMap.values()) {
+      if (node.path && node.kind === "directory" && expandedPaths.has(node.path) && node.hasChildren && !node.childrenLoaded && !loadingDirectoryPaths.has(node.path)) {
+        void loadDirectoryChildren(node.path);
+      }
+    }
+  }, [adapterTree, expandedPaths, nodeMap, workspaceAdapter]);
   useEffect21(() => {
     setAdapterTree(null);
+    setLoadingDirectoryPaths(/* @__PURE__ */ new Set());
     setPreviewFile(null);
     setImageUrl(null);
     setPdfUrl(null);
@@ -2597,6 +2697,8 @@ function GraphWorkspaceExplorer({
     if (!path) {
       return;
     }
+    const node = nodeMap.get(`workspace:${path}`);
+    const shouldLoad = node?.kind === "directory" && node.hasChildren && !node.childrenLoaded && !loadingDirectoryPaths.has(path);
     setExpandedPaths((current) => {
       const next = new Set(current);
       if (next.has(path)) {
@@ -2607,6 +2709,9 @@ function GraphWorkspaceExplorer({
       writeExpandedPaths(workspaceIdentity, next);
       return next;
     });
+    if (!expandedPaths.has(path) && shouldLoad) {
+      void loadDirectoryChildren(path);
+    }
   }
   const explorerPanel = /* @__PURE__ */ jsx58(
     WorkspaceExplorerPanel,
@@ -2615,6 +2720,7 @@ function GraphWorkspaceExplorer({
       canUpload: Boolean(workspaceAdapter?.uploadFile),
       ...!isMobileViewport ? { onCollapse: () => setCollapsedPanel("explorer") } : {},
       expandedPaths,
+      loadingPaths: loadingDirectoryPaths,
       loading: loadingTree,
       ...explorerActions,
       onSelect: (nodeId) => {
