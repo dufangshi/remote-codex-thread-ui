@@ -409,6 +409,9 @@ function collapsedSummaryMessages(items: ThreadHistoryItemDto[]) {
   return {
     users,
     finalAgent,
+    hiddenItems: items.filter(
+      (item) => item.kind !== 'userMessage' && item.id !== finalAgent?.id,
+    ),
   };
 }
 
@@ -540,7 +543,9 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
     () => formatWorkedDuration(turn.startedAt, mergedItems),
     [mergedItems, turn.startedAt],
   );
-  const collapsedSummaryNode = isTerminalTurnStatus(turn.status) ? (
+  const hasCollapsedHiddenItems = collapsedSummary.hiddenItems.length > 0;
+  const effectiveCollapsed = isCollapsed && hasCollapsedHiddenItems;
+  const collapsedSummaryNode = isTerminalTurnStatus(turn.status) && hasCollapsedHiddenItems ? (
     <div className="thread-graph-turn-collapsed-summary space-y-2">
       {collapsedSummary.users.map((item) => (
         <CompactMessageItem
@@ -611,12 +616,12 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
     <GraphChatTurnFrame
       absoluteIndex={absoluteIndex}
       body={turnBody}
-      collapsed={isCollapsed}
+      collapsed={effectiveCollapsed}
       collapsedBody={collapsedSummaryNode}
       error={turn.error}
       headerStatus={<TurnStatusBar turn={turn} />}
       isActive={activeForRendering}
-      onToggleCollapse={() => onToggleCollapse(turn.id, isCollapsed)}
+      onToggleCollapse={() => onToggleCollapse(turn.id, effectiveCollapsed)}
       refCallback={articleRef}
       startedAt={turn.startedAt}
       timeLabel={turnTimeLabel}

@@ -163,6 +163,68 @@ export function findFirstWorkspaceFile(
   return null;
 }
 
+export function findWorkspaceNodeByPath(
+  node: WorkspaceTreeNode | null,
+  targetPath: string | null,
+): WorkspaceTreeNode | null {
+  if (!node || targetPath === null) {
+    return null;
+  }
+  if (node.path === targetPath) {
+    return node;
+  }
+  for (const child of node.children) {
+    const found = findWorkspaceNodeByPath(child, targetPath);
+    if (found) {
+      return found;
+    }
+  }
+  return null;
+}
+
+export function normalizeWorkspacePath(path: string) {
+  return path
+    .trim()
+    .replace(/\\/g, '/')
+    .replace(/^\.\/+/, '')
+    .replace(/^\/+/, '');
+}
+
+export function ancestorDirectoryPaths(path: string) {
+  const normalized = normalizeWorkspacePath(path);
+  const segments = normalized.split('/').filter(Boolean);
+  segments.pop();
+  const paths: string[] = [];
+  let current = '';
+  for (const segment of segments) {
+    current = current ? `${current}/${segment}` : segment;
+    paths.push(current);
+  }
+  return paths;
+}
+
+export function replaceWorkspaceNode(
+  node: WorkspaceTreeNode,
+  targetPath: string,
+  replacement: WorkspaceTreeNode,
+): WorkspaceTreeNode {
+  if (node.path === targetPath) {
+    return replacement;
+  }
+  if (node.children.length === 0) {
+    return node;
+  }
+  let changed = false;
+  const children = node.children.map((child) => {
+    const next = replaceWorkspaceNode(child, targetPath, replacement);
+    if (next !== child) {
+      changed = true;
+    }
+    return next;
+  });
+  return changed ? { ...node, children } : node;
+}
+
 export function hasWorkspacePath(
   node: WorkspaceTreeNode | null,
   targetPath: string | null,

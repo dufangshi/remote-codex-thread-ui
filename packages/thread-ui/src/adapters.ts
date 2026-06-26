@@ -12,6 +12,7 @@ import type { SendPromptInput } from './types';
 export interface ThreadTimelineAdapter {
   getImageAssetUrl?: (input: { threadId: string; path: string }) => string;
   onOpenLinkedThread?: (threadId: string) => void;
+  onOpenWorkspaceFile?: (input: { path: string; line?: number }) => void;
   onLoadHistoryItemDetail?: (
     itemId: string,
   ) => Promise<ThreadHistoryItemDetailDto> | ThreadHistoryItemDetailDto;
@@ -146,6 +147,7 @@ export interface ThreadDetailUiAdapter {
     itemId: string,
   ) => Promise<ThreadHistoryItemDetailDto> | ThreadHistoryItemDetailDto;
   getImageAssetUrl?: (path: string) => string;
+  openWorkspaceFile?: (input: { path: string; line?: number }) => void;
   workspace?: ThreadWorkspaceAdapter | null;
   shell?: ThreadShellAdapter | null;
 }

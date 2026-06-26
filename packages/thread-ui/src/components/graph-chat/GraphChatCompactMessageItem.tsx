@@ -26,6 +26,7 @@ type GraphChatReasoningItem = ThreadHistoryItemDto & { kind: 'reasoning' };
 type GraphChatCompactMessage = ThreadHistoryItemDto & {
   kind: GraphChatCompactMessageKind;
   reasoningItems?: GraphChatReasoningItem[] | undefined;
+  attachmentPreviewUrls?: Record<string, string> | undefined;
 };
 
 function isGraphChatRunningStatus(status?: string | null) {
@@ -222,11 +223,15 @@ export const GraphChatCompactMessageItem = memo(
             {...(onBeforeMessageResize
               ? { onBeforeResize: onBeforeMessageResize }
               : {})}
+            {...(adapter?.onOpenWorkspaceFile
+              ? { onOpenWorkspaceFile: adapter.onOpenWorkspaceFile }
+              : {})}
           />
         ) : (
           <GraphChatUserMessageBody
             threadId={threadId}
             text={item.text}
+            attachmentPreviewUrls={item.attachmentPreviewUrls}
             getImageAssetUrl={adapter?.getImageAssetUrl}
           />
         )}

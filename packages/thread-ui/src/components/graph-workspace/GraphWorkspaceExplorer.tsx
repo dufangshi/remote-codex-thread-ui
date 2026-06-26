@@ -34,13 +34,17 @@ import type { PluginContextValue } from '../../plugins/plugin-context';
 import {
   IMAGE_EXTENSIONS,
   PDF_EXTENSIONS,
+  ancestorDirectoryPaths,
   collectAncestorPaths,
   collectWorkspaceItems,
   extensionOf,
   findFirstPreviewNode,
   findFirstWorkspaceFile,
+  findWorkspaceNodeByPath,
   flattenWorkspaceNodes,
   hasWorkspacePath,
+  normalizeWorkspacePath,
+  replaceWorkspaceNode,
   replaceWorkspaceNodeChildren,
   workspaceTreeNodeToGraphNode,
   type WorkspaceTreeNode,
@@ -466,6 +470,7 @@ export function GraphWorkspaceExplorer({
   artifacts,
   plugins,
   status,
+  focusPathRequest,
   workspaceAdapter,
 }: {
   activeView: 'chat' | 'shell';
@@ -473,6 +478,7 @@ export function GraphWorkspaceExplorer({
   artifacts: ThreadArtifactDto[];
   plugins: PluginContextValue;
   status: AgentRuntimeStatusDto | null;
+  focusPathRequest?: { path: string; line?: number; requestId: number } | null;
   workspaceAdapter?: ThreadWorkspaceAdapter | null;
 }) {
   const [adapterTree, setAdapterTree] = useState<WorkspaceTreeNode | null>(null);
@@ -649,6 +655,63 @@ export function GraphWorkspaceExplorer({
     }
   }
 
+  async function focusWorkspacePath(path: string) {
+    const targetPath = normalizeWorkspacePath(path);
+    if (!targetPath) {
+      return;
+    }
+
+    const ancestors = ancestorDirectoryPaths(targetPath);
+    setCollapsedPanel(null);
+    setExpandedPaths((current) => {
+      const next = new Set(current);
+      next.add('');
+      for (const ancestor of ancestors) {
+        next.add(ancestor);
+      }
+      writeExpandedPaths(workspaceIdentity, next);
+      return next;
+    });
+
+    if (!workspaceAdapter) {
+      if (hasWorkspacePath(tree, targetPath)) {
+        setSelectedNodeId(`workspace:${targetPath}`);
+      }
+      return;
+    }
+
+    setLoadingTree(true);
+    setWorkspaceError(null);
+    try {
+      let nextTree =
+        adapterTree ??
+        workspaceTreeNodeToGraphNode(
+          await workspaceAdapter.listTree({ ...workspaceIdentity, path: '' }),
+        );
+
+      for (const ancestor of ancestors) {
+        const existing = findWorkspaceNodeByPath(nextTree, ancestor);
+        if (existing?.kind === 'directory' && existing.childrenLoaded) {
+          continue;
+        }
+        const loadedNode = workspaceTreeNodeToGraphNode(
+          await workspaceAdapter.listTree({ ...workspaceIdentity, path: ancestor }),
+        );
+        nextTree = replaceWorkspaceNode(nextTree, ancestor, loadedNode);
+      }
+
+      setAdapterTree(nextTree);
+      setSelectedNodeId(`workspace:${targetPath}`);
+      setWorkspaceVersion((version) => version + 1);
+    } catch (error) {
+      setWorkspaceError(
+        error instanceof Error ? error.message : `Failed to open ${targetPath}`,
+      );
+    } finally {
+      setLoadingTree(false);
+    }
+  }
+
   useEffect(() => {
     if (!workspaceAdapter || !adapterTree) {
       return;
@@ -687,6 +750,15 @@ export function GraphWorkspaceExplorer({
     detail.workspace.id,
     detail.thread.workspaceId,
   ]);
+
+  useEffect(() => {
+    if (!focusPathRequest) {
+      return;
+    }
+    void focusWorkspacePath(focusPathRequest.path);
+    // focusWorkspacePath is intentionally omitted; requestId is the trigger.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [focusPathRequest?.requestId]);
 
   useEffect(() => {
     if (!workspaceAdapter?.subscribeWorkspaceChanged) {

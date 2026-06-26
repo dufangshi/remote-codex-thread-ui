@@ -141,6 +141,7 @@ export const GraphChatMarkdownAwareBody = memo(
     plainTextClassName = 'thread-graph-plain-text whitespace-pre-wrap break-words text-[15px] leading-6',
     markdownClassName = 'thread-graph-markdown',
     onBeforeResize,
+    onOpenWorkspaceFile,
   }: {
     text: string;
     scrollRootRef: RefObject<HTMLDivElement | null>;
@@ -149,6 +150,7 @@ export const GraphChatMarkdownAwareBody = memo(
     plainTextClassName?: string;
     markdownClassName?: string;
     onBeforeResize?: () => void;
+    onOpenWorkspaceFile?: ThreadTimelineAdapter['onOpenWorkspaceFile'] | undefined;
   }) {
     const messageRef = useRef<HTMLDivElement | null>(null);
     const scrollAnchorRef = useRef<{
@@ -235,6 +237,7 @@ export const GraphChatMarkdownAwareBody = memo(
           <GraphChatMessageContent
             content={displayText}
             className={markdownClassName}
+            onOpenWorkspaceFile={onOpenWorkspaceFile}
           />
         ) : (
           <p className={plainTextClassName}>
@@ -263,11 +266,13 @@ export const GraphChatAgentMessageBody = memo(
     scrollRootRef,
     streaming = false,
     onBeforeResize,
+    onOpenWorkspaceFile,
   }: {
     text: string;
     scrollRootRef: RefObject<HTMLDivElement | null>;
     streaming?: boolean;
     onBeforeResize?: () => void;
+    onOpenWorkspaceFile?: ThreadTimelineAdapter['onOpenWorkspaceFile'] | undefined;
   }) {
     return (
       <GraphChatMarkdownAwareBody
@@ -276,6 +281,7 @@ export const GraphChatAgentMessageBody = memo(
         streaming={streaming}
         containerClassName="thread-graph-message-prose"
         {...(onBeforeResize ? { onBeforeResize } : {})}
+        {...(onOpenWorkspaceFile ? { onOpenWorkspaceFile } : {})}
       />
     );
   },
@@ -285,10 +291,12 @@ export const GraphChatUserMessageBody = memo(
   function GraphChatUserMessageBody({
     threadId,
     text,
+    attachmentPreviewUrls,
     getImageAssetUrl,
   }: {
     threadId?: string | undefined;
     text: string;
+    attachmentPreviewUrls?: Record<string, string> | undefined;
     getImageAssetUrl?: ThreadTimelineAdapter['getImageAssetUrl'] | undefined;
   }) {
     const segments = useMemo(() => tokenizeUserMessageText(text), [text]);
@@ -302,9 +310,10 @@ export const GraphChatUserMessageBody = memo(
 
           if (segment.type === 'photo') {
             const imageUrl =
-              threadId
+              attachmentPreviewUrls?.[segment.path] ??
+              (threadId
                 ? getImageAssetUrl?.({ threadId, path: segment.path }) ?? null
-                : null;
+                : null);
             const label = basenameFromAssetPath(segment.path) || 'Attached image';
 
             return (

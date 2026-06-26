@@ -1,0 +1,75 @@
+// @vitest-environment jsdom
+
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import { act } from 'react';
+import type { ReactNode } from 'react';
+import { createRoot, type Root } from 'react-dom/client';
+
+import { GraphChatMessageContent } from './GraphChatMessageContent';
+
+let root: Root | null = null;
+let container: HTMLDivElement | null = null;
+
+function render(node: ReactNode) {
+  container = document.createElement('div');
+  document.body.append(container);
+  root = createRoot(container);
+  act(() => {
+    root?.render(node);
+  });
+  return container;
+}
+
+afterEach(() => {
+  if (root) {
+    act(() => {
+      root?.unmount();
+    });
+  }
+  root = null;
+  container?.remove();
+  container = null;
+});
+
+describe('GraphChatMessageContent', () => {
+  it('opens same-origin absolute file links through the workspace callback', () => {
+    const onOpenWorkspaceFile = vi.fn();
+    const element = render(
+      <GraphChatMessageContent
+        content="[tool-calling.js](/home/u/dev/gemma4/third_party/SillyTavern/public/scripts/tool-calling.js:400)"
+        onOpenWorkspaceFile={onOpenWorkspaceFile}
+      />,
+    );
+
+    const link = element.querySelector('a');
+    expect(link).not.toBeNull();
+
+    act(() => {
+      link?.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+    });
+
+    expect(onOpenWorkspaceFile).toHaveBeenCalledWith({
+      path: '/home/u/dev/gemma4/third_party/SillyTavern/public/scripts/tool-calling.js',
+      line: 400,
+    });
+  });
+
+  it('leaves normal external links as browser links', () => {
+    const onOpenWorkspaceFile = vi.fn();
+    const element = render(
+      <GraphChatMessageContent
+        content="[docs](https://example.com/docs)"
+        onOpenWorkspaceFile={onOpenWorkspaceFile}
+      />,
+    );
+
+    const link = element.querySelector('a');
+    expect(link?.getAttribute('href')).toBe('https://example.com/docs');
+
+    act(() => {
+      link?.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+    });
+
+    expect(onOpenWorkspaceFile).not.toHaveBeenCalled();
+  });
+});

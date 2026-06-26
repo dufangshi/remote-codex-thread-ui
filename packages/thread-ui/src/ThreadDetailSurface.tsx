@@ -114,6 +114,7 @@ export interface ThreadDetailSurfaceProps {
   workspaceTitle?: string;
   workspaceActions?: ReactNode;
   workspaceFeatures?: ThreadGraphWorkspaceFeatures;
+  workspaceFocusPathRequest?: { path: string; line?: number; requestId: number } | null;
   onNewThreadTitle?: (title: string) => Promise<void> | void;
   beforeTimelineContent?: ReactNode;
   errorContent?: ReactNode;
@@ -180,6 +181,7 @@ export function ThreadDetailSurface({
   workspaceTitle,
   workspaceActions,
   workspaceFeatures,
+  workspaceFocusPathRequest = null,
   onNewThreadTitle,
   beforeTimelineContent,
   errorContent,
@@ -217,6 +219,7 @@ export function ThreadDetailSurface({
   const {
     getImageAssetUrl,
     loadHistoryItemDetail,
+    openWorkspaceFile,
     openThread,
   } = adapter;
   const timelineAdapter = useMemo(
@@ -228,6 +231,9 @@ export function ThreadDetailSurface({
           }
         : {}),
       onOpenLinkedThread: openThread,
+      ...(openWorkspaceFile
+        ? { onOpenWorkspaceFile: openWorkspaceFile }
+        : {}),
       ...(loadHistoryItemDetail
         ? { onLoadHistoryItemDetail: loadHistoryItemDetail }
         : {}),
@@ -235,6 +241,7 @@ export function ThreadDetailSurface({
     [
       getImageAssetUrl,
       loadHistoryItemDetail,
+      openWorkspaceFile,
       openThread,
     ],
   );
@@ -271,6 +278,7 @@ export function ThreadDetailSurface({
         settingsContent={settingsContent}
         activeView={activeView}
         features={workspaceFeatures}
+        focusPathRequest={workspaceFocusPathRequest}
       />
     ) : null);
 

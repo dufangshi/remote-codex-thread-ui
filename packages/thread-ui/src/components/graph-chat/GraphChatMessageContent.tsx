@@ -33,6 +33,22 @@ type CodeRendererProps = ComponentProps<'code'> & {
   node?: unknown;
 };
 
+type OpenWorkspaceFileHandler = (input: { path: string; line?: number }) => void;
+
+const APP_LOCAL_PATH_PREFIXES = [
+  '/api/',
+  '/assets/',
+  '/control-plane',
+  '/devices/',
+  '/relay/',
+  '/relay-account',
+  '/relay-admin',
+  '/relay-devices',
+  '/relay-portal',
+  '/threads',
+  '/workspaces',
+];
+
 function ensureTransparentShikiBg(html: string) {
   return html
     .replace(/background-color:[^;"]+;?/g, 'background-color: transparent;')
@@ -73,6 +89,56 @@ function readMarkdownNodeLineRange(node: unknown) {
   };
 }
 
+function parseWorkspaceFileHref(href: string | undefined) {
+  if (!href) {
+    return null;
+  }
+
+  let candidate = href.trim();
+  if (!candidate) {
+    return null;
+  }
+
+  try {
+    if (typeof window === 'undefined') {
+      return null;
+    }
+    const parsed = new URL(candidate, window.location.origin);
+    if (parsed.origin !== window.location.origin && parsed.protocol !== 'file:') {
+      return null;
+    }
+    candidate = parsed.protocol === 'file:' ? parsed.pathname : parsed.pathname;
+  } catch {
+    // Fall back to raw href parsing.
+  }
+
+  try {
+    candidate = decodeURIComponent(candidate);
+  } catch {
+    // Keep the raw candidate when decoding fails.
+  }
+
+  if (!candidate.startsWith('/')) {
+    return null;
+  }
+
+  if (APP_LOCAL_PATH_PREFIXES.some((prefix) => candidate === prefix || candidate.startsWith(prefix))) {
+    return null;
+  }
+
+  const lineMatch = candidate.match(/:(\d+)(?::\d+)?$/);
+  const line = lineMatch ? Number.parseInt(lineMatch[1] ?? '', 10) : undefined;
+  const path = lineMatch ? candidate.slice(0, -lineMatch[0].length) : candidate;
+  if (!path || path === '/') {
+    return null;
+  }
+
+  return {
+    path,
+    ...(Number.isFinite(line) ? { line } : {}),
+  };
+}
+
 function PreRenderer({ children, ...props }: ComponentProps<'pre'>) {
   if (isToolCodeElement(children)) {
     return <>{children}</>;
@@ -102,9 +168,11 @@ function isToolCodeElement(value: ReactNode) {
 export const GraphChatMessageContent = memo(function GraphChatMessageContent({
   className = 'thread-graph-markdown',
   content,
+  onOpenWorkspaceFile,
 }: {
   className?: string;
   content: string;
+  onOpenWorkspaceFile?: OpenWorkspaceFileHandler | undefined;
 }) {
   const rootRef = useRef<HTMLDivElement | null>(null);
   const plugins = usePlugins();
@@ -344,6 +412,29 @@ export const GraphChatMessageContent = memo(function GraphChatMessageContent({
         remarkPlugins={[remarkGfm, remarkMath]}
         rehypePlugins={[rehypeKatex]}
         components={{
+          a({ href, children, ...props }) {
+            const workspaceTarget = parseWorkspaceFileHref(href);
+            if (workspaceTarget && onOpenWorkspaceFile) {
+              return (
+                <a
+                  {...props}
+                  href={href}
+                  className="thread-inline-link"
+                  onClick={(event) => {
+                    event.preventDefault();
+                    onOpenWorkspaceFile(workspaceTarget);
+                  }}
+                >
+                  {children}
+                </a>
+              );
+            }
+            return (
+              <a {...props} href={href} className="thread-inline-link">
+                {children}
+              </a>
+            );
+          },
           code: CodeBlockRenderer,
           pre: PreRenderer,
         }}

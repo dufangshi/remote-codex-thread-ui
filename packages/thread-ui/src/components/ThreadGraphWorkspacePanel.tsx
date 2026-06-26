@@ -37,6 +37,7 @@ export interface ThreadGraphWorkspacePanelProps {
   settingsContent?: ReactNode;
   activeView?: 'chat' | 'shell';
   features?: ThreadGraphWorkspaceFeatures;
+  focusPathRequest?: { path: string; line?: number; requestId: number } | null;
 }
 
 export type WorkspaceTab =
@@ -315,6 +316,7 @@ export function ThreadGraphWorkspacePanel({
   settingsContent,
   activeView = 'chat',
   features: featureConfig,
+  focusPathRequest = null,
 }: ThreadGraphWorkspacePanelProps) {
   const features = useMemo(
     () => resolveWorkspaceFeatures(featureConfig),
@@ -366,6 +368,12 @@ export function ThreadGraphWorkspacePanel({
       setActiveTab(firstEnabledWorkspaceTab(features, featureConfig?.defaultTab));
     }
   }, [activeTab, featureConfig?.defaultTab, features]);
+
+  useEffect(() => {
+    if (focusPathRequest && features.workspace) {
+      setActiveTab('workspace');
+    }
+  }, [features.workspace, focusPathRequest?.requestId]);
 
   if (!activeTab) {
     return null;
@@ -424,6 +432,7 @@ export function ThreadGraphWorkspacePanel({
             artifacts={artifacts}
             plugins={plugins}
             status={status}
+            focusPathRequest={focusPathRequest}
             workspaceAdapter={workspaceAdapter ?? null}
           />
         ) : null}

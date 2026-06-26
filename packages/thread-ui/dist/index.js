@@ -275,6 +275,53 @@ function findFirstWorkspaceFile(node) {
   }
   return null;
 }
+function findWorkspaceNodeByPath(node, targetPath) {
+  if (!node || targetPath === null) {
+    return null;
+  }
+  if (node.path === targetPath) {
+    return node;
+  }
+  for (const child of node.children) {
+    const found = findWorkspaceNodeByPath(child, targetPath);
+    if (found) {
+      return found;
+    }
+  }
+  return null;
+}
+function normalizeWorkspacePath(path) {
+  return path.trim().replace(/\\/g, "/").replace(/^\.\/+/, "").replace(/^\/+/, "");
+}
+function ancestorDirectoryPaths(path) {
+  const normalized = normalizeWorkspacePath(path);
+  const segments = normalized.split("/").filter(Boolean);
+  segments.pop();
+  const paths = [];
+  let current = "";
+  for (const segment of segments) {
+    current = current ? `${current}/${segment}` : segment;
+    paths.push(current);
+  }
+  return paths;
+}
+function replaceWorkspaceNode(node, targetPath, replacement) {
+  if (node.path === targetPath) {
+    return replacement;
+  }
+  if (node.children.length === 0) {
+    return node;
+  }
+  let changed = false;
+  const children = node.children.map((child) => {
+    const next = replaceWorkspaceNode(child, targetPath, replacement);
+    if (next !== child) {
+      changed = true;
+    }
+    return next;
+  });
+  return changed ? { ...node, children } : node;
+}
 function hasWorkspacePath(node, targetPath) {
   if (!node || !targetPath) {
     return false;
@@ -2310,6 +2357,7 @@ function GraphWorkspaceExplorer({
   artifacts,
   plugins,
   status,
+  focusPathRequest,
   workspaceAdapter
 }) {
   const [adapterTree, setAdapterTree] = useState26(null);
@@ -2461,6 +2509,55 @@ function GraphWorkspaceExplorer({
       });
     }
   }
+  async function focusWorkspacePath(path) {
+    const targetPath = normalizeWorkspacePath(path);
+    if (!targetPath) {
+      return;
+    }
+    const ancestors = ancestorDirectoryPaths(targetPath);
+    setCollapsedPanel(null);
+    setExpandedPaths((current) => {
+      const next = new Set(current);
+      next.add("");
+      for (const ancestor of ancestors) {
+        next.add(ancestor);
+      }
+      writeExpandedPaths(workspaceIdentity, next);
+      return next;
+    });
+    if (!workspaceAdapter) {
+      if (hasWorkspacePath(tree, targetPath)) {
+        setSelectedNodeId(`workspace:${targetPath}`);
+      }
+      return;
+    }
+    setLoadingTree(true);
+    setWorkspaceError(null);
+    try {
+      let nextTree = adapterTree ?? workspaceTreeNodeToGraphNode(
+        await workspaceAdapter.listTree({ ...workspaceIdentity, path: "" })
+      );
+      for (const ancestor of ancestors) {
+        const existing = findWorkspaceNodeByPath(nextTree, ancestor);
+        if (existing?.kind === "directory" && existing.childrenLoaded) {
+          continue;
+        }
+        const loadedNode = workspaceTreeNodeToGraphNode(
+          await workspaceAdapter.listTree({ ...workspaceIdentity, path: ancestor })
+        );
+        nextTree = replaceWorkspaceNode(nextTree, ancestor, loadedNode);
+      }
+      setAdapterTree(nextTree);
+      setSelectedNodeId(`workspace:${targetPath}`);
+      setWorkspaceVersion((version) => version + 1);
+    } catch (error) {
+      setWorkspaceError(
+        error instanceof Error ? error.message : `Failed to open ${targetPath}`
+      );
+    } finally {
+      setLoadingTree(false);
+    }
+  }
   useEffect21(() => {
     if (!workspaceAdapter || !adapterTree) {
       return;
@@ -2485,6 +2582,12 @@ function GraphWorkspaceExplorer({
     detail.workspace.id,
     detail.thread.workspaceId
   ]);
+  useEffect21(() => {
+    if (!focusPathRequest) {
+      return;
+    }
+    void focusWorkspacePath(focusPathRequest.path);
+  }, [focusPathRequest?.requestId]);
   useEffect21(() => {
     if (!workspaceAdapter?.subscribeWorkspaceChanged) {
       return;
@@ -3836,7 +3939,8 @@ function ThreadGraphWorkspacePanel({
   metaContent,
   settingsContent,
   activeView = "chat",
-  features: featureConfig
+  features: featureConfig,
+  focusPathRequest = null
 }) {
   const features = useMemo15(
     () => resolveWorkspaceFeatures(featureConfig),
@@ -3887,6 +3991,11 @@ function ThreadGraphWorkspacePanel({
       setActiveTab(firstEnabledWorkspaceTab(features, featureConfig?.defaultTab));
     }
   }, [activeTab, featureConfig?.defaultTab, features]);
+  useEffect24(() => {
+    if (focusPathRequest && features.workspace) {
+      setActiveTab("workspace");
+    }
+  }, [features.workspace, focusPathRequest?.requestId]);
   if (!activeTab) {
     return null;
   }
@@ -3940,6 +4049,7 @@ function ThreadGraphWorkspacePanel({
           artifacts,
           plugins,
           status,
+          focusPathRequest,
           workspaceAdapter: workspaceAdapter ?? null
         }
       ) : null,
@@ -11009,6 +11119,19 @@ ${mergedPayload}
 
 // src/components/graph-chat/GraphChatMessageContent.tsx
 import { Fragment as Fragment4, jsx as jsx29, jsxs as jsxs22 } from "react/jsx-runtime";
+var APP_LOCAL_PATH_PREFIXES = [
+  "/api/",
+  "/assets/",
+  "/control-plane",
+  "/devices/",
+  "/relay/",
+  "/relay-account",
+  "/relay-admin",
+  "/relay-devices",
+  "/relay-portal",
+  "/threads",
+  "/workspaces"
+];
 function ensureTransparentShikiBg(html) {
   return html.replace(/background-color:[^;"]+;?/g, "background-color: transparent;").replace(/background:[^;"]+;?/g, "background: transparent;");
 }
@@ -11035,6 +11158,46 @@ function readMarkdownNodeLineRange(node) {
     endLine: typeof endLine === "number" ? endLine : void 0
   };
 }
+function parseWorkspaceFileHref(href) {
+  if (!href) {
+    return null;
+  }
+  let candidate = href.trim();
+  if (!candidate) {
+    return null;
+  }
+  try {
+    if (typeof window === "undefined") {
+      return null;
+    }
+    const parsed = new URL(candidate, window.location.origin);
+    if (parsed.origin !== window.location.origin && parsed.protocol !== "file:") {
+      return null;
+    }
+    candidate = parsed.protocol === "file:" ? parsed.pathname : parsed.pathname;
+  } catch {
+  }
+  try {
+    candidate = decodeURIComponent(candidate);
+  } catch {
+  }
+  if (!candidate.startsWith("/")) {
+    return null;
+  }
+  if (APP_LOCAL_PATH_PREFIXES.some((prefix) => candidate === prefix || candidate.startsWith(prefix))) {
+    return null;
+  }
+  const lineMatch = candidate.match(/:(\d+)(?::\d+)?$/);
+  const line = lineMatch ? Number.parseInt(lineMatch[1] ?? "", 10) : void 0;
+  const path = lineMatch ? candidate.slice(0, -lineMatch[0].length) : candidate;
+  if (!path || path === "/") {
+    return null;
+  }
+  return {
+    path,
+    ...Number.isFinite(line) ? { line } : {}
+  };
+}
 function PreRenderer({ children, ...props }) {
   if (isToolCodeElement(children)) {
     return /* @__PURE__ */ jsx29(Fragment4, { children });
@@ -11053,7 +11216,8 @@ function isToolCodeElement(value) {
 }
 var GraphChatMessageContent = memo(function GraphChatMessageContent2({
   className = "thread-graph-markdown",
-  content
+  content,
+  onOpenWorkspaceFile
 }) {
   const rootRef = useRef5(null);
   const plugins = usePlugins();
@@ -11240,6 +11404,25 @@ var GraphChatMessageContent = memo(function GraphChatMessageContent2({
       remarkPlugins: [remarkGfm, remarkMath],
       rehypePlugins: [rehypeKatex],
       components: {
+        a({ href, children, ...props }) {
+          const workspaceTarget = parseWorkspaceFileHref(href);
+          if (workspaceTarget && onOpenWorkspaceFile) {
+            return /* @__PURE__ */ jsx29(
+              "a",
+              {
+                ...props,
+                href,
+                className: "thread-inline-link",
+                onClick: (event) => {
+                  event.preventDefault();
+                  onOpenWorkspaceFile(workspaceTarget);
+                },
+                children
+              }
+            );
+          }
+          return /* @__PURE__ */ jsx29("a", { ...props, href, className: "thread-inline-link", children });
+        },
         code: CodeBlockRenderer,
         pre: PreRenderer
       },
@@ -11352,7 +11535,8 @@ var GraphChatMarkdownAwareBody = memo2(
     containerClassName = "",
     plainTextClassName = "thread-graph-plain-text whitespace-pre-wrap break-words text-[15px] leading-6",
     markdownClassName = "thread-graph-markdown",
-    onBeforeResize
+    onBeforeResize,
+    onOpenWorkspaceFile
   }) {
     const messageRef = useRef6(null);
     const scrollAnchorRef = useRef6(null);
@@ -11423,7 +11607,8 @@ var GraphChatMarkdownAwareBody = memo2(
         GraphChatMessageContent,
         {
           content: displayText,
-          className: markdownClassName
+          className: markdownClassName,
+          onOpenWorkspaceFile
         }
       ) : /* @__PURE__ */ jsx30("p", { className: plainTextClassName, children: /* @__PURE__ */ jsx30(GraphChatLinkifiedPlainText, { text: displayText }) }),
       isLargeText ? /* @__PURE__ */ jsx30(
@@ -11443,7 +11628,8 @@ var GraphChatAgentMessageBody = memo2(
     text,
     scrollRootRef,
     streaming = false,
-    onBeforeResize
+    onBeforeResize,
+    onOpenWorkspaceFile
   }) {
     return /* @__PURE__ */ jsx30(
       GraphChatMarkdownAwareBody,
@@ -11452,7 +11638,8 @@ var GraphChatAgentMessageBody = memo2(
         scrollRootRef,
         streaming,
         containerClassName: "thread-graph-message-prose",
-        ...onBeforeResize ? { onBeforeResize } : {}
+        ...onBeforeResize ? { onBeforeResize } : {},
+        ...onOpenWorkspaceFile ? { onOpenWorkspaceFile } : {}
       }
     );
   }
@@ -11461,6 +11648,7 @@ var GraphChatUserMessageBody = memo2(
   function GraphChatUserMessageBody2({
     threadId,
     text,
+    attachmentPreviewUrls,
     getImageAssetUrl
   }) {
     const segments = useMemo6(() => tokenizeUserMessageText(text), [text]);
@@ -11469,7 +11657,7 @@ var GraphChatUserMessageBody = memo2(
         return /* @__PURE__ */ jsx30("span", { children: segment.text }, segment.key);
       }
       if (segment.type === "photo") {
-        const imageUrl = threadId ? getImageAssetUrl?.({ threadId, path: segment.path }) ?? null : null;
+        const imageUrl = attachmentPreviewUrls?.[segment.path] ?? (threadId ? getImageAssetUrl?.({ threadId, path: segment.path }) ?? null : null);
         const label = basenameFromAssetPath(segment.path) || "Attached image";
         return /* @__PURE__ */ jsx30(
           "span",
@@ -11744,13 +11932,15 @@ var GraphChatCompactMessageItem = memo3(
             text: item.text,
             scrollRootRef,
             streaming,
-            ...onBeforeMessageResize ? { onBeforeResize: onBeforeMessageResize } : {}
+            ...onBeforeMessageResize ? { onBeforeResize: onBeforeMessageResize } : {},
+            ...adapter?.onOpenWorkspaceFile ? { onOpenWorkspaceFile: adapter.onOpenWorkspaceFile } : {}
           }
         ) : /* @__PURE__ */ jsx32(
           GraphChatUserMessageBody,
           {
             threadId,
             text: item.text,
+            attachmentPreviewUrls: item.attachmentPreviewUrls,
             getImageAssetUrl: adapter?.getImageAssetUrl
           }
         )
@@ -14850,7 +15040,10 @@ function collapsedSummaryMessages(items) {
   );
   return {
     users,
-    finalAgent
+    finalAgent,
+    hiddenItems: items.filter(
+      (item) => item.kind !== "userMessage" && item.id !== finalAgent?.id
+    )
   };
 }
 var ThreadTurnRow = memo5(function ThreadTurnRow2({
@@ -14972,7 +15165,9 @@ var ThreadTurnRow = memo5(function ThreadTurnRow2({
     () => formatWorkedDuration(turn.startedAt, mergedItems),
     [mergedItems, turn.startedAt]
   );
-  const collapsedSummaryNode = isTerminalTurnStatus(turn.status) ? /* @__PURE__ */ jsxs33("div", { className: "thread-graph-turn-collapsed-summary space-y-2", children: [
+  const hasCollapsedHiddenItems = collapsedSummary.hiddenItems.length > 0;
+  const effectiveCollapsed = isCollapsed && hasCollapsedHiddenItems;
+  const collapsedSummaryNode = isTerminalTurnStatus(turn.status) && hasCollapsedHiddenItems ? /* @__PURE__ */ jsxs33("div", { className: "thread-graph-turn-collapsed-summary space-y-2", children: [
     collapsedSummary.users.map((item) => /* @__PURE__ */ jsx42(
       GraphChatCompactMessageItem,
       {
@@ -15028,12 +15223,12 @@ var ThreadTurnRow = memo5(function ThreadTurnRow2({
     {
       absoluteIndex,
       body: turnBody,
-      collapsed: isCollapsed,
+      collapsed: effectiveCollapsed,
       collapsedBody: collapsedSummaryNode,
       error: turn.error,
       headerStatus: /* @__PURE__ */ jsx42(TurnStatusBar, { turn }),
       isActive: activeForRendering,
-      onToggleCollapse: () => onToggleCollapse(turn.id, isCollapsed),
+      onToggleCollapse: () => onToggleCollapse(turn.id, effectiveCollapsed),
       refCallback: articleRef,
       startedAt: turn.startedAt,
       timeLabel: turnTimeLabel,
@@ -19667,6 +19862,7 @@ function ThreadDetailSurface({
   workspaceTitle,
   workspaceActions,
   workspaceFeatures,
+  workspaceFocusPathRequest = null,
   onNewThreadTitle,
   beforeTimelineContent,
   errorContent,
@@ -19703,6 +19899,7 @@ function ThreadDetailSurface({
   const {
     getImageAssetUrl,
     loadHistoryItemDetail,
+    openWorkspaceFile,
     openThread
   } = adapter;
   const timelineAdapter = useMemo17(
@@ -19711,11 +19908,13 @@ function ThreadDetailSurface({
         getImageAssetUrl: (input) => getImageAssetUrl(input.path)
       } : {},
       onOpenLinkedThread: openThread,
+      ...openWorkspaceFile ? { onOpenWorkspaceFile: openWorkspaceFile } : {},
       ...loadHistoryItemDetail ? { onLoadHistoryItemDetail: loadHistoryItemDetail } : {}
     }),
     [
       getImageAssetUrl,
       loadHistoryItemDetail,
+      openWorkspaceFile,
       openThread
     ]
   );
@@ -19745,7 +19944,8 @@ function ThreadDetailSurface({
       metaContent,
       settingsContent,
       activeView,
-      features: workspaceFeatures
+      features: workspaceFeatures,
+      focusPathRequest: workspaceFocusPathRequest
     }
   ) : null);
   const defaultContent = loading ? loadingContent ?? /* @__PURE__ */ jsx70("div", { className: "flex flex-1 items-center justify-center px-6 py-12 text-center text-[var(--theme-fg-muted)]", children: "Loading thread detail..." }) : detail ? /* @__PURE__ */ jsxs57("div", { className, children: [

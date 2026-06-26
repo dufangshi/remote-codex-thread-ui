@@ -126,6 +126,53 @@ function findFirstWorkspaceFile(node) {
   }
   return null;
 }
+function findWorkspaceNodeByPath(node, targetPath) {
+  if (!node || targetPath === null) {
+    return null;
+  }
+  if (node.path === targetPath) {
+    return node;
+  }
+  for (const child of node.children) {
+    const found = findWorkspaceNodeByPath(child, targetPath);
+    if (found) {
+      return found;
+    }
+  }
+  return null;
+}
+function normalizeWorkspacePath(path) {
+  return path.trim().replace(/\\/g, "/").replace(/^\.\/+/, "").replace(/^\/+/, "");
+}
+function ancestorDirectoryPaths(path) {
+  const normalized = normalizeWorkspacePath(path);
+  const segments = normalized.split("/").filter(Boolean);
+  segments.pop();
+  const paths = [];
+  let current = "";
+  for (const segment of segments) {
+    current = current ? `${current}/${segment}` : segment;
+    paths.push(current);
+  }
+  return paths;
+}
+function replaceWorkspaceNode(node, targetPath, replacement) {
+  if (node.path === targetPath) {
+    return replacement;
+  }
+  if (node.children.length === 0) {
+    return node;
+  }
+  let changed = false;
+  const children = node.children.map((child) => {
+    const next = replaceWorkspaceNode(child, targetPath, replacement);
+    if (next !== child) {
+      changed = true;
+    }
+    return next;
+  });
+  return changed ? { ...node, children } : node;
+}
 function hasWorkspacePath(node, targetPath) {
   if (!node || !targetPath) {
     return false;
@@ -2156,6 +2203,7 @@ function GraphWorkspaceExplorer({
   artifacts,
   plugins,
   status,
+  focusPathRequest,
   workspaceAdapter
 }) {
   const [adapterTree, setAdapterTree] = useState3(null);
@@ -2307,6 +2355,55 @@ function GraphWorkspaceExplorer({
       });
     }
   }
+  async function focusWorkspacePath(path) {
+    const targetPath = normalizeWorkspacePath(path);
+    if (!targetPath) {
+      return;
+    }
+    const ancestors = ancestorDirectoryPaths(targetPath);
+    setCollapsedPanel(null);
+    setExpandedPaths((current) => {
+      const next = new Set(current);
+      next.add("");
+      for (const ancestor of ancestors) {
+        next.add(ancestor);
+      }
+      writeExpandedPaths(workspaceIdentity, next);
+      return next;
+    });
+    if (!workspaceAdapter) {
+      if (hasWorkspacePath(tree, targetPath)) {
+        setSelectedNodeId(`workspace:${targetPath}`);
+      }
+      return;
+    }
+    setLoadingTree(true);
+    setWorkspaceError(null);
+    try {
+      let nextTree = adapterTree ?? workspaceTreeNodeToGraphNode(
+        await workspaceAdapter.listTree({ ...workspaceIdentity, path: "" })
+      );
+      for (const ancestor of ancestors) {
+        const existing = findWorkspaceNodeByPath(nextTree, ancestor);
+        if (existing?.kind === "directory" && existing.childrenLoaded) {
+          continue;
+        }
+        const loadedNode = workspaceTreeNodeToGraphNode(
+          await workspaceAdapter.listTree({ ...workspaceIdentity, path: ancestor })
+        );
+        nextTree = replaceWorkspaceNode(nextTree, ancestor, loadedNode);
+      }
+      setAdapterTree(nextTree);
+      setSelectedNodeId(`workspace:${targetPath}`);
+      setWorkspaceVersion((version) => version + 1);
+    } catch (error) {
+      setWorkspaceError(
+        error instanceof Error ? error.message : `Failed to open ${targetPath}`
+      );
+    } finally {
+      setLoadingTree(false);
+    }
+  }
   useEffect3(() => {
     if (!workspaceAdapter || !adapterTree) {
       return;
@@ -2331,6 +2428,12 @@ function GraphWorkspaceExplorer({
     detail.workspace.id,
     detail.thread.workspaceId
   ]);
+  useEffect3(() => {
+    if (!focusPathRequest) {
+      return;
+    }
+    void focusWorkspacePath(focusPathRequest.path);
+  }, [focusPathRequest?.requestId]);
   useEffect3(() => {
     if (!workspaceAdapter?.subscribeWorkspaceChanged) {
       return;
@@ -3690,7 +3793,8 @@ function ThreadGraphWorkspacePanel({
   metaContent,
   settingsContent,
   activeView = "chat",
-  features: featureConfig
+  features: featureConfig,
+  focusPathRequest = null
 }) {
   const features = useMemo5(
     () => resolveWorkspaceFeatures(featureConfig),
@@ -3741,6 +3845,11 @@ function ThreadGraphWorkspacePanel({
       setActiveTab(firstEnabledWorkspaceTab(features, featureConfig?.defaultTab));
     }
   }, [activeTab, featureConfig?.defaultTab, features]);
+  useEffect6(() => {
+    if (focusPathRequest && features.workspace) {
+      setActiveTab("workspace");
+    }
+  }, [features.workspace, focusPathRequest?.requestId]);
   if (!activeTab) {
     return null;
   }
@@ -3794,6 +3903,7 @@ function ThreadGraphWorkspacePanel({
           artifacts,
           plugins,
           status,
+          focusPathRequest,
           workspaceAdapter: workspaceAdapter ?? null
         }
       ) : null,
