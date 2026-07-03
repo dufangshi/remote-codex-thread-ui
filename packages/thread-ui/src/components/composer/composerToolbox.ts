@@ -15,6 +15,45 @@ export type ToolboxActionDecision =
   | { type: 'insertPrompt'; text: string }
   | { type: 'noop' };
 
+export interface ToolboxItemCapabilities {
+  compact: boolean;
+  fast: boolean;
+  fork: boolean;
+  goal: boolean;
+  hooks: boolean;
+  mcp: boolean;
+  skills: boolean;
+}
+
+export function filterToolboxItemsForCapabilities(
+  toolboxItems: AgentBackendToolboxItemSchemaDto[] | null | undefined,
+  capabilities: ToolboxItemCapabilities,
+) {
+  return (toolboxItems ?? []).filter((item) => {
+    switch (item.action) {
+      case 'fast':
+        return capabilities.fast;
+      case 'compact':
+        return capabilities.compact;
+      case 'goal':
+        return capabilities.goal;
+      case 'fork':
+        return capabilities.fork;
+      case 'skills':
+        return capabilities.skills;
+      case 'mcp':
+        return capabilities.mcp;
+      case 'hooks':
+        return capabilities.hooks;
+      case 'prompt':
+      case 'unsupported':
+        return true;
+      default:
+        return false;
+    }
+  });
+}
+
 export function toolboxItemActionDecision(
   item: AgentBackendToolboxItemSchemaDto,
   {

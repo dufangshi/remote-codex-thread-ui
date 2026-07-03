@@ -5000,6 +5000,31 @@ function ToolPill({
 }
 
 // src/components/composer/composerToolbox.ts
+function filterToolboxItemsForCapabilities(toolboxItems, capabilities) {
+  return (toolboxItems ?? []).filter((item) => {
+    switch (item.action) {
+      case "fast":
+        return capabilities.fast;
+      case "compact":
+        return capabilities.compact;
+      case "goal":
+        return capabilities.goal;
+      case "fork":
+        return capabilities.fork;
+      case "skills":
+        return capabilities.skills;
+      case "mcp":
+        return capabilities.mcp;
+      case "hooks":
+        return capabilities.hooks;
+      case "prompt":
+      case "unsupported":
+        return true;
+      default:
+        return false;
+    }
+  });
+}
 function toolboxItemActionDecision(item, {
   fastMode,
   goalComposeMode
@@ -8518,29 +8543,7 @@ function ThreadComposer({
     ]
   );
   const availableToolboxItems = useMemo2(
-    () => (toolboxItems ?? []).filter((item) => {
-      switch (item.action) {
-        case "fast":
-          return slashCapabilities.fast;
-        case "compact":
-          return slashCapabilities.compact;
-        case "goal":
-          return slashCapabilities.goal;
-        case "fork":
-          return slashCapabilities.fork;
-        case "skills":
-          return slashCapabilities.skills;
-        case "mcp":
-          return slashCapabilities.mcp;
-        case "hooks":
-          return slashCapabilities.hooks;
-        case "prompt":
-        case "unsupported":
-          return true;
-        default:
-          return false;
-      }
-    }),
+    () => filterToolboxItemsForCapabilities(toolboxItems, slashCapabilities),
     [slashCapabilities, toolboxItems]
   );
   const menuRef = useRef3(null);

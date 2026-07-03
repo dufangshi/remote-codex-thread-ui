@@ -70,6 +70,9 @@ function renderToolbar({
   planModeAvailable = true,
   sandboxMode = 'workspace-write',
   sandboxModeAvailable = true,
+  supportedEfforts = modelOptions[0]?.supportedReasoningEfforts ?? [],
+  effortControlsDisabled = false,
+  effortControlTitle = 'Select reasoning effort',
   onUpdateSettings = vi.fn(),
 }: {
   initialOpenMenu?: SettingsMenu;
@@ -81,6 +84,9 @@ function renderToolbar({
   planModeAvailable?: boolean;
   sandboxMode?: SandboxModeDto | null;
   sandboxModeAvailable?: boolean;
+  supportedEfforts?: ModelOptionDto['supportedReasoningEfforts'];
+  effortControlsDisabled?: boolean;
+  effortControlTitle?: string;
   onUpdateSettings?: (input: UpdateThreadSettingsInput) => void;
 } = {}) {
   function Harness() {
@@ -99,7 +105,7 @@ function renderToolbar({
           modelContextTitle="1k / 8k tokens"
           contextUsage={null}
           reasoningEffort={reasoningEffort}
-          supportedEfforts={modelOptions[0]?.supportedReasoningEfforts ?? []}
+          supportedEfforts={supportedEfforts}
           displayedCollaborationMode={displayedCollaborationMode}
           sandboxMode={sandboxMode}
           planModeAvailable={planModeAvailable}
@@ -113,8 +119,8 @@ function renderToolbar({
           sendButtonLabel="Send"
           sendButtonClassName="send-state"
           modelControlsDisabled={false}
-          effortControlsDisabled={false}
-          effortControlTitle="Select reasoning effort"
+          effortControlsDisabled={effortControlsDisabled}
+          effortControlTitle={effortControlTitle}
           inlineToggleClassName="inline-toggle"
           menuItemClassName="menu-item"
           planToggleActiveClassName="plan-active"
@@ -183,6 +189,24 @@ describe('ComposerSettingsToolbar', () => {
     expect(onUpdateSettings).toHaveBeenCalledWith({
       reasoningEffort: 'low',
     });
+  });
+
+  it('disables the reasoning effort menu when the selected model has no adjustable efforts', () => {
+    const view = renderToolbar({
+      supportedEfforts: [],
+      effortControlsDisabled: true,
+      effortControlTitle:
+        'The selected model does not expose adjustable reasoning effort.',
+      reasoningEffort: null,
+    });
+    const effortButton = view.querySelector<HTMLButtonElement>(
+      '[title="The selected model does not expose adjustable reasoning effort."]',
+    );
+
+    expect(effortButton?.disabled).toBe(true);
+    expect(effortButton?.getAttribute('title')).toBe(
+      'The selected model does not expose adjustable reasoning effort.',
+    );
   });
 
   it('toggles plan mode through settings updates', () => {

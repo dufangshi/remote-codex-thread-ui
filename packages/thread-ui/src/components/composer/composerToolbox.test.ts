@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import type { AgentBackendToolboxItemSchemaDto } from '@remote-codex/shared';
 
 import {
+  filterToolboxItemsForCapabilities,
   toolboxItemActionDecision,
   toolboxItemClassName,
   toolboxItemDisabled,
@@ -20,6 +21,36 @@ function item(
 }
 
 describe('composerToolbox', () => {
+  it('filters backend toolbox items by backend capabilities', () => {
+    const items: AgentBackendToolboxItemSchemaDto[] = [
+      item('fast'),
+      item('compact'),
+      item('goal'),
+      item('fork'),
+      item('skills'),
+      item('mcp'),
+      item('hooks'),
+      {
+        action: 'prompt',
+        command: '/btw',
+        label: '/btw',
+      },
+      item('unsupported'),
+    ];
+
+    expect(
+      filterToolboxItemsForCapabilities(items, {
+        compact: true,
+        fast: false,
+        fork: false,
+        goal: true,
+        hooks: false,
+        mcp: false,
+        skills: true,
+      }).map((entry) => entry.action),
+    ).toEqual(['compact', 'goal', 'skills', 'prompt', 'unsupported']);
+  });
+
   it('derives action decisions without running side effects', () => {
     expect(
       toolboxItemActionDecision(item('fast'), {

@@ -59,6 +59,7 @@ import {
   buildComposerControlState,
 } from './composer/composerPresentation';
 import {
+  filterToolboxItemsForCapabilities,
   toolboxItemActionDecision,
 } from './composer/composerToolbox';
 import {
@@ -288,30 +289,7 @@ export function ThreadComposer({
     ],
   );
   const availableToolboxItems = useMemo(
-    () =>
-      (toolboxItems ?? []).filter((item) => {
-        switch (item.action) {
-          case 'fast':
-            return slashCapabilities.fast;
-          case 'compact':
-            return slashCapabilities.compact;
-          case 'goal':
-            return slashCapabilities.goal;
-          case 'fork':
-            return slashCapabilities.fork;
-          case 'skills':
-            return slashCapabilities.skills;
-          case 'mcp':
-            return slashCapabilities.mcp;
-          case 'hooks':
-            return slashCapabilities.hooks;
-          case 'prompt':
-          case 'unsupported':
-            return true;
-          default:
-            return false;
-        }
-      }),
+    () => filterToolboxItemsForCapabilities(toolboxItems, slashCapabilities),
     [slashCapabilities, toolboxItems],
   );
   const menuRef = useRef<HTMLFormElement | null>(null);
