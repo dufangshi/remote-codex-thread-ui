@@ -12,6 +12,7 @@ export type ToolboxActionDecision =
   | { type: 'enterGoalCompose' }
   | { type: 'exitGoalCompose' }
   | { type: 'openPanel'; panel: Exclude<SlashPanelView, 'root' | 'forkTurns'> }
+  | { type: 'insertPrompt'; text: string }
   | { type: 'noop' };
 
 export function toolboxItemActionDecision(
@@ -38,6 +39,8 @@ export function toolboxItemActionDecision(
     case 'mcp':
     case 'hooks':
       return { type: 'openPanel', panel: item.action };
+    case 'prompt':
+      return { type: 'insertPrompt', text: `${item.command} ` };
     default:
       return { type: 'noop' };
   }
@@ -76,6 +79,10 @@ export function toolboxItemStatus(
     case 'mcp':
     case 'hooks':
       return 'View';
+    case 'prompt':
+      return 'Insert';
+    case 'unsupported':
+      return 'Unavailable';
     default:
       return '';
   }
@@ -102,6 +109,8 @@ export function toolboxItemDisabled(
       return compactBusy || busy;
     case 'fork':
       return busy || forkBusy;
+    case 'unsupported':
+      return true;
     default:
       return false;
   }

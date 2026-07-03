@@ -105,7 +105,7 @@ interface AgentBackendConfigFileSchemaDto {
     description: string;
     roles?: Array<'runtime' | 'auth' | 'mcp' | 'hooks' | 'providerSettings'>;
 }
-type AgentBackendToolboxActionDto = 'fast' | 'compact' | 'goal' | 'fork' | 'skills' | 'mcp' | 'hooks';
+type AgentBackendToolboxActionDto = 'fast' | 'compact' | 'goal' | 'fork' | 'skills' | 'mcp' | 'hooks' | 'prompt' | 'unsupported';
 interface AgentBackendToolboxItemSchemaDto {
     action: AgentBackendToolboxActionDto;
     command: string;

@@ -51,6 +51,22 @@ describe('composerToolbox', () => {
         goalComposeMode: false,
       }),
     ).toEqual({ type: 'openPanel', panel: 'mcp' });
+    expect(
+      toolboxItemActionDecision({
+        action: 'prompt',
+        command: '/compact',
+        label: '/compact',
+      }, {
+        fastMode: false,
+        goalComposeMode: false,
+      }),
+    ).toEqual({ type: 'insertPrompt', text: '/compact ' });
+    expect(
+      toolboxItemActionDecision(item('unsupported'), {
+        fastMode: false,
+        goalComposeMode: false,
+      }),
+    ).toEqual({ type: 'noop' });
   });
 
   it('derives status labels for root toolbox actions', () => {
@@ -108,6 +124,24 @@ describe('composerToolbox', () => {
         busy: false,
       }),
     ).toBe('View');
+    expect(
+      toolboxItemStatus(item('prompt'), {
+        fastMode: false,
+        compactBusy: false,
+        goalComposeMode: false,
+        goalStatus: null,
+        busy: false,
+      }),
+    ).toBe('Insert');
+    expect(
+      toolboxItemStatus(item('unsupported'), {
+        fastMode: false,
+        compactBusy: false,
+        goalComposeMode: false,
+        goalStatus: null,
+        busy: false,
+      }),
+    ).toBe('Unavailable');
   });
 
   it('disables actions that require idle state or settings availability', () => {
@@ -143,6 +177,14 @@ describe('composerToolbox', () => {
         forkBusy: true,
       }),
     ).toBe(false);
+    expect(
+      toolboxItemDisabled(item('unsupported'), {
+        settingsBusy: false,
+        compactBusy: false,
+        busy: false,
+        forkBusy: false,
+      }),
+    ).toBe(true);
   });
 
   it('marks active fast and goal actions with warning styling', () => {

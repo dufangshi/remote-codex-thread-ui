@@ -147,7 +147,9 @@ export type AgentBackendToolboxActionDto =
   | 'fork'
   | 'skills'
   | 'mcp'
-  | 'hooks';
+  | 'hooks'
+  | 'prompt'
+  | 'unsupported';
 
 export interface AgentBackendToolboxItemSchemaDto {
   action: AgentBackendToolboxActionDto;

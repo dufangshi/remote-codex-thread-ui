@@ -5016,6 +5016,8 @@ function toolboxItemActionDecision(item, {
     case "mcp":
     case "hooks":
       return { type: "openPanel", panel: item.action };
+    case "prompt":
+      return { type: "insertPrompt", text: `${item.command} ` };
     default:
       return { type: "noop" };
   }
@@ -5040,6 +5042,10 @@ function toolboxItemStatus(item, {
     case "mcp":
     case "hooks":
       return "View";
+    case "prompt":
+      return "Insert";
+    case "unsupported":
+      return "Unavailable";
     default:
       return "";
   }
@@ -5057,6 +5063,8 @@ function toolboxItemDisabled(item, {
       return compactBusy || busy;
     case "fork":
       return busy || forkBusy;
+    case "unsupported":
+      return true;
     default:
       return false;
   }
@@ -8526,6 +8534,9 @@ function ThreadComposer({
           return slashCapabilities.mcp;
         case "hooks":
           return slashCapabilities.hooks;
+        case "prompt":
+        case "unsupported":
+          return true;
         default:
           return false;
       }
@@ -8728,6 +8739,11 @@ function ThreadComposer({
         } else if (decision.panel === "hooks") {
           void onOpenHooks?.();
         }
+        break;
+      case "insertPrompt":
+        insertPlainTextIntoPrompt(decision.text);
+        setSlashPanelView("root");
+        setOpenMenu(null);
         break;
       case "noop":
         break;

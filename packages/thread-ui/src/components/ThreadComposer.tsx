@@ -305,6 +305,9 @@ export function ThreadComposer({
             return slashCapabilities.mcp;
           case 'hooks':
             return slashCapabilities.hooks;
+          case 'prompt':
+          case 'unsupported':
+            return true;
           default:
             return false;
         }
@@ -528,6 +531,11 @@ export function ThreadComposer({
         } else if (decision.panel === 'hooks') {
           void onOpenHooks?.();
         }
+        break;
+      case 'insertPrompt':
+        insertPlainTextIntoPrompt(decision.text);
+        setSlashPanelView('root');
+        setOpenMenu(null);
         break;
       case 'noop':
         break;
