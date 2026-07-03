@@ -163,7 +163,7 @@ describe('composerToolbox', () => {
         goalStatus: null,
         busy: false,
       }),
-    ).toBe('Insert');
+    ).toBe('Compose');
     expect(
       toolboxItemStatus(item('unsupported'), {
         fastMode: false,

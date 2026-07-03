@@ -119,7 +119,7 @@ export function toolboxItemStatus(
     case 'hooks':
       return 'View';
     case 'prompt':
-      return 'Insert';
+      return 'Compose';
     case 'unsupported':
       return 'Unavailable';
     default:
