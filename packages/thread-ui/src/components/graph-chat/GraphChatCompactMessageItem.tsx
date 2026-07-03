@@ -13,7 +13,6 @@ import {
   Accordion,
   AccordionContent,
   AccordionItem,
-  AccordionTrigger,
 } from '../graph-workspace/GraphAccordion';
 
 type GraphChatCompactMessageKind = Extract<
@@ -129,6 +128,11 @@ export const GraphChatCompactMessageItem = memo(
       }
     }
 
+    function toggleReasoning() {
+      onBeforeMessageResize?.();
+      setReasoningOpen((value) => !value);
+    }
+
     const copyButton =
       item.kind === 'agentMessage' ? (
         <button
@@ -154,9 +158,32 @@ export const GraphChatCompactMessageItem = memo(
         </button>
       ) : null;
 
+    const hasRunningReasoning = reasoningItems.some((entry) =>
+      isGraphChatRunningStatus(entry.status),
+    );
+    const reasoningToggle =
+      item.kind === 'agentMessage' && reasoningText ? (
+        <button
+          type="button"
+          aria-label={reasoningOpen ? 'Hide chain of thought' : 'Show chain of thought'}
+          aria-expanded={reasoningOpen}
+          title={reasoningOpen ? 'Hide CoT' : 'Show CoT'}
+          onClick={toggleReasoning}
+          className={`thread-graph-thinking-toggle inline-flex h-7 shrink-0 items-center gap-1.5 rounded-md border px-2 text-xs font-medium transition ${
+            reasoningOpen ? 'is-open' : ''
+          }`}
+        >
+          <Brain
+            className={`h-3.5 w-3.5 ${hasRunningReasoning ? 'animate-pulse' : ''}`}
+          />
+          <span>CoT</span>
+          {hasRunningReasoning ? <GraphChatRunningDots tone="sky" /> : null}
+        </button>
+      ) : null;
+
     const reasoning =
       item.kind === 'agentMessage' && reasoningText ? (
-        <div className="thread-graph-message-thinking mb-3 mt-2">
+        <div className="thread-graph-message-thinking mb-3">
           <Accordion
             type="single"
             collapsible
@@ -165,31 +192,6 @@ export const GraphChatCompactMessageItem = memo(
             {...(reasoningOpen ? { value: 'thoughts' } : {})}
           >
             <AccordionItem value="thoughts" className="border-b-0">
-              <AccordionTrigger className="thread-graph-thinking-trigger py-2 hover:no-underline">
-                <div className="thread-graph-thinking-label flex items-center gap-2 text-sm font-medium transition-colors">
-                  <Brain
-                    className={`h-4 w-4 ${
-                      reasoningItems.some((entry) =>
-                        isGraphChatRunningStatus(entry.status),
-                      )
-                        ? 'animate-pulse'
-                        : ''
-                    }`}
-                  />
-                  <span>
-                    {reasoningItems.some((entry) =>
-                      isGraphChatRunningStatus(entry.status),
-                    )
-                      ? 'Thinking...'
-                      : 'Thought Process'}
-                  </span>
-                  {reasoningItems.some((entry) =>
-                    isGraphChatRunningStatus(entry.status),
-                  ) ? (
-                    <GraphChatRunningDots tone="sky" />
-                  ) : null}
-                </div>
-              </AccordionTrigger>
               <AccordionContent className="thread-graph-thinking-content pb-0">
                 <pre className="thread-graph-thinking-body my-1 max-h-56 overflow-auto whitespace-pre-wrap break-words rounded-xl border p-3 text-[12px] leading-5">
                   <GraphChatLinkifiedPlainText text={reasoningText} />
@@ -211,6 +213,7 @@ export const GraphChatCompactMessageItem = memo(
               : null
         }
         copyButton={copyButton}
+        metaControl={reasoningToggle}
         reasoning={reasoning}
         timeLabel={timeLabel}
         timeTitle={timeTitle}

@@ -1690,7 +1690,15 @@
   color: var(--theme-fg-muted);
 }
 
-.thread-ui-shell .thread-graph-message-copy:hover {
+.thread-ui-shell .thread-graph-thinking-toggle {
+  border-color: var(--theme-border);
+  background: var(--theme-panel);
+  color: var(--theme-fg-muted);
+}
+
+.thread-ui-shell .thread-graph-message-copy:hover,
+.thread-ui-shell .thread-graph-thinking-toggle:hover,
+.thread-ui-shell .thread-graph-thinking-toggle.is-open {
   background: var(--theme-hover);
   color: var(--theme-fg);
 }

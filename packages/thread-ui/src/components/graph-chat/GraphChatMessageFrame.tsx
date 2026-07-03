@@ -69,6 +69,7 @@ export function GraphChatMessageFrame({
   children,
   copyButton,
   kind,
+  metaControl,
   reasoning,
   status,
   timeLabel,
@@ -77,6 +78,7 @@ export function GraphChatMessageFrame({
   children: ReactNode;
   copyButton?: ReactNode;
   kind: GraphChatMessageKind;
+  metaControl?: ReactNode;
   reasoning?: ReactNode;
   status?: string | null | undefined;
   timeLabel?: string | null | undefined;
@@ -112,6 +114,11 @@ export function GraphChatMessageFrame({
               </span>
               <GraphChatMessageStatusBadge status={status ?? 'Complete'} />
             </div>
+            {metaControl ? (
+              <div className="thread-graph-message-header-meta flex min-w-0 flex-1 justify-center">
+                {metaControl}
+              </div>
+            ) : null}
             {copyButton || timeNode ? (
               <div className="thread-graph-message-header-actions flex shrink-0 items-center gap-1.5 sm:gap-2">
                 {copyButton}
