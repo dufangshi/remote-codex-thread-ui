@@ -394,24 +394,36 @@ function formatWorkedDuration(startedAt: string | null | undefined, items: Threa
   return `Worked for ${seconds}s`;
 }
 
-function collapsedSummaryMessages(items: ThreadHistoryItemDto[]) {
-  const users = items.filter(
-    (item): item is ThreadHistoryItemDto & { kind: 'userMessage' } =>
-      item.kind === 'userMessage',
+function collapsedSummaryMessages(entries: TimelineHistoryEntry[]) {
+  const itemEntries = entries.filter(
+    (entry): entry is TimelineHistoryEntry & { kind: 'item' } =>
+      entry.kind === 'item',
   );
-  const finalAgent = [...items]
+  const users = itemEntries
+    .map((entry) => entry.item)
+    .filter(
+      (item): item is ThreadHistoryItemDto & { kind: 'userMessage' } =>
+        item.kind === 'userMessage',
+    );
+  const finalAgent = itemEntries
+    .map((entry) => entry.item)
     .reverse()
     .find(
       (item): item is ThreadHistoryItemDto & { kind: 'agentMessage' } =>
         item.kind === 'agentMessage' && item.text.trim().length > 0,
     );
+  const hiddenEntries = entries.filter((entry) => {
+    if (entry.kind !== 'item') {
+      return true;
+    }
+
+    return entry.item.kind !== 'userMessage' && entry.item.id !== finalAgent?.id;
+  });
 
   return {
     users,
     finalAgent,
-    hiddenItems: items.filter(
-      (item) => item.kind !== 'userMessage' && item.id !== finalAgent?.id,
-    ),
+    hiddenEntries,
   };
 }
 
@@ -536,14 +548,14 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
     <TurnStatusBar turn={activeFooterTurn} variant="footer" />
   ) : null;
   const collapsedSummary = useMemo(
-    () => collapsedSummaryMessages(mergedItems),
-    [mergedItems],
+    () => collapsedSummaryMessages(groupedItems),
+    [groupedItems],
   );
   const workedLabel = useMemo(
     () => formatWorkedDuration(turn.startedAt, mergedItems),
     [mergedItems, turn.startedAt],
   );
-  const hasCollapsedHiddenItems = collapsedSummary.hiddenItems.length > 0;
+  const hasCollapsedHiddenItems = collapsedSummary.hiddenEntries.length > 0;
   const effectiveCollapsed = isCollapsed && hasCollapsedHiddenItems;
   const collapsedSummaryNode = isTerminalTurnStatus(turn.status) && hasCollapsedHiddenItems ? (
     <div className="thread-graph-turn-collapsed-summary space-y-2">

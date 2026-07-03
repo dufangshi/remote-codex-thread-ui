@@ -15247,19 +15247,26 @@ function formatWorkedDuration(startedAt, items) {
   }
   return `Worked for ${seconds}s`;
 }
-function collapsedSummaryMessages(items) {
-  const users = items.filter(
+function collapsedSummaryMessages(entries) {
+  const itemEntries = entries.filter(
+    (entry) => entry.kind === "item"
+  );
+  const users = itemEntries.map((entry) => entry.item).filter(
     (item) => item.kind === "userMessage"
   );
-  const finalAgent = [...items].reverse().find(
+  const finalAgent = itemEntries.map((entry) => entry.item).reverse().find(
     (item) => item.kind === "agentMessage" && item.text.trim().length > 0
   );
+  const hiddenEntries = entries.filter((entry) => {
+    if (entry.kind !== "item") {
+      return true;
+    }
+    return entry.item.kind !== "userMessage" && entry.item.id !== finalAgent?.id;
+  });
   return {
     users,
     finalAgent,
-    hiddenItems: items.filter(
-      (item) => item.kind !== "userMessage" && item.id !== finalAgent?.id
-    )
+    hiddenEntries
   };
 }
 var ThreadTurnRow = memo5(function ThreadTurnRow2({
@@ -15374,14 +15381,14 @@ var ThreadTurnRow = memo5(function ThreadTurnRow2({
   ) : null;
   const footerNode = activeForRendering ? /* @__PURE__ */ jsx42(TurnStatusBar, { turn: activeFooterTurn, variant: "footer" }) : null;
   const collapsedSummary = useMemo7(
-    () => collapsedSummaryMessages(mergedItems),
-    [mergedItems]
+    () => collapsedSummaryMessages(groupedItems),
+    [groupedItems]
   );
   const workedLabel = useMemo7(
     () => formatWorkedDuration(turn.startedAt, mergedItems),
     [mergedItems, turn.startedAt]
   );
-  const hasCollapsedHiddenItems = collapsedSummary.hiddenItems.length > 0;
+  const hasCollapsedHiddenItems = collapsedSummary.hiddenEntries.length > 0;
   const effectiveCollapsed = isCollapsed && hasCollapsedHiddenItems;
   const collapsedSummaryNode = isTerminalTurnStatus(turn.status) && hasCollapsedHiddenItems ? /* @__PURE__ */ jsxs33("div", { className: "thread-graph-turn-collapsed-summary space-y-2", children: [
     collapsedSummary.users.map((item) => /* @__PURE__ */ jsx42(
