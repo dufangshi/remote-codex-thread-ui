@@ -2,6 +2,7 @@ import type {
   CollaborationModeDto,
   ModelOptionDto,
   ReasoningEffortDto,
+  SandboxModeDto,
   ThreadContextUsageDto,
   UpdateThreadSettingsInput,
 } from '@remote-codex/shared';
@@ -15,6 +16,19 @@ import {
   ContextProgressBar,
 } from './composerPresentation';
 
+const sandboxOptions: Array<{
+  mode: SandboxModeDto;
+  label: string;
+}> = [
+  { mode: 'read-only', label: 'Read only' },
+  { mode: 'workspace-write', label: 'Workspace write' },
+  { mode: 'danger-full-access', label: 'Danger' },
+];
+
+function formatSandboxModeLabel(mode: SandboxModeDto | null | undefined) {
+  return sandboxOptions.find((entry) => entry.mode === mode)?.label ?? 'Default';
+}
+
 export function ComposerSettingsToolbar({
   openMenu,
   model,
@@ -24,7 +38,9 @@ export function ComposerSettingsToolbar({
   reasoningEffort,
   supportedEfforts,
   displayedCollaborationMode,
+  sandboxMode,
   planModeAvailable,
+  sandboxModeAvailable,
   settingsBusy,
   goalComposeMode,
   goalBusy,
@@ -51,7 +67,9 @@ export function ComposerSettingsToolbar({
   reasoningEffort: ReasoningEffortDto | null | undefined;
   supportedEfforts: ModelOptionDto['supportedReasoningEfforts'];
   displayedCollaborationMode: CollaborationModeDto;
+  sandboxMode: SandboxModeDto | null | undefined;
   planModeAvailable: boolean;
+  sandboxModeAvailable: boolean;
   settingsBusy: boolean;
   goalComposeMode: boolean;
   goalBusy: boolean;
@@ -183,6 +201,57 @@ export function ComposerSettingsToolbar({
         )}
       </div>
 
+      {sandboxModeAvailable && (
+        <div className="relative">
+          <InputGroupButton
+            type="button"
+            variant="ghost"
+            size="xs"
+            data-composer-menu-trigger="true"
+            aria-haspopup="menu"
+            aria-expanded={openMenu === 'sandbox'}
+            aria-label={`Sandbox: ${formatSandboxModeLabel(sandboxMode)}`}
+            disabled={settingsBusy}
+            onClick={() =>
+              onSetOpenMenu((current) =>
+                current === 'sandbox' ? null : 'sandbox',
+              )
+            }
+            title={`Sandbox: ${formatSandboxModeLabel(sandboxMode)}`}
+            className={`${inlineToggleClassName} rounded-full px-2.5 text-stone-300 disabled:cursor-not-allowed disabled:text-stone-700`}
+          >
+            Sandbox
+          </InputGroupButton>
+          {openMenu === 'sandbox' && (
+            <div
+              data-composer-menu-surface="true"
+              className="absolute bottom-full left-0 mb-2 w-max min-w-[9rem] max-w-[13rem] overflow-hidden rounded-2xl border border-stone-700 bg-stone-900 shadow-2xl shadow-stone-950/40"
+            >
+              <div className="max-h-72 overflow-auto p-2">
+                {sandboxOptions.map((entry) => (
+                  <button
+                    key={entry.mode}
+                    type="button"
+                    onClick={() =>
+                      onUpdateSettings({
+                        sandboxMode: entry.mode,
+                      })
+                    }
+                    className={`block w-full rounded-xl px-3 py-2 text-left transition ${
+                      entry.mode === sandboxMode
+                        ? 'ui-status-warning'
+                        : `${menuItemClassName} text-stone-300`
+                    }`}
+                  >
+                    <p className="text-sm font-medium">{entry.label}</p>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
       {planModeAvailable && (
         <InputGroupButton
           type="button"
@@ -198,7 +267,7 @@ export function ComposerSettingsToolbar({
           }
           className={`${inlineToggleClassName} rounded-full px-2.5 ${
             displayedCollaborationMode === 'plan'
-              ? planToggleActiveClassName
+              ? `${planToggleActiveClassName} border !border-[oklch(0.78_0.16_86_/_0.76)] !bg-[oklch(0.44_0.095_82_/_0.72)] !text-[oklch(0.96_0.055_92)] shadow-[0_0_0_1px_oklch(0.78_0.16_86_/_0.24),0_0_18px_oklch(0.78_0.16_86_/_0.42),inset_0_0_0_1px_oklch(0.98_0.04_96_/_0.18)]`
               : 'text-stone-500'
           } disabled:cursor-not-allowed disabled:opacity-60`}
         >

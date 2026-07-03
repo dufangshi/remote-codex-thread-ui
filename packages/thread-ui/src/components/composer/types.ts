@@ -14,6 +14,7 @@ export type SettingsMenu =
   | 'slash'
   | 'model'
   | 'effort'
+  | 'sandbox'
   | 'shellTools'
   | null;
 export type SlashPanelView =

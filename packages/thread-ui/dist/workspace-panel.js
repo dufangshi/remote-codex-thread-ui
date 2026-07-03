@@ -13,6 +13,7 @@ import {
 // src/components/graph-workspace/GraphWorkspaceExplorer.tsx
 import {
   useEffect as useEffect3,
+  useLayoutEffect,
   useMemo as useMemo3,
   useRef as useRef2,
   useState as useState3
@@ -21,8 +22,8 @@ import {
   ChevronDown,
   ChevronRight,
   ChevronsLeft,
-  ChevronsRight as ChevronsRight2,
   Download as Download2,
+  Eye,
   File,
   FileArchive,
   FileCode2,
@@ -1759,6 +1760,7 @@ function GraphWorkspacePreviewPane({
                 value: draftContent,
                 onChange: (event) => setDraftContent(event.currentTarget.value),
                 spellCheck: false,
+                "aria-label": "Workspace file editor",
                 className: "thread-graph-file-editor min-h-0 flex-1 resize-none border-0 bg-transparent p-4 font-mono text-[12px] leading-5 text-slate-900 outline-none dark:text-slate-100"
               }
             ) : /* @__PURE__ */ jsx11(
@@ -1773,6 +1775,8 @@ function GraphWorkspacePreviewPane({
                 type: "button",
                 onClick: onLoadMore,
                 disabled: loadingMore,
+                title: "Load more workspace preview",
+                "aria-label": "Load more workspace preview",
                 className: "thread-graph-load-more-button rounded-md px-4 py-1.5 text-xs disabled:opacity-50",
                 children: loadingMore ? "Loading..." : `Load more (${(previewFile.size - previewFile.nextOffset).toLocaleString()} bytes remaining)`
               }
@@ -1900,7 +1904,6 @@ var explorerHeadingClassName = "text-[18px] font-semibold text-slate-900 dark:te
 var explorerIconButtonClassName = "thread-graph-explorer-icon-button flex h-8 w-8 items-center justify-center rounded-lg border shadow-none transition disabled:cursor-not-allowed disabled:opacity-50";
 var collapseGhostButtonClassName = "thread-graph-explorer-collapse-button flex h-8 w-8 items-center justify-center rounded-full text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-[#222733] dark:hover:text-slate-100";
 var workspaceLabelClassName = "thread-graph-workspace-label px-3 pb-1 pt-2 text-[11px] font-semibold tracking-normal text-slate-500 dark:text-slate-400";
-var workspaceLoadingClassName = "thread-graph-workspace-loading px-4 text-sm text-slate-400 dark:text-slate-500";
 var emptyWorkspaceClassName = "thread-graph-workspace-empty mx-4 mt-3 rounded-lg border border-dashed border-slate-200 bg-slate-50 px-3 py-4 text-sm text-slate-500 dark:border-[#303642] dark:bg-[#1b1f29] dark:text-slate-400";
 function expandedPathsStorageKey(input) {
   return `${EXPANDED_PATHS_STORAGE_PREFIX}${input.workspaceId ?? "workspace"}:${input.threadId}`;
@@ -1932,6 +1935,25 @@ function writeExpandedPaths(input, paths) {
   } catch {
   }
 }
+function mergeRefreshedWorkspaceTree(refreshed, previous) {
+  if (!previous || refreshed.path !== previous.path) {
+    return refreshed;
+  }
+  if (refreshed.kind !== "directory") {
+    return refreshed;
+  }
+  const previousByPath = new Map(previous.children.map((child) => [child.path, child]));
+  const children = refreshed.children.map(
+    (child) => mergeRefreshedWorkspaceTree(child, previousByPath.get(child.path) ?? null)
+  );
+  const refreshedHasLoadedChildren = refreshed.childrenLoaded && refreshed.children.length > 0;
+  return {
+    ...refreshed,
+    children: refreshedHasLoadedChildren || !previous.childrenLoaded ? children : previous.children,
+    childrenLoaded: refreshed.childrenLoaded || previous.childrenLoaded,
+    truncated: refreshed.truncated ?? previous.truncated
+  };
+}
 function iconForWorkspaceNode(node, expanded) {
   if (node.kind === "directory") {
     return expanded ? /* @__PURE__ */ jsx14(FolderOpen, { className: "h-4 w-4 text-slate-500 dark:text-slate-400" }) : /* @__PURE__ */ jsx14(Folder, { className: "h-4 w-4 text-slate-500 dark:text-slate-400" });
@@ -1956,6 +1978,7 @@ function WorkspaceTreeRow({
   loadingPaths,
   node,
   onDownload,
+  onPreview,
   onSelect,
   onToggle,
   selectedNodeId
@@ -2004,6 +2027,7 @@ function WorkspaceTreeRow({
             loadingPaths,
             node: child,
             ...onDownload ? { onDownload } : {},
+            ...onPreview ? { onPreview } : {},
             onSelect,
             onToggle,
             selectedNodeId
@@ -2039,17 +2063,30 @@ function WorkspaceTreeRow({
             ]
           }
         ),
-        onDownload && node.kind === "file" ? /* @__PURE__ */ jsx14(
-          "button",
-          {
-            type: "button",
-            onClick: () => onDownload(node),
-            className: `thread-graph-tree-action mr-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-md transition sm:h-7 sm:w-7 sm:opacity-0 sm:group-hover:opacity-100 sm:focus:opacity-100 ${selected ? "is-selected" : "text-slate-400 hover:bg-white hover:text-slate-900 dark:text-slate-500 dark:hover:bg-[#1d222c] dark:hover:text-slate-100"}`,
-            title: `Download ${node.name}`,
-            "aria-label": `Download ${node.name}`,
-            children: /* @__PURE__ */ jsx14(Download2, { className: "h-3.5 w-3.5" })
-          }
-        ) : null
+        node.kind === "file" && (onPreview || onDownload) ? /* @__PURE__ */ jsxs10("div", { className: "mr-1 flex shrink-0 items-center gap-0.5", children: [
+          onPreview ? /* @__PURE__ */ jsx14(
+            "button",
+            {
+              type: "button",
+              onClick: () => onPreview(node),
+              className: `thread-graph-tree-action flex h-9 w-9 shrink-0 items-center justify-center rounded-md transition sm:h-7 sm:w-7 sm:opacity-0 sm:group-hover:opacity-100 sm:focus:opacity-100 ${selected ? "is-selected" : "text-slate-400 hover:bg-white hover:text-slate-900 dark:text-slate-500 dark:hover:bg-[#1d222c] dark:hover:text-slate-100"}`,
+              title: `Preview ${node.name}`,
+              "aria-label": `Preview ${node.name}`,
+              children: /* @__PURE__ */ jsx14(Eye, { className: "h-3.5 w-3.5" })
+            }
+          ) : null,
+          onDownload ? /* @__PURE__ */ jsx14(
+            "button",
+            {
+              type: "button",
+              onClick: () => onDownload(node),
+              className: `thread-graph-tree-action flex h-9 w-9 shrink-0 items-center justify-center rounded-md transition sm:h-7 sm:w-7 sm:opacity-0 sm:group-hover:opacity-100 sm:focus:opacity-100 ${selected ? "is-selected" : "text-slate-400 hover:bg-white hover:text-slate-900 dark:text-slate-500 dark:hover:bg-[#1d222c] dark:hover:text-slate-100"}`,
+              title: `Download ${node.name}`,
+              "aria-label": `Download ${node.name}`,
+              children: /* @__PURE__ */ jsx14(Download2, { className: "h-3.5 w-3.5" })
+            }
+          ) : null
+        ] }) : null
       ]
     }
   );
@@ -2098,10 +2135,13 @@ function WorkspaceExplorerPanel({
   loading,
   onDownload,
   onEmptyGarbage,
+  onPreview,
   onRefresh,
   onSelect,
   onToggle,
   onUpload,
+  explorerScrollTopRef,
+  explorerScrollerRef,
   selectedNodeId,
   tree,
   liveNodes
@@ -2113,6 +2153,13 @@ function WorkspaceExplorerPanel({
     }),
     [tree]
   );
+  useLayoutEffect(() => {
+    const scroller = explorerScrollerRef.current;
+    if (!scroller) {
+      return;
+    }
+    scroller.scrollTop = explorerScrollTopRef.current;
+  }, [explorerScrollerRef, explorerScrollTopRef]);
   return /* @__PURE__ */ jsxs10("aside", { className: `${explorerPanelClassName} flex flex-col`, children: [
     /* @__PURE__ */ jsxs10("div", { className: explorerHeaderClassName, children: [
       /* @__PURE__ */ jsx14("div", { className: "min-w-0", children: /* @__PURE__ */ jsx14("h2", { className: explorerHeadingClassName, children: "Explorer" }) }),
@@ -2169,32 +2216,42 @@ function WorkspaceExplorerPanel({
         ) : null
       ] })
     ] }),
-    /* @__PURE__ */ jsxs10("div", { className: "min-h-0 flex-1 overflow-y-auto py-2", children: [
-      /* @__PURE__ */ jsx14(
-        LiveWorkspaceSection,
-        {
-          liveNodes: liveNodes ?? [],
-          onSelect,
-          selectedNodeId
-        }
-      ),
-      /* @__PURE__ */ jsx14("div", { className: workspaceLabelClassName, children: "Workspace" }),
-      loading ? /* @__PURE__ */ jsx14("p", { className: workspaceLoadingClassName, children: "Loading workspace..." }) : null,
-      /* @__PURE__ */ jsx14(
-        WorkspaceTreeRow,
-        {
-          depth: 0,
-          expandedPaths,
-          loadingPaths,
-          node: visibleTree,
-          ...onDownload ? { onDownload } : {},
-          onSelect,
-          onToggle,
-          selectedNodeId
-        }
-      ),
-      visibleTree.children.length === 0 ? /* @__PURE__ */ jsx14("p", { className: emptyWorkspaceClassName, children: "This workspace is empty. Agent tool runs execute inside the thread workspace, so files should appear here as the session works." }) : null
-    ] })
+    /* @__PURE__ */ jsxs10(
+      "div",
+      {
+        ref: explorerScrollerRef,
+        className: "thread-graph-workspace-tree-scroll min-h-0 flex-1 overflow-y-auto py-2",
+        onScroll: (event) => {
+          explorerScrollTopRef.current = event.currentTarget.scrollTop;
+        },
+        children: [
+          /* @__PURE__ */ jsx14(
+            LiveWorkspaceSection,
+            {
+              liveNodes: liveNodes ?? [],
+              onSelect,
+              selectedNodeId
+            }
+          ),
+          /* @__PURE__ */ jsx14("div", { className: workspaceLabelClassName, children: "Workspace" }),
+          /* @__PURE__ */ jsx14(
+            WorkspaceTreeRow,
+            {
+              depth: 0,
+              expandedPaths,
+              loadingPaths,
+              node: visibleTree,
+              ...onDownload ? { onDownload } : {},
+              ...onPreview ? { onPreview } : {},
+              onSelect,
+              onToggle,
+              selectedNodeId
+            }
+          ),
+          visibleTree.children.length === 0 ? /* @__PURE__ */ jsx14("p", { className: emptyWorkspaceClassName, children: "This workspace is empty. Agent tool runs execute inside the thread workspace, so files should appear here as the session works." }) : null
+        ]
+      }
+    )
   ] });
 }
 function GraphWorkspaceExplorer({
@@ -2230,7 +2287,9 @@ function GraphWorkspaceExplorer({
       ...collectAncestorPaths(firstSelectableNode?.path ?? "")
     ])
   );
-  const [collapsedPanel, setCollapsedPanel] = useState3(null);
+  const [collapsedPanel, setCollapsedPanel] = useState3(
+    () => typeof window !== "undefined" && typeof window.matchMedia === "function" && window.matchMedia("(max-width: 639px)").matches ? "viewer" : null
+  );
   const [workspaceError, setWorkspaceError] = useState3(null);
   const [loadingTree, setLoadingTree] = useState3(false);
   const [loadingDirectoryPaths, setLoadingDirectoryPaths] = useState3(
@@ -2243,16 +2302,20 @@ function GraphWorkspaceExplorer({
   const [previewFile, setPreviewFile] = useState3(null);
   const [imageUrl, setImageUrl] = useState3(null);
   const [pdfUrl, setPdfUrl] = useState3(null);
-  const [workspaceVersion, setWorkspaceVersion] = useState3(0);
   const [isMobileViewport, setIsMobileViewport] = useState3(false);
   const fileInputRef = useRef2(null);
-  const workspaceChangeTimerRef = useRef2(null);
+  const explorerScrollerRef = useRef2(null);
+  const explorerScrollTopRef = useRef2(0);
+  const pendingExplorerScrollRestoreRef = useRef2(null);
+  const workspaceAdapterAvailable = Boolean(workspaceAdapter);
   const activeNode = (selectedNodeId ? nodeMap.get(selectedNodeId) : null) ?? firstSelectableNode ?? null;
   const workspaceIdentity = {
     threadId: detail.thread.id,
     workspaceId: detail.workspace.id ?? detail.thread.workspaceId ?? null
   };
   useEffect3(() => {
+    explorerScrollTopRef.current = 0;
+    pendingExplorerScrollRestoreRef.current = null;
     setExpandedPaths(
       /* @__PURE__ */ new Set([
         "",
@@ -2264,13 +2327,43 @@ function GraphWorkspaceExplorer({
       ])
     );
   }, [workspaceIdentity.threadId, workspaceIdentity.workspaceId]);
-  useEffect3(() => {
-    return () => {
-      if (workspaceChangeTimerRef.current !== null) {
-        window.clearTimeout(workspaceChangeTimerRef.current);
+  function rememberExplorerScroll() {
+    const currentScrollTop = explorerScrollerRef.current?.scrollTop ?? explorerScrollTopRef.current;
+    explorerScrollTopRef.current = currentScrollTop;
+    pendingExplorerScrollRestoreRef.current = currentScrollTop;
+  }
+  function restoreExplorerScroll() {
+    const target = pendingExplorerScrollRestoreRef.current ?? explorerScrollTopRef.current;
+    const scroller = explorerScrollerRef.current;
+    if (!scroller) {
+      return;
+    }
+    let frame = 0;
+    const restore = () => {
+      const current = explorerScrollerRef.current;
+      if (!current) {
+        return;
+      }
+      current.scrollTop = Math.min(
+        target,
+        Math.max(0, current.scrollHeight - current.clientHeight)
+      );
+      explorerScrollTopRef.current = current.scrollTop;
+      frame += 1;
+      if (frame < 8) {
+        window.requestAnimationFrame(restore);
+      } else {
+        pendingExplorerScrollRestoreRef.current = null;
       }
     };
-  }, []);
+    window.requestAnimationFrame(restore);
+  }
+  useLayoutEffect(() => {
+    if (collapsedPanel === "explorer") {
+      return;
+    }
+    restoreExplorerScroll();
+  }, [collapsedPanel, tree]);
   useEffect3(() => {
     if (typeof window === "undefined" || typeof window.matchMedia !== "function") {
       return;
@@ -2289,25 +2382,40 @@ function GraphWorkspaceExplorer({
     if (!workspaceAdapter) {
       return;
     }
+    const currentSelectedPath = preferredPath ?? activeNode?.path ?? null;
     setLoadingTree(true);
     setWorkspaceError(null);
     try {
-      const nextTree = workspaceTreeNodeToGraphNode(
+      const refreshedTree = workspaceTreeNodeToGraphNode(
         await workspaceAdapter.listTree({ ...workspaceIdentity, path: "" })
       );
+      let nextTree = adapterTree ? mergeRefreshedWorkspaceTree(refreshedTree, adapterTree) : refreshedTree;
+      if (adapterTree) {
+        const expandedDirectories = [...expandedPaths].filter((path) => path).sort((left, right) => left.split("/").length - right.split("/").length);
+        for (const path of expandedDirectories) {
+          const previousNode = findWorkspaceNodeByPath(adapterTree, path);
+          if (previousNode?.kind !== "directory" || !previousNode.childrenLoaded) {
+            continue;
+          }
+          const refreshedNode = workspaceTreeNodeToGraphNode(
+            await workspaceAdapter.listTree({ ...workspaceIdentity, path })
+          );
+          nextTree = replaceWorkspaceNode(
+            nextTree,
+            path,
+            mergeRefreshedWorkspaceTree(refreshedNode, previousNode)
+          );
+        }
+      }
       setAdapterTree(nextTree);
       const firstFile = findFirstWorkspaceFile(nextTree);
       setSelectedNodeId((current) => {
-        const currentNode = current ? nodeMap.get(current) : null;
-        if (preferredPath && hasWorkspacePath(nextTree, preferredPath)) {
-          return `workspace:${preferredPath}`;
-        }
-        if (currentNode?.path && hasWorkspacePath(nextTree, currentNode.path)) {
-          return `workspace:${currentNode.path}`;
+        const fallbackPath = currentSelectedPath ?? (current ? nodeMap.get(current)?.path : null);
+        if (fallbackPath && hasWorkspacePath(nextTree, fallbackPath)) {
+          return `workspace:${fallbackPath}`;
         }
         return firstFile?.id ?? current;
       });
-      setWorkspaceVersion((version) => version + 1);
     } catch (error) {
       setWorkspaceError(
         error instanceof Error ? error.message : "Failed to load workspace"
@@ -2339,7 +2447,6 @@ function GraphWorkspaceExplorer({
           truncated: loadedNode.truncated
         }) : current
       );
-      setWorkspaceVersion((version) => version + 1);
     } catch (error) {
       setWorkspaceError(
         error instanceof Error ? error.message : "Failed to load directory"
@@ -2395,7 +2502,6 @@ function GraphWorkspaceExplorer({
       }
       setAdapterTree(nextTree);
       setSelectedNodeId(`workspace:${targetPath}`);
-      setWorkspaceVersion((version) => version + 1);
     } catch (error) {
       setWorkspaceError(
         error instanceof Error ? error.message : `Failed to open ${targetPath}`
@@ -2423,7 +2529,7 @@ function GraphWorkspaceExplorer({
     setWorkspaceError(null);
     void refreshWorkspaceTree();
   }, [
-    workspaceAdapter,
+    workspaceAdapterAvailable,
     detail.thread.id,
     detail.workspace.id,
     detail.thread.workspaceId
@@ -2438,31 +2544,7 @@ function GraphWorkspaceExplorer({
     if (!workspaceAdapter?.subscribeWorkspaceChanged) {
       return;
     }
-    const unsubscribe = workspaceAdapter.subscribeWorkspaceChanged(
-      workspaceIdentity,
-      () => {
-        if (workspaceChangeTimerRef.current !== null) {
-          window.clearTimeout(workspaceChangeTimerRef.current);
-        }
-        workspaceChangeTimerRef.current = window.setTimeout(() => {
-          workspaceChangeTimerRef.current = null;
-          void refreshWorkspaceTree(activeNode?.path ?? null);
-        }, 240);
-      }
-    );
-    return () => {
-      if (workspaceChangeTimerRef.current !== null) {
-        window.clearTimeout(workspaceChangeTimerRef.current);
-        workspaceChangeTimerRef.current = null;
-      }
-      unsubscribe?.();
-    };
-  }, [
-    workspaceAdapter,
-    workspaceIdentity.threadId,
-    workspaceIdentity.workspaceId,
-    activeNode?.path
-  ]);
+  }, [workspaceAdapter, workspaceIdentity.threadId, workspaceIdentity.workspaceId]);
   useEffect3(() => {
     const selectedPathCandidate = workspaceAdapter && activeNode?.kind === "file" ? activeNode.path : null;
     if (!selectedPathCandidate) {
@@ -2524,7 +2606,7 @@ function GraphWorkspaceExplorer({
     return () => {
       cancelled = true;
     };
-  }, [workspaceAdapter, activeNode?.id, workspaceVersion]);
+  }, [workspaceAdapter, activeNode?.id]);
   async function handleLoadMore() {
     if (!workspaceAdapter || !previewFile?.truncated) {
       return;
@@ -2568,9 +2650,7 @@ function GraphWorkspaceExplorer({
     });
     setPreviewFile(file);
   }
-  async function handleUpload(event) {
-    const file = event.target.files?.[0];
-    event.target.value = "";
+  async function uploadWorkspaceFile(file) {
     if (!workspaceAdapter?.uploadFile || !file) {
       return;
     }
@@ -2592,12 +2672,42 @@ function GraphWorkspaceExplorer({
       setLoadingTree(false);
     }
   }
+  async function handleUpload(event) {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    if (file) {
+      await uploadWorkspaceFile(file);
+    }
+  }
+  function pickUploadFile() {
+    if (!workspaceAdapter?.uploadFile) {
+      return;
+    }
+    const defaultPick = () => fileInputRef.current?.click();
+    if (workspaceAdapter.pickUploadFile) {
+      void workspaceAdapter.pickUploadFile({
+        ...workspaceIdentity,
+        defaultPick,
+        upload: uploadWorkspaceFile
+      });
+      return;
+    }
+    defaultPick();
+  }
   function handleDownload(node) {
     void workspaceAdapter?.downloadNode?.({
       ...workspaceIdentity,
       path: node.path,
       kind: node.kind === "directory" ? "directory" : "file"
     });
+  }
+  function handlePreview(node) {
+    if (node.kind !== "file") {
+      return;
+    }
+    rememberExplorerScroll();
+    setSelectedNodeId(node.id);
+    setCollapsedPanel("explorer");
   }
   async function handleOpenGarbage() {
     if (!workspaceAdapter?.emptyGarbage) {
@@ -2640,7 +2750,7 @@ function GraphWorkspaceExplorer({
     ...workspaceAdapter?.downloadNode ? { onDownload: handleDownload } : {},
     ...workspaceAdapter?.emptyGarbage ? { onEmptyGarbage: handleOpenGarbage } : {},
     ...workspaceAdapter ? { onRefresh: () => void refreshWorkspaceTree(activeNode?.path ?? null) } : {},
-    ...workspaceAdapter?.uploadFile ? { onUpload: () => fileInputRef.current?.click() } : {}
+    ...workspaceAdapter?.uploadFile ? { onUpload: pickUploadFile } : {}
   };
   function toggleDirectory(path) {
     if (!path) {
@@ -2667,11 +2777,17 @@ function GraphWorkspaceExplorer({
     {
       canEmptyGarbage: Boolean(workspaceAdapter?.emptyGarbage),
       canUpload: Boolean(workspaceAdapter?.uploadFile),
-      ...!isMobileViewport ? { onCollapse: () => setCollapsedPanel("explorer") } : {},
+      onCollapse: () => {
+        rememberExplorerScroll();
+        setCollapsedPanel("explorer");
+      },
       expandedPaths,
       loadingPaths: loadingDirectoryPaths,
       loading: loadingTree,
+      explorerScrollTopRef,
+      explorerScrollerRef,
       ...explorerActions,
+      onPreview: handlePreview,
       onSelect: (nodeId) => {
         setSelectedNodeId(nodeId);
       },
@@ -2689,7 +2805,10 @@ function GraphWorkspaceExplorer({
       loadingMore,
       onLoadMore: handleLoadMore,
       ...workspaceAdapter?.writeFile ? { onSaveFile: handleSaveFile } : {},
-      ...!isMobileViewport ? { onCollapse: () => setCollapsedPanel("viewer") } : {},
+      onCollapse: () => {
+        rememberExplorerScroll();
+        setCollapsedPanel("viewer");
+      },
       pdfUrl,
       previewFile,
       previewLoading,
@@ -2698,50 +2817,22 @@ function GraphWorkspaceExplorer({
     }
   );
   if (collapsedPanel === "explorer") {
-    return /* @__PURE__ */ jsxs10(
+    return /* @__PURE__ */ jsx14(
       "div",
       {
         "data-testid": "workspace-panel",
         className: "relative h-full min-h-0 w-full overflow-hidden p-2",
-        children: [
-          /* @__PURE__ */ jsx14(
-            "button",
-            {
-              type: "button",
-              "data-testid": "expand-explorer",
-              onClick: () => setCollapsedPanel(null),
-              className: "thread-graph-panel-expand-fab left-3",
-              title: "Expand Explorer",
-              "aria-label": "Expand Explorer",
-              children: /* @__PURE__ */ jsx14(ChevronsRight2, { className: "h-4 w-4" })
-            }
-          ),
-          viewerPanel
-        ]
+        children: viewerPanel
       }
     );
   }
   if (collapsedPanel === "viewer") {
-    return /* @__PURE__ */ jsxs10(
+    return /* @__PURE__ */ jsx14(
       "div",
       {
         "data-testid": "workspace-panel",
         className: "relative h-full min-h-0 w-full overflow-hidden p-2",
-        children: [
-          explorerPanel,
-          /* @__PURE__ */ jsx14(
-            "button",
-            {
-              type: "button",
-              "data-testid": "expand-viewer",
-              onClick: () => setCollapsedPanel(null),
-              className: "thread-graph-panel-expand-fab right-3",
-              title: "Expand Viewer",
-              "aria-label": "Expand Viewer",
-              children: /* @__PURE__ */ jsx14(ChevronsLeft, { className: "h-4 w-4" })
-            }
-          )
-        ]
+        children: explorerPanel
       }
     );
   }
@@ -2759,10 +2850,18 @@ function GraphWorkspaceExplorer({
             onConfirm: () => void handleConfirmEmptyGarbage()
           }
         ) : null,
-        isMobileViewport ? /* @__PURE__ */ jsxs10("div", { className: "thread-graph-workspace-mobile-stack flex h-full min-h-0 w-full flex-col", children: [
-          /* @__PURE__ */ jsx14("div", { className: "thread-graph-workspace-mobile-explorer h-[34%] min-h-[11rem] shrink-0 overflow-hidden border-b", children: explorerPanel }),
-          /* @__PURE__ */ jsx14("div", { className: "thread-graph-workspace-mobile-viewer min-h-0 flex-1 overflow-hidden", children: viewerPanel })
-        ] }) : /* @__PURE__ */ jsxs10(
+        isMobileViewport ? /* @__PURE__ */ jsxs10(
+          ResizablePanelGroup,
+          {
+            direction: "vertical",
+            className: "thread-graph-workspace-mobile-stack",
+            children: [
+              /* @__PURE__ */ jsx14(ResizablePanel, { defaultSize: 42, minSize: 18, children: /* @__PURE__ */ jsx14("div", { className: "thread-graph-workspace-mobile-explorer h-full min-h-0 overflow-hidden", children: explorerPanel }) }),
+              /* @__PURE__ */ jsx14(ResizableHandle, { className: "thread-graph-workspace-resize-handle h-2 bg-transparent after:h-px after:bg-slate-200/80 after:transition-colors hover:after:bg-slate-300 dark:after:bg-[#303642] dark:hover:after:bg-[#475063]" }),
+              /* @__PURE__ */ jsx14(ResizablePanel, { defaultSize: 58, minSize: 18, children: /* @__PURE__ */ jsx14("div", { className: "thread-graph-workspace-mobile-viewer h-full min-h-0 overflow-hidden", children: viewerPanel }) })
+            ]
+          }
+        ) : /* @__PURE__ */ jsxs10(
           ResizablePanelGroup,
           {
             direction: "horizontal",
@@ -2779,6 +2878,8 @@ function GraphWorkspaceExplorer({
           {
             ref: fileInputRef,
             type: "file",
+            "aria-label": "Workspace upload file input",
+            "data-testid": "workspace-upload-file-input",
             className: "hidden",
             onChange: (event) => void handleUpload(event)
           }

@@ -278,7 +278,8 @@ export function GraphChatThreadChatPanel({
           bottom: `${
             floatingMobileComposerBottomOffset + mobileComposerBottomOffset
           }px`,
-          paddingBottom: 'env(safe-area-inset-bottom)',
+          paddingBottom:
+            'max(env(safe-area-inset-bottom), var(--android-safe-area-bottom, 0px))',
         }
       : undefined;
 
@@ -327,7 +328,8 @@ export function GraphChatThreadChatPanel({
             style={
               floatingComposerStyle ?? {
                 bottom: `${floatingMobileComposerBottomOffset}px`,
-                paddingBottom: 'env(safe-area-inset-bottom)',
+                paddingBottom:
+                  'max(env(safe-area-inset-bottom), var(--android-safe-area-bottom, 0px))',
               }
             }
           >

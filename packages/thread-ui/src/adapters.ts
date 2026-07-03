@@ -13,6 +13,10 @@ export interface ThreadTimelineAdapter {
   getImageAssetUrl?: (input: { threadId: string; path: string }) => string;
   onOpenLinkedThread?: (threadId: string) => void;
   onOpenWorkspaceFile?: (input: { path: string; line?: number }) => void;
+  cancelPendingSteer?: (
+    threadId: string,
+    pendingSteerId: string,
+  ) => Promise<void> | void;
   onLoadHistoryItemDetail?: (
     itemId: string,
   ) => Promise<ThreadHistoryItemDetailDto> | ThreadHistoryItemDetailDto;
@@ -90,6 +94,12 @@ export interface ThreadWorkspaceAdapter {
     path: string;
     file: File;
   }) => Promise<ThreadWorkspaceUploadResult>;
+  pickUploadFile?: (input: {
+    threadId: string;
+    workspaceId?: string | null;
+    defaultPick: () => void;
+    upload: (file: File) => Promise<void>;
+  }) => Promise<void> | void;
   writeFile?: (input: {
     threadId: string;
     workspaceId?: string | null;
@@ -139,6 +149,10 @@ export interface ThreadDetailUiAdapter {
   getNewThreadHref?: (workspaceId?: string | null) => string;
   renameThread?: (threadId: string, title: string) => Promise<void> | void;
   deleteThread?: (thread: ThreadDto) => Promise<void> | void;
+  cancelPendingSteer?: (
+    threadId: string,
+    pendingSteerId: string,
+  ) => Promise<void> | void;
   sendPrompt(input: SendPromptInput): Promise<boolean | void> | boolean | void;
   interrupt?: () => Promise<void> | void;
   compact?: () => Promise<void> | void;

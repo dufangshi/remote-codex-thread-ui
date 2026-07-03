@@ -833,8 +833,15 @@
 
 .thread-ui-shell .thread-composer-plan-toggle-active,
 .thread-ui-shell .thread-graph-composer-plan-toggle-active {
-  background: var(--theme-accent-soft);
-  color: var(--theme-accent-strong);
+  border-color: oklch(0.76 0.17 88 / 0.72) !important;
+  background:
+    linear-gradient(135deg, oklch(0.78 0.16 86 / 0.26), oklch(0.64 0.12 190 / 0.2)),
+    var(--theme-accent-soft) !important;
+  color: oklch(0.92 0.09 92) !important;
+  box-shadow:
+    0 0 0 1px oklch(0.78 0.16 86 / 0.22),
+    0 0 18px oklch(0.78 0.16 86 / 0.28),
+    inset 0 0 0 1px oklch(0.95 0.04 90 / 0.16) !important;
 }
 
 .thread-ui-shell .thread-jump-latest-badge {
@@ -1041,4 +1048,3 @@
 .thread-ui-shell[data-theme-effective="light"] .thread-graph-plan-step-text {
   color: rgb(15 23 42) !important;
 }
-

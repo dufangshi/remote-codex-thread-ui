@@ -10,6 +10,7 @@ import type {
   CollaborationModeDto,
   ModelOptionDto,
   ReasoningEffortDto,
+  SandboxModeDto,
   UpdateThreadSettingsInput,
 } from '@remote-codex/shared';
 
@@ -67,6 +68,8 @@ function renderToolbar({
   goalBusy = false,
   activeView = 'chat',
   planModeAvailable = true,
+  sandboxMode = 'workspace-write',
+  sandboxModeAvailable = true,
   onUpdateSettings = vi.fn(),
 }: {
   initialOpenMenu?: SettingsMenu;
@@ -76,6 +79,8 @@ function renderToolbar({
   goalBusy?: boolean;
   activeView?: 'chat' | 'shell';
   planModeAvailable?: boolean;
+  sandboxMode?: SandboxModeDto | null;
+  sandboxModeAvailable?: boolean;
   onUpdateSettings?: (input: UpdateThreadSettingsInput) => void;
 } = {}) {
   function Harness() {
@@ -96,7 +101,9 @@ function renderToolbar({
           reasoningEffort={reasoningEffort}
           supportedEfforts={modelOptions[0]?.supportedReasoningEfforts ?? []}
           displayedCollaborationMode={displayedCollaborationMode}
+          sandboxMode={sandboxMode}
           planModeAvailable={planModeAvailable}
+          sandboxModeAvailable={sandboxModeAvailable}
           settingsBusy={false}
           goalComposeMode={false}
           goalBusy={goalBusy}
@@ -202,6 +209,26 @@ describe('ComposerSettingsToolbar', () => {
     expect(onUpdateSettings).toHaveBeenCalledWith({
       collaborationMode: 'default',
     });
+  });
+
+  it('selects sandbox mode from the sandbox menu', () => {
+    const onUpdateSettings = vi.fn();
+    const view = renderToolbar({
+      initialOpenMenu: 'sandbox',
+      onUpdateSettings,
+    });
+
+    buttonByText(view, 'Danger')?.click();
+
+    expect(onUpdateSettings).toHaveBeenCalledWith({
+      sandboxMode: 'danger-full-access',
+    });
+  });
+
+  it('hides sandbox controls when unavailable', () => {
+    const view = renderToolbar({ sandboxModeAvailable: false });
+
+    expect(buttonByText(view, 'Sandbox')).toBeUndefined();
   });
 
   it('keeps the chat send button disabled when composer input is disabled', () => {

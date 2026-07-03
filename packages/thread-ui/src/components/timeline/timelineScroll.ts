@@ -2,8 +2,8 @@ import type { ThreadHistoryItemDto } from '@remote-codex/shared';
 
 import type { TimelineTurn } from './timelineItems';
 
-export const INITIAL_VISIBLE_TURNS = 10;
-export const LOAD_STEP = 10;
+export const INITIAL_VISIBLE_TURNS = 3;
+export const LOAD_STEP = 3;
 export const FOLLOW_TAIL_THRESHOLD_PX = 80;
 
 export function isNearBottom(

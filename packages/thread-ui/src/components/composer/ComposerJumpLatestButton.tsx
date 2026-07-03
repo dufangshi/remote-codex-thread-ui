@@ -17,7 +17,7 @@ export function ComposerJumpLatestButton({
       aria-label="Jump to latest"
       title={followTail ? 'Latest turn is in view' : 'Jump to the latest messages'}
       onClick={() => onToggleFollow?.()}
-      className="absolute left-1/2 top-3 z-40 inline-flex h-9 min-w-[5.75rem] -translate-x-1/2 -translate-y-[62%] items-start justify-center bg-transparent pt-1 touch-manipulation sm:top-4"
+      className="absolute left-1/2 top-0 z-[90] inline-flex h-11 min-w-[7rem] -translate-x-1/2 -translate-y-full items-end justify-center bg-transparent pb-1 touch-manipulation sm:h-10"
     >
       <span
         className={`thread-jump-latest-badge pointer-events-none inline-flex h-4 min-w-[3.75rem] items-center justify-center rounded-[0.7rem] border shadow-sm transition ${

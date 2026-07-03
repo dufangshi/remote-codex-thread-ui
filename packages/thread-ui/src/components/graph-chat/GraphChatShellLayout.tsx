@@ -89,6 +89,7 @@ export function GraphChatRoomsRailShell({
           ? 'translate-x-0'
           : 'pointer-events-none -translate-x-full sm:pointer-events-auto'
       } ${collapsed ? 'thread-ui-rail-collapsed sm:items-center' : ''}`}
+      style={{ paddingTop: 'var(--android-safe-area-top, 0px)' }}
     >
       {children}
     </aside>

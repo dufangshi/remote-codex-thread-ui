@@ -162,6 +162,9 @@ function ThreadTimelineComponent({
   const [collapsedTurnOverrides, setCollapsedTurnOverrides] = useState<Record<string, boolean>>(
     {},
   );
+  const [cancelingSteerIds, setCancelingSteerIds] = useState<Set<string>>(
+    () => new Set(),
+  );
   const loadHistoryItemDetail =
     adapter?.onLoadHistoryItemDetail ?? onLoadHistoryItemDetail;
   const openLinkedThread = adapter?.onOpenLinkedThread;
@@ -313,12 +316,14 @@ function ThreadTimelineComponent({
       prompt: steer.prompt,
       status: 'Accepted',
       createdAt: steer.createdAt,
+      canCancel: true,
     })),
     ...optimisticSteers.map((steer) => ({
       id: steer.id,
       prompt: steer.prompt,
       status: steer.status === 'steering' ? 'Steering' : null,
       createdAt: steer.createdAt,
+      canCancel: false,
     })),
   ].sort((left, right) => left.createdAt.localeCompare(right.createdAt));
   const requestEntryAnchors = useMemo(
@@ -363,7 +368,7 @@ function ThreadTimelineComponent({
                     disabled={loadingEarlier}
                     className="thread-graph-history-button rounded-full border px-2.5 py-1.5 transition"
                   >
-                    {loadingEarlier ? 'Loading earlier...' : 'Load 10 earlier'}
+                    {loadingEarlier ? 'Loading earlier...' : 'Load 3 earlier'}
                   </button>
                 )}
                 {showLoadAll && (
@@ -557,19 +562,43 @@ function ThreadTimelineComponent({
           {queuedSteers.length > 0 && (
             <div className="thread-graph-message-section space-y-3 px-3 py-4 sm:px-5">
               {queuedSteers.map((steer) => (
-                <CompactMessageItem
-                  key={steer.id}
-                  threadId={threadId}
-                  item={{
-                    id: steer.id,
-                    kind: 'userMessage',
-                    text: steer.prompt,
-                    status: steer.status,
-                  }}
-                  scrollRootRef={scrollContainerRef}
-                  onBeforeMessageResize={preserveScrollPositionForResize}
-                  {...(adapter ? { adapter } : {})}
-                />
+                <div key={steer.id} className="space-y-1.5">
+                  <CompactMessageItem
+                    threadId={threadId}
+                    item={{
+                      id: steer.id,
+                      kind: 'userMessage',
+                      text: steer.prompt,
+                      status: steer.status,
+                    }}
+                    scrollRootRef={scrollContainerRef}
+                    onBeforeMessageResize={preserveScrollPositionForResize}
+                    {...(adapter ? { adapter } : {})}
+                  />
+                  {threadId && steer.canCancel && adapter?.cancelPendingSteer ? (
+                    <div className="flex justify-end px-1">
+                      <button
+                        type="button"
+                        className="thread-graph-history-button rounded-full border px-2.5 py-1 text-xs transition disabled:cursor-not-allowed disabled:opacity-60"
+                        disabled={cancelingSteerIds.has(steer.id)}
+                        onClick={() => {
+                          setCancelingSteerIds((current) => new Set(current).add(steer.id));
+                          void Promise.resolve(adapter.cancelPendingSteer?.(threadId, steer.id))
+                            .catch(() => undefined)
+                            .finally(() => {
+                              setCancelingSteerIds((current) => {
+                                const next = new Set(current);
+                                next.delete(steer.id);
+                                return next;
+                              });
+                            });
+                        }}
+                      >
+                        {cancelingSteerIds.has(steer.id) ? 'Canceling...' : 'Cancel'}
+                      </button>
+                    </div>
+                  ) : null}
+                </div>
               ))}
             </div>
           )}

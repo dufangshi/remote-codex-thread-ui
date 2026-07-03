@@ -4,6 +4,7 @@ import {
   ChevronsLeft,
   ChevronsRight,
   Copy,
+  Folder,
   Menu,
   MessageSquare,
   Monitor,
@@ -74,6 +75,8 @@ interface ThreadWorkspaceLayoutProps {
   showMobileAppMenu?: boolean;
   showMobileThreadNavToggle?: boolean;
   showMobileNewThreadShortcut?: boolean;
+  settingsDialogOpen?: boolean;
+  onSettingsDialogOpenChange?: (open: boolean) => void;
   mobileHeaderAction?: ReactNode;
   currentThreadId?: string | undefined;
   currentThreadLabel?: string | null | undefined;
@@ -411,6 +414,8 @@ export function ThreadWorkspaceLayout({
   themeMode: themeModeProp,
   onThemeModeChange,
   showMobileNewThreadShortcut = true,
+  settingsDialogOpen,
+  onSettingsDialogOpenChange,
   mobileHeaderAction,
   currentThreadId,
   currentThreadLabel = null,
@@ -465,7 +470,7 @@ export function ThreadWorkspaceLayout({
       : layoutMode === "mobile",
   );
   const [mobileWorkspace, setMobileWorkspace] = useState<"chat" | "workspace">(
-    "chat",
+    "workspace",
   );
   const [editingThreadId, setEditingThreadId] = useState<string | null>(null);
   const [draftTitle, setDraftTitle] = useState("");
@@ -724,7 +729,14 @@ export function ThreadWorkspaceLayout({
           : "session";
 
     return (
-      <Dialog>
+      <Dialog
+        {...(settingsDialogOpen !== undefined
+          ? { open: settingsDialogOpen }
+          : {})}
+        {...(onSettingsDialogOpenChange
+          ? { onOpenChange: onSettingsDialogOpenChange }
+          : {})}
+      >
         <DialogTrigger asChild>
           <button
             type="button"
@@ -1212,6 +1224,33 @@ export function ThreadWorkspaceLayout({
                         {topbarActions}
                       </div>
                     ) : null}
+                    {renderMobileTopbarControls && hasWorkspace ? (
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setMobileWorkspace((current) =>
+                            current === "workspace" ? "chat" : "workspace",
+                          )
+                        }
+                        aria-label={
+                          mobileWorkspace === "workspace"
+                            ? "Show chat"
+                            : "Show workspace"
+                        }
+                        title={
+                          mobileWorkspace === "workspace"
+                            ? "Show chat"
+                            : "Show workspace"
+                        }
+                        className="thread-icon-button thread-mobile-only-inline-flex h-10 w-10 items-center justify-center rounded-full"
+                      >
+                        {mobileWorkspace === "workspace" ? (
+                          <MessageSquare className="h-4 w-4" />
+                        ) : (
+                          <Folder className="h-4 w-4" />
+                        )}
+                      </button>
+                    ) : null}
                     {renderMobileTopbarControls ? mobileHeaderAction : null}
                     {renderMobileTopbarControls && showMobileNewThreadShortcut
                       ? renderNewThreadDialogButton(
@@ -1221,29 +1260,6 @@ export function ThreadWorkspaceLayout({
                   </div>
                 </div>
               </div>
-
-              {renderMobileTopbarControls && hasWorkspace ? (
-                <div className="thread-mobile-view-switch thread-mobile-only-grid grid-cols-2 gap-1 px-3 pb-2">
-                  <button
-                    type="button"
-                    onClick={() => setMobileWorkspace("chat")}
-                    className={`thread-mobile-segment h-10 rounded-lg text-sm font-medium transition ${
-                      mobileWorkspace === "chat" ? "is-active" : ""
-                    }`}
-                  >
-                    Chat
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setMobileWorkspace("workspace")}
-                    className={`thread-mobile-segment h-10 rounded-lg text-sm font-medium transition ${
-                      mobileWorkspace === "workspace" ? "is-active" : ""
-                    }`}
-                  >
-                    Workspace
-                  </button>
-                </div>
-              ) : null}
             </GraphChatTopbarShell>
 
             <GraphChatSplitRegion>

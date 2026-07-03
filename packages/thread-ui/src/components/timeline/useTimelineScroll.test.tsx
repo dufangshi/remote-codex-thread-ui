@@ -105,8 +105,8 @@ describe('useTimelineScroll', () => {
     const harness = renderHookHarness(baseInput({ turnsLength: 35 }));
 
     expect(latestResult?.serverManagedHistory).toBe(false);
-    expect(latestResult?.startIndex).toBe(25);
-    expect(latestResult?.hiddenCount).toBe(25);
+    expect(latestResult?.startIndex).toBe(35 - INITIAL_VISIBLE_TURNS);
+    expect(latestResult?.hiddenCount).toBe(35 - INITIAL_VISIBLE_TURNS);
     expect(latestResult?.showLoadAll).toBe(false);
 
     flushSync(() => {

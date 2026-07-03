@@ -103,6 +103,8 @@ export interface ThreadDetailSurfaceProps {
   metaContent?: ReactNode;
   settingsContent?: ReactNode;
   globalSettingsContent?: ReactNode;
+  settingsDialogOpen?: boolean;
+  onSettingsDialogOpenChange?: (open: boolean) => void;
   mobileHeaderAction?: ReactNode;
   appMenuButton?: ReactNode;
   appNavigationMenu?: ReactNode;
@@ -170,6 +172,8 @@ export function ThreadDetailSurface({
   metaContent,
   settingsContent,
   globalSettingsContent,
+  settingsDialogOpen,
+  onSettingsDialogOpenChange,
   mobileHeaderAction,
   appMenuButton,
   appNavigationMenu,
@@ -221,6 +225,7 @@ export function ThreadDetailSurface({
     loadHistoryItemDetail,
     openWorkspaceFile,
     openThread,
+    cancelPendingSteer,
   } = adapter;
   const timelineAdapter = useMemo(
     () => ({
@@ -237,8 +242,10 @@ export function ThreadDetailSurface({
       ...(loadHistoryItemDetail
         ? { onLoadHistoryItemDetail: loadHistoryItemDetail }
         : {}),
+      ...(cancelPendingSteer ? { cancelPendingSteer } : {}),
     }),
     [
+      cancelPendingSteer,
       getImageAssetUrl,
       loadHistoryItemDetail,
       openWorkspaceFile,
@@ -414,6 +421,8 @@ export function ThreadDetailSurface({
       metaContent={metaContent}
       settingsContent={settingsContent}
       globalSettingsContent={globalSettingsContent}
+      {...(settingsDialogOpen !== undefined ? { settingsDialogOpen } : {})}
+      {...(onSettingsDialogOpenChange ? { onSettingsDialogOpenChange } : {})}
       mobileHeaderAction={mobileHeaderAction}
       effectiveTheme={shellEffectiveTheme}
       themeMode={shellThemeMode}

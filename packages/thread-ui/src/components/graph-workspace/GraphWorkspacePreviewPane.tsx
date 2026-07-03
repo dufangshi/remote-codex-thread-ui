@@ -305,6 +305,7 @@ export function GraphWorkspacePreviewPane({
                 value={draftContent}
                 onChange={(event) => setDraftContent(event.currentTarget.value)}
                 spellCheck={false}
+                aria-label="Workspace file editor"
                 className="thread-graph-file-editor min-h-0 flex-1 resize-none border-0 bg-transparent p-4 font-mono text-[12px] leading-5 text-slate-900 outline-none dark:text-slate-100"
               />
             ) : (
@@ -318,6 +319,8 @@ export function GraphWorkspacePreviewPane({
                   type="button"
                   onClick={onLoadMore}
                   disabled={loadingMore}
+                  title="Load more workspace preview"
+                  aria-label="Load more workspace preview"
                   className="thread-graph-load-more-button rounded-md px-4 py-1.5 text-xs disabled:opacity-50"
                 >
                   {loadingMore

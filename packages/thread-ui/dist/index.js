@@ -1927,6 +1927,7 @@ function GraphWorkspacePreviewPane({
                 value: draftContent,
                 onChange: (event) => setDraftContent(event.currentTarget.value),
                 spellCheck: false,
+                "aria-label": "Workspace file editor",
                 className: "thread-graph-file-editor min-h-0 flex-1 resize-none border-0 bg-transparent p-4 font-mono text-[12px] leading-5 text-slate-900 outline-none dark:text-slate-100"
               }
             ) : /* @__PURE__ */ jsx56(
@@ -1941,6 +1942,8 @@ function GraphWorkspacePreviewPane({
                 type: "button",
                 onClick: onLoadMore,
                 disabled: loadingMore,
+                title: "Load more workspace preview",
+                "aria-label": "Load more workspace preview",
                 className: "thread-graph-load-more-button rounded-md px-4 py-1.5 text-xs disabled:opacity-50",
                 children: loadingMore ? "Loading..." : `Load more (${(previewFile.size - previewFile.nextOffset).toLocaleString()} bytes remaining)`
               }
@@ -2035,6 +2038,7 @@ var init_GraphEmptyGarbageDialog = __esm({
 // src/components/graph-workspace/GraphWorkspaceExplorer.tsx
 import {
   useEffect as useEffect21,
+  useLayoutEffect as useLayoutEffect6,
   useMemo as useMemo13,
   useRef as useRef14,
   useState as useState26
@@ -2043,13 +2047,13 @@ import {
   ChevronDown,
   ChevronRight as ChevronRight2,
   ChevronsLeft as ChevronsLeft2,
-  ChevronsRight as ChevronsRight3,
   Download as Download2,
+  Eye,
   File,
   FileArchive,
   FileCode2,
   FileImage,
-  Folder,
+  Folder as Folder2,
   FolderOpen,
   RefreshCw,
   Trash2 as Trash23,
@@ -2086,9 +2090,28 @@ function writeExpandedPaths(input, paths) {
   } catch {
   }
 }
+function mergeRefreshedWorkspaceTree(refreshed, previous) {
+  if (!previous || refreshed.path !== previous.path) {
+    return refreshed;
+  }
+  if (refreshed.kind !== "directory") {
+    return refreshed;
+  }
+  const previousByPath = new Map(previous.children.map((child) => [child.path, child]));
+  const children = refreshed.children.map(
+    (child) => mergeRefreshedWorkspaceTree(child, previousByPath.get(child.path) ?? null)
+  );
+  const refreshedHasLoadedChildren = refreshed.childrenLoaded && refreshed.children.length > 0;
+  return {
+    ...refreshed,
+    children: refreshedHasLoadedChildren || !previous.childrenLoaded ? children : previous.children,
+    childrenLoaded: refreshed.childrenLoaded || previous.childrenLoaded,
+    truncated: refreshed.truncated ?? previous.truncated
+  };
+}
 function iconForWorkspaceNode(node, expanded) {
   if (node.kind === "directory") {
-    return expanded ? /* @__PURE__ */ jsx58(FolderOpen, { className: "h-4 w-4 text-slate-500 dark:text-slate-400" }) : /* @__PURE__ */ jsx58(Folder, { className: "h-4 w-4 text-slate-500 dark:text-slate-400" });
+    return expanded ? /* @__PURE__ */ jsx58(FolderOpen, { className: "h-4 w-4 text-slate-500 dark:text-slate-400" }) : /* @__PURE__ */ jsx58(Folder2, { className: "h-4 w-4 text-slate-500 dark:text-slate-400" });
   }
   const extension = extensionOf(node.name);
   if (extension === "zip") {
@@ -2110,6 +2133,7 @@ function WorkspaceTreeRow({
   loadingPaths,
   node,
   onDownload,
+  onPreview,
   onSelect,
   onToggle,
   selectedNodeId
@@ -2158,6 +2182,7 @@ function WorkspaceTreeRow({
             loadingPaths,
             node: child,
             ...onDownload ? { onDownload } : {},
+            ...onPreview ? { onPreview } : {},
             onSelect,
             onToggle,
             selectedNodeId
@@ -2193,17 +2218,30 @@ function WorkspaceTreeRow({
             ]
           }
         ),
-        onDownload && node.kind === "file" ? /* @__PURE__ */ jsx58(
-          "button",
-          {
-            type: "button",
-            onClick: () => onDownload(node),
-            className: `thread-graph-tree-action mr-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-md transition sm:h-7 sm:w-7 sm:opacity-0 sm:group-hover:opacity-100 sm:focus:opacity-100 ${selected ? "is-selected" : "text-slate-400 hover:bg-white hover:text-slate-900 dark:text-slate-500 dark:hover:bg-[#1d222c] dark:hover:text-slate-100"}`,
-            title: `Download ${node.name}`,
-            "aria-label": `Download ${node.name}`,
-            children: /* @__PURE__ */ jsx58(Download2, { className: "h-3.5 w-3.5" })
-          }
-        ) : null
+        node.kind === "file" && (onPreview || onDownload) ? /* @__PURE__ */ jsxs47("div", { className: "mr-1 flex shrink-0 items-center gap-0.5", children: [
+          onPreview ? /* @__PURE__ */ jsx58(
+            "button",
+            {
+              type: "button",
+              onClick: () => onPreview(node),
+              className: `thread-graph-tree-action flex h-9 w-9 shrink-0 items-center justify-center rounded-md transition sm:h-7 sm:w-7 sm:opacity-0 sm:group-hover:opacity-100 sm:focus:opacity-100 ${selected ? "is-selected" : "text-slate-400 hover:bg-white hover:text-slate-900 dark:text-slate-500 dark:hover:bg-[#1d222c] dark:hover:text-slate-100"}`,
+              title: `Preview ${node.name}`,
+              "aria-label": `Preview ${node.name}`,
+              children: /* @__PURE__ */ jsx58(Eye, { className: "h-3.5 w-3.5" })
+            }
+          ) : null,
+          onDownload ? /* @__PURE__ */ jsx58(
+            "button",
+            {
+              type: "button",
+              onClick: () => onDownload(node),
+              className: `thread-graph-tree-action flex h-9 w-9 shrink-0 items-center justify-center rounded-md transition sm:h-7 sm:w-7 sm:opacity-0 sm:group-hover:opacity-100 sm:focus:opacity-100 ${selected ? "is-selected" : "text-slate-400 hover:bg-white hover:text-slate-900 dark:text-slate-500 dark:hover:bg-[#1d222c] dark:hover:text-slate-100"}`,
+              title: `Download ${node.name}`,
+              "aria-label": `Download ${node.name}`,
+              children: /* @__PURE__ */ jsx58(Download2, { className: "h-3.5 w-3.5" })
+            }
+          ) : null
+        ] }) : null
       ]
     }
   );
@@ -2252,10 +2290,13 @@ function WorkspaceExplorerPanel({
   loading,
   onDownload,
   onEmptyGarbage,
+  onPreview,
   onRefresh,
   onSelect,
   onToggle,
   onUpload,
+  explorerScrollTopRef,
+  explorerScrollerRef,
   selectedNodeId,
   tree,
   liveNodes
@@ -2267,6 +2308,13 @@ function WorkspaceExplorerPanel({
     }),
     [tree]
   );
+  useLayoutEffect6(() => {
+    const scroller = explorerScrollerRef.current;
+    if (!scroller) {
+      return;
+    }
+    scroller.scrollTop = explorerScrollTopRef.current;
+  }, [explorerScrollerRef, explorerScrollTopRef]);
   return /* @__PURE__ */ jsxs47("aside", { className: `${explorerPanelClassName} flex flex-col`, children: [
     /* @__PURE__ */ jsxs47("div", { className: explorerHeaderClassName, children: [
       /* @__PURE__ */ jsx58("div", { className: "min-w-0", children: /* @__PURE__ */ jsx58("h2", { className: explorerHeadingClassName, children: "Explorer" }) }),
@@ -2323,32 +2371,42 @@ function WorkspaceExplorerPanel({
         ) : null
       ] })
     ] }),
-    /* @__PURE__ */ jsxs47("div", { className: "min-h-0 flex-1 overflow-y-auto py-2", children: [
-      /* @__PURE__ */ jsx58(
-        LiveWorkspaceSection,
-        {
-          liveNodes: liveNodes ?? [],
-          onSelect,
-          selectedNodeId
-        }
-      ),
-      /* @__PURE__ */ jsx58("div", { className: workspaceLabelClassName, children: "Workspace" }),
-      loading ? /* @__PURE__ */ jsx58("p", { className: workspaceLoadingClassName, children: "Loading workspace..." }) : null,
-      /* @__PURE__ */ jsx58(
-        WorkspaceTreeRow,
-        {
-          depth: 0,
-          expandedPaths,
-          loadingPaths,
-          node: visibleTree,
-          ...onDownload ? { onDownload } : {},
-          onSelect,
-          onToggle,
-          selectedNodeId
-        }
-      ),
-      visibleTree.children.length === 0 ? /* @__PURE__ */ jsx58("p", { className: emptyWorkspaceClassName, children: "This workspace is empty. Agent tool runs execute inside the thread workspace, so files should appear here as the session works." }) : null
-    ] })
+    /* @__PURE__ */ jsxs47(
+      "div",
+      {
+        ref: explorerScrollerRef,
+        className: "thread-graph-workspace-tree-scroll min-h-0 flex-1 overflow-y-auto py-2",
+        onScroll: (event) => {
+          explorerScrollTopRef.current = event.currentTarget.scrollTop;
+        },
+        children: [
+          /* @__PURE__ */ jsx58(
+            LiveWorkspaceSection,
+            {
+              liveNodes: liveNodes ?? [],
+              onSelect,
+              selectedNodeId
+            }
+          ),
+          /* @__PURE__ */ jsx58("div", { className: workspaceLabelClassName, children: "Workspace" }),
+          /* @__PURE__ */ jsx58(
+            WorkspaceTreeRow,
+            {
+              depth: 0,
+              expandedPaths,
+              loadingPaths,
+              node: visibleTree,
+              ...onDownload ? { onDownload } : {},
+              ...onPreview ? { onPreview } : {},
+              onSelect,
+              onToggle,
+              selectedNodeId
+            }
+          ),
+          visibleTree.children.length === 0 ? /* @__PURE__ */ jsx58("p", { className: emptyWorkspaceClassName, children: "This workspace is empty. Agent tool runs execute inside the thread workspace, so files should appear here as the session works." }) : null
+        ]
+      }
+    )
   ] });
 }
 function GraphWorkspaceExplorer({
@@ -2384,7 +2442,9 @@ function GraphWorkspaceExplorer({
       ...collectAncestorPaths(firstSelectableNode?.path ?? "")
     ])
   );
-  const [collapsedPanel, setCollapsedPanel] = useState26(null);
+  const [collapsedPanel, setCollapsedPanel] = useState26(
+    () => typeof window !== "undefined" && typeof window.matchMedia === "function" && window.matchMedia("(max-width: 639px)").matches ? "viewer" : null
+  );
   const [workspaceError, setWorkspaceError] = useState26(null);
   const [loadingTree, setLoadingTree] = useState26(false);
   const [loadingDirectoryPaths, setLoadingDirectoryPaths] = useState26(
@@ -2397,16 +2457,20 @@ function GraphWorkspaceExplorer({
   const [previewFile, setPreviewFile] = useState26(null);
   const [imageUrl, setImageUrl] = useState26(null);
   const [pdfUrl, setPdfUrl] = useState26(null);
-  const [workspaceVersion, setWorkspaceVersion] = useState26(0);
   const [isMobileViewport, setIsMobileViewport] = useState26(false);
   const fileInputRef = useRef14(null);
-  const workspaceChangeTimerRef = useRef14(null);
+  const explorerScrollerRef = useRef14(null);
+  const explorerScrollTopRef = useRef14(0);
+  const pendingExplorerScrollRestoreRef = useRef14(null);
+  const workspaceAdapterAvailable = Boolean(workspaceAdapter);
   const activeNode = (selectedNodeId ? nodeMap.get(selectedNodeId) : null) ?? firstSelectableNode ?? null;
   const workspaceIdentity = {
     threadId: detail.thread.id,
     workspaceId: detail.workspace.id ?? detail.thread.workspaceId ?? null
   };
   useEffect21(() => {
+    explorerScrollTopRef.current = 0;
+    pendingExplorerScrollRestoreRef.current = null;
     setExpandedPaths(
       /* @__PURE__ */ new Set([
         "",
@@ -2418,13 +2482,43 @@ function GraphWorkspaceExplorer({
       ])
     );
   }, [workspaceIdentity.threadId, workspaceIdentity.workspaceId]);
-  useEffect21(() => {
-    return () => {
-      if (workspaceChangeTimerRef.current !== null) {
-        window.clearTimeout(workspaceChangeTimerRef.current);
+  function rememberExplorerScroll() {
+    const currentScrollTop = explorerScrollerRef.current?.scrollTop ?? explorerScrollTopRef.current;
+    explorerScrollTopRef.current = currentScrollTop;
+    pendingExplorerScrollRestoreRef.current = currentScrollTop;
+  }
+  function restoreExplorerScroll() {
+    const target = pendingExplorerScrollRestoreRef.current ?? explorerScrollTopRef.current;
+    const scroller = explorerScrollerRef.current;
+    if (!scroller) {
+      return;
+    }
+    let frame = 0;
+    const restore = () => {
+      const current = explorerScrollerRef.current;
+      if (!current) {
+        return;
+      }
+      current.scrollTop = Math.min(
+        target,
+        Math.max(0, current.scrollHeight - current.clientHeight)
+      );
+      explorerScrollTopRef.current = current.scrollTop;
+      frame += 1;
+      if (frame < 8) {
+        window.requestAnimationFrame(restore);
+      } else {
+        pendingExplorerScrollRestoreRef.current = null;
       }
     };
-  }, []);
+    window.requestAnimationFrame(restore);
+  }
+  useLayoutEffect6(() => {
+    if (collapsedPanel === "explorer") {
+      return;
+    }
+    restoreExplorerScroll();
+  }, [collapsedPanel, tree]);
   useEffect21(() => {
     if (typeof window === "undefined" || typeof window.matchMedia !== "function") {
       return;
@@ -2443,25 +2537,40 @@ function GraphWorkspaceExplorer({
     if (!workspaceAdapter) {
       return;
     }
+    const currentSelectedPath = preferredPath ?? activeNode?.path ?? null;
     setLoadingTree(true);
     setWorkspaceError(null);
     try {
-      const nextTree = workspaceTreeNodeToGraphNode(
+      const refreshedTree = workspaceTreeNodeToGraphNode(
         await workspaceAdapter.listTree({ ...workspaceIdentity, path: "" })
       );
+      let nextTree = adapterTree ? mergeRefreshedWorkspaceTree(refreshedTree, adapterTree) : refreshedTree;
+      if (adapterTree) {
+        const expandedDirectories = [...expandedPaths].filter((path) => path).sort((left, right) => left.split("/").length - right.split("/").length);
+        for (const path of expandedDirectories) {
+          const previousNode = findWorkspaceNodeByPath(adapterTree, path);
+          if (previousNode?.kind !== "directory" || !previousNode.childrenLoaded) {
+            continue;
+          }
+          const refreshedNode = workspaceTreeNodeToGraphNode(
+            await workspaceAdapter.listTree({ ...workspaceIdentity, path })
+          );
+          nextTree = replaceWorkspaceNode(
+            nextTree,
+            path,
+            mergeRefreshedWorkspaceTree(refreshedNode, previousNode)
+          );
+        }
+      }
       setAdapterTree(nextTree);
       const firstFile = findFirstWorkspaceFile(nextTree);
       setSelectedNodeId((current) => {
-        const currentNode = current ? nodeMap.get(current) : null;
-        if (preferredPath && hasWorkspacePath(nextTree, preferredPath)) {
-          return `workspace:${preferredPath}`;
-        }
-        if (currentNode?.path && hasWorkspacePath(nextTree, currentNode.path)) {
-          return `workspace:${currentNode.path}`;
+        const fallbackPath = currentSelectedPath ?? (current ? nodeMap.get(current)?.path : null);
+        if (fallbackPath && hasWorkspacePath(nextTree, fallbackPath)) {
+          return `workspace:${fallbackPath}`;
         }
         return firstFile?.id ?? current;
       });
-      setWorkspaceVersion((version) => version + 1);
     } catch (error) {
       setWorkspaceError(
         error instanceof Error ? error.message : "Failed to load workspace"
@@ -2493,7 +2602,6 @@ function GraphWorkspaceExplorer({
           truncated: loadedNode.truncated
         }) : current
       );
-      setWorkspaceVersion((version) => version + 1);
     } catch (error) {
       setWorkspaceError(
         error instanceof Error ? error.message : "Failed to load directory"
@@ -2549,7 +2657,6 @@ function GraphWorkspaceExplorer({
       }
       setAdapterTree(nextTree);
       setSelectedNodeId(`workspace:${targetPath}`);
-      setWorkspaceVersion((version) => version + 1);
     } catch (error) {
       setWorkspaceError(
         error instanceof Error ? error.message : `Failed to open ${targetPath}`
@@ -2577,7 +2684,7 @@ function GraphWorkspaceExplorer({
     setWorkspaceError(null);
     void refreshWorkspaceTree();
   }, [
-    workspaceAdapter,
+    workspaceAdapterAvailable,
     detail.thread.id,
     detail.workspace.id,
     detail.thread.workspaceId
@@ -2592,31 +2699,7 @@ function GraphWorkspaceExplorer({
     if (!workspaceAdapter?.subscribeWorkspaceChanged) {
       return;
     }
-    const unsubscribe = workspaceAdapter.subscribeWorkspaceChanged(
-      workspaceIdentity,
-      () => {
-        if (workspaceChangeTimerRef.current !== null) {
-          window.clearTimeout(workspaceChangeTimerRef.current);
-        }
-        workspaceChangeTimerRef.current = window.setTimeout(() => {
-          workspaceChangeTimerRef.current = null;
-          void refreshWorkspaceTree(activeNode?.path ?? null);
-        }, 240);
-      }
-    );
-    return () => {
-      if (workspaceChangeTimerRef.current !== null) {
-        window.clearTimeout(workspaceChangeTimerRef.current);
-        workspaceChangeTimerRef.current = null;
-      }
-      unsubscribe?.();
-    };
-  }, [
-    workspaceAdapter,
-    workspaceIdentity.threadId,
-    workspaceIdentity.workspaceId,
-    activeNode?.path
-  ]);
+  }, [workspaceAdapter, workspaceIdentity.threadId, workspaceIdentity.workspaceId]);
   useEffect21(() => {
     const selectedPathCandidate = workspaceAdapter && activeNode?.kind === "file" ? activeNode.path : null;
     if (!selectedPathCandidate) {
@@ -2678,7 +2761,7 @@ function GraphWorkspaceExplorer({
     return () => {
       cancelled = true;
     };
-  }, [workspaceAdapter, activeNode?.id, workspaceVersion]);
+  }, [workspaceAdapter, activeNode?.id]);
   async function handleLoadMore() {
     if (!workspaceAdapter || !previewFile?.truncated) {
       return;
@@ -2722,9 +2805,7 @@ function GraphWorkspaceExplorer({
     });
     setPreviewFile(file);
   }
-  async function handleUpload(event) {
-    const file = event.target.files?.[0];
-    event.target.value = "";
+  async function uploadWorkspaceFile(file) {
     if (!workspaceAdapter?.uploadFile || !file) {
       return;
     }
@@ -2746,12 +2827,42 @@ function GraphWorkspaceExplorer({
       setLoadingTree(false);
     }
   }
+  async function handleUpload(event) {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    if (file) {
+      await uploadWorkspaceFile(file);
+    }
+  }
+  function pickUploadFile() {
+    if (!workspaceAdapter?.uploadFile) {
+      return;
+    }
+    const defaultPick = () => fileInputRef.current?.click();
+    if (workspaceAdapter.pickUploadFile) {
+      void workspaceAdapter.pickUploadFile({
+        ...workspaceIdentity,
+        defaultPick,
+        upload: uploadWorkspaceFile
+      });
+      return;
+    }
+    defaultPick();
+  }
   function handleDownload(node) {
     void workspaceAdapter?.downloadNode?.({
       ...workspaceIdentity,
       path: node.path,
       kind: node.kind === "directory" ? "directory" : "file"
     });
+  }
+  function handlePreview(node) {
+    if (node.kind !== "file") {
+      return;
+    }
+    rememberExplorerScroll();
+    setSelectedNodeId(node.id);
+    setCollapsedPanel("explorer");
   }
   async function handleOpenGarbage() {
     if (!workspaceAdapter?.emptyGarbage) {
@@ -2794,7 +2905,7 @@ function GraphWorkspaceExplorer({
     ...workspaceAdapter?.downloadNode ? { onDownload: handleDownload } : {},
     ...workspaceAdapter?.emptyGarbage ? { onEmptyGarbage: handleOpenGarbage } : {},
     ...workspaceAdapter ? { onRefresh: () => void refreshWorkspaceTree(activeNode?.path ?? null) } : {},
-    ...workspaceAdapter?.uploadFile ? { onUpload: () => fileInputRef.current?.click() } : {}
+    ...workspaceAdapter?.uploadFile ? { onUpload: pickUploadFile } : {}
   };
   function toggleDirectory(path) {
     if (!path) {
@@ -2821,11 +2932,17 @@ function GraphWorkspaceExplorer({
     {
       canEmptyGarbage: Boolean(workspaceAdapter?.emptyGarbage),
       canUpload: Boolean(workspaceAdapter?.uploadFile),
-      ...!isMobileViewport ? { onCollapse: () => setCollapsedPanel("explorer") } : {},
+      onCollapse: () => {
+        rememberExplorerScroll();
+        setCollapsedPanel("explorer");
+      },
       expandedPaths,
       loadingPaths: loadingDirectoryPaths,
       loading: loadingTree,
+      explorerScrollTopRef,
+      explorerScrollerRef,
       ...explorerActions,
+      onPreview: handlePreview,
       onSelect: (nodeId) => {
         setSelectedNodeId(nodeId);
       },
@@ -2843,7 +2960,10 @@ function GraphWorkspaceExplorer({
       loadingMore,
       onLoadMore: handleLoadMore,
       ...workspaceAdapter?.writeFile ? { onSaveFile: handleSaveFile } : {},
-      ...!isMobileViewport ? { onCollapse: () => setCollapsedPanel("viewer") } : {},
+      onCollapse: () => {
+        rememberExplorerScroll();
+        setCollapsedPanel("viewer");
+      },
       pdfUrl,
       previewFile,
       previewLoading,
@@ -2852,50 +2972,22 @@ function GraphWorkspaceExplorer({
     }
   );
   if (collapsedPanel === "explorer") {
-    return /* @__PURE__ */ jsxs47(
+    return /* @__PURE__ */ jsx58(
       "div",
       {
         "data-testid": "workspace-panel",
         className: "relative h-full min-h-0 w-full overflow-hidden p-2",
-        children: [
-          /* @__PURE__ */ jsx58(
-            "button",
-            {
-              type: "button",
-              "data-testid": "expand-explorer",
-              onClick: () => setCollapsedPanel(null),
-              className: "thread-graph-panel-expand-fab left-3",
-              title: "Expand Explorer",
-              "aria-label": "Expand Explorer",
-              children: /* @__PURE__ */ jsx58(ChevronsRight3, { className: "h-4 w-4" })
-            }
-          ),
-          viewerPanel
-        ]
+        children: viewerPanel
       }
     );
   }
   if (collapsedPanel === "viewer") {
-    return /* @__PURE__ */ jsxs47(
+    return /* @__PURE__ */ jsx58(
       "div",
       {
         "data-testid": "workspace-panel",
         className: "relative h-full min-h-0 w-full overflow-hidden p-2",
-        children: [
-          explorerPanel,
-          /* @__PURE__ */ jsx58(
-            "button",
-            {
-              type: "button",
-              "data-testid": "expand-viewer",
-              onClick: () => setCollapsedPanel(null),
-              className: "thread-graph-panel-expand-fab right-3",
-              title: "Expand Viewer",
-              "aria-label": "Expand Viewer",
-              children: /* @__PURE__ */ jsx58(ChevronsLeft2, { className: "h-4 w-4" })
-            }
-          )
-        ]
+        children: explorerPanel
       }
     );
   }
@@ -2913,10 +3005,18 @@ function GraphWorkspaceExplorer({
             onConfirm: () => void handleConfirmEmptyGarbage()
           }
         ) : null,
-        isMobileViewport ? /* @__PURE__ */ jsxs47("div", { className: "thread-graph-workspace-mobile-stack flex h-full min-h-0 w-full flex-col", children: [
-          /* @__PURE__ */ jsx58("div", { className: "thread-graph-workspace-mobile-explorer h-[34%] min-h-[11rem] shrink-0 overflow-hidden border-b", children: explorerPanel }),
-          /* @__PURE__ */ jsx58("div", { className: "thread-graph-workspace-mobile-viewer min-h-0 flex-1 overflow-hidden", children: viewerPanel })
-        ] }) : /* @__PURE__ */ jsxs47(
+        isMobileViewport ? /* @__PURE__ */ jsxs47(
+          ResizablePanelGroup,
+          {
+            direction: "vertical",
+            className: "thread-graph-workspace-mobile-stack",
+            children: [
+              /* @__PURE__ */ jsx58(ResizablePanel, { defaultSize: 42, minSize: 18, children: /* @__PURE__ */ jsx58("div", { className: "thread-graph-workspace-mobile-explorer h-full min-h-0 overflow-hidden", children: explorerPanel }) }),
+              /* @__PURE__ */ jsx58(ResizableHandle, { className: "thread-graph-workspace-resize-handle h-2 bg-transparent after:h-px after:bg-slate-200/80 after:transition-colors hover:after:bg-slate-300 dark:after:bg-[#303642] dark:hover:after:bg-[#475063]" }),
+              /* @__PURE__ */ jsx58(ResizablePanel, { defaultSize: 58, minSize: 18, children: /* @__PURE__ */ jsx58("div", { className: "thread-graph-workspace-mobile-viewer h-full min-h-0 overflow-hidden", children: viewerPanel }) })
+            ]
+          }
+        ) : /* @__PURE__ */ jsxs47(
           ResizablePanelGroup,
           {
             direction: "horizontal",
@@ -2933,6 +3033,8 @@ function GraphWorkspaceExplorer({
           {
             ref: fileInputRef,
             type: "file",
+            "aria-label": "Workspace upload file input",
+            "data-testid": "workspace-upload-file-input",
             className: "hidden",
             onChange: (event) => void handleUpload(event)
           }
@@ -2941,7 +3043,7 @@ function GraphWorkspaceExplorer({
     }
   );
 }
-var PREVIEW_CHUNK_BYTES, EXPANDED_PATHS_STORAGE_PREFIX, explorerPanelClassName, explorerHeaderClassName, explorerHeadingClassName, explorerIconButtonClassName, collapseGhostButtonClassName, workspaceLabelClassName, workspaceLoadingClassName, emptyWorkspaceClassName;
+var PREVIEW_CHUNK_BYTES, EXPANDED_PATHS_STORAGE_PREFIX, explorerPanelClassName, explorerHeaderClassName, explorerHeadingClassName, explorerIconButtonClassName, collapseGhostButtonClassName, workspaceLabelClassName, emptyWorkspaceClassName;
 var init_GraphWorkspaceExplorer = __esm({
   "src/components/graph-workspace/GraphWorkspaceExplorer.tsx"() {
     "use strict";
@@ -2957,7 +3059,6 @@ var init_GraphWorkspaceExplorer = __esm({
     explorerIconButtonClassName = "thread-graph-explorer-icon-button flex h-8 w-8 items-center justify-center rounded-lg border shadow-none transition disabled:cursor-not-allowed disabled:opacity-50";
     collapseGhostButtonClassName = "thread-graph-explorer-collapse-button flex h-8 w-8 items-center justify-center rounded-full text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-[#222733] dark:hover:text-slate-100";
     workspaceLabelClassName = "thread-graph-workspace-label px-3 pb-1 pt-2 text-[11px] font-semibold tracking-normal text-slate-500 dark:text-slate-400";
-    workspaceLoadingClassName = "thread-graph-workspace-loading px-4 text-sm text-slate-400 dark:text-slate-500";
     emptyWorkspaceClassName = "thread-graph-workspace-empty mx-4 mt-3 rounded-lg border border-dashed border-slate-200 bg-slate-50 px-3 py-4 text-sm text-slate-500 dark:border-[#303642] dark:bg-[#1b1f29] dark:text-slate-400";
   }
 });
@@ -4172,7 +4273,7 @@ styleInject(".thread-ui-shell .thread-workspace-panel {\n  background: var(--the
 styleInject('} .thread-ui-shell .thread-graph-panel-expand-fab.left-3 {\n  left: 0.75rem;\n}\n.thread-ui-shell .thread-graph-panel-expand-fab.right-3 {\n  right: 0.75rem;\n}\n.thread-ui-shell .thread-graph-panel-expand-fab:hover {\n  transform: translateY(-50%) scale(1.04);\n}\n.thread-ui-shell .thread-graph-workspace-label,\n.thread-ui-shell .thread-graph-workspace-loading,\n.thread-ui-shell .thread-graph-workspace-empty,\n.thread-ui-shell .thread-graph-file-preview-header,\n.thread-ui-shell .thread-graph-file-preview-footer {\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-graph-file-preview-header,\n.thread-ui-shell .thread-graph-file-preview-footer {\n  border-color: var(--theme-border);\n}\n.thread-ui-shell .thread-graph-file-preview-footer,\n.thread-ui-shell .thread-graph-file-preview-frame {\n  background: var(--theme-bg);\n}\n.thread-ui-shell .thread-graph-workspace-empty {\n  border-color: var(--theme-border);\n  background: var(--theme-surface-strong);\n}\n.thread-ui-shell .thread-graph-explorer button,\n.thread-ui-shell .thread-graph-viewer button {\n  color: inherit;\n}\n.thread-ui-shell .thread-graph-tree-row {\n  color: var(--theme-fg-soft);\n}\n.thread-ui-shell .thread-graph-tree-row:hover {\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-tree-row.is-selected {\n  background: color-mix(in oklch, var(--theme-accent-solid) 13%, var(--theme-panel));\n  color: var(--theme-fg);\n  box-shadow: inset 3px 0 0 color-mix(in oklch, var(--theme-accent-solid) 72%, transparent);\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-tree-row.is-selected,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-tree-row.is-selected,\n.thread-ui-shell.dark .thread-graph-tree-row.is-selected {\n  background: color-mix(in oklch, var(--theme-accent-solid) 18%, var(--theme-panel));\n  color: var(--theme-fg);\n  box-shadow: inset 3px 0 0 color-mix(in oklch, var(--theme-accent-solid) 72%, transparent);\n}\n.thread-ui-shell .thread-graph-tree-row.is-selected svg {\n  color: currentColor;\n}\n.thread-ui-shell .thread-graph-tree-row.is-selected .thread-graph-tree-action,\n.thread-ui-shell .thread-graph-tree-action.is-selected {\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-graph-tree-row.is-selected .thread-graph-tree-action:hover,\n.thread-ui-shell .thread-graph-tree-action.is-selected:hover {\n  background: color-mix(in oklch, var(--theme-accent-solid) 12%, transparent);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-tree-action {\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-graph-tree-action:hover {\n  background: var(--theme-surface-strong);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-molecule-preview {\n  background: var(--theme-surface);\n}\n.thread-ui-shell .thread-graph-molecule-viewer {\n  background: var(--theme-surface);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-molecule-header,\n.thread-ui-shell .thread-graph-molecule-controls {\n  border-color: var(--theme-border);\n  background: var(--theme-surface);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-molecule-body {\n  display: flex;\n  min-height: 0;\n  flex: 1;\n  flex-direction: column;\n  overflow: hidden;\n}\n.thread-ui-shell .thread-graph-molecule-header h2 {\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-molecule-header p,\n.thread-ui-shell .thread-graph-molecule-header span,\n.thread-ui-shell .thread-graph-molecule-trajectory {\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-graph-molecule-controls {\n  border-top: 1px solid var(--theme-border);\n  display: flex;\n  flex-direction: column;\n  gap: 0.75rem;\n  max-height: min(42%, 18rem);\n  overflow: auto;\n  padding: 0.75rem;\n}\n.thread-ui-shell .thread-graph-molecule-control-row {\n  display: flex;\n  align-items: flex-start;\n  justify-content: space-between;\n  gap: 0.75rem;\n}\n.thread-ui-shell .thread-graph-molecule-control-title {\n  color: var(--theme-fg);\n  font-size: 0.875rem;\n  font-weight: 600;\n  line-height: 1.25rem;\n}\n.thread-ui-shell .thread-graph-molecule-control-subtitle {\n  margin-top: 0.125rem;\n  color: var(--theme-fg-muted);\n  font-size: 0.6875rem;\n  line-height: 1rem;\n}\n.thread-ui-shell .thread-graph-molecule-button-group {\n  display: inline-flex;\n  align-items: center;\n  gap: 0.125rem;\n  border: 1px solid var(--theme-border);\n  border-radius: 0.5rem;\n  background: var(--theme-surface);\n  padding: 0.125rem;\n}\n.thread-ui-shell .thread-graph-molecule-button {\n  display: inline-flex;\n  min-width: 1.75rem;\n  height: 1.75rem;\n  align-items: center;\n  justify-content: center;\n  border: 1px solid transparent;\n  border-radius: 0.375rem;\n  background: transparent;\n  color: var(--theme-fg-soft);\n  transition:\n    background-color 140ms ease,\n    border-color 140ms ease,\n    color 140ms ease,\n    opacity 140ms ease;\n}\n.thread-ui-shell .thread-graph-molecule-button:hover:not(:disabled) {\n  border-color: var(--theme-border);\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-molecule-button:disabled {\n  cursor: not-allowed;\n  color: var(--theme-fg-subtle);\n  opacity: 0.45;\n}\n.thread-ui-shell .thread-graph-molecule-button-divider {\n  width: 1px;\n  align-self: stretch;\n  margin-inline: 0.25rem;\n  background: var(--theme-border);\n}\n.thread-ui-shell .thread-graph-molecule-stage {\n  background: var(--theme-bg);\n}\n.thread-ui-shell .thread-graph-molecule-error {\n  background: color-mix(in oklch, #ef4444 12%, var(--theme-surface));\n  color: var(--theme-danger);\n}\n.thread-ui-shell .thread-graph-molecule-empty {\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-graph-molecule-tooltip {\n  border-color: var(--theme-border);\n  background: color-mix(in oklch, var(--theme-surface) 96%, transparent);\n  color: var(--theme-fg);\n  box-shadow: 0 10px 28px color-mix(in oklch, var(--theme-bg) 72%, transparent);\n}\n.thread-ui-shell .thread-graph-molecule-tooltip div,\n.thread-ui-shell .thread-graph-molecule-tooltip span {\n  color: inherit;\n}\n.thread-ui-shell .thread-graph-molecule-trajectory input {\n  accent-color: var(--theme-accent-solid);\n}\n.thread-ui-shell .thread-graph-molecule-live-button {\n  display: inline-flex;\n  align-items: center;\n  gap: 0.25rem;\n  border: 1px solid var(--theme-border);\n  border-radius: 0.375rem;\n  background: var(--theme-surface);\n  padding: 0.125rem 0.5rem;\n  color: var(--theme-fg-muted);\n  transition: background-color 140ms ease, color 140ms ease;\n}\n.thread-ui-shell .thread-graph-molecule-live-button:hover {\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-molecule-camera {\n  margin-top: 0.75rem;\n  border: 1px solid var(--theme-border);\n  border-radius: 0.5rem;\n  padding: 0.5rem;\n  color: var(--theme-fg-muted);\n  font-size: 0.625rem;\n}\n.thread-ui-shell .thread-graph-molecule-camera-divider {\n  width: 100%;\n  height: 1px;\n  margin-block: 0.5rem;\n  background: var(--theme-border);\n}\n.thread-ui-shell .thread-graph-molecule-preview .xyz-viewer-plugin {\n  height: 100%;\n  min-height: 0;\n  border: 0;\n  border-radius: 0;\n  background: var(--theme-surface);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-molecule-preview .xyz-viewer-plugin__header {\n  min-height: 60px;\n  border-color: var(--theme-border);\n  background: var(--theme-surface);\n  padding: 0.75rem 1.25rem;\n}\n.thread-ui-shell .thread-graph-molecule-preview .xyz-viewer-plugin__header h2 {\n  color: var(--theme-fg);\n  font-size: 0.875rem;\n  font-weight: 650;\n}\n.thread-ui-shell .thread-graph-molecule-preview .xyz-viewer-plugin__header p,\n.thread-ui-shell .thread-graph-molecule-preview .xyz-viewer-plugin__header span {\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-graph-molecule-preview .xyz-viewer-plugin__toolbar {\n  border-color: var(--theme-border);\n  background: var(--theme-surface);\n  padding: 0.5rem 0.625rem;\n}\n.thread-ui-shell .thread-graph-molecule-preview .xyz-viewer-plugin__toolbar button,\n.thread-ui-shell .thread-graph-molecule-preview .xyz-viewer-plugin__timeline button {\n  border-color: var(--theme-border);\n  background: var(--theme-surface-strong);\n  color: var(--theme-fg-soft);\n}\n.thread-ui-shell .thread-graph-molecule-preview .xyz-viewer-plugin__toolbar button:hover,\n.thread-ui-shell .thread-graph-molecule-preview .xyz-viewer-plugin__timeline button:hover {\n  border-color: var(--theme-border-strong);\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-molecule-preview .xyz-viewer-plugin__toolbar button:disabled,\n.thread-ui-shell .thread-graph-molecule-preview .xyz-viewer-plugin__timeline button:disabled {\n  color: var(--theme-fg-subtle);\n}\n.thread-ui-shell .thread-graph-molecule-preview .xyz-viewer-plugin__toolbar-divider {\n  background: var(--theme-border);\n}\n.thread-ui-shell .thread-graph-molecule-preview .xyz-viewer-plugin__stage {\n  min-height: 0;\n  background: var(--theme-bg);\n}\n.thread-ui-shell .thread-graph-molecule-preview .xyz-viewer-plugin__error {\n  background: color-mix(in oklch, #ef4444 12%, var(--theme-surface));\n  color: var(--theme-danger);\n}\n.thread-ui-shell .thread-graph-molecule-preview .xyz-viewer-plugin__empty {\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-graph-molecule-preview .xyz-viewer-plugin__tooltip {\n  border-color: var(--theme-border);\n  background: color-mix(in oklch, var(--theme-surface) 96%, transparent);\n  color: var(--theme-fg);\n  box-shadow: 0 10px 28px color-mix(in oklch, var(--theme-bg) 72%, transparent);\n}\n.thread-ui-shell .thread-graph-molecule-preview .xyz-viewer-plugin__tooltip span {\n  color: var(--theme-fg-soft);\n}\n.thread-ui-shell .thread-graph-molecule-preview .xyz-viewer-plugin__timeline,\n.thread-ui-shell .thread-graph-molecule-preview .xyz-viewer-plugin__status {\n  border-color: var(--theme-border);\n  background: var(--theme-surface);\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-graph-molecule-preview .xyz-viewer-plugin__timeline input {\n  accent-color: var(--theme-accent-solid);\n}\n.thread-ui-shell .thread-graph-molecule-preview .xyz-viewer-plugin__timeline button.is-live {\n  color: var(--theme-danger);\n}\n.thread-ui-shell .thread-graph-file-preview-header,\n.thread-ui-shell .thread-graph-file-preview-footer {\n  border-color: var(--theme-border);\n  background: var(--theme-surface);\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-graph-load-more-button {\n  border: 1px solid var(--theme-border);\n  background: color-mix(in oklch, var(--theme-accent-solid) 8%, var(--theme-panel));\n  color: var(--theme-fg-soft);\n  transition:\n    background-color 140ms ease,\n    border-color 140ms ease,\n    color 140ms ease;\n}\n.thread-ui-shell .thread-graph-load-more-button:hover:not(:disabled) {\n  border-color: color-mix(in oklch, var(--theme-accent-solid) 28%, var(--theme-border));\n  background: color-mix(in oklch, var(--theme-accent-solid) 14%, var(--theme-panel));\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-code-preview {\n  background: var(--theme-bg);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-code-preview pre,\n.thread-ui-shell .thread-graph-code-preview code {\n  font-family:\n    ui-monospace,\n    SFMono-Regular,\n    Menlo,\n    Monaco,\n    Consolas,\n    "Liberation Mono",\n    monospace !important;\n  font-size: 0.78rem;\n  line-height: 1.55;\n}\n.thread-ui-shell .thread-graph-plain-code-preview {\n  min-height: 100%;\n  margin: 0;\n  padding: 1rem;\n  background: transparent;\n  color: var(--theme-fg);\n  white-space: pre;\n}\n.thread-ui-shell .thread-tool-call {\n  background: var(--theme-panel);\n  color: var(--theme-fg);\n  overflow: hidden;\n}\n.thread-ui-shell .thread-tool-call:hover {\n  border-color: var(--theme-border-strong);\n}\n.thread-ui-shell .thread-graph-tool-call {\n  font-family:\n    Inter,\n    ui-sans-serif,\n    system-ui,\n    -apple-system,\n    BlinkMacSystemFont,\n    "Segoe UI",\n    sans-serif;\n}\n.thread-ui-shell .thread-graph-tool-call,\n.thread-ui-shell .thread-graph-tool-accordion,\n.thread-ui-shell .thread-graph-tool-trigger,\n.thread-ui-shell .thread-graph-tool-content,\n.thread-ui-shell .thread-graph-tool-json,\n.thread-ui-shell .thread-graph-tool-output {\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-tool-accordion {\n  overflow: hidden;\n  border: 1px solid var(--theme-border);\n  border-radius: 0.5rem;\n  background: var(--theme-panel);\n  box-shadow: 0 1px 2px color-mix(in oklch, var(--theme-bg) 65%, transparent);\n}\n.thread-ui-shell .thread-graph-tool-trigger {\n  display: flex;\n  width: 100%;\n  min-width: 0;\n  align-items: center;\n  justify-content: space-between;\n  gap: 0.75rem;\n  border: 0;\n  background: var(--theme-panel);\n  text-align: left;\n  transition: background 160ms ease, color 160ms ease;\n}\n.thread-ui-shell .thread-graph-tool-trigger:hover {\n  background: var(--theme-hover);\n}\n.thread-ui-shell .thread-graph-tool-trigger svg {\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-graph-tool-trigger > svg {\n  margin-left: auto;\n}\n.thread-ui-shell .thread-graph-tool-badge {\n  display: inline-flex;\n  min-height: 1.35rem;\n  shrink: 0;\n  align-items: center;\n  gap: 0.25rem;\n  border: 1px solid transparent;\n  border-radius: 999px;\n  padding: 0.1rem 0.5rem;\n  font-size: 0.75rem;\n  font-weight: 400;\n  line-height: 1rem;\n}\n.thread-ui-shell .thread-graph-tool-badge.is-completed {\n  background: oklch(0.94 0.052 155);\n  color: oklch(0.43 0.095 155);\n}\n.thread-ui-shell .thread-graph-tool-badge.is-failed {\n  background: oklch(0.94 0.04 25);\n  color: oklch(0.48 0.125 24);\n}\n.thread-ui-shell .thread-graph-tool-badge.is-pending {\n  background: oklch(0.94 0.03 235);\n  color: oklch(0.43 0.09 242);\n}\n.thread-ui-shell .thread-graph-tool-badge.is-neutral {\n  background: var(--theme-muted);\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-tool-badge.is-completed,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-tool-badge.is-completed,\n.thread-ui-shell.dark .thread-graph-tool-badge.is-completed {\n  background: oklch(0.31 0.05 155);\n  color: oklch(0.8 0.115 155);\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-tool-badge.is-failed,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-tool-badge.is-failed,\n.thread-ui-shell.dark .thread-graph-tool-badge.is-failed {\n  background: oklch(0.31 0.052 25);\n  color: oklch(0.78 0.12 25);\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-tool-badge.is-pending,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-tool-badge.is-pending,\n.thread-ui-shell.dark .thread-graph-tool-badge.is-pending {\n  background: oklch(0.3 0.042 235);\n  color: oklch(0.77 0.1 235);\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-tool-badge.is-neutral,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-tool-badge.is-neutral,\n.thread-ui-shell.dark .thread-graph-tool-badge.is-neutral {\n  background: #222733;\n  color: rgb(148 163 184);\n}\n.thread-ui-shell .thread-graph-tool-content {\n  display: grid;\n  gap: 0.75rem;\n  border-top: 0;\n  background: var(--theme-panel);\n}\n.thread-ui-shell .thread-graph-tool-content h4 {\n  margin: 0.25rem 0 0.5rem;\n  color: var(--theme-fg-muted);\n  font-size: 0.625rem;\n  font-weight: 700;\n  letter-spacing: 0.08em;\n  line-height: 1rem;\n  text-transform: uppercase;\n}\n.thread-ui-shell .thread-graph-tool-json,\n.thread-ui-shell .thread-graph-tool-output {\n  overflow-x: auto;\n  border: 1px solid var(--theme-border);\n  border-radius: 0.375rem;\n  background: var(--theme-surface-strong);\n  padding: 0.75rem;\n  font-family:\n    ui-monospace,\n    SFMono-Regular,\n    Menlo,\n    Monaco,\n    Consolas,\n    "Liberation Mono",\n    monospace;\n  font-size: 0.78rem;\n  line-height: 1.55;\n  white-space: pre-wrap;\n}\n.thread-ui-shell .thread-graph-tool-json > div {\n  padding-left: 1rem;\n}\n.thread-ui-shell .thread-graph-tool-output {\n  margin-top: 0.5rem;\n}\n.thread-ui-shell .thread-graph-tool-key {\n  color: oklch(0.58 0.18 18);\n}\n.thread-ui-shell .thread-graph-tool-string {\n  color: oklch(0.52 0.12 155);\n}\n.thread-ui-shell .thread-graph-tool-number {\n  color: oklch(0.55 0.13 235);\n}\n.thread-ui-shell .thread-graph-tool-boolean {\n  color: oklch(0.56 0.13 302);\n}\n.thread-ui-shell .thread-graph-tool-null,\n.thread-ui-shell .thread-graph-tool-punctuation,\n.thread-ui-shell .thread-graph-tool-object {\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-graph-history-tool {\n  width: 100%;\n  min-width: 0;\n  border: 0;\n  background: transparent !important;\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-history-tool-accordion {\n  background: var(--theme-panel);\n}\n.thread-ui-shell .thread-graph-history-tool-trigger {\n  min-height: 2.75rem;\n}\n.thread-ui-shell .thread-graph-history-tool-trigger > div:first-child {\n  min-width: 0;\n}\n.thread-ui-shell .thread-graph-history-tool-icon {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-graph-history-tool.is-command .thread-graph-history-tool-icon {\n  color: oklch(0.63 0.12 75);\n}\n.thread-ui-shell .thread-graph-history-tool.is-tool .thread-graph-history-tool-icon {\n  color: oklch(0.61 0.12 315);\n}\n.thread-ui-shell .thread-graph-history-tool.is-agent .thread-graph-history-tool-icon {\n  color: oklch(0.58 0.11 170);\n}\n.thread-ui-shell .thread-graph-history-tool.is-skill .thread-graph-history-tool-icon {\n  color: oklch(0.58 0.12 285);\n}\n.thread-ui-shell .thread-graph-history-tool.is-search .thread-graph-history-tool-icon {\n  color: oklch(0.58 0.12 235);\n}\n.thread-ui-shell .thread-graph-history-tool.is-file-read .thread-graph-history-tool-icon {\n  color: oklch(0.58 0.1 205);\n}\n.thread-ui-shell .thread-graph-history-tool-summary {\n  display: flex;\n  min-width: 0;\n  align-items: center;\n  gap: 0.5rem;\n  overflow: hidden;\n  border: 1px solid var(--theme-border);\n  border-radius: 0.375rem;\n  background: var(--theme-surface-strong);\n  padding: 0.65rem 0.75rem;\n  color: var(--theme-fg-soft);\n  font-size: 0.875rem;\n  line-height: 1.5;\n}\n.thread-ui-shell .thread-graph-history-tool-summary > span:first-child {\n  min-width: 0;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n.thread-ui-shell .thread-graph-history-tool-ellipsis {\n  flex: 0 0 auto;\n  color: var(--theme-fg-muted);\n  font-size: 0.75rem;\n  letter-spacing: 0.16em;\n}\n.thread-ui-shell .thread-graph-history-tool-open {\n  border-color: var(--theme-border);\n  background: var(--theme-surface);\n  color: var(--theme-fg-soft);\n}\n.thread-ui-shell .thread-graph-history-tool-open:hover {\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-history-event {\n  display: flex;\n  min-width: 0;\n  width: 100%;\n  align-items: flex-start;\n  gap: 0.625rem;\n  border: 0;\n  background: transparent !important;\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-history-event-icon {\n  display: inline-flex;\n  height: 1.75rem;\n  width: 1.75rem;\n  flex: 0 0 auto;\n  align-items: center;\n  justify-content: center;\n  border: 1px solid var(--theme-border);\n  border-radius: 999px;\n  background: var(--theme-panel);\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-graph-history-event-card {\n  min-width: 0;\n  flex: 1 1 auto;\n  overflow: hidden;\n  border: 1px solid var(--theme-border);\n  border-radius: 0.5rem;\n  background: var(--theme-panel);\n  color: var(--theme-fg);\n  box-shadow: 0 1px 2px color-mix(in oklch, var(--theme-bg) 65%, transparent);\n}\n.thread-ui-shell .thread-graph-history-event-header {\n  display: flex;\n  min-width: 0;\n  align-items: center;\n  justify-content: space-between;\n  gap: 0.75rem;\n  padding: 0.75rem 1rem;\n}\n.thread-ui-shell .thread-graph-history-event-heading {\n  flex: 1 1 auto;\n  min-width: 0;\n}\n.thread-ui-shell .thread-graph-history-event-title {\n  flex: 0 0 auto;\n  max-width: min(14rem, 36%);\n}\n.thread-ui-shell .thread-graph-history-event-actions {\n  display: inline-flex;\n  flex: 0 0 auto;\n  align-items: center;\n  gap: 0.5rem;\n}\n.thread-ui-shell .thread-graph-history-event-body {\n  display: grid;\n  gap: 0.625rem;\n  border-top: 1px solid var(--theme-border);\n  padding: 0.75rem 1rem 1rem;\n  color: var(--theme-fg-soft);\n}\n.thread-ui-shell .thread-graph-history-event-line {\n  display: flex;\n  min-width: 0;\n  align-items: center;\n  gap: 0.5rem;\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-history-event-primary {\n  min-width: 0;\n  color: var(--theme-fg);\n  font-size: 0.875rem;\n  font-weight: 500;\n  line-height: 1.5;\n}\n.thread-ui-shell .thread-graph-history-event-secondary {\n  min-width: 0;\n  color: var(--theme-fg-muted);\n  font-size: 0.75rem;\n  line-height: 1.35;\n}\n.thread-ui-shell .thread-graph-history-event-summary {\n  display: block;\n  width: 100%;\n  min-width: 0;\n  overflow: hidden;\n  border: 1px solid var(--theme-border);\n  border-radius: 0.375rem;\n  background: var(--theme-surface-strong);\n  padding: 0.65rem 0.75rem;\n  color: var(--theme-fg-soft);\n  font-size: 0.875rem;\n  line-height: 1.5;\n  text-align: left;\n}\n.thread-ui-shell .thread-graph-history-event-summary.is-clickable {\n  transition: background 160ms ease, color 160ms ease;\n}\n.thread-ui-shell .thread-graph-history-event-summary.is-clickable:hover {\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-history-event-prose {\n  color: var(--theme-fg-soft);\n}\n.thread-ui-shell .thread-graph-history-event-pre {\n  overflow-x: auto;\n  border: 1px solid var(--theme-border);\n  border-radius: 0.375rem;\n  background: var(--theme-surface-strong);\n  padding: 0.75rem;\n  color: var(--theme-fg-soft);\n  font-size: 0.8125rem;\n  line-height: 1.55;\n  white-space: pre-wrap;\n}\n.thread-ui-shell .thread-graph-history-event-action,\n.thread-ui-shell .thread-graph-history-event-pill {\n  display: inline-flex;\n  align-items: center;\n  gap: 0.375rem;\n  border: 1px solid var(--theme-border);\n  border-radius: 999px;\n  background: var(--theme-surface);\n  padding: 0.25rem 0.55rem;\n  color: var(--theme-fg-muted);\n  font-size: 0.6875rem;\n  font-weight: 500;\n  line-height: 1rem;\n  transition: background 160ms ease, color 160ms ease;\n}\n.thread-ui-shell .thread-graph-history-event-action:hover {\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-history-event-path {\n  display: block;\n  max-width: 100%;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  color: var(--theme-fg-muted);\n  font-size: 0.75rem;\n  line-height: 1.4;\n  text-align: left;\n}\n.thread-ui-shell .thread-graph-history-event-path:hover {\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-history-event-image {\n  max-height: 24rem;\n  width: 100%;\n  object-fit: contain;\n  border: 1px solid var(--theme-border);\n  border-radius: 0.5rem;\n  background: var(--theme-surface-strong);\n}\n.thread-ui-shell .thread-graph-history-event.is-plan .thread-graph-history-event-icon {\n  color: oklch(0.58 0.12 235);\n}\n.thread-ui-shell .thread-graph-history-event.is-context .thread-graph-history-event-icon {\n  color: oklch(0.58 0.11 170);\n}\n.thread-ui-shell .thread-graph-history-event.is-image .thread-graph-history-event-icon,\n.thread-ui-shell .thread-graph-history-event.is-artifact .thread-graph-history-event-icon {\n  color: oklch(0.58 0.12 285);\n}\n.thread-ui-shell .thread-graph-history-event.is-file-change .thread-graph-history-event-icon {\n  color: oklch(0.62 0.12 145);\n}\n.thread-ui-shell .thread-graph-history-event.is-hook .thread-graph-history-event-icon {\n  color: oklch(0.61 0.12 315);\n}\n@media (max-width: 639px) {\n  .thread-ui-shell .thread-graph-history-event {\n    gap: 0.5rem;\n  }\n  .thread-ui-shell .thread-graph-history-event-icon {\n    height: 1.5rem;\n    width: 1.5rem;\n  }\n  .thread-ui-shell .thread-graph-history-event-header,\n  .thread-ui-shell .thread-graph-history-event-body {\n    padding-left: 0.75rem;\n    padding-right: 0.75rem;\n  }\n}\n.thread-ui-shell .thread-graph-history-detail-row {\n  border-color: var(--theme-border);\n  background: var(--theme-surface);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-history-detail-row:hover {\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-history-detail-text {\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-event-file-change .thread-graph-history-event-card {\n  border-radius: 0.4375rem;\n}\n.thread-ui-shell .thread-graph-event-file-change .thread-graph-history-event-header {\n  min-height: 2.75rem;\n  padding-block: 0.5rem;\n}\n.thread-ui-shell .thread-graph-event-file-change .thread-graph-history-event-heading {\n  flex: 1 1 auto;\n  min-width: 0;\n  gap: 0.375rem;\n}\n.thread-ui-shell .thread-graph-event-file-change .thread-graph-history-event-title {\n  max-width: none;\n  font-size: 0.8125rem;\n}\n.thread-ui-shell .thread-graph-file-change-inline,\n.thread-ui-shell .thread-graph-file-change-inline-button {\n  min-width: 0;\n}\n.thread-ui-shell .thread-graph-file-change-inline {\n  max-width: 100%;\n  gap: 0.375rem;\n}\n.thread-ui-shell .thread-graph-file-change-inline-button {\n  display: block;\n  flex: 1 1 auto;\n  color: inherit;\n}\n.thread-ui-shell .thread-graph-file-change-inline-button:hover .thread-graph-history-detail-text {\n  color: var(--theme-fg);\n  text-decoration: underline;\n  text-decoration-thickness: 1px;\n  text-underline-offset: 2px;\n}\n.thread-ui-shell .thread-graph-history-detail-meta {\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-graph-history-delta-badge {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  border: 1px solid transparent;\n  border-radius: 999px;\n  padding: 0.125rem 0.375rem;\n  font-size: 0.6875rem;\n  font-weight: 500;\n  line-height: 1rem;\n}\n.thread-ui-shell .thread-graph-history-delta-badge.is-add {\n  border-color: rgb(52 211 153 / 0.28);\n  background: rgb(52 211 153 / 0.1);\n  color: rgb(167 243 208);\n}\n.thread-ui-shell .thread-graph-history-delta-badge.is-remove {\n  border-color: rgb(251 113 133 / 0.3);\n  background: rgb(251 113 133 / 0.1);\n  color: rgb(254 205 211);\n}\n.thread-ui-shell .thread-graph-history-delta-badge.is-neutral {\n  border-color: var(--theme-border);\n  background: var(--theme-muted);\n  color: var(--theme-fg-soft);\n}\n.thread-ui-shell[data-theme-effective=light] .thread-graph-history-delta-badge.is-add {\n  border-color: rgb(16 185 129 / 0.25);\n  background: rgb(16 185 129 / 0.1);\n  color: rgb(4 120 87);\n}\n.thread-ui-shell[data-theme-effective=light] .thread-graph-history-delta-badge.is-remove {\n  border-color: rgb(244 63 94 / 0.25);\n  background: rgb(244 63 94 / 0.1);\n  color: rgb(190 18 60);\n}\n@media (max-width: 639px) {\n  .thread-ui-shell .thread-graph-history-tool-trigger {\n    padding-left: 0.75rem;\n    padding-right: 0.75rem;\n  }\n  .thread-ui-shell .thread-graph-history-tool-trigger .thread-graph-tool-badge {\n    max-width: 7.5rem;\n  }\n  .thread-ui-shell .thread-graph-history-tool-content {\n    padding-left: 0.75rem;\n    padding-right: 0.75rem;\n  }\n}\n.thread-ui-shell .xyz-viewer-plugin {\n  border-color: var(--theme-border);\n  border-radius: 0;\n  background: var(--theme-surface);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .xyz-viewer-plugin__header,\n.thread-ui-shell .xyz-viewer-plugin__toolbar,\n.thread-ui-shell .xyz-viewer-plugin__timeline,\n.thread-ui-shell .xyz-viewer-plugin__status {\n  border-color: var(--theme-border);\n  background: var(--theme-surface);\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .xyz-viewer-plugin__header h2 {\n  color: var(--theme-fg);\n}\n.thread-ui-shell .xyz-viewer-plugin__header p,\n.thread-ui-shell .xyz-viewer-plugin__header span,\n.thread-ui-shell .xyz-viewer-plugin__tooltip span {\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .xyz-viewer-plugin__toolbar button,\n.thread-ui-shell .xyz-viewer-plugin__timeline button {\n  border-color: var(--theme-border);\n  background: var(--theme-surface-strong);\n  color: var(--theme-fg-soft);\n}\n.thread-ui-shell .xyz-viewer-plugin__toolbar button:hover,\n.thread-ui-shell .xyz-viewer-plugin__timeline button:hover {\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .xyz-viewer-plugin__toolbar-divider {\n  background: var(--theme-border);\n}\n.thread-ui-shell .xyz-viewer-plugin__stage {\n  background: var(--theme-bg);\n}\n.thread-ui-shell .xyz-viewer-plugin__tooltip {\n  border-color: var(--theme-border);\n  background: color-mix(in oklch, var(--theme-panel) 96%, transparent);\n  box-shadow: var(--theme-shadow);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .xyz-viewer-plugin__empty {\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .xyz-viewer-plugin__error {\n  background: color-mix(in oklch, oklch(0.62 0.16 25) 14%, var(--theme-panel));\n  color: oklch(0.78 0.12 25);\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-tool-key,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-tool-key,\n.thread-ui-shell.dark .thread-graph-tool-key {\n  color: oklch(0.78 0.12 18);\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-tool-string,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-tool-string,\n.thread-ui-shell.dark .thread-graph-tool-string {\n  color: oklch(0.79 0.11 155);\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-tool-number,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-tool-number,\n.thread-ui-shell.dark .thread-graph-tool-number {\n  color: oklch(0.77 0.1 235);\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-tool-boolean,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-tool-boolean,\n.thread-ui-shell.dark .thread-graph-tool-boolean {\n  color: oklch(0.79 0.1 302);\n}\n.thread-ui-shell .thread-timeline-surface,\n.thread-ui-shell .thread-scroll-container {\n  background: var(--theme-surface);\n  color: var(--theme-fg);\n  scrollbar-color: var(--theme-border-strong) transparent;\n}\n.thread-ui-shell .thread-scroll-container > div > .divide-y {\n  border-color: var(--theme-border);\n}\n.thread-ui-shell .timeline-item-frame {\n  border-color: var(--theme-border);\n  background: var(--theme-panel);\n  color: var(--theme-fg);\n  box-shadow: none;\n}\n.thread-ui-shell .timeline-agent {\n  border-color: transparent;\n  background: transparent;\n  box-shadow: none;\n}\n.thread-ui-shell .timeline-user {\n  border-color: transparent;\n  background: oklch(0.94 0.025 214);\n  color: oklch(0.24 0.027 255);\n}\n.thread-ui-shell.thread-ui-theme-dark .timeline-user,\n.thread-ui-shell[data-theme-effective=dark] .timeline-user,\n.thread-ui-shell.dark .timeline-user {\n  background: oklch(0.29 0.034 224);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .timeline-command,\n.thread-ui-shell .timeline-agent-tool,\n.thread-ui-shell .timeline-skill-tool,\n.thread-ui-shell .timeline-action,\n.thread-ui-shell .timeline-file-change,\n.thread-ui-shell .timeline-file-read,\n.thread-ui-shell .timeline-search,\n.thread-ui-shell .timeline-plan,\n.thread-ui-shell .timeline-reasoning,\n.thread-ui-shell .timeline-other,\n.thread-ui-shell .timeline-special-warning,\n.thread-ui-shell .timeline-special-info,\n.thread-ui-shell .timeline-special-file-read,\n.thread-ui-shell .timeline-special-success,\n.thread-ui-shell .timeline-mobile-dense-event,\n.thread-ui-shell .timeline-batch-inner,\n.thread-ui-shell .timeline-item-inner {\n  border-color: var(--theme-border);\n  background: var(--theme-panel);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .timeline-special-warning,\n.thread-ui-shell .timeline-special-info,\n.thread-ui-shell .timeline-special-file-read,\n.thread-ui-shell .timeline-special-success {\n  box-shadow: none;\n}\n.thread-ui-shell .timeline-mobile-dense-command,\n.thread-ui-shell .timeline-mobile-dense-search,\n.thread-ui-shell .timeline-mobile-dense-file-read,\n.thread-ui-shell .timeline-mobile-dense-file {\n  background: var(--theme-panel);\n}\n.thread-ui-shell :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(.border-stone-700, .border-stone-700\\/90, .border-stone-800, .border-stone-800\\/80) {\n  border-color: var(--theme-border) !important;\n}\n.thread-ui-shell :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(.bg-stone-800, .bg-stone-900, .bg-stone-900\\/60, .bg-stone-900\\/72, .bg-stone-900\\/80, .bg-stone-950, .bg-stone-950\\/35, .bg-stone-950\\/40, .bg-stone-950\\/60, .bg-stone-950\\/70, .bg-stone-950\\/90, .bg-stone-950\\/96) {\n  background: var(--theme-surface-strong) !important;\n}\n.thread-ui-shell :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(.text-stone-100, .text-stone-200, .text-stone-300, .text-sky-50, .text-sky-100, .text-emerald-50, .text-emerald-100, .text-amber-100) {\n  color: var(--theme-fg) !important;\n}\n.thread-ui-shell :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(.text-stone-400, .text-stone-500) {\n  color: var(--theme-fg-muted) !important;\n}\n.thread-ui-shell .timeline-kind-agent,\n.thread-ui-shell .timeline-kind-user,\n.thread-ui-shell .timeline-kind-command,\n.thread-ui-shell .timeline-kind-search,\n.thread-ui-shell .timeline-kind-file-read,\n.thread-ui-shell .timeline-kind-reasoning,\n.thread-ui-shell .timeline-kind-agent-tool,\n.thread-ui-shell .timeline-kind-skill-tool,\n.thread-ui-shell .timeline-kind-action,\n.thread-ui-shell .timeline-kind-plan,\n.thread-ui-shell .timeline-kind-file {\n  border-left-width: 1px;\n}\n.thread-ui-shell .timeline-primary-text,\n.thread-ui-shell .timeline-message-content,\n.thread-ui-shell .timeline-mobile-bubble-content,\n.thread-ui-shell .thread-message-prose,\n.thread-ui-shell .thread-message-prose :where(p, li, span, div, strong, em, code) {\n  color: var(--theme-fg);\n}\n.thread-ui-shell .timeline-user .thread-message-prose,\n.thread-ui-shell .timeline-user .thread-message-prose :where(p, li, span, div, strong, em, code) {\n  color: oklch(0.24 0.027 255);\n}\n.thread-ui-shell.thread-ui-theme-dark .timeline-user .thread-message-prose,\n.thread-ui-shell[data-theme-effective=dark] .timeline-user .thread-message-prose,\n.thread-ui-shell.dark .timeline-user .thread-message-prose,\n.thread-ui-shell.thread-ui-theme-dark .timeline-user .thread-message-prose :where(p, li, span, div, strong, em, code),\n.thread-ui-shell[data-theme-effective=dark] .timeline-user .thread-message-prose :where(p, li, span, div, strong, em, code),\n.thread-ui-shell.dark .timeline-user .thread-message-prose :where(p, li, span, div, strong, em, code) {\n  color: var(--theme-fg);\n}\n.thread-ui-shell .timeline-agent .thread-message-prose,\n.thread-ui-shell .timeline-agent .thread-message-prose :where(p, li, span, div, strong, em, code) {\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-message {\n  width: 100%;\n  min-width: 0;\n}\n.thread-ui-shell .thread-graph-message-bubble {\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-message-bubble.is-user {\n  width: 100%;\n  max-width: 100%;\n  border-radius: 0.75rem;\n  background: #eef5f9;\n  padding: 0.5rem 0.75rem;\n  color: rgb(15 23 42);\n}\n.thread-ui-shell .thread-graph-message-bubble.is-assistant {\n  width: 100%;\n  border: 0;\n  background: transparent;\n  padding: 0;\n  box-shadow: none;\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-message-bubble.is-user,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-message-bubble.is-user,\n.thread-ui-shell.dark .thread-graph-message-bubble.is-user {\n  background: #212b35;\n  color: rgb(241 245 249);\n}\n.thread-ui-shell .thread-graph-message-content.is-user,\n.thread-ui-shell .thread-graph-message-content.is-user .thread-message-prose,\n.thread-ui-shell .thread-graph-message-content.is-user .thread-graph-message-prose,\n.thread-ui-shell .thread-graph-message-content.is-user .thread-graph-markdown,\n.thread-ui-shell .thread-graph-message-content.is-user .thread-graph-plain-text,\n.thread-ui-shell .thread-graph-message-content.is-user .thread-message-prose :where(p, li, span, div, strong, em, code),\n.thread-ui-shell .thread-graph-message-content.is-user .thread-graph-message-prose :where(p, li, span, div, strong, em, code),\n.thread-ui-shell .thread-graph-message-content.is-user .thread-graph-markdown :where(p, li, span, div, strong, em, code) {\n  color: rgb(51 65 85);\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-message-content.is-user,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-message-content.is-user,\n.thread-ui-shell.dark .thread-graph-message-content.is-user,\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-message-content.is-user .thread-message-prose,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-message-content.is-user .thread-message-prose,\n.thread-ui-shell.dark .thread-graph-message-content.is-user .thread-message-prose,\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-message-content.is-user .thread-graph-message-prose,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-message-content.is-user .thread-graph-message-prose,\n.thread-ui-shell.dark .thread-graph-message-content.is-user .thread-graph-message-prose,\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-message-content.is-user .thread-graph-markdown,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-message-content.is-user .thread-graph-markdown,\n.thread-ui-shell.dark .thread-graph-message-content.is-user .thread-graph-markdown,\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-message-content.is-user .thread-graph-plain-text,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-message-content.is-user .thread-graph-plain-text,\n.thread-ui-shell.dark .thread-graph-message-content.is-user .thread-graph-plain-text,\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-message-content.is-user .thread-message-prose :where(p, li, span, div, strong, em, code),\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-message-content.is-user .thread-message-prose :where(p, li, span, div, strong, em, code),\n.thread-ui-shell.dark .thread-graph-message-content.is-user .thread-message-prose :where(p, li, span, div, strong, em, code),\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-message-content.is-user .thread-graph-message-prose :where(p, li, span, div, strong, em, code),\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-message-content.is-user .thread-graph-message-prose :where(p, li, span, div, strong, em, code),\n.thread-ui-shell.dark .thread-graph-message-content.is-user .thread-graph-message-prose :where(p, li, span, div, strong, em, code),\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-message-content.is-user .thread-graph-markdown :where(p, li, span, div, strong, em, code),\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-message-content.is-user .thread-graph-markdown :where(p, li, span, div, strong, em, code),\n.thread-ui-shell.dark .thread-graph-message-content.is-user .thread-graph-markdown :where(p, li, span, div, strong, em, code) {\n  color: rgb(226 232 240);\n}\n.thread-ui-shell .thread-graph-message-content.is-assistant,\n.thread-ui-shell .thread-graph-message-content.is-assistant .thread-graph-message-prose,\n.thread-ui-shell .thread-graph-message-content.is-assistant .thread-graph-markdown,\n.thread-ui-shell .thread-graph-message-content.is-assistant .thread-graph-plain-text,\n.thread-ui-shell .thread-graph-message-content.is-assistant .thread-graph-message-prose :where(p, li, span, div, strong, em, code) {\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-message-prose,\n.thread-ui-shell .thread-graph-markdown,\n.thread-ui-shell .thread-graph-plain-text {\n  color: inherit;\n}\n.thread-ui-shell .thread-graph-markdown {\n  max-width: none;\n  font-size: 0.875rem;\n  line-height: 1.7;\n}\n.thread-ui-shell .thread-graph-message-markdown {\n  color: inherit;\n  word-break: break-word;\n}\n.thread-ui-shell .thread-graph-show-more {\n  min-height: 1.25rem;\n  border-color: var(--theme-border);\n  background: color-mix(in oklch, var(--theme-panel) 72%, transparent);\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-graph-show-more:hover,\n.thread-ui-shell .thread-graph-show-more:focus-visible {\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-markdown :where(p, ul, ol, pre, blockquote, table, hr) {\n  margin-bottom: 0.75rem;\n}\n.thread-ui-shell .thread-graph-markdown :where(p:last-child, ul:last-child, ol:last-child, pre:last-child, blockquote:last-child, table:last-child, hr:last-child) {\n  margin-bottom: 0;\n}\n.thread-ui-shell .thread-graph-markdown :where(a) {\n  color: rgb(3 105 161);\n  text-decoration: underline;\n  text-underline-offset: 2px;\n}\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-markdown :where(a),\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-markdown :where(a),\n.thread-ui-shell.dark .thread-graph-markdown :where(a) {\n  color: rgb(125 211 252);\n}\n.thread-ui-shell .thread-graph-markdown :where(blockquote) {\n  border-left: 3px solid var(--theme-border-strong);\n  padding-left: 0.85rem;\n  color: var(--theme-fg-soft);\n}\n.thread-ui-shell .thread-graph-markdown :where(ul, ol) {\n  padding-left: 1.25rem;\n}\n.thread-ui-shell .thread-graph-markdown :where(li) {\n  margin-top: 0.25rem;\n}\n.thread-ui-shell .thread-graph-markdown :where(table) {\n  display: block;\n  width: 100%;\n  overflow-x: auto;\n  border-collapse: collapse;\n}\n.thread-ui-shell .thread-graph-markdown :where(th, td) {\n  border: 1px solid var(--theme-border);\n  padding: 0.4rem 0.55rem;\n  text-align: left;\n}\n.thread-ui-shell .thread-graph-markdown :where(th) {\n  background: var(--theme-surface-strong);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-code-block {\n  border-color: rgb(226 232 240);\n  background: rgb(248 250 252);\n  color: rgb(31 41 55);\n}\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-code-block,\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-code-block,\n.thread-ui-shell.dark .thread-graph-code-block {\n  border-color: #303642;\n  background: #11141a;\n  color: rgb(241 245 249);\n}\n.thread-ui-shell .thread-graph-code-block pre,\n.thread-ui-shell .thread-graph-code-block code {\n  margin: 0;\n  background: transparent;\n  color: inherit;\n}\n.thread-ui-shell .thread-graph-code-copy {\n  background: rgb(255 255 255 / 0.72);\n  color: rgb(51 65 85);\n  box-shadow: 0 4px 12px rgb(15 23 42 / 0.08);\n}\n.thread-ui-shell .thread-graph-code-copy:hover {\n  background: rgb(255 255 255);\n  color: rgb(15 23 42);\n}\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-code-copy,\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-code-copy,\n.thread-ui-shell.dark .thread-graph-code-copy {\n  background: rgb(34 39 51 / 0.82);\n  color: rgb(226 232 240);\n}\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-code-copy:hover,\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-code-copy:hover,\n.thread-ui-shell.dark .thread-graph-code-copy:hover {\n  background: #2b313d;\n  color: rgb(248 250 252);\n}\n.thread-ui-shell .thread-graph-inline-code {\n  background: rgb(241 245 249);\n  color: rgb(31 41 55);\n}\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-inline-code,\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-inline-code,\n.thread-ui-shell.dark .thread-graph-inline-code {\n  background: #222733;\n  color: rgb(241 245 249);\n}\n.thread-ui-shell .thread-graph-message-sender {\n  background: oklch(0.96 0.025 155);\n  color: oklch(0.42 0.11 155);\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-message-sender,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-message-sender,\n.thread-ui-shell.dark .thread-graph-message-sender {\n  background: rgb(52 211 153 / 0.1);\n  color: rgb(110 231 183);\n}\n.thread-ui-shell .thread-graph-message-copy {\n  border-color: var(--theme-border);\n  background: var(--theme-panel);\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-graph-message-copy:hover {\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-message-header-actions {\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-graph-message-time {\n  color: var(--theme-fg-muted);\n  white-space: nowrap;\n}\n.thread-ui-shell .thread-graph-message-status {\n  box-shadow: none;\n}\n.thread-ui-shell .thread-graph-message-status-icon {\n  align-items: center;\n  justify-content: center;\n}\n@media (max-width: 639px) {\n  .thread-ui-shell .thread-graph-message-header {\n    margin-bottom: 0.375rem;\n    flex-wrap: nowrap;\n  }\n  .thread-ui-shell .thread-graph-message-sender {\n    padding: 0.1875rem 0.5rem;\n    font-size: 0.6875rem;\n    line-height: 1rem;\n  }\n  .thread-ui-shell .thread-graph-message-header-actions {\n    gap: 0.25rem;\n  }\n  .thread-ui-shell .thread-graph-message-copy {\n    height: 1.55rem;\n    width: 1.55rem;\n    border-radius: 0.45rem;\n  }\n  .thread-ui-shell .thread-graph-message-time {\n    font-size: 0.625rem;\n  }\n  .thread-ui-shell :where(.thread-graph-message-status, .thread-graph-tool-badge) .thread-graph-status-label {\n    position: absolute;\n    width: 1px;\n    height: 1px;\n    padding: 0;\n    margin: -1px;\n    overflow: hidden;\n    clip: rect(0, 0, 0, 0);\n    white-space: nowrap;\n    border: 0;\n  }\n  .thread-ui-shell :where(.thread-graph-message-status, .thread-graph-tool-badge) {\n    min-width: 1.45rem;\n    justify-content: center;\n    padding-left: 0.25rem !important;\n    padding-right: 0.25rem !important;\n  }\n}\n@media (min-width: 640px) {\n  .thread-ui-shell .thread-graph-message-bubble.is-user {\n    padding: 0.375rem 1rem;\n  }\n}\n');
 
 // src/styles/composer-plan.css
-styleInject(".thread-ui-shell .timeline-soft-text,\n.thread-ui-shell .thread-message-prose :where(blockquote) {\n  color: var(--theme-fg-soft);\n}\n.thread-ui-shell .timeline-meta-text,\n.thread-ui-shell .thread-message-prose :where(figcaption) {\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .timeline-overlay-badge,\n.thread-ui-shell .ui-status-neutral,\n.thread-ui-shell .ui-status-info,\n.thread-ui-shell .ui-status-warning,\n.thread-ui-shell .ui-status-success,\n.thread-ui-shell .ui-status-danger {\n  border-color: transparent;\n  box-shadow: none;\n}\n.thread-ui-shell .timeline-command-status-complete,\n.thread-ui-shell .timeline-command-status-pending,\n.thread-ui-shell .timeline-delta-badge,\n.thread-ui-shell .timeline-live-plan-step {\n  border-color: var(--theme-border);\n  background: var(--theme-muted);\n  color: var(--theme-fg-soft);\n}\n.thread-ui-shell .ui-status-neutral {\n  background: var(--theme-muted);\n  color: var(--theme-fg-soft);\n}\n.thread-ui-shell.thread-ui-theme-dark .ui-status-neutral,\n.thread-ui-shell[data-theme-effective=dark] .ui-status-neutral,\n.thread-ui-shell.dark .ui-status-neutral {\n  border-color: #303642;\n  background: #151923;\n  color: rgb(203 213 225);\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-room-card.is-active .ui-status-neutral,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-room-card.is-active .ui-status-neutral,\n.thread-ui-shell.dark .thread-graph-room-card.is-active .ui-status-neutral {\n  border-color: #424b5e;\n  background: #1a1f2a;\n  color: rgb(203 213 225);\n}\n.thread-ui-shell .ui-status-info {\n  background: oklch(0.94 0.03 235);\n  color: oklch(0.43 0.09 242);\n}\n.thread-ui-shell .ui-status-warning {\n  background: oklch(0.94 0.048 84);\n  color: oklch(0.46 0.08 75);\n}\n.thread-ui-shell .ui-status-success {\n  background: oklch(0.94 0.052 155);\n  color: oklch(0.43 0.095 155);\n}\n.thread-ui-shell .ui-status-danger {\n  background: oklch(0.94 0.04 25);\n  color: oklch(0.48 0.125 24);\n}\n.thread-ui-shell.thread-ui-theme-dark .ui-status-info,\n.thread-ui-shell[data-theme-effective=dark] .ui-status-info,\n.thread-ui-shell.dark .ui-status-info {\n  background: oklch(0.3 0.042 235);\n  color: oklch(0.77 0.1 235);\n}\n.thread-ui-shell.thread-ui-theme-dark .ui-status-warning,\n.thread-ui-shell[data-theme-effective=dark] .ui-status-warning,\n.thread-ui-shell.dark .ui-status-warning {\n  background: oklch(0.31 0.045 75);\n  color: oklch(0.83 0.11 80);\n}\n.thread-ui-shell.thread-ui-theme-dark .ui-status-success,\n.thread-ui-shell[data-theme-effective=dark] .ui-status-success,\n.thread-ui-shell.dark .ui-status-success {\n  background: oklch(0.31 0.05 155);\n  color: oklch(0.8 0.115 155);\n}\n.thread-ui-shell.thread-ui-theme-dark .ui-status-danger,\n.thread-ui-shell[data-theme-effective=dark] .ui-status-danger,\n.thread-ui-shell.dark .ui-status-danger {\n  background: oklch(0.31 0.052 25);\n  color: oklch(0.78 0.12 25);\n}\n.thread-ui-shell .thread-message-icon-user,\n.thread-ui-shell .thread-message-icon-agent {\n  border-color: transparent;\n  background: var(--theme-muted);\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-graph-thinking-trigger {\n  display: inline-flex;\n  align-items: center;\n  color: rgb(148 163 184);\n}\n.thread-ui-shell .thread-graph-thinking-trigger:hover,\n.thread-ui-shell .thread-graph-thinking-trigger[data-state=open] {\n  color: rgb(125 211 252);\n}\n.thread-ui-shell .thread-graph-thinking-label {\n  min-width: 0;\n}\n.thread-ui-shell .thread-graph-thinking-body {\n  border-color: rgb(42 47 58);\n  background: #1b1f29;\n  color: rgb(203 213 225);\n}\n.thread-ui-shell[data-theme-effective=light] .thread-graph-thinking-trigger {\n  color: rgb(100 116 139);\n}\n.thread-ui-shell[data-theme-effective=light] .thread-graph-thinking-trigger:hover,\n.thread-ui-shell[data-theme-effective=light] .thread-graph-thinking-trigger[data-state=open] {\n  color: rgb(3 105 161);\n}\n.thread-ui-shell[data-theme-effective=light] .thread-graph-thinking-body {\n  border-color: rgb(226 232 240);\n  background: rgb(248 250 252);\n  color: rgb(51 65 85);\n}\n.thread-ui-shell .timeline-corner-copy-visual {\n  border-color: var(--theme-border);\n  background: color-mix(in oklch, var(--theme-panel) 88%, transparent);\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-composer-form {\n  border-color: var(--theme-border);\n  background: var(--theme-surface);\n}\n.thread-ui-shell .thread-composer-toolbar,\n.thread-ui-shell .thread-composer-input,\n.thread-ui-shell .thread-composer-menu {\n  border-color: var(--theme-border);\n  background: var(--theme-panel);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-composer-toolbar {\n  border-radius: 0;\n  border: 0;\n  background: transparent;\n  box-shadow: none;\n  order: 2;\n  min-height: 2.75rem;\n  padding: 0.25rem 0.75rem 0.65rem;\n  flex-wrap: wrap;\n  align-items: center;\n}\n.thread-ui-shell .thread-composer-prompt-region {\n  order: 1;\n}\n.thread-ui-shell .thread-composer-input {\n  position: relative;\n  min-height: 5.25rem !important;\n  max-height: 12rem !important;\n  border: 0;\n  border-radius: 0;\n  background: transparent !important;\n  box-shadow: none;\n  overflow: visible;\n  padding-top: 0.7rem;\n  padding-bottom: 0.45rem;\n}\n.thread-ui-shell .thread-composer-input:focus-within {\n  border-color: transparent;\n  box-shadow: none;\n}\n.thread-ui-shell .thread-composer-input [contenteditable],\n.thread-ui-shell .thread-composer-input textarea {\n  display: block;\n  width: 100%;\n  min-width: 0;\n  background: transparent !important;\n  color: var(--theme-fg);\n  font-size: 1rem;\n  line-height: 1.55;\n}\n.thread-ui-shell .thread-composer-input [contenteditable] {\n  min-height: 4.15rem !important;\n  max-height: 9.5rem !important;\n  overflow-y: auto;\n}\n.thread-ui-shell .thread-composer-input textarea {\n  min-height: 4.15rem !important;\n  max-height: 9.5rem !important;\n  overflow-y: auto;\n  resize: none;\n}\n.thread-ui-shell .thread-composer-shell {\n  border: 1px solid var(--theme-border);\n  background: #fbfcfd;\n  box-shadow: 0 4px 18px oklch(0.22 0.024 255 / 0.04);\n}\n.thread-ui-shell .thread-composer-send-button {\n  flex: 0 0 auto;\n}\n.thread-ui-shell .thread-goal-compose-card {\n  border-color: color-mix(in oklch, var(--theme-accent-solid) 18%, var(--theme-border));\n  background: color-mix(in oklch, var(--theme-accent-solid) 7%, var(--theme-panel));\n  color: var(--theme-fg-soft);\n  box-shadow: 0 8px 18px rgb(15 23 42 / 0.05);\n}\n.thread-ui-shell .thread-goal-compose-label {\n  color: color-mix(in oklch, var(--theme-accent-solid) 68%, var(--theme-fg));\n}\n.thread-ui-shell .thread-goal-compose-field {\n  color: var(--theme-fg-soft);\n}\n.thread-ui-shell .thread-goal-compose-input {\n  border-color: color-mix(in oklch, var(--theme-accent-solid) 20%, var(--theme-border));\n  background: var(--theme-panel);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-goal-compose-input::placeholder {\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-goal-compose-input:focus {\n  border-color: color-mix(in oklch, var(--theme-accent-solid) 48%, var(--theme-border));\n}\n.thread-ui-shell .thread-goal-compose-cancel {\n  border-color: var(--theme-border);\n  background: var(--theme-surface-strong);\n  color: var(--theme-fg-soft);\n}\n.thread-ui-shell .thread-goal-compose-cancel:hover {\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-goal-compose-error {\n  color: rgb(190 18 60);\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-goal-compose-card,\n.thread-ui-shell[data-theme-effective=dark] .thread-goal-compose-card,\n.thread-ui-shell.dark .thread-goal-compose-card {\n  border-color: rgb(125 211 252 / 0.25);\n  background: rgb(125 211 252 / 0.07);\n  color: rgb(226 232 240);\n  box-shadow: 0 8px 18px rgb(0 0 0 / 0.18);\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-goal-compose-label,\n.thread-ui-shell[data-theme-effective=dark] .thread-goal-compose-label,\n.thread-ui-shell.dark .thread-goal-compose-label {\n  color: rgb(224 242 254 / 0.9);\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-goal-compose-field,\n.thread-ui-shell[data-theme-effective=dark] .thread-goal-compose-field,\n.thread-ui-shell.dark .thread-goal-compose-field {\n  color: rgb(203 213 225);\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-goal-compose-input,\n.thread-ui-shell[data-theme-effective=dark] .thread-goal-compose-input,\n.thread-ui-shell.dark .thread-goal-compose-input {\n  border-color: rgb(125 211 252 / 0.25);\n  background: rgb(2 6 23 / 0.46);\n  color: rgb(241 245 249);\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-goal-compose-cancel,\n.thread-ui-shell[data-theme-effective=dark] .thread-goal-compose-cancel,\n.thread-ui-shell.dark .thread-goal-compose-cancel {\n  border-color: #343b48;\n  background: #1d222c;\n  color: rgb(203 213 225);\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-goal-compose-cancel:hover,\n.thread-ui-shell[data-theme-effective=dark] .thread-goal-compose-cancel:hover,\n.thread-ui-shell.dark .thread-goal-compose-cancel:hover {\n  background: #222733;\n  color: rgb(241 245 249);\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-goal-compose-error,\n.thread-ui-shell[data-theme-effective=dark] .thread-goal-compose-error,\n.thread-ui-shell.dark .thread-goal-compose-error {\n  color: rgb(254 205 211);\n}\n@media (min-width: 640px) {\n  .thread-ui-shell:not([data-thread-layout=mobile]) .thread-composer-shell {\n    border-radius: 16px;\n  }\n  .thread-ui-shell:not([data-thread-layout=mobile]) .thread-composer-input {\n    min-height: 5.75rem !important;\n    max-height: 12.5rem !important;\n    padding-top: 0.9rem;\n  }\n  .thread-ui-shell:not([data-thread-layout=mobile]) .thread-composer-input [contenteditable],\n  .thread-ui-shell:not([data-thread-layout=mobile]) .thread-composer-input textarea {\n    min-height: 4.5rem !important;\n    max-height: 10rem !important;\n    font-size: 0.875rem;\n  }\n}\n.thread-ui-shell:not([data-thread-layout=mobile]) .thread-composer-form {\n  padding: 0.5rem 1rem 0.75rem;\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-composer-shell,\n.thread-ui-shell[data-theme-effective=dark] .thread-composer-shell,\n.thread-ui-shell.dark .thread-composer-shell {\n  border-color: #303642;\n  background: #181b23;\n  box-shadow: 0 8px 24px oklch(0 0 0 / 0.22);\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-composer-toolbar,\n.thread-ui-shell[data-theme-effective=dark] .thread-composer-toolbar,\n.thread-ui-shell.dark .thread-composer-toolbar,\n.thread-ui-shell.thread-ui-theme-dark .thread-composer-input,\n.thread-ui-shell[data-theme-effective=dark] .thread-composer-input,\n.thread-ui-shell.dark .thread-composer-input {\n  border-color: #303642 !important;\n  background: transparent !important;\n  color: rgb(241 245 249) !important;\n  box-shadow: none !important;\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-composer-input [contenteditable],\n.thread-ui-shell[data-theme-effective=dark] .thread-composer-input [contenteditable],\n.thread-ui-shell.dark .thread-composer-input [contenteditable],\n.thread-ui-shell.thread-ui-theme-dark .thread-composer-input textarea,\n.thread-ui-shell[data-theme-effective=dark] .thread-composer-input textarea,\n.thread-ui-shell.dark .thread-composer-input textarea {\n  background: transparent !important;\n  color: rgb(241 245 249) !important;\n}\n.thread-ui-shell .thread-graph-composer-form {\n  border-color: var(--theme-border);\n  background: var(--theme-surface);\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-composer-form,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-composer-form,\n.thread-ui-shell.dark .thread-graph-composer-form {\n  border-color: var(--theme-border);\n  background: var(--theme-surface);\n}\n.thread-ui-shell .thread-graph-composer-shell {\n  border: 1px solid var(--theme-border);\n  background: var(--theme-panel);\n  box-shadow: 0 4px 18px oklch(0.22 0.024 255 / 0.04);\n  overflow: visible !important;\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-composer-shell,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-composer-shell,\n.thread-ui-shell.dark .thread-graph-composer-shell {\n  border-color: var(--theme-border-strong);\n  background: var(--theme-panel);\n  box-shadow: 0 8px 24px oklch(0 0 0 / 0.22);\n}\n.thread-ui-shell .thread-graph-composer-input-group {\n  order: 1;\n  display: flex;\n  flex-direction: column;\n  align-items: stretch;\n  height: auto;\n  min-height: 0;\n  color: rgb(30 41 59);\n  overflow: visible !important;\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-composer-input-group,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-composer-input-group,\n.thread-ui-shell.dark .thread-graph-composer-input-group {\n  color: rgb(241 245 249);\n}\n.thread-ui-shell .thread-graph-composer-prompt-region {\n  order: 1;\n}\n.thread-ui-shell .thread-graph-composer-input {\n  position: relative;\n  border: 0;\n  background: transparent;\n  color: rgb(30 41 59);\n  box-shadow: none;\n  overflow-y: auto;\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-composer-input,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-composer-input,\n.thread-ui-shell.dark .thread-graph-composer-input {\n  color: rgb(241 245 249);\n}\n.thread-ui-shell .thread-graph-composer-input [contenteditable] {\n  display: block;\n  width: 100%;\n  min-width: 0;\n  overflow-y: auto;\n  background: transparent;\n  color: inherit;\n}\n.thread-ui-shell .thread-graph-composer-input .thread-composer-attachment-chip,\n.thread-ui-shell .thread-composer-input .thread-composer-attachment-chip {\n  box-sizing: border-box;\n  flex: 0 0 auto;\n  width: max-content !important;\n  max-width: min(100%, 7.25rem) !important;\n  vertical-align: middle;\n}\n.thread-ui-shell .thread-graph-composer-input .thread-composer-attachment-chip-photo,\n.thread-ui-shell .thread-composer-input .thread-composer-attachment-chip-photo {\n  display: inline-flex !important;\n  flex-direction: column;\n  align-items: flex-start;\n  gap: 0.25rem;\n  padding: 0.35rem !important;\n}\n.thread-ui-shell .thread-graph-composer-input .thread-composer-attachment-thumb,\n.thread-ui-shell .thread-composer-input .thread-composer-attachment-thumb {\n  display: block;\n  width: 5.75rem !important;\n  height: 3.75rem !important;\n  max-width: 100%;\n  border-radius: 0.6rem !important;\n  object-fit: cover;\n}\n.thread-ui-shell .thread-graph-composer-input .thread-composer-attachment-caption,\n.thread-ui-shell .thread-composer-input .thread-composer-attachment-caption {\n  display: block !important;\n  width: 100%;\n  max-width: 5.75rem !important;\n  margin-left: 0 !important;\n  overflow: hidden;\n  color: rgb(3 105 161);\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-composer-input .thread-composer-attachment-caption,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-composer-input .thread-composer-attachment-caption,\n:root[data-theme-effective=dark] .thread-ui-shell .thread-graph-composer-input .thread-composer-attachment-caption,\n.thread-ui-shell.dark .thread-graph-composer-input .thread-composer-attachment-caption,\n.thread-ui-shell.thread-ui-theme-dark .thread-composer-input .thread-composer-attachment-caption,\n.thread-ui-shell[data-theme-effective=dark] .thread-composer-input .thread-composer-attachment-caption,\n:root[data-theme-effective=dark] .thread-ui-shell .thread-composer-input .thread-composer-attachment-caption,\n.thread-ui-shell.dark .thread-composer-input .thread-composer-attachment-caption {\n  color: rgb(125 211 252);\n}\n.thread-ui-shell .thread-graph-composer-toolbar {\n  order: 2;\n  width: 100%;\n  min-height: 2.75rem;\n  flex-wrap: wrap;\n  justify-content: flex-start;\n  gap: 0.5rem;\n  border: 0;\n  background: transparent;\n  padding: 0 0.5rem 0.5rem;\n  color: rgb(100 116 139);\n  box-shadow: none;\n  overflow: visible !important;\n}\n@media (min-width: 640px) {\n  .thread-ui-shell:not([data-thread-layout=mobile]) .thread-graph-composer-toolbar {\n    flex-wrap: nowrap;\n    padding: 0 0.75rem 0.75rem;\n  }\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-composer-toolbar,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-composer-toolbar,\n.thread-ui-shell.dark .thread-graph-composer-toolbar {\n  color: rgb(148 163 184);\n}\n.thread-ui-shell .thread-graph-composer-send-button {\n  flex: 0 0 auto;\n}\n.thread-ui-shell .thread-graph-composer-stop-button {\n  border-color: rgb(244 63 94 / 0.28) !important;\n  box-shadow: 0 8px 18px rgb(15 23 42 / 0.14);\n}\n.thread-ui-shell .thread-graph-composer-prompt-region .thread-graph-composer-stop-button {\n  position: absolute;\n}\n@media (max-width: 639px) {\n  .thread-ui-shell .thread-graph-composer-form {\n    padding: 0.35rem 0.55rem calc(env(safe-area-inset-bottom) + 0.35rem) !important;\n  }\n  .thread-ui-shell .thread-graph-composer-shell {\n    border-radius: 14px !important;\n  }\n  .thread-ui-shell .thread-graph-composer-input {\n    min-height: 3.65rem !important;\n    max-height: 7.5rem !important;\n    padding: 0.65rem 0.75rem 0.2rem !important;\n  }\n  .thread-ui-shell .thread-graph-composer-input [contenteditable] {\n    min-height: 3rem !important;\n    padding-right: 2.5rem;\n  }\n  .thread-ui-shell .thread-graph-composer-toolbar {\n    min-height: 2.35rem;\n    gap: 0.3rem;\n    padding: 0 0.45rem 0.45rem;\n  }\n  .thread-ui-shell .thread-graph-composer-toolbar > .flex {\n    min-width: 0;\n    gap: 0.3rem;\n  }\n  .thread-ui-shell .thread-graph-composer-icon-button,\n  .thread-ui-shell .thread-graph-composer-send-button {\n    width: 1.95rem !important;\n    height: 1.95rem !important;\n  }\n  .thread-ui-shell .thread-graph-composer-inline-toggle {\n    height: 1.95rem;\n    max-width: 6.75rem !important;\n    padding-left: 0.5rem !important;\n    padding-right: 0.5rem !important;\n    font-size: 0.6875rem;\n  }\n  .thread-ui-shell .thread-graph-composer-stop-button {\n    top: 0.45rem !important;\n    right: 0.45rem !important;\n    width: 1.8rem !important;\n    height: 1.8rem !important;\n  }\n}\n.thread-ui-shell .thread-composer-icon-button,\n.thread-ui-shell .thread-composer-inline-toggle,\n.thread-ui-shell .thread-composer-chip-button,\n.thread-ui-shell .thread-composer-menu-item,\n.thread-ui-shell .thread-composer-panel-button,\n.thread-ui-shell .thread-graph-composer-icon-button,\n.thread-ui-shell .thread-graph-composer-inline-toggle,\n.thread-ui-shell .thread-graph-composer-chip-button,\n.thread-ui-shell .thread-graph-composer-menu-item,\n.thread-ui-shell .thread-graph-composer-panel-button {\n  border-color: var(--theme-border) !important;\n  background: transparent !important;\n  color: var(--theme-fg-soft) !important;\n}\n.thread-ui-shell .thread-composer-icon-button:hover,\n.thread-ui-shell .thread-composer-inline-toggle:hover,\n.thread-ui-shell .thread-composer-chip-button:hover,\n.thread-ui-shell .thread-composer-menu-item:hover,\n.thread-ui-shell .thread-composer-panel-button:hover,\n.thread-ui-shell .thread-graph-composer-icon-button:hover,\n.thread-ui-shell .thread-graph-composer-inline-toggle:hover,\n.thread-ui-shell .thread-graph-composer-chip-button:hover,\n.thread-ui-shell .thread-graph-composer-menu-item:hover,\n.thread-ui-shell .thread-graph-composer-panel-button:hover {\n  background: var(--theme-hover) !important;\n  color: var(--theme-fg) !important;\n}\n.thread-ui-shell .thread-composer-icon-button,\n.thread-ui-shell .thread-graph-composer-icon-button {\n  background: var(--theme-muted) !important;\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-composer-icon-button,\n.thread-ui-shell[data-theme-effective=dark] .thread-composer-icon-button,\n.thread-ui-shell.dark .thread-composer-icon-button,\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-composer-icon-button,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-composer-icon-button,\n.thread-ui-shell.dark .thread-graph-composer-icon-button {\n  border-color: #303642 !important;\n  background: #222733 !important;\n  color: rgb(203 213 225) !important;\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-composer-icon-button:hover,\n.thread-ui-shell[data-theme-effective=dark] .thread-composer-icon-button:hover,\n.thread-ui-shell.dark .thread-composer-icon-button:hover,\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-composer-icon-button:hover,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-composer-icon-button:hover,\n.thread-ui-shell.dark .thread-graph-composer-icon-button:hover {\n  background: #2b313d !important;\n  color: rgb(241 245 249) !important;\n}\n.thread-ui-shell .thread-composer-menu,\n.thread-ui-shell .thread-graph-composer-menu {\n  border-radius: 12px;\n  border-color: var(--theme-border) !important;\n  background: color-mix(in oklch, var(--theme-panel) 96%, transparent) !important;\n  color: var(--theme-fg) !important;\n  box-shadow: 0 16px 38px oklch(0.22 0.024 255 / 0.16);\n  z-index: 80;\n}\n.thread-ui-shell [data-composer-menu-surface=true] {\n  border-color: var(--theme-border) !important;\n  background: color-mix(in oklch, var(--theme-panel) 96%, transparent) !important;\n  color: var(--theme-fg) !important;\n  box-shadow: 0 16px 38px oklch(0.22 0.024 255 / 0.16) !important;\n}\n.thread-ui-shell .thread-graph-composer-menu {\n  max-height: min(27rem, calc(100svh - 8rem));\n  overflow: auto !important;\n}\n.thread-ui-shell :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(input, textarea, select) {\n  border-color: var(--theme-border) !important;\n  background: var(--theme-panel) !important;\n  color: var(--theme-fg) !important;\n}\n.thread-ui-shell :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(input, textarea)::placeholder {\n  color: var(--theme-fg-muted) !important;\n}\n.thread-ui-shell :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(input, textarea, select):focus {\n  border-color: color-mix(in oklch, var(--theme-accent-solid) 38%, var(--theme-border)) !important;\n}\n.thread-ui-shell :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(.border-sky-300\\/35, .border-emerald-400\\/45) {\n  border-color: color-mix(in oklch, var(--theme-accent-solid) 24%, var(--theme-border)) !important;\n}\n.thread-ui-shell :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(.bg-sky-300\\/10, .bg-sky-300\\/12, .bg-emerald-400\\/12) {\n  background: color-mix(in oklch, var(--theme-accent-solid) 8%, var(--theme-panel)) !important;\n}\n.thread-ui-shell :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(.text-rose-100\\/90, .text-rose-200) {\n  color: rgb(190 18 60) !important;\n}\n.thread-ui-shell :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(.text-amber-100\\/85, .text-amber-100\\/60) {\n  color: rgb(146 64 14) !important;\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-composer-menu,\n.thread-ui-shell[data-theme-effective=dark] .thread-composer-menu,\n:root[data-theme-effective=dark] .thread-ui-shell .thread-composer-menu,\n.thread-ui-shell.dark .thread-composer-menu,\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-composer-menu,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-composer-menu,\n:root[data-theme-effective=dark] .thread-ui-shell .thread-graph-composer-menu,\n.thread-ui-shell.dark .thread-graph-composer-menu,\n.thread-ui-shell.thread-ui-theme-dark [data-composer-menu-surface=true],\n.thread-ui-shell[data-theme-effective=dark] [data-composer-menu-surface=true],\n:root[data-theme-effective=dark] .thread-ui-shell [data-composer-menu-surface=true],\n.thread-ui-shell.dark [data-composer-menu-surface=true] {\n  border-color: #303642 !important;\n  background: rgb(23 26 34 / 0.96) !important;\n  color: rgb(241 245 249) !important;\n  box-shadow: 0 18px 48px rgb(0 0 0 / 0.28) !important;\n}\n.thread-ui-shell.thread-ui-theme-dark :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(input, textarea, select),\n.thread-ui-shell[data-theme-effective=dark] :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(input, textarea, select),\n:root[data-theme-effective=dark] .thread-ui-shell :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(input, textarea, select),\n.thread-ui-shell.dark :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(input, textarea, select) {\n  border-color: #303642 !important;\n  background: #11141a !important;\n  color: rgb(241 245 249) !important;\n}\n.thread-ui-shell.thread-ui-theme-dark :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(.text-rose-100\\/90, .text-rose-200),\n.thread-ui-shell[data-theme-effective=dark] :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(.text-rose-100\\/90, .text-rose-200),\n:root[data-theme-effective=dark] .thread-ui-shell :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(.text-rose-100\\/90, .text-rose-200),\n.thread-ui-shell.dark :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(.text-rose-100\\/90, .text-rose-200) {\n  color: rgb(254 205 211) !important;\n}\n.thread-ui-shell.thread-ui-theme-dark :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(.text-amber-100\\/85, .text-amber-100\\/60),\n.thread-ui-shell[data-theme-effective=dark] :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(.text-amber-100\\/85, .text-amber-100\\/60),\n:root[data-theme-effective=dark] .thread-ui-shell :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(.text-amber-100\\/85, .text-amber-100\\/60),\n.thread-ui-shell.dark :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(.text-amber-100\\/85, .text-amber-100\\/60) {\n  color: rgb(253 230 138) !important;\n}\n.thread-ui-shell .thread-composer-plan-toggle-active,\n.thread-ui-shell .thread-graph-composer-plan-toggle-active {\n  background: var(--theme-accent-soft);\n  color: var(--theme-accent-strong);\n}\n.thread-ui-shell .thread-jump-latest-badge {\n  border-color: var(--theme-border);\n  background: var(--theme-panel);\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .ui-action-primary {\n  background: var(--theme-accent-solid);\n  color: var(--theme-accent-solid-fg);\n}\n.thread-ui-shell .ui-action-primary:hover {\n  background: var(--theme-accent-solid-hover);\n}\n.thread-ui-shell .ui-action-info {\n  background: oklch(0.46 0.1 235);\n  color: oklch(0.98 0.005 235);\n}\n.thread-ui-shell .ui-action-danger {\n  background: oklch(0.56 0.16 25);\n  color: oklch(0.98 0.005 25);\n}\n.thread-ui-shell .thread-composer-send-button.ui-action-danger,\n.thread-ui-shell .thread-graph-composer-send-button.ui-action-danger {\n  border: 1px solid var(--theme-border) !important;\n  background: var(--theme-muted) !important;\n  color: var(--theme-fg-soft) !important;\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-composer-send-button.ui-action-danger,\n.thread-ui-shell[data-theme-effective=dark] .thread-composer-send-button.ui-action-danger,\n.thread-ui-shell.dark .thread-composer-send-button.ui-action-danger,\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-composer-send-button.ui-action-danger,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-composer-send-button.ui-action-danger,\n.thread-ui-shell.dark .thread-graph-composer-send-button.ui-action-danger {\n  border-color: #303642 !important;\n  background: #222733 !important;\n  color: rgb(241 245 249) !important;\n}\n.thread-ui-shell .thread-composer-send-button.ui-action-danger:hover,\n.thread-ui-shell .thread-graph-composer-send-button.ui-action-danger:hover {\n  background: var(--theme-hover) !important;\n  color: var(--theme-fg) !important;\n}\n.thread-ui-shell .thread-empty-surface,\n.thread-ui-shell .timeline-pending-card,\n.thread-ui-shell .timeline-note-card,\n.thread-ui-shell .timeline-activity-card,\n.thread-ui-shell .timeline-live-plan-card,\n.thread-ui-shell .timeline-question-section,\n.thread-ui-shell .timeline-live-plan-step,\n.thread-ui-shell .timeline-detail-row {\n  border-color: var(--theme-border);\n  background: var(--theme-panel);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .prose,\n.thread-ui-shell .prose :where(p, li, strong, code, pre, blockquote) {\n  color: inherit;\n}\n.thread-ui-shell .prose img {\n  max-width: min(28rem, 100%);\n  height: auto;\n  border-radius: 10px;\n  border: 1px solid var(--theme-border);\n  box-shadow: 0 12px 35px oklch(0.22 0.024 255 / 0.14);\n  margin-top: 0.75rem;\n  margin-bottom: 0.75rem;\n}\n.thread-ui-shell .thread-graph-plan-card {\n  border-color: rgb(42 47 58);\n  background: #1b1f29;\n  color: rgb(241 245 249);\n  box-shadow: none;\n}\n.thread-ui-shell .thread-graph-plan-step {\n  border-color: rgb(48 54 66);\n  background: #181b23;\n  color: rgb(241 245 249);\n}\n.thread-ui-shell .thread-graph-plan-explanation {\n  color: rgb(148 163 184);\n}\n.thread-ui-shell .thread-graph-plan-badge {\n  border-color: transparent;\n  background: rgb(56 189 248 / 0.12);\n  color: rgb(186 230 253);\n  box-shadow: none;\n  text-transform: uppercase;\n  letter-spacing: 0.16em;\n}\n.thread-ui-shell .thread-graph-plan-status {\n  height: 1.75rem;\n  min-width: 1.75rem;\n  padding: 0;\n  border-color: transparent;\n  box-shadow: none;\n}\n.thread-ui-shell .thread-graph-plan-status.is-completed {\n  background: rgb(52 211 153 / 0.14);\n  color: rgb(167 243 208);\n}\n.thread-ui-shell .thread-graph-plan-status.is-running {\n  background: rgb(56 189 248 / 0.14);\n  color: rgb(186 230 253);\n}\n.thread-ui-shell .thread-graph-plan-status.is-pending,\n.thread-ui-shell .thread-graph-plan-status.is-unknown {\n  background: #2b313d;\n  color: rgb(203 213 225);\n}\n.thread-ui-shell .thread-graph-plan-status.is-failed {\n  background: rgb(251 113 133 / 0.14);\n  color: rgb(254 205 211);\n}\n.thread-ui-shell[data-theme-effective=light] .thread-graph-plan-card {\n  border-color: rgb(226 232 240);\n  background: rgb(248 250 252);\n  color: rgb(15 23 42);\n}\n.thread-ui-shell[data-theme-effective=light] .thread-graph-plan-step {\n  border-color: rgb(226 232 240);\n  background: rgb(255 255 255);\n  color: rgb(15 23 42);\n}\n.thread-ui-shell[data-theme-effective=light] .thread-graph-plan-explanation {\n  color: rgb(100 116 139);\n}\n.thread-ui-shell[data-theme-effective=light] .thread-graph-plan-badge {\n  background: rgb(14 165 233 / 0.1);\n  color: rgb(3 105 161);\n}\n.thread-ui-shell[data-theme-effective=light] .thread-graph-plan-status.is-completed {\n  background: rgb(16 185 129 / 0.12);\n  color: rgb(4 120 87);\n}\n.thread-ui-shell[data-theme-effective=light] .thread-graph-plan-status.is-running {\n  background: rgb(14 165 233 / 0.12);\n  color: rgb(3 105 161);\n}\n.thread-ui-shell[data-theme-effective=light] .thread-graph-plan-status.is-pending,\n.thread-ui-shell[data-theme-effective=light] .thread-graph-plan-status.is-unknown {\n  background: rgb(226 232 240);\n  color: rgb(71 85 105);\n}\n.thread-ui-shell[data-theme-effective=light] .thread-graph-plan-status.is-failed {\n  background: rgb(244 63 94 / 0.12);\n  color: rgb(190 18 60);\n}\n.thread-ui-shell .thread-graph-event {\n  background: transparent !important;\n  color: var(--theme-fg) !important;\n}\n.thread-ui-shell .thread-graph-event-card {\n  background: var(--theme-surface) !important;\n  color: var(--theme-fg) !important;\n}\n.thread-ui-shell .thread-graph-plan-card,\n.thread-ui-shell .thread-graph-plan-step,\n.thread-ui-shell .thread-graph-plan-step-text {\n  color: rgb(241 245 249) !important;\n}\n.thread-ui-shell[data-theme-effective=light] .thread-graph-plan-card,\n.thread-ui-shell[data-theme-effective=light] .thread-graph-plan-step,\n.thread-ui-shell[data-theme-effective=light] .thread-graph-plan-step-text {\n  color: rgb(15 23 42) !important;\n}\n");
+styleInject(".thread-ui-shell .timeline-soft-text,\n.thread-ui-shell .thread-message-prose :where(blockquote) {\n  color: var(--theme-fg-soft);\n}\n.thread-ui-shell .timeline-meta-text,\n.thread-ui-shell .thread-message-prose :where(figcaption) {\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .timeline-overlay-badge,\n.thread-ui-shell .ui-status-neutral,\n.thread-ui-shell .ui-status-info,\n.thread-ui-shell .ui-status-warning,\n.thread-ui-shell .ui-status-success,\n.thread-ui-shell .ui-status-danger {\n  border-color: transparent;\n  box-shadow: none;\n}\n.thread-ui-shell .timeline-command-status-complete,\n.thread-ui-shell .timeline-command-status-pending,\n.thread-ui-shell .timeline-delta-badge,\n.thread-ui-shell .timeline-live-plan-step {\n  border-color: var(--theme-border);\n  background: var(--theme-muted);\n  color: var(--theme-fg-soft);\n}\n.thread-ui-shell .ui-status-neutral {\n  background: var(--theme-muted);\n  color: var(--theme-fg-soft);\n}\n.thread-ui-shell.thread-ui-theme-dark .ui-status-neutral,\n.thread-ui-shell[data-theme-effective=dark] .ui-status-neutral,\n.thread-ui-shell.dark .ui-status-neutral {\n  border-color: #303642;\n  background: #151923;\n  color: rgb(203 213 225);\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-room-card.is-active .ui-status-neutral,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-room-card.is-active .ui-status-neutral,\n.thread-ui-shell.dark .thread-graph-room-card.is-active .ui-status-neutral {\n  border-color: #424b5e;\n  background: #1a1f2a;\n  color: rgb(203 213 225);\n}\n.thread-ui-shell .ui-status-info {\n  background: oklch(0.94 0.03 235);\n  color: oklch(0.43 0.09 242);\n}\n.thread-ui-shell .ui-status-warning {\n  background: oklch(0.94 0.048 84);\n  color: oklch(0.46 0.08 75);\n}\n.thread-ui-shell .ui-status-success {\n  background: oklch(0.94 0.052 155);\n  color: oklch(0.43 0.095 155);\n}\n.thread-ui-shell .ui-status-danger {\n  background: oklch(0.94 0.04 25);\n  color: oklch(0.48 0.125 24);\n}\n.thread-ui-shell.thread-ui-theme-dark .ui-status-info,\n.thread-ui-shell[data-theme-effective=dark] .ui-status-info,\n.thread-ui-shell.dark .ui-status-info {\n  background: oklch(0.3 0.042 235);\n  color: oklch(0.77 0.1 235);\n}\n.thread-ui-shell.thread-ui-theme-dark .ui-status-warning,\n.thread-ui-shell[data-theme-effective=dark] .ui-status-warning,\n.thread-ui-shell.dark .ui-status-warning {\n  background: oklch(0.31 0.045 75);\n  color: oklch(0.83 0.11 80);\n}\n.thread-ui-shell.thread-ui-theme-dark .ui-status-success,\n.thread-ui-shell[data-theme-effective=dark] .ui-status-success,\n.thread-ui-shell.dark .ui-status-success {\n  background: oklch(0.31 0.05 155);\n  color: oklch(0.8 0.115 155);\n}\n.thread-ui-shell.thread-ui-theme-dark .ui-status-danger,\n.thread-ui-shell[data-theme-effective=dark] .ui-status-danger,\n.thread-ui-shell.dark .ui-status-danger {\n  background: oklch(0.31 0.052 25);\n  color: oklch(0.78 0.12 25);\n}\n.thread-ui-shell .thread-message-icon-user,\n.thread-ui-shell .thread-message-icon-agent {\n  border-color: transparent;\n  background: var(--theme-muted);\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-graph-thinking-trigger {\n  display: inline-flex;\n  align-items: center;\n  color: rgb(148 163 184);\n}\n.thread-ui-shell .thread-graph-thinking-trigger:hover,\n.thread-ui-shell .thread-graph-thinking-trigger[data-state=open] {\n  color: rgb(125 211 252);\n}\n.thread-ui-shell .thread-graph-thinking-label {\n  min-width: 0;\n}\n.thread-ui-shell .thread-graph-thinking-body {\n  border-color: rgb(42 47 58);\n  background: #1b1f29;\n  color: rgb(203 213 225);\n}\n.thread-ui-shell[data-theme-effective=light] .thread-graph-thinking-trigger {\n  color: rgb(100 116 139);\n}\n.thread-ui-shell[data-theme-effective=light] .thread-graph-thinking-trigger:hover,\n.thread-ui-shell[data-theme-effective=light] .thread-graph-thinking-trigger[data-state=open] {\n  color: rgb(3 105 161);\n}\n.thread-ui-shell[data-theme-effective=light] .thread-graph-thinking-body {\n  border-color: rgb(226 232 240);\n  background: rgb(248 250 252);\n  color: rgb(51 65 85);\n}\n.thread-ui-shell .timeline-corner-copy-visual {\n  border-color: var(--theme-border);\n  background: color-mix(in oklch, var(--theme-panel) 88%, transparent);\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-composer-form {\n  border-color: var(--theme-border);\n  background: var(--theme-surface);\n}\n.thread-ui-shell .thread-composer-toolbar,\n.thread-ui-shell .thread-composer-input,\n.thread-ui-shell .thread-composer-menu {\n  border-color: var(--theme-border);\n  background: var(--theme-panel);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-composer-toolbar {\n  border-radius: 0;\n  border: 0;\n  background: transparent;\n  box-shadow: none;\n  order: 2;\n  min-height: 2.75rem;\n  padding: 0.25rem 0.75rem 0.65rem;\n  flex-wrap: wrap;\n  align-items: center;\n}\n.thread-ui-shell .thread-composer-prompt-region {\n  order: 1;\n}\n.thread-ui-shell .thread-composer-input {\n  position: relative;\n  min-height: 5.25rem !important;\n  max-height: 12rem !important;\n  border: 0;\n  border-radius: 0;\n  background: transparent !important;\n  box-shadow: none;\n  overflow: visible;\n  padding-top: 0.7rem;\n  padding-bottom: 0.45rem;\n}\n.thread-ui-shell .thread-composer-input:focus-within {\n  border-color: transparent;\n  box-shadow: none;\n}\n.thread-ui-shell .thread-composer-input [contenteditable],\n.thread-ui-shell .thread-composer-input textarea {\n  display: block;\n  width: 100%;\n  min-width: 0;\n  background: transparent !important;\n  color: var(--theme-fg);\n  font-size: 1rem;\n  line-height: 1.55;\n}\n.thread-ui-shell .thread-composer-input [contenteditable] {\n  min-height: 4.15rem !important;\n  max-height: 9.5rem !important;\n  overflow-y: auto;\n}\n.thread-ui-shell .thread-composer-input textarea {\n  min-height: 4.15rem !important;\n  max-height: 9.5rem !important;\n  overflow-y: auto;\n  resize: none;\n}\n.thread-ui-shell .thread-composer-shell {\n  border: 1px solid var(--theme-border);\n  background: #fbfcfd;\n  box-shadow: 0 4px 18px oklch(0.22 0.024 255 / 0.04);\n}\n.thread-ui-shell .thread-composer-send-button {\n  flex: 0 0 auto;\n}\n.thread-ui-shell .thread-goal-compose-card {\n  border-color: color-mix(in oklch, var(--theme-accent-solid) 18%, var(--theme-border));\n  background: color-mix(in oklch, var(--theme-accent-solid) 7%, var(--theme-panel));\n  color: var(--theme-fg-soft);\n  box-shadow: 0 8px 18px rgb(15 23 42 / 0.05);\n}\n.thread-ui-shell .thread-goal-compose-label {\n  color: color-mix(in oklch, var(--theme-accent-solid) 68%, var(--theme-fg));\n}\n.thread-ui-shell .thread-goal-compose-field {\n  color: var(--theme-fg-soft);\n}\n.thread-ui-shell .thread-goal-compose-input {\n  border-color: color-mix(in oklch, var(--theme-accent-solid) 20%, var(--theme-border));\n  background: var(--theme-panel);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-goal-compose-input::placeholder {\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-goal-compose-input:focus {\n  border-color: color-mix(in oklch, var(--theme-accent-solid) 48%, var(--theme-border));\n}\n.thread-ui-shell .thread-goal-compose-cancel {\n  border-color: var(--theme-border);\n  background: var(--theme-surface-strong);\n  color: var(--theme-fg-soft);\n}\n.thread-ui-shell .thread-goal-compose-cancel:hover {\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-goal-compose-error {\n  color: rgb(190 18 60);\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-goal-compose-card,\n.thread-ui-shell[data-theme-effective=dark] .thread-goal-compose-card,\n.thread-ui-shell.dark .thread-goal-compose-card {\n  border-color: rgb(125 211 252 / 0.25);\n  background: rgb(125 211 252 / 0.07);\n  color: rgb(226 232 240);\n  box-shadow: 0 8px 18px rgb(0 0 0 / 0.18);\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-goal-compose-label,\n.thread-ui-shell[data-theme-effective=dark] .thread-goal-compose-label,\n.thread-ui-shell.dark .thread-goal-compose-label {\n  color: rgb(224 242 254 / 0.9);\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-goal-compose-field,\n.thread-ui-shell[data-theme-effective=dark] .thread-goal-compose-field,\n.thread-ui-shell.dark .thread-goal-compose-field {\n  color: rgb(203 213 225);\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-goal-compose-input,\n.thread-ui-shell[data-theme-effective=dark] .thread-goal-compose-input,\n.thread-ui-shell.dark .thread-goal-compose-input {\n  border-color: rgb(125 211 252 / 0.25);\n  background: rgb(2 6 23 / 0.46);\n  color: rgb(241 245 249);\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-goal-compose-cancel,\n.thread-ui-shell[data-theme-effective=dark] .thread-goal-compose-cancel,\n.thread-ui-shell.dark .thread-goal-compose-cancel {\n  border-color: #343b48;\n  background: #1d222c;\n  color: rgb(203 213 225);\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-goal-compose-cancel:hover,\n.thread-ui-shell[data-theme-effective=dark] .thread-goal-compose-cancel:hover,\n.thread-ui-shell.dark .thread-goal-compose-cancel:hover {\n  background: #222733;\n  color: rgb(241 245 249);\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-goal-compose-error,\n.thread-ui-shell[data-theme-effective=dark] .thread-goal-compose-error,\n.thread-ui-shell.dark .thread-goal-compose-error {\n  color: rgb(254 205 211);\n}\n@media (min-width: 640px) {\n  .thread-ui-shell:not([data-thread-layout=mobile]) .thread-composer-shell {\n    border-radius: 16px;\n  }\n  .thread-ui-shell:not([data-thread-layout=mobile]) .thread-composer-input {\n    min-height: 5.75rem !important;\n    max-height: 12.5rem !important;\n    padding-top: 0.9rem;\n  }\n  .thread-ui-shell:not([data-thread-layout=mobile]) .thread-composer-input [contenteditable],\n  .thread-ui-shell:not([data-thread-layout=mobile]) .thread-composer-input textarea {\n    min-height: 4.5rem !important;\n    max-height: 10rem !important;\n    font-size: 0.875rem;\n  }\n}\n.thread-ui-shell:not([data-thread-layout=mobile]) .thread-composer-form {\n  padding: 0.5rem 1rem 0.75rem;\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-composer-shell,\n.thread-ui-shell[data-theme-effective=dark] .thread-composer-shell,\n.thread-ui-shell.dark .thread-composer-shell {\n  border-color: #303642;\n  background: #181b23;\n  box-shadow: 0 8px 24px oklch(0 0 0 / 0.22);\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-composer-toolbar,\n.thread-ui-shell[data-theme-effective=dark] .thread-composer-toolbar,\n.thread-ui-shell.dark .thread-composer-toolbar,\n.thread-ui-shell.thread-ui-theme-dark .thread-composer-input,\n.thread-ui-shell[data-theme-effective=dark] .thread-composer-input,\n.thread-ui-shell.dark .thread-composer-input {\n  border-color: #303642 !important;\n  background: transparent !important;\n  color: rgb(241 245 249) !important;\n  box-shadow: none !important;\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-composer-input [contenteditable],\n.thread-ui-shell[data-theme-effective=dark] .thread-composer-input [contenteditable],\n.thread-ui-shell.dark .thread-composer-input [contenteditable],\n.thread-ui-shell.thread-ui-theme-dark .thread-composer-input textarea,\n.thread-ui-shell[data-theme-effective=dark] .thread-composer-input textarea,\n.thread-ui-shell.dark .thread-composer-input textarea {\n  background: transparent !important;\n  color: rgb(241 245 249) !important;\n}\n.thread-ui-shell .thread-graph-composer-form {\n  border-color: var(--theme-border);\n  background: var(--theme-surface);\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-composer-form,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-composer-form,\n.thread-ui-shell.dark .thread-graph-composer-form {\n  border-color: var(--theme-border);\n  background: var(--theme-surface);\n}\n.thread-ui-shell .thread-graph-composer-shell {\n  border: 1px solid var(--theme-border);\n  background: var(--theme-panel);\n  box-shadow: 0 4px 18px oklch(0.22 0.024 255 / 0.04);\n  overflow: visible !important;\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-composer-shell,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-composer-shell,\n.thread-ui-shell.dark .thread-graph-composer-shell {\n  border-color: var(--theme-border-strong);\n  background: var(--theme-panel);\n  box-shadow: 0 8px 24px oklch(0 0 0 / 0.22);\n}\n.thread-ui-shell .thread-graph-composer-input-group {\n  order: 1;\n  display: flex;\n  flex-direction: column;\n  align-items: stretch;\n  height: auto;\n  min-height: 0;\n  color: rgb(30 41 59);\n  overflow: visible !important;\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-composer-input-group,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-composer-input-group,\n.thread-ui-shell.dark .thread-graph-composer-input-group {\n  color: rgb(241 245 249);\n}\n.thread-ui-shell .thread-graph-composer-prompt-region {\n  order: 1;\n}\n.thread-ui-shell .thread-graph-composer-input {\n  position: relative;\n  border: 0;\n  background: transparent;\n  color: rgb(30 41 59);\n  box-shadow: none;\n  overflow-y: auto;\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-composer-input,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-composer-input,\n.thread-ui-shell.dark .thread-graph-composer-input {\n  color: rgb(241 245 249);\n}\n.thread-ui-shell .thread-graph-composer-input [contenteditable] {\n  display: block;\n  width: 100%;\n  min-width: 0;\n  overflow-y: auto;\n  background: transparent;\n  color: inherit;\n}\n.thread-ui-shell .thread-graph-composer-input .thread-composer-attachment-chip,\n.thread-ui-shell .thread-composer-input .thread-composer-attachment-chip {\n  box-sizing: border-box;\n  flex: 0 0 auto;\n  width: max-content !important;\n  max-width: min(100%, 7.25rem) !important;\n  vertical-align: middle;\n}\n.thread-ui-shell .thread-graph-composer-input .thread-composer-attachment-chip-photo,\n.thread-ui-shell .thread-composer-input .thread-composer-attachment-chip-photo {\n  display: inline-flex !important;\n  flex-direction: column;\n  align-items: flex-start;\n  gap: 0.25rem;\n  padding: 0.35rem !important;\n}\n.thread-ui-shell .thread-graph-composer-input .thread-composer-attachment-thumb,\n.thread-ui-shell .thread-composer-input .thread-composer-attachment-thumb {\n  display: block;\n  width: 5.75rem !important;\n  height: 3.75rem !important;\n  max-width: 100%;\n  border-radius: 0.6rem !important;\n  object-fit: cover;\n}\n.thread-ui-shell .thread-graph-composer-input .thread-composer-attachment-caption,\n.thread-ui-shell .thread-composer-input .thread-composer-attachment-caption {\n  display: block !important;\n  width: 100%;\n  max-width: 5.75rem !important;\n  margin-left: 0 !important;\n  overflow: hidden;\n  color: rgb(3 105 161);\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-composer-input .thread-composer-attachment-caption,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-composer-input .thread-composer-attachment-caption,\n:root[data-theme-effective=dark] .thread-ui-shell .thread-graph-composer-input .thread-composer-attachment-caption,\n.thread-ui-shell.dark .thread-graph-composer-input .thread-composer-attachment-caption,\n.thread-ui-shell.thread-ui-theme-dark .thread-composer-input .thread-composer-attachment-caption,\n.thread-ui-shell[data-theme-effective=dark] .thread-composer-input .thread-composer-attachment-caption,\n:root[data-theme-effective=dark] .thread-ui-shell .thread-composer-input .thread-composer-attachment-caption,\n.thread-ui-shell.dark .thread-composer-input .thread-composer-attachment-caption {\n  color: rgb(125 211 252);\n}\n.thread-ui-shell .thread-graph-composer-toolbar {\n  order: 2;\n  width: 100%;\n  min-height: 2.75rem;\n  flex-wrap: wrap;\n  justify-content: flex-start;\n  gap: 0.5rem;\n  border: 0;\n  background: transparent;\n  padding: 0 0.5rem 0.5rem;\n  color: rgb(100 116 139);\n  box-shadow: none;\n  overflow: visible !important;\n}\n@media (min-width: 640px) {\n  .thread-ui-shell:not([data-thread-layout=mobile]) .thread-graph-composer-toolbar {\n    flex-wrap: nowrap;\n    padding: 0 0.75rem 0.75rem;\n  }\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-composer-toolbar,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-composer-toolbar,\n.thread-ui-shell.dark .thread-graph-composer-toolbar {\n  color: rgb(148 163 184);\n}\n.thread-ui-shell .thread-graph-composer-send-button {\n  flex: 0 0 auto;\n}\n.thread-ui-shell .thread-graph-composer-stop-button {\n  border-color: rgb(244 63 94 / 0.28) !important;\n  box-shadow: 0 8px 18px rgb(15 23 42 / 0.14);\n}\n.thread-ui-shell .thread-graph-composer-prompt-region .thread-graph-composer-stop-button {\n  position: absolute;\n}\n@media (max-width: 639px) {\n  .thread-ui-shell .thread-graph-composer-form {\n    padding: 0.35rem 0.55rem calc(env(safe-area-inset-bottom) + 0.35rem) !important;\n  }\n  .thread-ui-shell .thread-graph-composer-shell {\n    border-radius: 14px !important;\n  }\n  .thread-ui-shell .thread-graph-composer-input {\n    min-height: 3.65rem !important;\n    max-height: 7.5rem !important;\n    padding: 0.65rem 0.75rem 0.2rem !important;\n  }\n  .thread-ui-shell .thread-graph-composer-input [contenteditable] {\n    min-height: 3rem !important;\n    padding-right: 2.5rem;\n  }\n  .thread-ui-shell .thread-graph-composer-toolbar {\n    min-height: 2.35rem;\n    gap: 0.3rem;\n    padding: 0 0.45rem 0.45rem;\n  }\n  .thread-ui-shell .thread-graph-composer-toolbar > .flex {\n    min-width: 0;\n    gap: 0.3rem;\n  }\n  .thread-ui-shell .thread-graph-composer-icon-button,\n  .thread-ui-shell .thread-graph-composer-send-button {\n    width: 1.95rem !important;\n    height: 1.95rem !important;\n  }\n  .thread-ui-shell .thread-graph-composer-inline-toggle {\n    height: 1.95rem;\n    max-width: 6.75rem !important;\n    padding-left: 0.5rem !important;\n    padding-right: 0.5rem !important;\n    font-size: 0.6875rem;\n  }\n  .thread-ui-shell .thread-graph-composer-stop-button {\n    top: 0.45rem !important;\n    right: 0.45rem !important;\n    width: 1.8rem !important;\n    height: 1.8rem !important;\n  }\n}\n.thread-ui-shell .thread-composer-icon-button,\n.thread-ui-shell .thread-composer-inline-toggle,\n.thread-ui-shell .thread-composer-chip-button,\n.thread-ui-shell .thread-composer-menu-item,\n.thread-ui-shell .thread-composer-panel-button,\n.thread-ui-shell .thread-graph-composer-icon-button,\n.thread-ui-shell .thread-graph-composer-inline-toggle,\n.thread-ui-shell .thread-graph-composer-chip-button,\n.thread-ui-shell .thread-graph-composer-menu-item,\n.thread-ui-shell .thread-graph-composer-panel-button {\n  border-color: var(--theme-border) !important;\n  background: transparent !important;\n  color: var(--theme-fg-soft) !important;\n}\n.thread-ui-shell .thread-composer-icon-button:hover,\n.thread-ui-shell .thread-composer-inline-toggle:hover,\n.thread-ui-shell .thread-composer-chip-button:hover,\n.thread-ui-shell .thread-composer-menu-item:hover,\n.thread-ui-shell .thread-composer-panel-button:hover,\n.thread-ui-shell .thread-graph-composer-icon-button:hover,\n.thread-ui-shell .thread-graph-composer-inline-toggle:hover,\n.thread-ui-shell .thread-graph-composer-chip-button:hover,\n.thread-ui-shell .thread-graph-composer-menu-item:hover,\n.thread-ui-shell .thread-graph-composer-panel-button:hover {\n  background: var(--theme-hover) !important;\n  color: var(--theme-fg) !important;\n}\n.thread-ui-shell .thread-composer-icon-button,\n.thread-ui-shell .thread-graph-composer-icon-button {\n  background: var(--theme-muted) !important;\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-composer-icon-button,\n.thread-ui-shell[data-theme-effective=dark] .thread-composer-icon-button,\n.thread-ui-shell.dark .thread-composer-icon-button,\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-composer-icon-button,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-composer-icon-button,\n.thread-ui-shell.dark .thread-graph-composer-icon-button {\n  border-color: #303642 !important;\n  background: #222733 !important;\n  color: rgb(203 213 225) !important;\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-composer-icon-button:hover,\n.thread-ui-shell[data-theme-effective=dark] .thread-composer-icon-button:hover,\n.thread-ui-shell.dark .thread-composer-icon-button:hover,\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-composer-icon-button:hover,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-composer-icon-button:hover,\n.thread-ui-shell.dark .thread-graph-composer-icon-button:hover {\n  background: #2b313d !important;\n  color: rgb(241 245 249) !important;\n}\n.thread-ui-shell .thread-composer-menu,\n.thread-ui-shell .thread-graph-composer-menu {\n  border-radius: 12px;\n  border-color: var(--theme-border) !important;\n  background: color-mix(in oklch, var(--theme-panel) 96%, transparent) !important;\n  color: var(--theme-fg) !important;\n  box-shadow: 0 16px 38px oklch(0.22 0.024 255 / 0.16);\n  z-index: 80;\n}\n.thread-ui-shell [data-composer-menu-surface=true] {\n  border-color: var(--theme-border) !important;\n  background: color-mix(in oklch, var(--theme-panel) 96%, transparent) !important;\n  color: var(--theme-fg) !important;\n  box-shadow: 0 16px 38px oklch(0.22 0.024 255 / 0.16) !important;\n}\n.thread-ui-shell .thread-graph-composer-menu {\n  max-height: min(27rem, calc(100svh - 8rem));\n  overflow: auto !important;\n}\n.thread-ui-shell :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(input, textarea, select) {\n  border-color: var(--theme-border) !important;\n  background: var(--theme-panel) !important;\n  color: var(--theme-fg) !important;\n}\n.thread-ui-shell :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(input, textarea)::placeholder {\n  color: var(--theme-fg-muted) !important;\n}\n.thread-ui-shell :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(input, textarea, select):focus {\n  border-color: color-mix(in oklch, var(--theme-accent-solid) 38%, var(--theme-border)) !important;\n}\n.thread-ui-shell :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(.border-sky-300\\/35, .border-emerald-400\\/45) {\n  border-color: color-mix(in oklch, var(--theme-accent-solid) 24%, var(--theme-border)) !important;\n}\n.thread-ui-shell :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(.bg-sky-300\\/10, .bg-sky-300\\/12, .bg-emerald-400\\/12) {\n  background: color-mix(in oklch, var(--theme-accent-solid) 8%, var(--theme-panel)) !important;\n}\n.thread-ui-shell :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(.text-rose-100\\/90, .text-rose-200) {\n  color: rgb(190 18 60) !important;\n}\n.thread-ui-shell :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(.text-amber-100\\/85, .text-amber-100\\/60) {\n  color: rgb(146 64 14) !important;\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-composer-menu,\n.thread-ui-shell[data-theme-effective=dark] .thread-composer-menu,\n:root[data-theme-effective=dark] .thread-ui-shell .thread-composer-menu,\n.thread-ui-shell.dark .thread-composer-menu,\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-composer-menu,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-composer-menu,\n:root[data-theme-effective=dark] .thread-ui-shell .thread-graph-composer-menu,\n.thread-ui-shell.dark .thread-graph-composer-menu,\n.thread-ui-shell.thread-ui-theme-dark [data-composer-menu-surface=true],\n.thread-ui-shell[data-theme-effective=dark] [data-composer-menu-surface=true],\n:root[data-theme-effective=dark] .thread-ui-shell [data-composer-menu-surface=true],\n.thread-ui-shell.dark [data-composer-menu-surface=true] {\n  border-color: #303642 !important;\n  background: rgb(23 26 34 / 0.96) !important;\n  color: rgb(241 245 249) !important;\n  box-shadow: 0 18px 48px rgb(0 0 0 / 0.28) !important;\n}\n.thread-ui-shell.thread-ui-theme-dark :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(input, textarea, select),\n.thread-ui-shell[data-theme-effective=dark] :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(input, textarea, select),\n:root[data-theme-effective=dark] .thread-ui-shell :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(input, textarea, select),\n.thread-ui-shell.dark :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(input, textarea, select) {\n  border-color: #303642 !important;\n  background: #11141a !important;\n  color: rgb(241 245 249) !important;\n}\n.thread-ui-shell.thread-ui-theme-dark :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(.text-rose-100\\/90, .text-rose-200),\n.thread-ui-shell[data-theme-effective=dark] :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(.text-rose-100\\/90, .text-rose-200),\n:root[data-theme-effective=dark] .thread-ui-shell :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(.text-rose-100\\/90, .text-rose-200),\n.thread-ui-shell.dark :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(.text-rose-100\\/90, .text-rose-200) {\n  color: rgb(254 205 211) !important;\n}\n.thread-ui-shell.thread-ui-theme-dark :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(.text-amber-100\\/85, .text-amber-100\\/60),\n.thread-ui-shell[data-theme-effective=dark] :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(.text-amber-100\\/85, .text-amber-100\\/60),\n:root[data-theme-effective=dark] .thread-ui-shell :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(.text-amber-100\\/85, .text-amber-100\\/60),\n.thread-ui-shell.dark :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(.text-amber-100\\/85, .text-amber-100\\/60) {\n  color: rgb(253 230 138) !important;\n}\n.thread-ui-shell .thread-composer-plan-toggle-active,\n.thread-ui-shell .thread-graph-composer-plan-toggle-active {\n  border-color: oklch(0.76 0.17 88 / 0.72) !important;\n  background:\n    linear-gradient(\n      135deg,\n      oklch(0.78 0.16 86 / 0.26),\n      oklch(0.64 0.12 190 / 0.2)),\n    var(--theme-accent-soft) !important;\n  color: oklch(0.92 0.09 92) !important;\n  box-shadow:\n    0 0 0 1px oklch(0.78 0.16 86 / 0.22),\n    0 0 18px oklch(0.78 0.16 86 / 0.28),\n    inset 0 0 0 1px oklch(0.95 0.04 90 / 0.16) !important;\n}\n.thread-ui-shell .thread-jump-latest-badge {\n  border-color: var(--theme-border);\n  background: var(--theme-panel);\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .ui-action-primary {\n  background: var(--theme-accent-solid);\n  color: var(--theme-accent-solid-fg);\n}\n.thread-ui-shell .ui-action-primary:hover {\n  background: var(--theme-accent-solid-hover);\n}\n.thread-ui-shell .ui-action-info {\n  background: oklch(0.46 0.1 235);\n  color: oklch(0.98 0.005 235);\n}\n.thread-ui-shell .ui-action-danger {\n  background: oklch(0.56 0.16 25);\n  color: oklch(0.98 0.005 25);\n}\n.thread-ui-shell .thread-composer-send-button.ui-action-danger,\n.thread-ui-shell .thread-graph-composer-send-button.ui-action-danger {\n  border: 1px solid var(--theme-border) !important;\n  background: var(--theme-muted) !important;\n  color: var(--theme-fg-soft) !important;\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-composer-send-button.ui-action-danger,\n.thread-ui-shell[data-theme-effective=dark] .thread-composer-send-button.ui-action-danger,\n.thread-ui-shell.dark .thread-composer-send-button.ui-action-danger,\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-composer-send-button.ui-action-danger,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-composer-send-button.ui-action-danger,\n.thread-ui-shell.dark .thread-graph-composer-send-button.ui-action-danger {\n  border-color: #303642 !important;\n  background: #222733 !important;\n  color: rgb(241 245 249) !important;\n}\n.thread-ui-shell .thread-composer-send-button.ui-action-danger:hover,\n.thread-ui-shell .thread-graph-composer-send-button.ui-action-danger:hover {\n  background: var(--theme-hover) !important;\n  color: var(--theme-fg) !important;\n}\n.thread-ui-shell .thread-empty-surface,\n.thread-ui-shell .timeline-pending-card,\n.thread-ui-shell .timeline-note-card,\n.thread-ui-shell .timeline-activity-card,\n.thread-ui-shell .timeline-live-plan-card,\n.thread-ui-shell .timeline-question-section,\n.thread-ui-shell .timeline-live-plan-step,\n.thread-ui-shell .timeline-detail-row {\n  border-color: var(--theme-border);\n  background: var(--theme-panel);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .prose,\n.thread-ui-shell .prose :where(p, li, strong, code, pre, blockquote) {\n  color: inherit;\n}\n.thread-ui-shell .prose img {\n  max-width: min(28rem, 100%);\n  height: auto;\n  border-radius: 10px;\n  border: 1px solid var(--theme-border);\n  box-shadow: 0 12px 35px oklch(0.22 0.024 255 / 0.14);\n  margin-top: 0.75rem;\n  margin-bottom: 0.75rem;\n}\n.thread-ui-shell .thread-graph-plan-card {\n  border-color: rgb(42 47 58);\n  background: #1b1f29;\n  color: rgb(241 245 249);\n  box-shadow: none;\n}\n.thread-ui-shell .thread-graph-plan-step {\n  border-color: rgb(48 54 66);\n  background: #181b23;\n  color: rgb(241 245 249);\n}\n.thread-ui-shell .thread-graph-plan-explanation {\n  color: rgb(148 163 184);\n}\n.thread-ui-shell .thread-graph-plan-badge {\n  border-color: transparent;\n  background: rgb(56 189 248 / 0.12);\n  color: rgb(186 230 253);\n  box-shadow: none;\n  text-transform: uppercase;\n  letter-spacing: 0.16em;\n}\n.thread-ui-shell .thread-graph-plan-status {\n  height: 1.75rem;\n  min-width: 1.75rem;\n  padding: 0;\n  border-color: transparent;\n  box-shadow: none;\n}\n.thread-ui-shell .thread-graph-plan-status.is-completed {\n  background: rgb(52 211 153 / 0.14);\n  color: rgb(167 243 208);\n}\n.thread-ui-shell .thread-graph-plan-status.is-running {\n  background: rgb(56 189 248 / 0.14);\n  color: rgb(186 230 253);\n}\n.thread-ui-shell .thread-graph-plan-status.is-pending,\n.thread-ui-shell .thread-graph-plan-status.is-unknown {\n  background: #2b313d;\n  color: rgb(203 213 225);\n}\n.thread-ui-shell .thread-graph-plan-status.is-failed {\n  background: rgb(251 113 133 / 0.14);\n  color: rgb(254 205 211);\n}\n.thread-ui-shell[data-theme-effective=light] .thread-graph-plan-card {\n  border-color: rgb(226 232 240);\n  background: rgb(248 250 252);\n  color: rgb(15 23 42);\n}\n.thread-ui-shell[data-theme-effective=light] .thread-graph-plan-step {\n  border-color: rgb(226 232 240);\n  background: rgb(255 255 255);\n  color: rgb(15 23 42);\n}\n.thread-ui-shell[data-theme-effective=light] .thread-graph-plan-explanation {\n  color: rgb(100 116 139);\n}\n.thread-ui-shell[data-theme-effective=light] .thread-graph-plan-badge {\n  background: rgb(14 165 233 / 0.1);\n  color: rgb(3 105 161);\n}\n.thread-ui-shell[data-theme-effective=light] .thread-graph-plan-status.is-completed {\n  background: rgb(16 185 129 / 0.12);\n  color: rgb(4 120 87);\n}\n.thread-ui-shell[data-theme-effective=light] .thread-graph-plan-status.is-running {\n  background: rgb(14 165 233 / 0.12);\n  color: rgb(3 105 161);\n}\n.thread-ui-shell[data-theme-effective=light] .thread-graph-plan-status.is-pending,\n.thread-ui-shell[data-theme-effective=light] .thread-graph-plan-status.is-unknown {\n  background: rgb(226 232 240);\n  color: rgb(71 85 105);\n}\n.thread-ui-shell[data-theme-effective=light] .thread-graph-plan-status.is-failed {\n  background: rgb(244 63 94 / 0.12);\n  color: rgb(190 18 60);\n}\n.thread-ui-shell .thread-graph-event {\n  background: transparent !important;\n  color: var(--theme-fg) !important;\n}\n.thread-ui-shell .thread-graph-event-card {\n  background: var(--theme-surface) !important;\n  color: var(--theme-fg) !important;\n}\n.thread-ui-shell .thread-graph-plan-card,\n.thread-ui-shell .thread-graph-plan-step,\n.thread-ui-shell .thread-graph-plan-step-text {\n  color: rgb(241 245 249) !important;\n}\n.thread-ui-shell[data-theme-effective=light] .thread-graph-plan-card,\n.thread-ui-shell[data-theme-effective=light] .thread-graph-plan-step,\n.thread-ui-shell[data-theme-effective=light] .thread-graph-plan-step-text {\n  color: rgb(15 23 42) !important;\n}\n");
 
 // src/styles/export-dialog.css
 styleInject(".thread-export-dialog-root {\n  --export-bg: rgb(248 250 252);\n  --export-panel: rgb(255 255 255);\n  --export-surface: rgb(241 245 249);\n  --export-surface-strong: rgb(226 232 240);\n  --export-border: rgb(203 213 225);\n  --export-fg: rgb(15 23 42);\n  --export-fg-soft: rgb(51 65 85);\n  --export-fg-muted: rgb(100 116 139);\n  --export-accent: rgb(217 119 6);\n  --export-accent-bg: rgb(254 243 199);\n  --export-accent-border: rgb(251 191 36);\n  --export-shadow: rgb(15 23 42 / 0.16);\n  color: var(--export-fg);\n}\n.thread-export-dialog-root.thread-ui-theme-dark,\n.thread-export-dialog-root[data-theme-effective=dark] {\n  --export-bg: #12151c;\n  --export-panel: #181d25;\n  --export-surface: #1d222c;\n  --export-surface-strong: #262c38;\n  --export-border: #343b48;\n  --export-fg: rgb(241 245 249);\n  --export-fg-soft: rgb(203 213 225);\n  --export-fg-muted: rgb(148 163 184);\n  --export-accent: rgb(245 158 11);\n  --export-accent-bg: rgb(245 158 11 / 0.16);\n  --export-accent-border: rgb(245 158 11 / 0.34);\n  --export-shadow: rgb(0 0 0 / 0.36);\n}\n.thread-export-dialog-backdrop {\n  background: color-mix(in oklch, var(--export-bg) 68%, transparent);\n}\n.thread-export-dialog-root.thread-ui-theme-dark .thread-export-dialog-backdrop,\n.thread-export-dialog-root[data-theme-effective=dark] .thread-export-dialog-backdrop {\n  background: rgb(2 6 23 / 0.74);\n}\n.thread-export-dialog-panel {\n  border-color: var(--export-border);\n  background: var(--export-panel);\n  box-shadow: 0 26px 80px var(--export-shadow);\n}\n.thread-export-dialog-header,\n.thread-export-dialog-footer,\n.thread-export-dialog-box-header {\n  border-color: var(--export-border);\n}\n.thread-export-dialog-title,\n.thread-export-dialog-strong,\n.thread-export-dialog-body-text {\n  color: var(--export-fg);\n}\n.thread-export-dialog-subtitle,\n.thread-export-dialog-status-pill {\n  color: var(--export-fg-muted);\n}\n.thread-export-dialog-icon-button,\n.thread-export-dialog-secondary-button,\n.thread-export-dialog-segment,\n.thread-export-dialog-box,\n.thread-export-dialog-status-pill {\n  border-color: var(--export-border);\n  background: var(--export-surface);\n}\n.thread-export-dialog-segment,\n.thread-export-dialog-box {\n  background: color-mix(in oklch, var(--export-surface) 72%, var(--export-panel));\n}\n.thread-export-dialog-icon-button,\n.thread-export-dialog-secondary-button {\n  color: var(--export-fg-soft);\n}\n.thread-export-dialog-icon-button:hover:not(:disabled),\n.thread-export-dialog-secondary-button:hover:not(:disabled),\n.thread-export-dialog-turn-row:hover {\n  background: var(--export-surface-strong);\n  color: var(--export-fg);\n}\n.thread-export-dialog-muted-action {\n  color: var(--export-fg-muted);\n}\n.thread-export-dialog-muted-action:hover {\n  color: var(--export-fg);\n}\n.thread-export-dialog-root .ui-status-warning {\n  border: 1px solid var(--export-accent-border);\n  background: var(--export-accent-bg);\n  color: color-mix(in oklch, var(--export-accent) 72%, var(--export-fg));\n}\n.thread-export-dialog-checkbox {\n  accent-color: var(--export-accent);\n}\n.thread-export-dialog-turn-row {\n  color: var(--export-fg-soft);\n}\n");
@@ -5327,7 +5428,7 @@ function ComposerJumpLatestButton({
       "aria-label": "Jump to latest",
       title: followTail ? "Latest turn is in view" : "Jump to the latest messages",
       onClick: () => onToggleFollow?.(),
-      className: "absolute left-1/2 top-3 z-40 inline-flex h-9 min-w-[5.75rem] -translate-x-1/2 -translate-y-[62%] items-start justify-center bg-transparent pt-1 touch-manipulation sm:top-4",
+      className: "absolute left-1/2 top-0 z-[90] inline-flex h-11 min-w-[7rem] -translate-x-1/2 -translate-y-full items-end justify-center bg-transparent pb-1 touch-manipulation sm:h-10",
       children: /* @__PURE__ */ jsx5(
         "span",
         {
@@ -5399,7 +5500,7 @@ function ComposerFrame({
           /* @__PURE__ */ jsxs3(
             "div",
             {
-              className: `${shellClassName} flex w-full flex-col overflow-hidden rounded-[16px] sm:rounded-[18px]`,
+              className: `${shellClassName} flex w-full flex-col overflow-visible rounded-[16px] sm:rounded-[18px]`,
               children: [
                 /* @__PURE__ */ jsxs3(InputGroup, { className: inputGroupClassName, children: [
                   promptSlot,
@@ -5475,6 +5576,14 @@ function ComposerAttachmentMenu({
 
 // src/components/composer/ComposerSettingsToolbar.tsx
 import { Fragment as Fragment2, jsx as jsx8, jsxs as jsxs5 } from "react/jsx-runtime";
+var sandboxOptions = [
+  { mode: "read-only", label: "Read only" },
+  { mode: "workspace-write", label: "Workspace write" },
+  { mode: "danger-full-access", label: "Danger" }
+];
+function formatSandboxModeLabel(mode) {
+  return sandboxOptions.find((entry) => entry.mode === mode)?.label ?? "Default";
+}
 function ComposerSettingsToolbar({
   openMenu,
   model,
@@ -5484,7 +5593,9 @@ function ComposerSettingsToolbar({
   reasoningEffort,
   supportedEfforts,
   displayedCollaborationMode,
+  sandboxMode,
   planModeAvailable,
+  sandboxModeAvailable,
   settingsBusy,
   goalComposeMode,
   goalBusy,
@@ -5585,6 +5696,46 @@ function ComposerSettingsToolbar({
         }
       )
     ] }),
+    sandboxModeAvailable && /* @__PURE__ */ jsxs5("div", { className: "relative", children: [
+      /* @__PURE__ */ jsx8(
+        InputGroupButton,
+        {
+          type: "button",
+          variant: "ghost",
+          size: "xs",
+          "data-composer-menu-trigger": "true",
+          "aria-haspopup": "menu",
+          "aria-expanded": openMenu === "sandbox",
+          "aria-label": `Sandbox: ${formatSandboxModeLabel(sandboxMode)}`,
+          disabled: settingsBusy,
+          onClick: () => onSetOpenMenu(
+            (current) => current === "sandbox" ? null : "sandbox"
+          ),
+          title: `Sandbox: ${formatSandboxModeLabel(sandboxMode)}`,
+          className: `${inlineToggleClassName} rounded-full px-2.5 text-stone-300 disabled:cursor-not-allowed disabled:text-stone-700`,
+          children: "Sandbox"
+        }
+      ),
+      openMenu === "sandbox" && /* @__PURE__ */ jsx8(
+        "div",
+        {
+          "data-composer-menu-surface": "true",
+          className: "absolute bottom-full left-0 mb-2 w-max min-w-[9rem] max-w-[13rem] overflow-hidden rounded-2xl border border-stone-700 bg-stone-900 shadow-2xl shadow-stone-950/40",
+          children: /* @__PURE__ */ jsx8("div", { className: "max-h-72 overflow-auto p-2", children: sandboxOptions.map((entry) => /* @__PURE__ */ jsx8(
+            "button",
+            {
+              type: "button",
+              onClick: () => onUpdateSettings({
+                sandboxMode: entry.mode
+              }),
+              className: `block w-full rounded-xl px-3 py-2 text-left transition ${entry.mode === sandboxMode ? "ui-status-warning" : `${menuItemClassName2} text-stone-300`}`,
+              children: /* @__PURE__ */ jsx8("p", { className: "text-sm font-medium", children: entry.label })
+            },
+            entry.mode
+          )) })
+        }
+      )
+    ] }),
     planModeAvailable && /* @__PURE__ */ jsx8(
       InputGroupButton,
       {
@@ -5596,7 +5747,7 @@ function ComposerSettingsToolbar({
         onClick: () => onUpdateSettings({
           collaborationMode: displayedCollaborationMode === "plan" ? "default" : "plan"
         }),
-        className: `${inlineToggleClassName} rounded-full px-2.5 ${displayedCollaborationMode === "plan" ? planToggleActiveClassName : "text-stone-500"} disabled:cursor-not-allowed disabled:opacity-60`,
+        className: `${inlineToggleClassName} rounded-full px-2.5 ${displayedCollaborationMode === "plan" ? `${planToggleActiveClassName} border !border-[oklch(0.78_0.16_86_/_0.76)] !bg-[oklch(0.44_0.095_82_/_0.72)] !text-[oklch(0.96_0.055_92)] shadow-[0_0_0_1px_oklch(0.78_0.16_86_/_0.24),0_0_18px_oklch(0.78_0.16_86_/_0.42),inset_0_0_0_1px_oklch(0.98_0.04_96_/_0.18)]` : "text-stone-500"} disabled:cursor-not-allowed disabled:opacity-60`,
         children: "Plan"
       }
     ),
@@ -8025,6 +8176,7 @@ function useComposerToolbarProps({
   reasoningEffort,
   supportedEfforts,
   displayedCollaborationMode,
+  sandboxMode,
   sendButtonLabel,
   sendButtonClassName,
   modelControlsDisabled,
@@ -8204,7 +8356,9 @@ function useComposerToolbarProps({
     reasoningEffort,
     supportedEfforts,
     displayedCollaborationMode,
+    sandboxMode,
     planModeAvailable: capabilities.planMode,
+    sandboxModeAvailable: capabilities.sandboxMode,
     settingsBusy,
     goalComposeMode,
     goalBusy,
@@ -8263,6 +8417,8 @@ function ThreadComposer({
   reasoningEffort = null,
   fastMode = false,
   collaborationMode = "default",
+  sandboxMode = null,
+  hideSandboxModeControl = false,
   modelOptions = [],
   contextUsage = null,
   capabilities = null,
@@ -8277,6 +8433,7 @@ function ThreadComposer({
   shellControlState = null,
   draftPrompt,
   draftAttachments,
+  onPickAttachment,
   skillsState = {
     status: "idle",
     data: null,
@@ -8342,7 +8499,8 @@ function ThreadComposer({
       hostConfigFiles: capabilities?.management.hostConfigFiles ?? false,
       mcpConfigEditing: mcpConfigFormat === "codex-toml" && Boolean(capabilities?.management.hostConfigFiles) && Boolean(onReadProviderConfig) && Boolean(onWriteProviderConfig),
       hookTrust: capabilities?.management.hookTrust ?? false,
-      planMode: capabilities?.controls.planMode ?? false
+      planMode: capabilities?.controls.planMode ?? false,
+      sandboxMode: capabilities?.controls.sandboxMode ?? false
     }),
     [
       capabilities,
@@ -8603,6 +8761,21 @@ function ThreadComposer({
     pendingInsertedAttachmentIdsRef,
     onInserted: () => setOpenMenu(null)
   });
+  const pickAttachment = useCallback9(
+    (kind, inputRef) => {
+      dismissPromptFocus();
+      if (onPickAttachment) {
+        onPickAttachment({
+          kind,
+          appendAttachments: (files, overrideKind = kind) => appendAttachments(files, overrideKind),
+          defaultPick: () => inputRef.current?.click()
+        });
+        return;
+      }
+      inputRef.current?.click();
+    },
+    [appendAttachments, dismissPromptFocus, onPickAttachment]
+  );
   function insertPlainTextIntoPrompt(text) {
     if (!text) {
       return;
@@ -8865,6 +9038,7 @@ function ThreadComposer({
     reasoningEffort,
     supportedEfforts,
     displayedCollaborationMode,
+    sandboxMode,
     sendButtonLabel,
     sendButtonClassName,
     modelControlsDisabled,
@@ -8898,7 +9072,8 @@ function ThreadComposer({
       hostConfigFiles: slashCapabilities.hostConfigFiles,
       hookTrust: slashCapabilities.hookTrust,
       mcpConfigEditing: slashCapabilities.mcpConfigEditing,
-      planMode: slashCapabilities.planMode
+      planMode: slashCapabilities.planMode,
+      sandboxMode: hideSandboxModeControl ? false : slashCapabilities.sandboxMode
     },
     shellControlState,
     onToggleView,
@@ -8932,14 +9107,8 @@ function ThreadComposer({
     onPrepareRawMcpBlock: prepareRawMcpBlock,
     onSaveHttpMcp: saveHttpMcp,
     onSaveRawMcpBlock: saveRawMcpBlock,
-    onPickPhoto: () => {
-      dismissPromptFocus();
-      photoInputRef.current?.click();
-    },
-    onPickFile: () => {
-      dismissPromptFocus();
-      fileInputRef.current?.click();
-    },
+    onPickPhoto: () => pickAttachment("photo", photoInputRef),
+    onPickFile: () => pickAttachment("file", fileInputRef),
     onUpdateSettings: (input) => void handleUpdateSettings(input),
     onPasteShell: () => void pasteClipboardIntoPrompt(),
     onCopyShell: () => {
@@ -9036,6 +9205,7 @@ import {
   ChevronsLeft,
   ChevronsRight,
   Copy,
+  Folder,
   Menu,
   MessageSquare,
   Monitor,
@@ -9372,6 +9542,7 @@ function GraphChatRoomsRailShell({
     "aside",
     {
       className: `thread-graph-rooms-surface thread-rooms-rail fixed inset-y-0 left-0 z-50 flex min-h-0 min-w-0 w-[min(20rem,calc(100vw-2rem))] flex-col overflow-x-hidden border-r border-slate-200/80 bg-white shadow-[0_20px_50px_rgba(15,23,42,0.18)] transition-transform duration-200 ease-out sm:static sm:z-auto sm:w-auto sm:translate-x-0 sm:rounded-[12px] sm:border sm:shadow-[0_10px_30px_rgba(15,23,42,0.04)] ${mobileOpen ? "translate-x-0" : "pointer-events-none -translate-x-full sm:pointer-events-auto"} ${collapsed ? "thread-ui-rail-collapsed sm:items-center" : ""}`,
+      style: { paddingTop: "var(--android-safe-area-top, 0px)" },
       children
     }
   );
@@ -9744,6 +9915,8 @@ function ThreadWorkspaceLayout({
   themeMode: themeModeProp,
   onThemeModeChange,
   showMobileNewThreadShortcut = true,
+  settingsDialogOpen,
+  onSettingsDialogOpenChange,
   mobileHeaderAction,
   currentThreadId,
   currentThreadLabel = null,
@@ -9787,7 +9960,7 @@ function ThreadWorkspaceLayout({
     () => typeof window !== "undefined" ? window.matchMedia("(max-width: 639px)").matches : layoutMode === "mobile"
   );
   const [mobileWorkspace, setMobileWorkspace] = useState10(
-    "chat"
+    "workspace"
   );
   const [editingThreadId, setEditingThreadId] = useState10(null);
   const [draftTitle, setDraftTitle] = useState10("");
@@ -10007,98 +10180,105 @@ function ThreadWorkspaceLayout({
     const hasSessionSettings = Boolean(settingsContent || metaContent);
     const hasGlobalSettings = Boolean(globalSettingsContent);
     const activeSettingsTab = settingsTab === "global" && hasGlobalSettings ? "global" : !hasSessionSettings && hasGlobalSettings ? "global" : "session";
-    return /* @__PURE__ */ jsxs18(Dialog, { children: [
-      /* @__PURE__ */ jsx25(DialogTrigger, { asChild: true, children: /* @__PURE__ */ jsx25(
-        "button",
-        {
-          type: "button",
-          "aria-label": "Open settings",
-          title: "Settings",
-          className: "thread-icon-button inline-flex h-10 w-10 items-center justify-center rounded-full sm:h-9 sm:w-9",
-          children: /* @__PURE__ */ jsx25(Settings, { className: "h-4 w-4" })
-        }
-      ) }),
-      /* @__PURE__ */ jsxs18(
-        DialogContent,
-        {
-          "data-testid": "settings-dialog",
-          "data-theme-effective": effectiveTheme,
-          "data-theme-mode": themeMode,
-          className: "thread-graph-settings-dialog thread-graph-dialog",
-          children: [
-            /* @__PURE__ */ jsxs18(DialogHeader, { children: [
-              /* @__PURE__ */ jsx25(DialogTitle, { children: "Settings" }),
-              /* @__PURE__ */ jsx25(DialogDescription, { children: "Manage this session and host-wide preferences." })
-            ] }),
-            canUpdateThemeMode ? /* @__PURE__ */ jsx25("div", { className: "thread-graph-settings-card rounded-lg border p-3", children: /* @__PURE__ */ jsxs18("div", { className: "flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between", children: [
-              /* @__PURE__ */ jsxs18("div", { className: "min-w-0", children: [
-                /* @__PURE__ */ jsx25("p", { className: "font-medium text-[var(--theme-fg)]", children: "Appearance" }),
-                /* @__PURE__ */ jsxs18("p", { className: "mt-1 text-xs leading-5 text-[var(--theme-fg-muted)]", children: [
-                  "Current theme: ",
-                  effectiveTheme
-                ] })
-              ] }),
-              /* @__PURE__ */ jsx25(
-                "div",
-                {
-                  className: "thread-graph-theme-mode-group grid grid-cols-3 gap-1 rounded-lg border p-1",
-                  role: "group",
-                  "aria-label": "Theme mode",
-                  children: THEME_MODE_OPTIONS.map((option) => {
-                    const Icon = option.icon;
-                    const isSelected = themeMode === option.value;
-                    return /* @__PURE__ */ jsxs18(
-                      "button",
-                      {
-                        type: "button",
-                        "data-testid": `theme-mode-${option.value}`,
-                        "aria-pressed": isSelected,
-                        disabled: !canUpdateThemeMode,
-                        onClick: () => setThemeMode?.(option.value),
-                        className: `thread-graph-theme-mode-button inline-flex min-h-9 items-center justify-center gap-1.5 rounded-md px-2 text-xs font-medium transition ${isSelected ? "is-selected" : ""}`,
-                        children: [
-                          /* @__PURE__ */ jsx25(Icon, { className: "h-3.5 w-3.5" }),
-                          /* @__PURE__ */ jsx25("span", { className: "truncate", children: option.label })
-                        ]
-                      },
-                      option.value
-                    );
-                  })
-                }
-              )
-            ] }) }) : null,
-            /* @__PURE__ */ jsxs18("div", { className: "thread-graph-settings-tabs grid grid-cols-2 gap-1 rounded-lg border p-1", children: [
-              /* @__PURE__ */ jsx25(
-                "button",
-                {
-                  type: "button",
-                  "aria-pressed": activeSettingsTab === "session",
-                  onClick: () => setSettingsTab("session"),
-                  className: `thread-graph-settings-tab-button rounded-md px-3 py-2 text-sm font-medium transition ${activeSettingsTab === "session" ? "is-active" : ""}`,
-                  children: "Session"
-                }
-              ),
-              /* @__PURE__ */ jsx25(
-                "button",
-                {
-                  type: "button",
-                  "aria-pressed": activeSettingsTab === "global",
-                  disabled: !hasGlobalSettings,
-                  onClick: () => setSettingsTab("global"),
-                  className: `thread-graph-settings-tab-button rounded-md px-3 py-2 text-sm font-medium transition ${activeSettingsTab === "global" ? "is-active" : ""}`,
-                  children: "Global"
-                }
-              )
-            ] }),
-            /* @__PURE__ */ jsx25("div", { className: "thread-graph-settings-body mt-4 min-h-0 overflow-y-auto pr-1 text-sm", children: activeSettingsTab === "session" ? /* @__PURE__ */ jsxs18("div", { className: "grid gap-4", children: [
-              settingsContent ? /* @__PURE__ */ jsx25("div", { className: "thread-graph-settings-card rounded-lg border p-3", children: settingsContent }) : null,
-              metaContent ? /* @__PURE__ */ jsx25("div", { className: "thread-graph-settings-card rounded-lg border p-3", children: metaContent }) : null,
-              !hasSessionSettings ? /* @__PURE__ */ jsx25("div", { className: "thread-graph-settings-card rounded-lg border p-3 text-[var(--theme-fg-muted)]", children: "No session settings are available." }) : null
-            ] }) : /* @__PURE__ */ jsx25("div", { className: "thread-graph-settings-global-content", children: globalSettingsContent }) })
-          ]
-        }
-      )
-    ] });
+    return /* @__PURE__ */ jsxs18(
+      Dialog,
+      {
+        ...settingsDialogOpen !== void 0 ? { open: settingsDialogOpen } : {},
+        ...onSettingsDialogOpenChange ? { onOpenChange: onSettingsDialogOpenChange } : {},
+        children: [
+          /* @__PURE__ */ jsx25(DialogTrigger, { asChild: true, children: /* @__PURE__ */ jsx25(
+            "button",
+            {
+              type: "button",
+              "aria-label": "Open settings",
+              title: "Settings",
+              className: "thread-icon-button inline-flex h-10 w-10 items-center justify-center rounded-full sm:h-9 sm:w-9",
+              children: /* @__PURE__ */ jsx25(Settings, { className: "h-4 w-4" })
+            }
+          ) }),
+          /* @__PURE__ */ jsxs18(
+            DialogContent,
+            {
+              "data-testid": "settings-dialog",
+              "data-theme-effective": effectiveTheme,
+              "data-theme-mode": themeMode,
+              className: "thread-graph-settings-dialog thread-graph-dialog",
+              children: [
+                /* @__PURE__ */ jsxs18(DialogHeader, { children: [
+                  /* @__PURE__ */ jsx25(DialogTitle, { children: "Settings" }),
+                  /* @__PURE__ */ jsx25(DialogDescription, { children: "Manage this session and host-wide preferences." })
+                ] }),
+                canUpdateThemeMode ? /* @__PURE__ */ jsx25("div", { className: "thread-graph-settings-card rounded-lg border p-3", children: /* @__PURE__ */ jsxs18("div", { className: "flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between", children: [
+                  /* @__PURE__ */ jsxs18("div", { className: "min-w-0", children: [
+                    /* @__PURE__ */ jsx25("p", { className: "font-medium text-[var(--theme-fg)]", children: "Appearance" }),
+                    /* @__PURE__ */ jsxs18("p", { className: "mt-1 text-xs leading-5 text-[var(--theme-fg-muted)]", children: [
+                      "Current theme: ",
+                      effectiveTheme
+                    ] })
+                  ] }),
+                  /* @__PURE__ */ jsx25(
+                    "div",
+                    {
+                      className: "thread-graph-theme-mode-group grid grid-cols-3 gap-1 rounded-lg border p-1",
+                      role: "group",
+                      "aria-label": "Theme mode",
+                      children: THEME_MODE_OPTIONS.map((option) => {
+                        const Icon = option.icon;
+                        const isSelected = themeMode === option.value;
+                        return /* @__PURE__ */ jsxs18(
+                          "button",
+                          {
+                            type: "button",
+                            "data-testid": `theme-mode-${option.value}`,
+                            "aria-pressed": isSelected,
+                            disabled: !canUpdateThemeMode,
+                            onClick: () => setThemeMode?.(option.value),
+                            className: `thread-graph-theme-mode-button inline-flex min-h-9 items-center justify-center gap-1.5 rounded-md px-2 text-xs font-medium transition ${isSelected ? "is-selected" : ""}`,
+                            children: [
+                              /* @__PURE__ */ jsx25(Icon, { className: "h-3.5 w-3.5" }),
+                              /* @__PURE__ */ jsx25("span", { className: "truncate", children: option.label })
+                            ]
+                          },
+                          option.value
+                        );
+                      })
+                    }
+                  )
+                ] }) }) : null,
+                /* @__PURE__ */ jsxs18("div", { className: "thread-graph-settings-tabs grid grid-cols-2 gap-1 rounded-lg border p-1", children: [
+                  /* @__PURE__ */ jsx25(
+                    "button",
+                    {
+                      type: "button",
+                      "aria-pressed": activeSettingsTab === "session",
+                      onClick: () => setSettingsTab("session"),
+                      className: `thread-graph-settings-tab-button rounded-md px-3 py-2 text-sm font-medium transition ${activeSettingsTab === "session" ? "is-active" : ""}`,
+                      children: "Session"
+                    }
+                  ),
+                  /* @__PURE__ */ jsx25(
+                    "button",
+                    {
+                      type: "button",
+                      "aria-pressed": activeSettingsTab === "global",
+                      disabled: !hasGlobalSettings,
+                      onClick: () => setSettingsTab("global"),
+                      className: `thread-graph-settings-tab-button rounded-md px-3 py-2 text-sm font-medium transition ${activeSettingsTab === "global" ? "is-active" : ""}`,
+                      children: "Global"
+                    }
+                  )
+                ] }),
+                /* @__PURE__ */ jsx25("div", { className: "thread-graph-settings-body mt-4 min-h-0 overflow-y-auto pr-1 text-sm", children: activeSettingsTab === "session" ? /* @__PURE__ */ jsxs18("div", { className: "grid gap-4", children: [
+                  settingsContent ? /* @__PURE__ */ jsx25("div", { className: "thread-graph-settings-card rounded-lg border p-3", children: settingsContent }) : null,
+                  metaContent ? /* @__PURE__ */ jsx25("div", { className: "thread-graph-settings-card rounded-lg border p-3", children: metaContent }) : null,
+                  !hasSessionSettings ? /* @__PURE__ */ jsx25("div", { className: "thread-graph-settings-card rounded-lg border p-3 text-[var(--theme-fg-muted)]", children: "No session settings are available." }) : null
+                ] }) : /* @__PURE__ */ jsx25("div", { className: "thread-graph-settings-global-content", children: globalSettingsContent }) })
+              ]
+            }
+          )
+        ]
+      }
+    );
   }
   function renderRoomsRailContent(collapsed = false) {
     return /* @__PURE__ */ jsx25("div", { className: "flex min-h-0 flex-1 flex-col", children: /* @__PURE__ */ jsxs18("section", { className: "flex min-h-0 flex-1 flex-col", children: [
@@ -10315,133 +10495,124 @@ function ThreadWorkspaceLayout({
             }
           ),
           /* @__PURE__ */ jsxs18(GraphChatMainShell, { children: [
-            /* @__PURE__ */ jsxs18(GraphChatTopbarShell, { children: [
-              /* @__PURE__ */ jsx25("div", { className: "thread-topbar-row flex min-h-12 items-center px-3 py-1.5 sm:min-h-12 sm:px-4", children: /* @__PURE__ */ jsxs18("div", { className: "flex w-full items-center justify-between gap-3 sm:gap-4", children: [
-                /* @__PURE__ */ jsxs18("div", { className: "flex min-w-0 items-center gap-2 sm:gap-3", children: [
-                  shouldShowMobileRoomsButton ? /* @__PURE__ */ jsx25(
-                    "button",
-                    {
-                      type: "button",
-                      onClick: () => setMobileRoomsOpen(true),
-                      "aria-label": "Open rooms",
-                      title: "Open rooms",
-                      className: "thread-icon-button thread-mobile-only-inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full",
-                      children: /* @__PURE__ */ jsx25(Menu, { className: "h-4 w-4" })
-                    }
-                  ) : null,
-                  /* @__PURE__ */ jsxs18("div", { className: "min-w-0", children: [
-                    renderMobileTopbarControls ? /* @__PURE__ */ jsx25("h1", { className: "thread-mobile-only-block min-w-0 truncate text-sm font-semibold leading-none text-[var(--theme-fg)]", children: currentThreadLabel ?? "Shared Workspace" }) : null,
-                    /* @__PURE__ */ jsxs18("div", { className: "relative flex min-w-0 items-center gap-1.5", children: [
-                      /* @__PURE__ */ jsxs18(
-                        "button",
-                        {
-                          type: "button",
-                          onClick: () => {
-                            setTopbarDetailsOpen((open) => !open);
-                          },
-                          "aria-expanded": topbarDetailsOpen,
-                          "aria-haspopup": "dialog",
-                          className: "thread-topbar-meta-row flex min-w-0 max-w-full items-center gap-1 text-left text-[11px] leading-none sm:text-xs",
-                          title: "Session and usage",
-                          children: [
-                            /* @__PURE__ */ jsx25("span", { className: "shrink-0", children: "Room" }),
-                            /* @__PURE__ */ jsx25("span", { className: "truncate font-mono", children: topbarRoomLabel })
-                          ]
-                        }
-                      ),
-                      topbarDetailsOpen ? /* @__PURE__ */ jsxs18(
-                        "div",
-                        {
-                          className: "thread-topbar-details-popover absolute left-0 top-[calc(100%+0.5rem)] z-50 w-[min(26rem,calc(100vw-1.5rem))] rounded-lg border p-2.5 shadow-lg",
-                          role: "dialog",
-                          "aria-label": "Session and usage",
-                          children: [
-                            /* @__PURE__ */ jsxs18(
-                              "button",
-                              {
-                                type: "button",
-                                onClick: () => {
-                                  if (!topbarRoomLabel) {
-                                    return;
-                                  }
-                                  void navigator.clipboard?.writeText(
-                                    topbarRoomLabel
-                                  );
-                                },
-                                className: "thread-topbar-meta-row flex min-w-0 max-w-full items-center gap-2 text-left text-xs leading-5",
-                                title: "Copy room ID",
-                                children: [
-                                  /* @__PURE__ */ jsx25("span", { className: "w-12 shrink-0", children: "Room" }),
-                                  /* @__PURE__ */ jsx25("span", { className: "truncate font-mono", children: topbarRoomLabel })
-                                ]
-                              }
-                            ),
-                            /* @__PURE__ */ jsxs18(
-                              "button",
-                              {
-                                type: "button",
-                                onClick: () => {
-                                  if (!topbarSessionLabel) {
-                                    return;
-                                  }
-                                  void navigator.clipboard?.writeText(
-                                    topbarSessionLabel
-                                  );
-                                },
-                                className: "thread-topbar-meta-row flex min-w-0 max-w-full items-center gap-2 text-left text-xs leading-5",
-                                title: "Copy session ID",
-                                children: [
-                                  /* @__PURE__ */ jsx25("span", { className: "w-12 shrink-0", children: "Session" }),
-                                  /* @__PURE__ */ jsx25("span", { className: "truncate font-mono", children: topbarSessionLabel })
-                                ]
-                              }
-                            ),
-                            /* @__PURE__ */ jsxs18(
-                              "div",
-                              {
-                                className: "thread-topbar-meta-row mt-1 flex min-w-0 max-w-full items-center gap-2 text-xs leading-5",
-                                title: "Room token usage",
-                                children: [
-                                  /* @__PURE__ */ jsx25("span", { className: "w-12 shrink-0", children: "Usage" }),
-                                  /* @__PURE__ */ jsx25("span", { className: "truncate font-mono", children: topbarUsageLabel })
-                                ]
-                              }
-                            )
-                          ]
-                        }
-                      ) : null
-                    ] })
+            /* @__PURE__ */ jsx25(GraphChatTopbarShell, { children: /* @__PURE__ */ jsx25("div", { className: "thread-topbar-row flex min-h-12 items-center px-3 py-1.5 sm:min-h-12 sm:px-4", children: /* @__PURE__ */ jsxs18("div", { className: "flex w-full items-center justify-between gap-3 sm:gap-4", children: [
+              /* @__PURE__ */ jsxs18("div", { className: "flex min-w-0 items-center gap-2 sm:gap-3", children: [
+                shouldShowMobileRoomsButton ? /* @__PURE__ */ jsx25(
+                  "button",
+                  {
+                    type: "button",
+                    onClick: () => setMobileRoomsOpen(true),
+                    "aria-label": "Open rooms",
+                    title: "Open rooms",
+                    className: "thread-icon-button thread-mobile-only-inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full",
+                    children: /* @__PURE__ */ jsx25(Menu, { className: "h-4 w-4" })
+                  }
+                ) : null,
+                /* @__PURE__ */ jsxs18("div", { className: "min-w-0", children: [
+                  renderMobileTopbarControls ? /* @__PURE__ */ jsx25("h1", { className: "thread-mobile-only-block min-w-0 truncate text-sm font-semibold leading-none text-[var(--theme-fg)]", children: currentThreadLabel ?? "Shared Workspace" }) : null,
+                  /* @__PURE__ */ jsxs18("div", { className: "relative flex min-w-0 items-center gap-1.5", children: [
+                    /* @__PURE__ */ jsxs18(
+                      "button",
+                      {
+                        type: "button",
+                        onClick: () => {
+                          setTopbarDetailsOpen((open) => !open);
+                        },
+                        "aria-expanded": topbarDetailsOpen,
+                        "aria-haspopup": "dialog",
+                        className: "thread-topbar-meta-row flex min-w-0 max-w-full items-center gap-1 text-left text-[11px] leading-none sm:text-xs",
+                        title: "Session and usage",
+                        children: [
+                          /* @__PURE__ */ jsx25("span", { className: "shrink-0", children: "Room" }),
+                          /* @__PURE__ */ jsx25("span", { className: "truncate font-mono", children: topbarRoomLabel })
+                        ]
+                      }
+                    ),
+                    topbarDetailsOpen ? /* @__PURE__ */ jsxs18(
+                      "div",
+                      {
+                        className: "thread-topbar-details-popover absolute left-0 top-[calc(100%+0.5rem)] z-50 w-[min(26rem,calc(100vw-1.5rem))] rounded-lg border p-2.5 shadow-lg",
+                        role: "dialog",
+                        "aria-label": "Session and usage",
+                        children: [
+                          /* @__PURE__ */ jsxs18(
+                            "button",
+                            {
+                              type: "button",
+                              onClick: () => {
+                                if (!topbarRoomLabel) {
+                                  return;
+                                }
+                                void navigator.clipboard?.writeText(
+                                  topbarRoomLabel
+                                );
+                              },
+                              className: "thread-topbar-meta-row flex min-w-0 max-w-full items-center gap-2 text-left text-xs leading-5",
+                              title: "Copy room ID",
+                              children: [
+                                /* @__PURE__ */ jsx25("span", { className: "w-12 shrink-0", children: "Room" }),
+                                /* @__PURE__ */ jsx25("span", { className: "truncate font-mono", children: topbarRoomLabel })
+                              ]
+                            }
+                          ),
+                          /* @__PURE__ */ jsxs18(
+                            "button",
+                            {
+                              type: "button",
+                              onClick: () => {
+                                if (!topbarSessionLabel) {
+                                  return;
+                                }
+                                void navigator.clipboard?.writeText(
+                                  topbarSessionLabel
+                                );
+                              },
+                              className: "thread-topbar-meta-row flex min-w-0 max-w-full items-center gap-2 text-left text-xs leading-5",
+                              title: "Copy session ID",
+                              children: [
+                                /* @__PURE__ */ jsx25("span", { className: "w-12 shrink-0", children: "Session" }),
+                                /* @__PURE__ */ jsx25("span", { className: "truncate font-mono", children: topbarSessionLabel })
+                              ]
+                            }
+                          ),
+                          /* @__PURE__ */ jsxs18(
+                            "div",
+                            {
+                              className: "thread-topbar-meta-row mt-1 flex min-w-0 max-w-full items-center gap-2 text-xs leading-5",
+                              title: "Room token usage",
+                              children: [
+                                /* @__PURE__ */ jsx25("span", { className: "w-12 shrink-0", children: "Usage" }),
+                                /* @__PURE__ */ jsx25("span", { className: "truncate font-mono", children: topbarUsageLabel })
+                              ]
+                            }
+                          )
+                        ]
+                      }
+                    ) : null
                   ] })
-                ] }),
-                /* @__PURE__ */ jsxs18("div", { className: "inline-flex shrink-0 items-center gap-2", children: [
-                  topbarActions ? /* @__PURE__ */ jsx25("div", { className: "thread-graph-topbar-actions thread-desktop-only-inline-flex items-center rounded-lg border p-0.5 shadow-none", children: topbarActions }) : null,
-                  renderMobileTopbarControls ? mobileHeaderAction : null,
-                  renderMobileTopbarControls && showMobileNewThreadShortcut ? renderNewThreadDialogButton(
-                    "thread-secondary-action inline-flex h-10 items-center justify-center gap-2 rounded-lg border px-3 text-sm font-medium sm:h-9"
-                  ) : null
                 ] })
-              ] }) }),
-              renderMobileTopbarControls && hasWorkspace ? /* @__PURE__ */ jsxs18("div", { className: "thread-mobile-view-switch thread-mobile-only-grid grid-cols-2 gap-1 px-3 pb-2", children: [
-                /* @__PURE__ */ jsx25(
+              ] }),
+              /* @__PURE__ */ jsxs18("div", { className: "inline-flex shrink-0 items-center gap-2", children: [
+                topbarActions ? /* @__PURE__ */ jsx25("div", { className: "thread-graph-topbar-actions thread-desktop-only-inline-flex items-center rounded-lg border p-0.5 shadow-none", children: topbarActions }) : null,
+                renderMobileTopbarControls && hasWorkspace ? /* @__PURE__ */ jsx25(
                   "button",
                   {
                     type: "button",
-                    onClick: () => setMobileWorkspace("chat"),
-                    className: `thread-mobile-segment h-10 rounded-lg text-sm font-medium transition ${mobileWorkspace === "chat" ? "is-active" : ""}`,
-                    children: "Chat"
+                    onClick: () => setMobileWorkspace(
+                      (current) => current === "workspace" ? "chat" : "workspace"
+                    ),
+                    "aria-label": mobileWorkspace === "workspace" ? "Show chat" : "Show workspace",
+                    title: mobileWorkspace === "workspace" ? "Show chat" : "Show workspace",
+                    className: "thread-icon-button thread-mobile-only-inline-flex h-10 w-10 items-center justify-center rounded-full",
+                    children: mobileWorkspace === "workspace" ? /* @__PURE__ */ jsx25(MessageSquare, { className: "h-4 w-4" }) : /* @__PURE__ */ jsx25(Folder, { className: "h-4 w-4" })
                   }
-                ),
-                /* @__PURE__ */ jsx25(
-                  "button",
-                  {
-                    type: "button",
-                    onClick: () => setMobileWorkspace("workspace"),
-                    className: `thread-mobile-segment h-10 rounded-lg text-sm font-medium transition ${mobileWorkspace === "workspace" ? "is-active" : ""}`,
-                    children: "Workspace"
-                  }
-                )
-              ] }) : null
-            ] }),
+                ) : null,
+                renderMobileTopbarControls ? mobileHeaderAction : null,
+                renderMobileTopbarControls && showMobileNewThreadShortcut ? renderNewThreadDialogButton(
+                  "thread-secondary-action inline-flex h-10 items-center justify-center gap-2 rounded-lg border px-3 text-sm font-medium sm:h-9"
+                ) : null
+              ] })
+            ] }) }) }),
             /* @__PURE__ */ jsx25(GraphChatSplitRegion, { children: hasWorkspace && !workspaceCollapsed ? renderMobileWorkspaceSplit ? /* @__PURE__ */ jsxs18("div", { className: "thread-split-container thread-graph-shell-mobile-split h-full min-h-0 overflow-hidden", children: [
               /* @__PURE__ */ jsx25(
                 "div",
@@ -13355,23 +13526,30 @@ function GraphChatHistoryToolFrame({
           className: "thread-graph-tool-accordion thread-graph-history-tool-accordion w-full overflow-hidden rounded-lg border",
           ...openItem !== void 0 ? { value: openItem } : {},
           children: /* @__PURE__ */ jsxs28(AccordionItem, { value: "item-1", className: "border-0", children: [
-            /* @__PURE__ */ jsx37(AccordionTrigger, { className: "thread-graph-tool-trigger thread-graph-history-tool-trigger px-4 py-3 hover:no-underline", children: /* @__PURE__ */ jsxs28("div", { className: "flex min-w-0 flex-1 items-center gap-2", children: [
-              /* @__PURE__ */ jsx37("span", { className: "thread-graph-history-tool-icon shrink-0", children: icon }),
-              /* @__PURE__ */ jsx37("span", { className: "min-w-0 truncate font-mono text-sm font-semibold", children: title }),
-              /* @__PURE__ */ jsxs28(
-                Badge,
-                {
-                  variant: "outline",
-                  className: `thread-graph-tool-badge ${statusConfig.className} ml-1 sm:ml-2 rounded-full px-2 py-0.5 text-xs font-normal`,
-                  title: statusConfig.label,
-                  "aria-label": `Status: ${statusConfig.label}`,
-                  children: [
-                    statusConfig.icon,
-                    /* @__PURE__ */ jsx37("span", { className: "thread-graph-status-label", children: statusConfig.label })
-                  ]
-                }
-              )
-            ] }) }),
+            /* @__PURE__ */ jsx37(
+              AccordionTrigger,
+              {
+                "aria-label": `${openItem === "item-1" ? "Collapse" : "Expand"} ${title} history item`,
+                className: "thread-graph-tool-trigger thread-graph-history-tool-trigger px-4 py-3 hover:no-underline",
+                children: /* @__PURE__ */ jsxs28("div", { className: "flex min-w-0 flex-1 items-center gap-2", children: [
+                  /* @__PURE__ */ jsx37("span", { className: "thread-graph-history-tool-icon shrink-0", children: icon }),
+                  /* @__PURE__ */ jsx37("span", { className: "min-w-0 truncate font-mono text-sm font-semibold", children: title }),
+                  /* @__PURE__ */ jsxs28(
+                    Badge,
+                    {
+                      variant: "outline",
+                      className: `thread-graph-tool-badge ${statusConfig.className} ml-1 sm:ml-2 rounded-full px-2 py-0.5 text-xs font-normal`,
+                      title: statusConfig.label,
+                      "aria-label": `Status: ${statusConfig.label}`,
+                      children: [
+                        statusConfig.icon,
+                        /* @__PURE__ */ jsx37("span", { className: "thread-graph-status-label", children: statusConfig.label })
+                      ]
+                    }
+                  )
+                ] })
+              }
+            ),
             /* @__PURE__ */ jsxs28(AccordionContent, { className: "thread-graph-tool-content thread-graph-history-tool-content px-4 pb-4 pt-1", children: [
               /* @__PURE__ */ jsxs28("section", { children: [
                 /* @__PURE__ */ jsx37("h4", { children: "Summary" }),
@@ -15326,8 +15504,8 @@ function TimelineHistoryEntries({
 }
 
 // src/components/timeline/timelineScroll.ts
-var INITIAL_VISIBLE_TURNS = 10;
-var LOAD_STEP = 10;
+var INITIAL_VISIBLE_TURNS = 3;
+var LOAD_STEP = 3;
 var FOLLOW_TAIL_THRESHOLD_PX = 80;
 function isNearBottom(container, threshold = FOLLOW_TAIL_THRESHOLD_PX) {
   const distanceFromBottom = container.scrollHeight - container.scrollTop - container.clientHeight;
@@ -15643,6 +15821,11 @@ function useTimelineScroll({
     userScrolledHistoryRef.current = false;
   }, [threadId]);
   useEffect15(() => {
+    if (!loadingEarlier) {
+      autoLoadedEarlierRef.current = false;
+    }
+  }, [loadingEarlier, turnsLength]);
+  useEffect15(() => {
     setVisibleCount((current) => {
       if (current >= turnsLength - 1) {
         return turnsLength;
@@ -15830,6 +16013,9 @@ function ThreadTimelineComponent({
   const [collapsedTurnOverrides, setCollapsedTurnOverrides] = useState21(
     {}
   );
+  const [cancelingSteerIds, setCancelingSteerIds] = useState21(
+    () => /* @__PURE__ */ new Set()
+  );
   const loadHistoryItemDetail = adapter?.onLoadHistoryItemDetail ?? onLoadHistoryItemDetail;
   const openLinkedThread = adapter?.onOpenLinkedThread;
   const {
@@ -15929,13 +16115,15 @@ function ThreadTimelineComponent({
       id: steer.id,
       prompt: steer.prompt,
       status: "Accepted",
-      createdAt: steer.createdAt
+      createdAt: steer.createdAt,
+      canCancel: true
     })),
     ...optimisticSteers.map((steer) => ({
       id: steer.id,
       prompt: steer.prompt,
       status: steer.status === "steering" ? "Steering" : null,
-      createdAt: steer.createdAt
+      createdAt: steer.createdAt,
+      canCancel: false
     }))
   ].sort((left, right) => left.createdAt.localeCompare(right.createdAt));
   const requestEntryAnchors = useMemo8(
@@ -15974,7 +16162,7 @@ function ThreadTimelineComponent({
                 onClick: handleLoadEarlierClick,
                 disabled: loadingEarlier,
                 className: "thread-graph-history-button rounded-full border px-2.5 py-1.5 transition",
-                children: loadingEarlier ? "Loading earlier..." : "Load 10 earlier"
+                children: loadingEarlier ? "Loading earlier..." : "Load 3 earlier"
               }
             ),
             showLoadAll && /* @__PURE__ */ jsx43(
@@ -16133,22 +16321,42 @@ function ThreadTimelineComponent({
               ) : null
             ] })
           ] }),
-          queuedSteers.length > 0 && /* @__PURE__ */ jsx43("div", { className: "thread-graph-message-section space-y-3 px-3 py-4 sm:px-5", children: queuedSteers.map((steer) => /* @__PURE__ */ jsx43(
-            GraphChatCompactMessageItem,
-            {
-              threadId,
-              item: {
-                id: steer.id,
-                kind: "userMessage",
-                text: steer.prompt,
-                status: steer.status
-              },
-              scrollRootRef: scrollContainerRef,
-              onBeforeMessageResize: preserveScrollPositionForResize,
-              ...adapter ? { adapter } : {}
-            },
-            steer.id
-          )) }),
+          queuedSteers.length > 0 && /* @__PURE__ */ jsx43("div", { className: "thread-graph-message-section space-y-3 px-3 py-4 sm:px-5", children: queuedSteers.map((steer) => /* @__PURE__ */ jsxs34("div", { className: "space-y-1.5", children: [
+            /* @__PURE__ */ jsx43(
+              GraphChatCompactMessageItem,
+              {
+                threadId,
+                item: {
+                  id: steer.id,
+                  kind: "userMessage",
+                  text: steer.prompt,
+                  status: steer.status
+                },
+                scrollRootRef: scrollContainerRef,
+                onBeforeMessageResize: preserveScrollPositionForResize,
+                ...adapter ? { adapter } : {}
+              }
+            ),
+            threadId && steer.canCancel && adapter?.cancelPendingSteer ? /* @__PURE__ */ jsx43("div", { className: "flex justify-end px-1", children: /* @__PURE__ */ jsx43(
+              "button",
+              {
+                type: "button",
+                className: "thread-graph-history-button rounded-full border px-2.5 py-1 text-xs transition disabled:cursor-not-allowed disabled:opacity-60",
+                disabled: cancelingSteerIds.has(steer.id),
+                onClick: () => {
+                  setCancelingSteerIds((current) => new Set(current).add(steer.id));
+                  void Promise.resolve(adapter.cancelPendingSteer?.(threadId, steer.id)).catch(() => void 0).finally(() => {
+                    setCancelingSteerIds((current) => {
+                      const next = new Set(current);
+                      next.delete(steer.id);
+                      return next;
+                    });
+                  });
+                },
+                children: cancelingSteerIds.has(steer.id) ? "Canceling..." : "Cancel"
+              }
+            ) }) : null
+          ] }, steer.id)) }),
           (requestEntryAnchors.trailing.length > 0 || activityNoteAnchors.trailing.length > 0) && /* @__PURE__ */ jsx43(
             ActivityRequestEntrySection,
             {
@@ -19532,7 +19740,7 @@ import {
 import {
   useCallback as useCallback19,
   useEffect as useEffect27,
-  useLayoutEffect as useLayoutEffect6,
+  useLayoutEffect as useLayoutEffect7,
   useRef as useRef16,
   useState as useState30
 } from "react";
@@ -19620,7 +19828,7 @@ function GraphChatThreadChatPanel({
       window.removeEventListener("resize", updateKeyboardInset);
     };
   }, []);
-  useLayoutEffect6(() => {
+  useLayoutEffect7(() => {
     const node = internalComposerHostRef.current;
     if (!node || !isMobileViewport) {
       setMobileComposerHeight(0);
@@ -19639,7 +19847,7 @@ function GraphChatThreadChatPanel({
       observer.disconnect();
     };
   }, [isMobileViewport, composerProps, hasPendingRequests]);
-  useLayoutEffect6(() => {
+  useLayoutEffect7(() => {
     const node = internalComposerHostRef.current;
     if (!node || !isMobileViewport) {
       setMobileComposerOverlap(0);
@@ -19719,7 +19927,7 @@ function GraphChatThreadChatPanel({
   } : void 0;
   const floatingComposerStyle = useFloatingMobileComposer && isMobileViewport ? {
     bottom: `${floatingMobileComposerBottomOffset + mobileComposerBottomOffset}px`,
-    paddingBottom: "env(safe-area-inset-bottom)"
+    paddingBottom: "max(env(safe-area-inset-bottom), var(--android-safe-area-bottom, 0px))"
   } : void 0;
   return /* @__PURE__ */ jsxs56(
     "div",
@@ -19769,7 +19977,7 @@ function GraphChatThreadChatPanel({
             className: "fixed inset-x-0 bottom-0 z-50 overflow-visible sm:hidden",
             style: floatingComposerStyle ?? {
               bottom: `${floatingMobileComposerBottomOffset}px`,
-              paddingBottom: "env(safe-area-inset-bottom)"
+              paddingBottom: "max(env(safe-area-inset-bottom), var(--android-safe-area-bottom, 0px))"
             },
             children: /* @__PURE__ */ jsx69(
               ThreadComposer,
@@ -19851,6 +20059,8 @@ function ThreadDetailSurface({
   metaContent,
   settingsContent,
   globalSettingsContent,
+  settingsDialogOpen,
+  onSettingsDialogOpenChange,
   mobileHeaderAction,
   appMenuButton,
   appNavigationMenu,
@@ -19900,7 +20110,8 @@ function ThreadDetailSurface({
     getImageAssetUrl,
     loadHistoryItemDetail,
     openWorkspaceFile,
-    openThread
+    openThread,
+    cancelPendingSteer
   } = adapter;
   const timelineAdapter = useMemo17(
     () => ({
@@ -19909,9 +20120,11 @@ function ThreadDetailSurface({
       } : {},
       onOpenLinkedThread: openThread,
       ...openWorkspaceFile ? { onOpenWorkspaceFile: openWorkspaceFile } : {},
-      ...loadHistoryItemDetail ? { onLoadHistoryItemDetail: loadHistoryItemDetail } : {}
+      ...loadHistoryItemDetail ? { onLoadHistoryItemDetail: loadHistoryItemDetail } : {},
+      ...cancelPendingSteer ? { cancelPendingSteer } : {}
     }),
     [
+      cancelPendingSteer,
       getImageAssetUrl,
       loadHistoryItemDetail,
       openWorkspaceFile,
@@ -20034,6 +20247,8 @@ function ThreadDetailSurface({
       metaContent,
       settingsContent,
       globalSettingsContent,
+      ...settingsDialogOpen !== void 0 ? { settingsDialogOpen } : {},
+      ...onSettingsDialogOpenChange ? { onSettingsDialogOpenChange } : {},
       mobileHeaderAction,
       effectiveTheme: shellEffectiveTheme,
       themeMode: shellThemeMode,

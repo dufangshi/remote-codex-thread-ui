@@ -509,8 +509,11 @@ function GraphChatHistoryToolFrame({
         className="thread-graph-tool-accordion thread-graph-history-tool-accordion w-full overflow-hidden rounded-lg border"
         {...(openItem !== undefined ? { value: openItem } : {})}
       >
-        <AccordionItem value="item-1" className="border-0">
-          <AccordionTrigger className="thread-graph-tool-trigger thread-graph-history-tool-trigger px-4 py-3 hover:no-underline">
+          <AccordionItem value="item-1" className="border-0">
+          <AccordionTrigger
+            aria-label={`${openItem === 'item-1' ? 'Collapse' : 'Expand'} ${title} history item`}
+            className="thread-graph-tool-trigger thread-graph-history-tool-trigger px-4 py-3 hover:no-underline"
+          >
             <div className="flex min-w-0 flex-1 items-center gap-2">
               <span className="thread-graph-history-tool-icon shrink-0">
                 {icon}

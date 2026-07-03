@@ -17,6 +17,7 @@ import type {
   AgentBackendToolboxItemSchemaDto,
   AgentProviderCapabilitiesDto,
   CollaborationModeDto,
+  PromptAttachmentKindDto,
   ProviderHostFileDto,
   CreateThreadHookInput,
   ThreadHooksDto,
@@ -28,6 +29,7 @@ import type {
   ModelOptionDto,
   ThreadContextUsageDto,
   ReasoningEffortDto,
+  SandboxModeDto,
   UpdateThreadHookInput,
   UpdateThreadSettingsInput,
 } from '@remote-codex/shared';
@@ -81,6 +83,15 @@ import { useComposerPromptSlots } from './composer/useComposerPromptSlots';
 import { useComposerSettingsActions } from './composer/useComposerSettingsActions';
 import { useComposerToolbarProps } from './composer/useComposerToolbarProps';
 
+export type ThreadComposerAttachmentPicker = (input: {
+  kind: PromptAttachmentKindDto;
+  appendAttachments: (
+    files: FileList | null,
+    kind?: PromptAttachmentKindDto,
+  ) => boolean;
+  defaultPick: () => void;
+}) => void;
+
 export interface ThreadComposerProps {
   activeView: 'chat' | 'shell';
   edgeToEdgeMobile?: boolean;
@@ -92,6 +103,8 @@ export interface ThreadComposerProps {
   reasoningEffort?: ReasoningEffortDto | null;
   fastMode?: boolean;
   collaborationMode?: CollaborationModeDto;
+  sandboxMode?: SandboxModeDto | null;
+  hideSandboxModeControl?: boolean;
   modelOptions?: ModelOptionDto[];
   contextUsage?: ThreadContextUsageDto | null | undefined;
   capabilities?: AgentProviderCapabilitiesDto | null | undefined;
@@ -112,6 +125,7 @@ export interface ThreadComposerProps {
   shellControlState?: ThreadShellControlState | null;
   draftPrompt?: string | undefined;
   draftAttachments?: PromptAttachmentUpload[] | undefined;
+  onPickAttachment?: ThreadComposerAttachmentPicker | undefined;
   skillsState?: SlashPanelState<ThreadSkillsDto>;
   mcpState?: SlashPanelState<ThreadMcpServersDto>;
   hooksState?: SlashPanelState<ThreadHooksDto>;
@@ -177,6 +191,8 @@ export function ThreadComposer({
   reasoningEffort = null,
   fastMode = false,
   collaborationMode = 'default',
+  sandboxMode = null,
+  hideSandboxModeControl = false,
   modelOptions = [],
   contextUsage = null,
   capabilities = null,
@@ -191,6 +207,7 @@ export function ThreadComposer({
   shellControlState = null,
   draftPrompt,
   draftAttachments,
+  onPickAttachment,
   skillsState = {
     status: 'idle',
     data: null,
@@ -261,6 +278,7 @@ export function ThreadComposer({
         Boolean(onWriteProviderConfig),
       hookTrust: capabilities?.management.hookTrust ?? false,
       planMode: capabilities?.controls.planMode ?? false,
+      sandboxMode: capabilities?.controls.sandboxMode ?? false,
     }),
     [
       capabilities,
@@ -549,6 +567,25 @@ export function ThreadComposer({
       pendingInsertedAttachmentIdsRef,
       onInserted: () => setOpenMenu(null),
     });
+  const pickAttachment = useCallback(
+    (
+      kind: PromptAttachmentKindDto,
+      inputRef: typeof photoInputRef | typeof fileInputRef,
+    ) => {
+      dismissPromptFocus();
+      if (onPickAttachment) {
+        onPickAttachment({
+          kind,
+          appendAttachments: (files, overrideKind = kind) =>
+            appendAttachments(files, overrideKind),
+          defaultPick: () => inputRef.current?.click(),
+        });
+        return;
+      }
+      inputRef.current?.click();
+    },
+    [appendAttachments, dismissPromptFocus, onPickAttachment],
+  );
 
   function insertPlainTextIntoPrompt(text: string) {
     if (!text) {
@@ -846,6 +883,7 @@ export function ThreadComposer({
     reasoningEffort,
     supportedEfforts,
     displayedCollaborationMode,
+    sandboxMode,
     sendButtonLabel,
     sendButtonClassName,
     modelControlsDisabled,
@@ -880,6 +918,7 @@ export function ThreadComposer({
       hookTrust: slashCapabilities.hookTrust,
       mcpConfigEditing: slashCapabilities.mcpConfigEditing,
       planMode: slashCapabilities.planMode,
+      sandboxMode: hideSandboxModeControl ? false : slashCapabilities.sandboxMode,
     },
     shellControlState,
     onToggleView,
@@ -913,14 +952,8 @@ export function ThreadComposer({
     onPrepareRawMcpBlock: prepareRawMcpBlock,
     onSaveHttpMcp: saveHttpMcp,
     onSaveRawMcpBlock: saveRawMcpBlock,
-    onPickPhoto: () => {
-      dismissPromptFocus();
-      photoInputRef.current?.click();
-    },
-    onPickFile: () => {
-      dismissPromptFocus();
-      fileInputRef.current?.click();
-    },
+    onPickPhoto: () => pickAttachment('photo', photoInputRef),
+    onPickFile: () => pickAttachment('file', fileInputRef),
     onUpdateSettings: (input) => void handleUpdateSettings(input),
     onPasteShell: () => void pasteClipboardIntoPrompt(),
     onCopyShell: () => {

@@ -196,6 +196,12 @@ export function useTimelineScroll({
   }, [threadId]);
 
   useEffect(() => {
+    if (!loadingEarlier) {
+      autoLoadedEarlierRef.current = false;
+    }
+  }, [loadingEarlier, turnsLength]);
+
+  useEffect(() => {
     setVisibleCount((current) => {
       if (current >= turnsLength - 1) {
         return turnsLength;

@@ -2,6 +2,7 @@ import type {
   AgentBackendToolboxItemSchemaDto,
   ModelOptionDto,
   ReasoningEffortDto,
+  SandboxModeDto,
   ThreadContextUsageDto,
   ThreadForkTurnOptionDto,
   ThreadGoalDto,
@@ -38,6 +39,7 @@ export interface ComposerToolbarCapabilities {
   hookTrust: boolean;
   mcpConfigEditing: boolean;
   planMode: boolean;
+  sandboxMode: boolean;
 }
 
 export interface UseComposerToolbarPropsInput {
@@ -74,6 +76,7 @@ export interface UseComposerToolbarPropsInput {
   reasoningEffort: ReasoningEffortDto | null | undefined;
   supportedEfforts: ModelOptionDto['supportedReasoningEfforts'];
   displayedCollaborationMode: ComposerSettingsToolbarProps['displayedCollaborationMode'];
+  sandboxMode: SandboxModeDto | null | undefined;
   sendButtonLabel: string;
   sendButtonClassName: string;
   modelControlsDisabled: boolean;
@@ -179,6 +182,7 @@ export function useComposerToolbarProps({
   reasoningEffort,
   supportedEfforts,
   displayedCollaborationMode,
+  sandboxMode,
   sendButtonLabel,
   sendButtonClassName,
   modelControlsDisabled,
@@ -371,7 +375,9 @@ export function useComposerToolbarProps({
         reasoningEffort,
         supportedEfforts,
         displayedCollaborationMode,
+        sandboxMode,
         planModeAvailable: capabilities.planMode,
+        sandboxModeAvailable: capabilities.sandboxMode,
         settingsBusy,
         goalComposeMode,
         goalBusy,

@@ -71,7 +71,7 @@ export function ComposerFrame({
         className={formClassName}
       >
         <div
-          className={`${shellClassName} flex w-full flex-col overflow-hidden rounded-[16px] sm:rounded-[18px]`}
+          className={`${shellClassName} flex w-full flex-col overflow-visible rounded-[16px] sm:rounded-[18px]`}
         >
           <InputGroup className={inputGroupClassName}>
             {promptSlot}
