@@ -447,6 +447,10 @@ export function ThreadWorkspaceLayout({
   children,
 }: ThreadWorkspaceLayoutProps) {
   const shellNav = useAppShellNav();
+  const initialShellMobileViewport =
+    typeof window !== "undefined"
+      ? window.matchMedia("(max-width: 639px)").matches
+      : layoutMode === "mobile";
   const [systemPrefersDark, setSystemPrefersDark] = useState(() =>
     typeof window !== "undefined"
       ? window.matchMedia("(prefers-color-scheme: dark)").matches
@@ -463,14 +467,14 @@ export function ThreadWorkspaceLayout({
       : themeMode);
   const [mobileRoomsOpen, setMobileRoomsOpen] = useState(false);
   const [roomsRailCollapsed, setRoomsRailCollapsed] = useState(false);
-  const [workspaceCollapsed, setWorkspaceCollapsed] = useState(false);
-  const [isShellMobileViewport, setIsShellMobileViewport] = useState(() =>
-    typeof window !== "undefined"
-      ? window.matchMedia("(max-width: 639px)").matches
-      : layoutMode === "mobile",
+  const [workspaceCollapsed, setWorkspaceCollapsed] = useState(
+    !initialShellMobileViewport,
+  );
+  const [isShellMobileViewport, setIsShellMobileViewport] = useState(
+    initialShellMobileViewport,
   );
   const [mobileWorkspace, setMobileWorkspace] = useState<"chat" | "workspace">(
-    "workspace",
+    "chat",
   );
   const [editingThreadId, setEditingThreadId] = useState<string | null>(null);
   const [draftTitle, setDraftTitle] = useState("");

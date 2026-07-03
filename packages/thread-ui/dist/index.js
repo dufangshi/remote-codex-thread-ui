@@ -9973,6 +9973,7 @@ function ThreadWorkspaceLayout({
   children
 }) {
   const shellNav = useAppShellNav();
+  const initialShellMobileViewport = typeof window !== "undefined" ? window.matchMedia("(max-width: 639px)").matches : layoutMode === "mobile";
   const [systemPrefersDark, setSystemPrefersDark] = useState10(
     () => typeof window !== "undefined" ? window.matchMedia("(prefers-color-scheme: dark)").matches : false
   );
@@ -9980,12 +9981,14 @@ function ThreadWorkspaceLayout({
   const effectiveTheme = effectiveThemeProp ?? shellNav?.effectiveTheme ?? (themeMode === "system" ? systemPrefersDark ? "dark" : "light" : themeMode);
   const [mobileRoomsOpen, setMobileRoomsOpen] = useState10(false);
   const [roomsRailCollapsed, setRoomsRailCollapsed] = useState10(false);
-  const [workspaceCollapsed, setWorkspaceCollapsed] = useState10(false);
+  const [workspaceCollapsed, setWorkspaceCollapsed] = useState10(
+    !initialShellMobileViewport
+  );
   const [isShellMobileViewport, setIsShellMobileViewport] = useState10(
-    () => typeof window !== "undefined" ? window.matchMedia("(max-width: 639px)").matches : layoutMode === "mobile"
+    initialShellMobileViewport
   );
   const [mobileWorkspace, setMobileWorkspace] = useState10(
-    "workspace"
+    "chat"
   );
   const [editingThreadId, setEditingThreadId] = useState10(null);
   const [draftTitle, setDraftTitle] = useState10("");
