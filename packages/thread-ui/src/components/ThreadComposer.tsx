@@ -797,6 +797,23 @@ export function ThreadComposer({
   }
 
   function handlePromptKeyDown(event: KeyboardEvent<HTMLDivElement>) {
+    if (
+      activeView === 'chat' &&
+      event.key === '/' &&
+      !event.metaKey &&
+      !event.ctrlKey &&
+      !event.altKey &&
+      !busy &&
+      !disabled &&
+      availableToolboxItems.length > 0 &&
+      serializeEditorPrompt().trim().length === 0
+    ) {
+      event.preventDefault();
+      setSlashPanelView('root');
+      setOpenMenu('slash');
+      return;
+    }
+
     const keyAction = derivePromptKeyDownAction({
       key: event.key,
       metaKey: event.metaKey,

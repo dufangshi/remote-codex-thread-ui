@@ -8962,6 +8962,12 @@ function ThreadComposer({
     }
   }
   function handlePromptKeyDown(event) {
+    if (activeView === "chat" && event.key === "/" && !event.metaKey && !event.ctrlKey && !event.altKey && !busy && !disabled && availableToolboxItems.length > 0 && serializeEditorPrompt2().trim().length === 0) {
+      event.preventDefault();
+      setSlashPanelView("root");
+      setOpenMenu("slash");
+      return;
+    }
     const keyAction = derivePromptKeyDownAction({
       key: event.key,
       metaKey: event.metaKey,
