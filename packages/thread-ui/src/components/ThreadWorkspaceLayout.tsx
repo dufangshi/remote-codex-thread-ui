@@ -101,6 +101,11 @@ interface ThreadWorkspaceLayoutProps {
   newThreadLabel?: string;
   onNewThread?: () => void;
   onNewThreadTitle?: (title: string) => Promise<void> | void;
+  renderNewThreadDialogContent?: (input: {
+    close: () => void;
+    closeNavigation: () => void;
+    currentWorkspaceId?: string | null;
+  }) => ReactNode;
   renderThreadLink?: (input: {
     thread: ThreadDto;
     children: ReactNode;
@@ -439,6 +444,7 @@ export function ThreadWorkspaceLayout({
   newThreadLabel = "New Chat",
   onNewThread,
   onNewThreadTitle,
+  renderNewThreadDialogContent,
   renderThreadLink,
   onCloseAppNavigation,
   onRenameThread,
@@ -596,6 +602,11 @@ export function ThreadWorkspaceLayout({
     closeNavigationSurfaces();
   }
 
+  function closeCreateThreadDialog() {
+    setCreateThreadDialogOpen(false);
+    setNewThreadTitleDraft("");
+  }
+
   function buildNewThreadHrefWithTitle(title: string) {
     if (!newThreadHref || !title.trim()) {
       return newThreadHref;
@@ -678,38 +689,48 @@ export function ThreadWorkspaceLayout({
           data-theme-mode={themeMode}
           className="thread-graph-create-thread-dialog thread-graph-dialog"
         >
-          <DialogHeader>
-            <DialogTitle>Create New Chat</DialogTitle>
-            <DialogDescription>
-              Name the room so it is easy to find later.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="grid gap-3">
-            <input
-              id="thread-graph-create-thread-title"
-              name="thread-title"
-              value={newThreadTitleDraft}
-              onChange={(event) => setNewThreadTitleDraft(event.target.value)}
-              onKeyDown={(event) => {
-                if (event.key === "Enter") {
-                  event.preventDefault();
-                  void handleCreateThreadFromDialog();
-                }
-              }}
-              placeholder="Chat name"
-              aria-label="Chat name"
-              autoComplete="off"
-              className="thread-graph-create-thread-input h-10 rounded-md border px-3 text-sm outline-none transition"
-            />
-            <button
-              type="button"
-              onClick={() => void handleCreateThreadFromDialog()}
-              disabled={creatingThread}
-              className="thread-graph-create-thread-submit inline-flex h-10 items-center justify-center rounded-md px-4 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-60"
-            >
-              {creatingThread ? "Creating..." : "Create"}
-            </button>
-          </div>
+          {renderNewThreadDialogContent ? (
+            renderNewThreadDialogContent({
+              close: closeCreateThreadDialog,
+              closeNavigation: closeNavigationSurfaces,
+              currentWorkspaceId,
+            })
+          ) : (
+            <>
+              <DialogHeader>
+                <DialogTitle>Create New Chat</DialogTitle>
+                <DialogDescription>
+                  Name the room so it is easy to find later.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="grid gap-3">
+                <input
+                  id="thread-graph-create-thread-title"
+                  name="thread-title"
+                  value={newThreadTitleDraft}
+                  onChange={(event) => setNewThreadTitleDraft(event.target.value)}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter") {
+                      event.preventDefault();
+                      void handleCreateThreadFromDialog();
+                    }
+                  }}
+                  placeholder="Chat name"
+                  aria-label="Chat name"
+                  autoComplete="off"
+                  className="thread-graph-create-thread-input h-10 rounded-md border px-3 text-sm outline-none transition"
+                />
+                <button
+                  type="button"
+                  onClick={() => void handleCreateThreadFromDialog()}
+                  disabled={creatingThread}
+                  className="thread-graph-create-thread-submit inline-flex h-10 items-center justify-center rounded-md px-4 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {creatingThread ? "Creating..." : "Create"}
+                </button>
+              </div>
+            </>
+          )}
         </DialogContent>
       </Dialog>
     );

@@ -1,5 +1,5 @@
-import { T as ThreadShellControlState$1, P as PromptAttachmentUpload, a as ThreadTimelineAdapter, b as ThreadShellAdapter, c as ThreadGraphWorkspacePanelProps, d as PluginContextValue, e as ThreadDetailUiAdapter, f as ThreadGraphWorkspaceFeatures } from './workspace-panel-DFpRdBa-.js';
-export { g as PluginContext, S as SendPromptInput, h as ShellSocketConnection, i as ShellSocketHandlers, j as ThreadWorkspaceAdapter, W as WorkspaceTab, k as createDefaultPluginContextValue, m as mergePluginState } from './workspace-panel-DFpRdBa-.js';
+import { T as ThreadShellControlState$1, P as PromptAttachmentUpload, a as ThreadTimelineAdapter, b as ThreadShellAdapter, c as ThreadGraphWorkspacePanelProps, d as PluginContextValue, e as ThreadDetailUiAdapter, f as ThreadGraphWorkspaceFeatures } from './workspace-panel-Cjny2Pxm.js';
+export { g as PluginContext, S as SendPromptInput, h as ShellSocketConnection, i as ShellSocketHandlers, j as ThreadWorkspaceAdapter, W as WorkspaceTab, k as createDefaultPluginContextValue, m as mergePluginState } from './workspace-panel-Cjny2Pxm.js';
 import * as react from 'react';
 import { Dispatch, SetStateAction, ReactNode, RefObject, Ref, ComponentType, ForwardRefExoticComponent, RefAttributes } from 'react';
 import { ReasoningEffortDto, CollaborationModeDto, SandboxModeDto, ModelOptionDto, ThreadContextUsageDto, AgentProviderCapabilitiesDto, AgentBackendToolboxItemSchemaDto, AgentBackendHookCommandTemplateDto, AgentBackendManagementSchemaDto, PromptAttachmentKindDto, ThreadSkillsDto, ThreadMcpServersDto, ThreadHooksDto, ThreadForkTurnOptionDto, ThreadGoalDto, CreateThreadHookInput, UpdateThreadHookInput, ThreadGoalStatusDto, ProviderHostFileDto, UpdateThreadSettingsInput, AgentBackendIdDto, ThreadDto, AgentRuntimeStatusDto, ThreadTurnDto, ThreadActionRequestDto, ThreadHistoryItemDto, RespondThreadActionRequestInput, ThreadAnsweredRequestNoteDto, ThreadActivityNoteDto, ThreadPendingSteerDto, ThreadHistoryItemDetailDto, ShellStatusDto, ThreadExportTurnOptionsDto, ThreadExportFormatDto, ExportThreadPdfInput, ThreadDetailDto, PluginDto, ImportPluginInput, UpdatePluginInput } from '@remote-codex/shared';
@@ -152,6 +152,11 @@ interface ThreadWorkspaceLayoutProps {
     newThreadLabel?: string;
     onNewThread?: () => void;
     onNewThreadTitle?: (title: string) => Promise<void> | void;
+    renderNewThreadDialogContent?: (input: {
+        close: () => void;
+        closeNavigation: () => void;
+        currentWorkspaceId?: string | null;
+    }) => ReactNode;
     renderThreadLink?: (input: {
         thread: ThreadDto;
         children: ReactNode;
@@ -183,7 +188,7 @@ interface ThreadCardsProps {
     collapsed?: boolean;
 }
 declare function ThreadCards({ threads, currentThreadId, currentWorkspaceId, workspaceLabels, onOpenThread, getThreadHref, renderThreadLink, onBeginRenameThread, onDeleteThread, scrollable, maxHeightClassName, showDeleteButton, showSessionCopyButton, collapsed, }: ThreadCardsProps): react.JSX.Element;
-declare function ThreadWorkspaceLayout({ threads, status, loading, error, viewportConstrained, layoutMode, effectiveTheme: effectiveThemeProp, themeMode: themeModeProp, onThemeModeChange, showMobileNewThreadShortcut, settingsDialogOpen, onSettingsDialogOpenChange, mobileHeaderAction, currentThreadId, currentThreadLabel, currentWorkspaceId, currentWorkspaceLabel, sessionLabel, usageLabel, threadActionsButton, topbarActions, metaContent, settingsContent, globalSettingsContent, workspaceLabels, workspaceReturnHref, onWorkspaceReturn, getThreadHref, onOpenThread, getNewThreadHref, newThreadHref: explicitNewThreadHref, newThreadLabel, onNewThread, onNewThreadTitle, renderThreadLink, onCloseAppNavigation, onRenameThread, onDeleteThread, workspaceContent, workspaceTitle, workspaceActions, children, }: ThreadWorkspaceLayoutProps): react.JSX.Element;
+declare function ThreadWorkspaceLayout({ threads, status, loading, error, viewportConstrained, layoutMode, effectiveTheme: effectiveThemeProp, themeMode: themeModeProp, onThemeModeChange, showMobileNewThreadShortcut, settingsDialogOpen, onSettingsDialogOpenChange, mobileHeaderAction, currentThreadId, currentThreadLabel, currentWorkspaceId, currentWorkspaceLabel, sessionLabel, usageLabel, threadActionsButton, topbarActions, metaContent, settingsContent, globalSettingsContent, workspaceLabels, workspaceReturnHref, onWorkspaceReturn, getThreadHref, onOpenThread, getNewThreadHref, newThreadHref: explicitNewThreadHref, newThreadLabel, onNewThread, onNewThreadTitle, renderNewThreadDialogContent, renderThreadLink, onCloseAppNavigation, onRenameThread, onDeleteThread, workspaceContent, workspaceTitle, workspaceActions, children, }: ThreadWorkspaceLayoutProps): react.JSX.Element;
 
 type TimelineTurn = Omit<ThreadTurnDto, 'status'> & {
     status: ThreadTurnDto['status'] | 'sending';

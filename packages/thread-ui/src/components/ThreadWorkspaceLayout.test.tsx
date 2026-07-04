@@ -116,4 +116,38 @@ describe('ThreadWorkspaceLayout', () => {
 
     expect(element.querySelector('[aria-label="Thread actions"]')).toBeTruthy();
   });
+
+  it('renders host-provided new chat dialog content', () => {
+    const element = render(
+      <ThreadWorkspaceLayout
+        threads={[]}
+        status={{
+          state: 'ready',
+          transport: 'sdk',
+          lastStartedAt: null,
+          lastError: null,
+          restartCount: 0,
+        }}
+        currentWorkspaceId="workspace-1"
+        workspaceContent={<div data-testid="workspace-content">Workspace</div>}
+        renderNewThreadDialogContent={({ currentWorkspaceId }) => (
+          <div data-testid="host-new-thread-form">
+            Host form for {currentWorkspaceId}
+          </div>
+        )}
+      >
+        <div data-testid="chat-content">Chat</div>
+      </ThreadWorkspaceLayout>,
+    );
+
+    const button = element.querySelector('[title="New Chat"]');
+    expect(button).toBeTruthy();
+    flushSync(() => {
+      button?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+
+    expect(document.querySelector('[data-testid="host-new-thread-form"]')?.textContent)
+      .toContain('workspace-1');
+    expect(document.querySelector('[aria-label="Chat name"]')).toBeNull();
+  });
 });

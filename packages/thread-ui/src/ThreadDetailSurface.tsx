@@ -451,6 +451,9 @@ export function ThreadDetailSurface({
       {...(adapter.getNewThreadHref
         ? { getNewThreadHref: adapter.getNewThreadHref }
         : {})}
+      {...(adapter.renderNewThreadDialogContent
+        ? { renderNewThreadDialogContent: adapter.renderNewThreadDialogContent }
+        : {})}
       {...(adapter.renameThread
         ? { onRenameThread: adapter.renameThread }
         : {})}

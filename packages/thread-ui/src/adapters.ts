@@ -7,6 +7,7 @@ import type {
   UpdateShellInput,
   UpdateThreadSettingsInput,
 } from '@remote-codex/shared';
+import type { ReactNode } from 'react';
 import type { SendPromptInput } from './types';
 
 export interface ThreadTimelineAdapter {
@@ -147,6 +148,11 @@ export interface ThreadDetailUiAdapter {
   openThread(threadId: string): void;
   getThreadHref?: (threadId: string) => string;
   getNewThreadHref?: (workspaceId?: string | null) => string;
+  renderNewThreadDialogContent?: (input: {
+    close: () => void;
+    closeNavigation: () => void;
+    currentWorkspaceId?: string | null;
+  }) => ReactNode;
   renameThread?: (threadId: string, title: string) => Promise<void> | void;
   deleteThread?: (thread: ThreadDto) => Promise<void> | void;
   cancelPendingSteer?: (

@@ -9964,6 +9964,7 @@ function ThreadWorkspaceLayout({
   newThreadLabel = "New Chat",
   onNewThread,
   onNewThreadTitle,
+  renderNewThreadDialogContent,
   renderThreadLink,
   onCloseAppNavigation,
   onRenameThread,
@@ -10086,6 +10087,10 @@ function ThreadWorkspaceLayout({
     onOpenThread?.(threadId);
     closeNavigationSurfaces();
   }
+  function closeCreateThreadDialog() {
+    setCreateThreadDialogOpen(false);
+    setNewThreadTitleDraft("");
+  }
   function buildNewThreadHrefWithTitle(title) {
     if (!newThreadHref || !title.trim()) {
       return newThreadHref;
@@ -10152,14 +10157,18 @@ function ThreadWorkspaceLayout({
               children: content
             }
           ) }),
-          /* @__PURE__ */ jsxs18(
+          /* @__PURE__ */ jsx25(
             DialogContent,
             {
               "data-testid": "create-thread-dialog",
               "data-theme-effective": effectiveTheme,
               "data-theme-mode": themeMode,
               className: "thread-graph-create-thread-dialog thread-graph-dialog",
-              children: [
+              children: renderNewThreadDialogContent ? renderNewThreadDialogContent({
+                close: closeCreateThreadDialog,
+                closeNavigation: closeNavigationSurfaces,
+                currentWorkspaceId
+              }) : /* @__PURE__ */ jsxs18(Fragment3, { children: [
                 /* @__PURE__ */ jsxs18(DialogHeader, { children: [
                   /* @__PURE__ */ jsx25(DialogTitle, { children: "Create New Chat" }),
                   /* @__PURE__ */ jsx25(DialogDescription, { children: "Name the room so it is easy to find later." })
@@ -10195,7 +10204,7 @@ function ThreadWorkspaceLayout({
                     }
                   )
                 ] })
-              ]
+              ] })
             }
           )
         ]
@@ -20604,6 +20613,7 @@ function ThreadDetailSurface({
       ...onShellThemeModeChange ? { onThemeModeChange: onShellThemeModeChange } : {},
       ...adapter.getThreadHref ? { getThreadHref: adapter.getThreadHref } : {},
       ...adapter.getNewThreadHref ? { getNewThreadHref: adapter.getNewThreadHref } : {},
+      ...adapter.renderNewThreadDialogContent ? { renderNewThreadDialogContent: adapter.renderNewThreadDialogContent } : {},
       ...adapter.renameThread ? { onRenameThread: adapter.renameThread } : {},
       ...adapter.deleteThread ? { onDeleteThread: adapter.deleteThread } : {},
       children: defaultContent
