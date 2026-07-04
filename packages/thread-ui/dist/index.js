@@ -15773,6 +15773,7 @@ function useTimelineScroll({
   const previousBottomSpacerRef = useRef10(bottomSpacer);
   const lastObservedScrollHeightRef = useRef10(0);
   const lastScrollTopRef = useRef10(0);
+  const pendingPrependScrollRef = useRef10(null);
   const tailSentinelRef = useRef10(null);
   const topSentinelRef = useRef10(null);
   const isTailVisibleRef = useRef10(true);
@@ -15780,6 +15781,9 @@ function useTimelineScroll({
   const userScrolledAwayFromTailRef = useRef10(false);
   const userScrolledHistoryRef = useRef10(false);
   const autoLoadedEarlierRef = useRef10(false);
+  const topLoadArmedRef = useRef10(false);
+  const lastTouchYRef = useRef10(null);
+  const touchPullDistanceRef = useRef10(0);
   const [visibleCount, setVisibleCount] = useState20(INITIAL_VISIBLE_TURNS);
   const [loadMoreClicks, setLoadMoreClicks] = useState20(0);
   const [isTailVisible, setIsTailVisible] = useState20(true);
@@ -15795,6 +15799,33 @@ function useTimelineScroll({
   const hiddenCount = serverManagedHistory ? unloadedHiddenCount + loadedHiddenCount : loadedHiddenCount;
   const showLoadAll = !serverManagedHistory && hiddenCount > 0 && loadMoreClicks >= 2;
   const canLoadEarlierFromServer = serverManagedHistory && unloadedHiddenCount > 0 && loadedHiddenCount === 0 && typeof onLoadEarlier === "function";
+  const rememberPrependScrollPosition = useCallback13(() => {
+    const container = scrollContainerRef.current;
+    if (!container) {
+      pendingPrependScrollRef.current = null;
+      return;
+    }
+    pendingPrependScrollRef.current = {
+      scrollHeight: container.scrollHeight,
+      scrollTop: container.scrollTop
+    };
+  }, []);
+  const triggerServerLoadEarlier = useCallback13(() => {
+    if (!canLoadEarlierFromServer || loadingEarlier || autoLoadedEarlierRef.current) {
+      return false;
+    }
+    rememberPrependScrollPosition();
+    autoLoadedEarlierRef.current = true;
+    topLoadArmedRef.current = false;
+    touchPullDistanceRef.current = 0;
+    onLoadEarlier?.();
+    return true;
+  }, [
+    canLoadEarlierFromServer,
+    loadingEarlier,
+    onLoadEarlier,
+    rememberPrependScrollPosition
+  ]);
   const recomputeTailVisibility = useCallback13(() => {
     const container = scrollContainerRef.current;
     const tailSentinel = tailSentinelRef.current;
@@ -15824,6 +15855,12 @@ function useTimelineScroll({
       } else if (delta > 1) {
         shouldStickToBottomRef.current = !userScrolledAwayFromTailRef.current && isNearBottom(container, FOLLOW_TAIL_THRESHOLD_PX);
       }
+      if (nextScrollTop <= 0 && userScrolledHistoryRef.current) {
+        topLoadArmedRef.current = true;
+      } else if (nextScrollTop > 0) {
+        topLoadArmedRef.current = false;
+        touchPullDistanceRef.current = 0;
+      }
     }
     recomputeTailVisibility();
   }, [recomputeTailVisibility]);
@@ -15852,12 +15889,60 @@ function useTimelineScroll({
   }, []);
   const handleLoadEarlierClick = useCallback13(() => {
     if (serverManagedHistory && loadedHiddenCount === 0) {
-      onLoadEarlier?.();
+      triggerServerLoadEarlier();
       return;
     }
     setVisibleCount((current) => Math.min(turnsLength, current + LOAD_STEP));
     setLoadMoreClicks((current) => current + 1);
-  }, [loadedHiddenCount, onLoadEarlier, serverManagedHistory, turnsLength]);
+  }, [
+    loadedHiddenCount,
+    serverManagedHistory,
+    triggerServerLoadEarlier,
+    turnsLength
+  ]);
+  const handleWheel = useCallback13((event) => {
+    const container = scrollContainerRef.current;
+    if (!container || event.deltaY >= -8 || container.scrollTop > 0 || !canLoadEarlierFromServer) {
+      return;
+    }
+    if (!topLoadArmedRef.current) {
+      topLoadArmedRef.current = true;
+      return;
+    }
+    triggerServerLoadEarlier();
+  }, [canLoadEarlierFromServer, triggerServerLoadEarlier]);
+  const handleTouchStart = useCallback13((event) => {
+    lastTouchYRef.current = event.touches.item(0)?.clientY ?? null;
+    touchPullDistanceRef.current = 0;
+  }, []);
+  const handleTouchMove = useCallback13((event) => {
+    const container = scrollContainerRef.current;
+    const nextY = event.touches.item(0)?.clientY ?? null;
+    const previousY = lastTouchYRef.current;
+    lastTouchYRef.current = nextY;
+    if (!container || nextY === null || previousY === null || container.scrollTop > 0 || !canLoadEarlierFromServer) {
+      touchPullDistanceRef.current = 0;
+      return;
+    }
+    const deltaY = nextY - previousY;
+    if (deltaY <= 0) {
+      touchPullDistanceRef.current = 0;
+      return;
+    }
+    if (!topLoadArmedRef.current) {
+      topLoadArmedRef.current = true;
+      touchPullDistanceRef.current = 0;
+      return;
+    }
+    touchPullDistanceRef.current += deltaY;
+    if (touchPullDistanceRef.current >= 28) {
+      triggerServerLoadEarlier();
+    }
+  }, [canLoadEarlierFromServer, triggerServerLoadEarlier]);
+  const handleTouchEnd = useCallback13(() => {
+    lastTouchYRef.current = null;
+    touchPullDistanceRef.current = 0;
+  }, []);
   const handleLoadAllClick = useCallback13(() => {
     setVisibleCount(turnsLength);
   }, [turnsLength]);
@@ -15872,11 +15957,34 @@ function useTimelineScroll({
   useEffect15(() => {
     autoLoadedEarlierRef.current = false;
     userScrolledHistoryRef.current = false;
+    topLoadArmedRef.current = false;
+    pendingPrependScrollRef.current = null;
   }, [threadId]);
   useEffect15(() => {
     if (!loadingEarlier) {
       autoLoadedEarlierRef.current = false;
     }
+  }, [loadingEarlier, turnsLength]);
+  useLayoutEffect5(() => {
+    const anchor = pendingPrependScrollRef.current;
+    const container = scrollContainerRef.current;
+    if (!anchor || !container || loadingEarlier) {
+      return;
+    }
+    pendingPrependScrollRef.current = null;
+    const addedHeight = container.scrollHeight - anchor.scrollHeight;
+    if (addedHeight <= 0) {
+      lastObservedScrollHeightRef.current = container.scrollHeight;
+      lastScrollTopRef.current = container.scrollTop;
+      return;
+    }
+    const nextScrollTop = anchor.scrollTop + addedHeight;
+    container.scrollTop = nextScrollTop;
+    lastScrollTopRef.current = nextScrollTop;
+    lastObservedScrollHeightRef.current = container.scrollHeight;
+    userScrolledAwayFromTailRef.current = true;
+    shouldStickToBottomRef.current = false;
+    topLoadArmedRef.current = false;
   }, [loadingEarlier, turnsLength]);
   useEffect15(() => {
     setVisibleCount((current) => {
@@ -15964,30 +16072,6 @@ function useTimelineScroll({
   useEffect15(() => {
     onTailVisibilityChange?.(isTailVisible);
   }, [isTailVisible, onTailVisibilityChange]);
-  useEffect15(() => {
-    const container = scrollContainerRef.current;
-    const topSentinel = topSentinelRef.current;
-    if (!container || !topSentinel || !canLoadEarlierFromServer || loadingEarlier || autoLoadedEarlierRef.current || typeof IntersectionObserver === "undefined") {
-      return;
-    }
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (!userScrolledHistoryRef.current || loadingEarlier || autoLoadedEarlierRef.current || !entries.some((entry) => entry.isIntersecting)) {
-          return;
-        }
-        autoLoadedEarlierRef.current = true;
-        onLoadEarlier?.();
-      },
-      {
-        root: container,
-        threshold: 0.01
-      }
-    );
-    observer.observe(topSentinel);
-    return () => {
-      observer.disconnect();
-    };
-  }, [canLoadEarlierFromServer, loadingEarlier, onLoadEarlier]);
   return {
     scrollContainerRef,
     scrollContentRef,
@@ -15995,6 +16079,10 @@ function useTimelineScroll({
     topSentinelRef,
     isTailVisible,
     handleScroll,
+    handleWheel,
+    handleTouchStart,
+    handleTouchMove,
+    handleTouchEnd,
     preserveScrollPositionForResize,
     serverManagedHistory,
     effectiveTotalTurnCount,
@@ -16088,6 +16176,10 @@ function ThreadTimelineComponent({
     tailSentinelRef,
     topSentinelRef,
     handleScroll,
+    handleWheel,
+    handleTouchStart,
+    handleTouchMove,
+    handleTouchEnd,
     preserveScrollPositionForResize,
     serverManagedHistory,
     effectiveTotalTurnCount,
@@ -16203,6 +16295,11 @@ function ThreadTimelineComponent({
         ref: scrollContainerRef,
         "data-testid": "thread-scroll-container",
         onScroll: handleScroll,
+        onWheel: handleWheel,
+        onTouchStart: handleTouchStart,
+        onTouchMove: handleTouchMove,
+        onTouchEnd: handleTouchEnd,
+        onTouchCancel: handleTouchEnd,
         className: "thread-graph-scroll-container min-h-0 flex-1 overflow-y-auto overscroll-contain",
         style: bottomSpacer > 0 ? { paddingBottom: bottomSpacer } : void 0,
         children: /* @__PURE__ */ jsxs34("div", { ref: scrollContentRef, className: "thread-graph-scroll-content", children: [

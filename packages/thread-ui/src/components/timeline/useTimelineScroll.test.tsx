@@ -3,6 +3,7 @@
  */
 import { flushSync } from 'react-dom';
 import { createRoot } from 'react-dom/client';
+import type { WheelEvent } from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import {
@@ -149,6 +150,116 @@ describe('useTimelineScroll', () => {
 
     expect(onLoadEarlier).toHaveBeenCalledTimes(1);
     expect(latestResult?.startIndex).toBe(0);
+    harness.unmount();
+  });
+
+  it('requires a second upward gesture at the top before server-managed earlier loading', () => {
+    const onLoadEarlier = vi.fn();
+    const harness = renderHookHarness({
+      ...baseInput({
+        turnsLength: 3,
+        totalTurnCount: 9,
+        onLoadEarlier,
+      }),
+      renderNodes: true,
+    });
+    const scrollContainer = harness.container.querySelector<HTMLDivElement>(
+      '[data-testid="scroll-container"]',
+    );
+    if (!scrollContainer) {
+      throw new Error('Expected scroll container to render.');
+    }
+
+    Object.defineProperties(scrollContainer, {
+      scrollTop: {
+        configurable: true,
+        writable: true,
+        value: 0,
+      },
+    });
+
+    flushSync(() => {
+      latestResult?.handleWheel({
+        deltaY: -24,
+      } as unknown as WheelEvent<HTMLDivElement>);
+    });
+    expect(onLoadEarlier).not.toHaveBeenCalled();
+
+    flushSync(() => {
+      latestResult?.handleWheel({
+        deltaY: -24,
+      } as unknown as WheelEvent<HTMLDivElement>);
+    });
+    expect(onLoadEarlier).toHaveBeenCalledTimes(1);
+    harness.unmount();
+  });
+
+  it('preserves the viewport when server-managed earlier turns are prepended', () => {
+    const onLoadEarlier = vi.fn();
+    let scrollHeight = 900;
+    let scrollTop = 0;
+    const harness = renderHookHarness({
+      ...baseInput({
+        turnsLength: 3,
+        totalTurnCount: 9,
+        onLoadEarlier,
+      }),
+      renderNodes: true,
+    });
+    const scrollContainer = harness.container.querySelector<HTMLDivElement>(
+      '[data-testid="scroll-container"]',
+    );
+    if (!scrollContainer) {
+      throw new Error('Expected scroll container to render.');
+    }
+
+    Object.defineProperties(scrollContainer, {
+      scrollHeight: {
+        configurable: true,
+        get: () => scrollHeight,
+      },
+      clientHeight: {
+        configurable: true,
+        value: 300,
+      },
+      scrollTop: {
+        configurable: true,
+        get: () => scrollTop,
+        set: (value: number) => {
+          scrollTop = value;
+        },
+      },
+    });
+
+    flushSync(() => {
+      latestResult?.handleScroll();
+      latestResult?.handleWheel({
+        deltaY: -24,
+      } as unknown as WheelEvent<HTMLDivElement>);
+    });
+    expect(onLoadEarlier).toHaveBeenCalledTimes(1);
+
+    harness.rerender({
+      ...baseInput({
+        turnsLength: 3,
+        totalTurnCount: 9,
+        loadingEarlier: true,
+        onLoadEarlier,
+      }),
+      renderNodes: true,
+    });
+    scrollHeight = 1200;
+    harness.rerender({
+      ...baseInput({
+        turnsLength: 6,
+        totalTurnCount: 9,
+        loadingEarlier: false,
+        onLoadEarlier,
+      }),
+      renderNodes: true,
+    });
+
+    expect(scrollTop).toBe(300);
     harness.unmount();
   });
 

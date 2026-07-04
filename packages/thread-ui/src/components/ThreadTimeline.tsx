@@ -185,6 +185,10 @@ function ThreadTimelineComponent({
     tailSentinelRef,
     topSentinelRef,
     handleScroll,
+    handleWheel,
+    handleTouchStart,
+    handleTouchMove,
+    handleTouchEnd,
     preserveScrollPositionForResize,
     serverManagedHistory,
     effectiveTotalTurnCount,
@@ -353,6 +357,11 @@ function ThreadTimelineComponent({
           ref={scrollContainerRef}
           data-testid="thread-scroll-container"
           onScroll={handleScroll}
+          onWheel={handleWheel}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+          onTouchCancel={handleTouchEnd}
           className="thread-graph-scroll-container min-h-0 flex-1 overflow-y-auto overscroll-contain"
           style={bottomSpacer > 0 ? { paddingBottom: bottomSpacer } : undefined}
         >
