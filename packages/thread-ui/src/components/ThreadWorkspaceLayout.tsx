@@ -84,6 +84,7 @@ interface ThreadWorkspaceLayoutProps {
   currentWorkspaceLabel?: string | null | undefined;
   sessionLabel?: string | null | undefined;
   usageLabel?: string | null | undefined;
+  threadActionsButton?: ReactNode;
   topbarActions?: ReactNode;
   workspaceLabels?: Record<string, string>;
   metaContent?: ReactNode;
@@ -423,6 +424,7 @@ export function ThreadWorkspaceLayout({
   currentWorkspaceLabel = null,
   sessionLabel = null,
   usageLabel = null,
+  threadActionsButton,
   topbarActions,
   metaContent,
   settingsContent,
@@ -1131,7 +1133,7 @@ export function ThreadWorkspaceLayout({
             <GraphChatTopbarShell>
               <div className="thread-topbar-row flex min-h-12 items-center px-3 py-1.5 sm:min-h-12 sm:px-4">
                 <div className="flex w-full items-center justify-between gap-3 sm:gap-4">
-                  <div className="flex min-w-0 items-center gap-2 sm:gap-3">
+                  <div className="flex min-w-0 flex-1 items-center gap-2 sm:gap-3">
                     {shouldShowMobileRoomsButton ? (
                       <button
                         type="button"
@@ -1222,10 +1224,16 @@ export function ThreadWorkspaceLayout({
                     </div>
                   </div>
 
-                  <div className="inline-flex shrink-0 items-center gap-2">
-                    {topbarActions ? (
+                  <div className="relative z-[1] inline-flex shrink-0 items-center gap-2">
+                    {threadActionsButton || topbarActions ? (
                       <div className="thread-graph-topbar-actions thread-desktop-only-inline-flex items-center rounded-lg border p-0.5 shadow-none">
+                        {threadActionsButton}
                         {topbarActions}
+                      </div>
+                    ) : null}
+                    {renderMobileTopbarControls && threadActionsButton ? (
+                      <div className="thread-mobile-only-inline-flex">
+                        {threadActionsButton}
                       </div>
                     ) : null}
                     {renderMobileTopbarControls && hasWorkspace ? (

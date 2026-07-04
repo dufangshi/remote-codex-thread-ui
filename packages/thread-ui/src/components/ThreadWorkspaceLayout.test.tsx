@@ -55,6 +55,25 @@ function renderLayout() {
   );
 }
 
+function renderLayoutWithActions() {
+  return render(
+    <ThreadWorkspaceLayout
+      threads={[]}
+      status={{
+        state: 'ready',
+        transport: 'sdk',
+        lastStartedAt: null,
+        lastError: null,
+        restartCount: 0,
+      }}
+      threadActionsButton={<button type="button" aria-label="Thread actions">Actions</button>}
+      workspaceContent={<div data-testid="workspace-content">Workspace</div>}
+    >
+      <div data-testid="chat-content">Chat</div>
+    </ThreadWorkspaceLayout>,
+  );
+}
+
 describe('ThreadWorkspaceLayout', () => {
   beforeEach(() => {
     mockViewport(false);
@@ -89,5 +108,12 @@ describe('ThreadWorkspaceLayout', () => {
     expect(element.querySelector('.thread-mobile-chat-hidden')).toBeNull();
     expect(element.querySelector('.thread-mobile-workspace-hidden')).toBeTruthy();
     expect(element.querySelector('[aria-label="Show workspace"]')).toBeTruthy();
+  });
+
+  it('renders thread actions in the mobile topbar', () => {
+    mockViewport(true);
+    const element = renderLayoutWithActions();
+
+    expect(element.querySelector('[aria-label="Thread actions"]')).toBeTruthy();
   });
 });

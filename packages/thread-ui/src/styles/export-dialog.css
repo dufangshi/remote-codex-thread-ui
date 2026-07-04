@@ -12,6 +12,14 @@
   --export-accent-border: rgb(251 191 36);
   --export-shadow: rgb(15 23 42 / 0.16);
   color: var(--export-fg);
+  position: fixed;
+  inset: 0;
+  z-index: 96;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  overflow: hidden;
+  padding: 0;
 }
 
 .thread-export-dialog-root.thread-ui-theme-dark,
@@ -41,9 +49,19 @@
 }
 
 .thread-export-dialog-panel {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  width: 100%;
+  max-width: 42rem;
+  flex-direction: column;
   border-color: var(--export-border);
   background: var(--export-panel);
   box-shadow: 0 26px 80px var(--export-shadow);
+  max-height: calc(
+    100% - max(env(safe-area-inset-top), var(--android-safe-area-top, 0px)) -
+      max(0.75rem, env(safe-area-inset-bottom), var(--android-safe-area-bottom, 0px))
+  );
 }
 
 .thread-export-dialog-header,
@@ -113,4 +131,25 @@
 
 .thread-export-dialog-turn-row {
   color: var(--export-fg-soft);
+}
+
+@media (max-width: 639px) {
+  .thread-export-dialog-panel {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    max-width: none;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+    transform: translateZ(0);
+  }
+}
+
+@media (min-width: 640px) {
+  .thread-export-dialog-root {
+    align-items: center;
+    padding: 1.5rem;
+  }
 }

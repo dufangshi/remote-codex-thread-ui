@@ -2,6 +2,7 @@ import {
   useCallback,
   useEffect,
   useLayoutEffect,
+  useMemo,
   useRef,
   useState,
   type ComponentType,
@@ -282,6 +283,40 @@ export function GraphChatThreadChatPanel({
             'max(env(safe-area-inset-bottom), var(--android-safe-area-bottom, 0px))',
         }
       : undefined;
+  const timelineElement = useMemo(() => {
+    const threadRunning =
+      detail.thread.status === 'running' || detail.thread.activeTurnId !== null;
+
+    return (
+      <TimelineComponent
+        threadId={detail.thread.id}
+        turns={detail.turns}
+        totalTurnCount={detail.totalTurnCount ?? detail.turns.length}
+        pendingRequests={detail.pendingRequests}
+        activeTurnId={detail.thread.activeTurnId}
+        threadRunning={threadRunning}
+        liveOutput={liveOutput}
+        className="thread-timeline-surface min-h-0 flex-1"
+        {...timelineProps}
+        adapter={timelineAdapter}
+        onOpenThread={timelineProps?.onOpenThread ?? adapter.openThread}
+        onTailVisibilityChange={handleTailVisibilityChange}
+      />
+    );
+  }, [
+    TimelineComponent,
+    adapter.openThread,
+    detail.pendingRequests,
+    detail.thread.activeTurnId,
+    detail.thread.id,
+    detail.thread.status,
+    detail.totalTurnCount,
+    detail.turns,
+    handleTailVisibilityChange,
+    liveOutput,
+    timelineAdapter,
+    timelineProps,
+  ]);
 
   return (
     <div
@@ -290,23 +325,7 @@ export function GraphChatThreadChatPanel({
       style={panelStyle}
     >
       {beforeTimelineContent}
-      <TimelineComponent
-        threadId={detail.thread.id}
-        turns={detail.turns}
-        totalTurnCount={detail.totalTurnCount ?? detail.turns.length}
-        pendingRequests={detail.pendingRequests}
-        activeTurnId={detail.thread.activeTurnId}
-        threadRunning={
-          detail.thread.status === 'running' ||
-          detail.thread.activeTurnId !== null
-        }
-        liveOutput={liveOutput}
-        className="thread-timeline-surface min-h-0 flex-1"
-        {...timelineProps}
-        adapter={timelineAdapter}
-        onOpenThread={timelineProps?.onOpenThread ?? adapter.openThread}
-        onTailVisibilityChange={handleTailVisibilityChange}
-      />
+      {timelineElement}
       <div className="thread-chat-usage-footer hidden shrink-0 items-center justify-between gap-3 px-4 py-1 text-[10px] leading-4 sm:flex">
         <span className="min-w-0 truncate">
           {detail.turns.length} turn{detail.turns.length !== 1 ? 's' : ''}

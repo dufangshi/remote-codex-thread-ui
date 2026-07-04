@@ -4276,7 +4276,7 @@ styleInject('} .thread-ui-shell .thread-graph-panel-expand-fab.left-3 {\n  left:
 styleInject(".thread-ui-shell .timeline-soft-text,\n.thread-ui-shell .thread-message-prose :where(blockquote) {\n  color: var(--theme-fg-soft);\n}\n.thread-ui-shell .timeline-meta-text,\n.thread-ui-shell .thread-message-prose :where(figcaption) {\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .timeline-overlay-badge,\n.thread-ui-shell .ui-status-neutral,\n.thread-ui-shell .ui-status-info,\n.thread-ui-shell .ui-status-warning,\n.thread-ui-shell .ui-status-success,\n.thread-ui-shell .ui-status-danger {\n  border-color: transparent;\n  box-shadow: none;\n}\n.thread-ui-shell .timeline-command-status-complete,\n.thread-ui-shell .timeline-command-status-pending,\n.thread-ui-shell .timeline-delta-badge,\n.thread-ui-shell .timeline-live-plan-step {\n  border-color: var(--theme-border);\n  background: var(--theme-muted);\n  color: var(--theme-fg-soft);\n}\n.thread-ui-shell .ui-status-neutral {\n  background: var(--theme-muted);\n  color: var(--theme-fg-soft);\n}\n.thread-ui-shell.thread-ui-theme-dark .ui-status-neutral,\n.thread-ui-shell[data-theme-effective=dark] .ui-status-neutral,\n.thread-ui-shell.dark .ui-status-neutral {\n  border-color: #303642;\n  background: #151923;\n  color: rgb(203 213 225);\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-room-card.is-active .ui-status-neutral,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-room-card.is-active .ui-status-neutral,\n.thread-ui-shell.dark .thread-graph-room-card.is-active .ui-status-neutral {\n  border-color: #424b5e;\n  background: #1a1f2a;\n  color: rgb(203 213 225);\n}\n.thread-ui-shell .ui-status-info {\n  background: oklch(0.94 0.03 235);\n  color: oklch(0.43 0.09 242);\n}\n.thread-ui-shell .ui-status-warning {\n  background: oklch(0.94 0.048 84);\n  color: oklch(0.46 0.08 75);\n}\n.thread-ui-shell .ui-status-success {\n  background: oklch(0.94 0.052 155);\n  color: oklch(0.43 0.095 155);\n}\n.thread-ui-shell .ui-status-danger {\n  background: oklch(0.94 0.04 25);\n  color: oklch(0.48 0.125 24);\n}\n.thread-ui-shell.thread-ui-theme-dark .ui-status-info,\n.thread-ui-shell[data-theme-effective=dark] .ui-status-info,\n.thread-ui-shell.dark .ui-status-info {\n  background: oklch(0.3 0.042 235);\n  color: oklch(0.77 0.1 235);\n}\n.thread-ui-shell.thread-ui-theme-dark .ui-status-warning,\n.thread-ui-shell[data-theme-effective=dark] .ui-status-warning,\n.thread-ui-shell.dark .ui-status-warning {\n  background: oklch(0.31 0.045 75);\n  color: oklch(0.83 0.11 80);\n}\n.thread-ui-shell.thread-ui-theme-dark .ui-status-success,\n.thread-ui-shell[data-theme-effective=dark] .ui-status-success,\n.thread-ui-shell.dark .ui-status-success {\n  background: oklch(0.31 0.05 155);\n  color: oklch(0.8 0.115 155);\n}\n.thread-ui-shell.thread-ui-theme-dark .ui-status-danger,\n.thread-ui-shell[data-theme-effective=dark] .ui-status-danger,\n.thread-ui-shell.dark .ui-status-danger {\n  background: oklch(0.31 0.052 25);\n  color: oklch(0.78 0.12 25);\n}\n.thread-ui-shell .thread-message-icon-user,\n.thread-ui-shell .thread-message-icon-agent {\n  border-color: transparent;\n  background: var(--theme-muted);\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-graph-thinking-trigger {\n  display: inline-flex;\n  align-items: center;\n  color: rgb(148 163 184);\n}\n.thread-ui-shell .thread-graph-thinking-trigger:hover,\n.thread-ui-shell .thread-graph-thinking-trigger[data-state=open] {\n  color: rgb(125 211 252);\n}\n.thread-ui-shell .thread-graph-thinking-label {\n  min-width: 0;\n}\n.thread-ui-shell .thread-graph-thinking-body {\n  border-color: rgb(42 47 58);\n  background: #1b1f29;\n  color: rgb(203 213 225);\n}\n.thread-ui-shell[data-theme-effective=light] .thread-graph-thinking-trigger {\n  color: rgb(100 116 139);\n}\n.thread-ui-shell[data-theme-effective=light] .thread-graph-thinking-trigger:hover,\n.thread-ui-shell[data-theme-effective=light] .thread-graph-thinking-trigger[data-state=open] {\n  color: rgb(3 105 161);\n}\n.thread-ui-shell[data-theme-effective=light] .thread-graph-thinking-body {\n  border-color: rgb(226 232 240);\n  background: rgb(248 250 252);\n  color: rgb(51 65 85);\n}\n.thread-ui-shell .timeline-corner-copy-visual {\n  border-color: var(--theme-border);\n  background: color-mix(in oklch, var(--theme-panel) 88%, transparent);\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-composer-form {\n  border-color: var(--theme-border);\n  background: var(--theme-surface);\n}\n.thread-ui-shell .thread-composer-toolbar,\n.thread-ui-shell .thread-composer-input,\n.thread-ui-shell .thread-composer-menu {\n  border-color: var(--theme-border);\n  background: var(--theme-panel);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-composer-toolbar {\n  border-radius: 0;\n  border: 0;\n  background: transparent;\n  box-shadow: none;\n  order: 2;\n  min-height: 2.75rem;\n  padding: 0.25rem 0.75rem 0.65rem;\n  flex-wrap: wrap;\n  align-items: center;\n}\n.thread-ui-shell .thread-composer-prompt-region {\n  order: 1;\n}\n.thread-ui-shell .thread-composer-input {\n  position: relative;\n  min-height: 5.25rem !important;\n  max-height: 12rem !important;\n  border: 0;\n  border-radius: 0;\n  background: transparent !important;\n  box-shadow: none;\n  overflow: visible;\n  padding-top: 0.7rem;\n  padding-bottom: 0.45rem;\n}\n.thread-ui-shell .thread-composer-input:focus-within {\n  border-color: transparent;\n  box-shadow: none;\n}\n.thread-ui-shell .thread-composer-input [contenteditable],\n.thread-ui-shell .thread-composer-input textarea {\n  display: block;\n  width: 100%;\n  min-width: 0;\n  background: transparent !important;\n  color: var(--theme-fg);\n  font-size: 1rem;\n  line-height: 1.55;\n}\n.thread-ui-shell .thread-composer-input [contenteditable] {\n  min-height: 4.15rem !important;\n  max-height: 9.5rem !important;\n  overflow-y: auto;\n}\n.thread-ui-shell .thread-composer-input textarea {\n  min-height: 4.15rem !important;\n  max-height: 9.5rem !important;\n  overflow-y: auto;\n  resize: none;\n}\n.thread-ui-shell .thread-composer-shell {\n  border: 1px solid var(--theme-border);\n  background: #fbfcfd;\n  box-shadow: 0 4px 18px oklch(0.22 0.024 255 / 0.04);\n}\n.thread-ui-shell .thread-composer-send-button {\n  flex: 0 0 auto;\n}\n.thread-ui-shell .thread-goal-compose-card {\n  border-color: color-mix(in oklch, var(--theme-accent-solid) 18%, var(--theme-border));\n  background: color-mix(in oklch, var(--theme-accent-solid) 7%, var(--theme-panel));\n  color: var(--theme-fg-soft);\n  box-shadow: 0 8px 18px rgb(15 23 42 / 0.05);\n}\n.thread-ui-shell .thread-goal-compose-label {\n  color: color-mix(in oklch, var(--theme-accent-solid) 68%, var(--theme-fg));\n}\n.thread-ui-shell .thread-goal-compose-field {\n  color: var(--theme-fg-soft);\n}\n.thread-ui-shell .thread-goal-compose-input {\n  border-color: color-mix(in oklch, var(--theme-accent-solid) 20%, var(--theme-border));\n  background: var(--theme-panel);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-goal-compose-input::placeholder {\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-goal-compose-input:focus {\n  border-color: color-mix(in oklch, var(--theme-accent-solid) 48%, var(--theme-border));\n}\n.thread-ui-shell .thread-goal-compose-cancel {\n  border-color: var(--theme-border);\n  background: var(--theme-surface-strong);\n  color: var(--theme-fg-soft);\n}\n.thread-ui-shell .thread-goal-compose-cancel:hover {\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-goal-compose-error {\n  color: rgb(190 18 60);\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-goal-compose-card,\n.thread-ui-shell[data-theme-effective=dark] .thread-goal-compose-card,\n.thread-ui-shell.dark .thread-goal-compose-card {\n  border-color: rgb(125 211 252 / 0.25);\n  background: rgb(125 211 252 / 0.07);\n  color: rgb(226 232 240);\n  box-shadow: 0 8px 18px rgb(0 0 0 / 0.18);\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-goal-compose-label,\n.thread-ui-shell[data-theme-effective=dark] .thread-goal-compose-label,\n.thread-ui-shell.dark .thread-goal-compose-label {\n  color: rgb(224 242 254 / 0.9);\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-goal-compose-field,\n.thread-ui-shell[data-theme-effective=dark] .thread-goal-compose-field,\n.thread-ui-shell.dark .thread-goal-compose-field {\n  color: rgb(203 213 225);\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-goal-compose-input,\n.thread-ui-shell[data-theme-effective=dark] .thread-goal-compose-input,\n.thread-ui-shell.dark .thread-goal-compose-input {\n  border-color: rgb(125 211 252 / 0.25);\n  background: rgb(2 6 23 / 0.46);\n  color: rgb(241 245 249);\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-goal-compose-cancel,\n.thread-ui-shell[data-theme-effective=dark] .thread-goal-compose-cancel,\n.thread-ui-shell.dark .thread-goal-compose-cancel {\n  border-color: #343b48;\n  background: #1d222c;\n  color: rgb(203 213 225);\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-goal-compose-cancel:hover,\n.thread-ui-shell[data-theme-effective=dark] .thread-goal-compose-cancel:hover,\n.thread-ui-shell.dark .thread-goal-compose-cancel:hover {\n  background: #222733;\n  color: rgb(241 245 249);\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-goal-compose-error,\n.thread-ui-shell[data-theme-effective=dark] .thread-goal-compose-error,\n.thread-ui-shell.dark .thread-goal-compose-error {\n  color: rgb(254 205 211);\n}\n@media (min-width: 640px) {\n  .thread-ui-shell:not([data-thread-layout=mobile]) .thread-composer-shell {\n    border-radius: 16px;\n  }\n  .thread-ui-shell:not([data-thread-layout=mobile]) .thread-composer-input {\n    min-height: 5.75rem !important;\n    max-height: 12.5rem !important;\n    padding-top: 0.9rem;\n  }\n  .thread-ui-shell:not([data-thread-layout=mobile]) .thread-composer-input [contenteditable],\n  .thread-ui-shell:not([data-thread-layout=mobile]) .thread-composer-input textarea {\n    min-height: 4.5rem !important;\n    max-height: 10rem !important;\n    font-size: 0.875rem;\n  }\n}\n.thread-ui-shell:not([data-thread-layout=mobile]) .thread-composer-form {\n  padding: 0.5rem 1rem 0.75rem;\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-composer-shell,\n.thread-ui-shell[data-theme-effective=dark] .thread-composer-shell,\n.thread-ui-shell.dark .thread-composer-shell {\n  border-color: #303642;\n  background: #181b23;\n  box-shadow: 0 8px 24px oklch(0 0 0 / 0.22);\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-composer-toolbar,\n.thread-ui-shell[data-theme-effective=dark] .thread-composer-toolbar,\n.thread-ui-shell.dark .thread-composer-toolbar,\n.thread-ui-shell.thread-ui-theme-dark .thread-composer-input,\n.thread-ui-shell[data-theme-effective=dark] .thread-composer-input,\n.thread-ui-shell.dark .thread-composer-input {\n  border-color: #303642 !important;\n  background: transparent !important;\n  color: rgb(241 245 249) !important;\n  box-shadow: none !important;\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-composer-input [contenteditable],\n.thread-ui-shell[data-theme-effective=dark] .thread-composer-input [contenteditable],\n.thread-ui-shell.dark .thread-composer-input [contenteditable],\n.thread-ui-shell.thread-ui-theme-dark .thread-composer-input textarea,\n.thread-ui-shell[data-theme-effective=dark] .thread-composer-input textarea,\n.thread-ui-shell.dark .thread-composer-input textarea {\n  background: transparent !important;\n  color: rgb(241 245 249) !important;\n}\n.thread-ui-shell .thread-graph-composer-form {\n  border-color: var(--theme-border);\n  background: var(--theme-surface);\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-composer-form,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-composer-form,\n.thread-ui-shell.dark .thread-graph-composer-form {\n  border-color: var(--theme-border);\n  background: var(--theme-surface);\n}\n.thread-ui-shell .thread-graph-composer-shell {\n  border: 1px solid var(--theme-border);\n  background: var(--theme-panel);\n  box-shadow: 0 4px 18px oklch(0.22 0.024 255 / 0.04);\n  overflow: visible !important;\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-composer-shell,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-composer-shell,\n.thread-ui-shell.dark .thread-graph-composer-shell {\n  border-color: var(--theme-border-strong);\n  background: var(--theme-panel);\n  box-shadow: 0 8px 24px oklch(0 0 0 / 0.22);\n}\n.thread-ui-shell .thread-graph-composer-input-group {\n  order: 1;\n  display: flex;\n  flex-direction: column;\n  align-items: stretch;\n  height: auto;\n  min-height: 0;\n  color: rgb(30 41 59);\n  overflow: visible !important;\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-composer-input-group,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-composer-input-group,\n.thread-ui-shell.dark .thread-graph-composer-input-group {\n  color: rgb(241 245 249);\n}\n.thread-ui-shell .thread-graph-composer-prompt-region {\n  order: 1;\n}\n.thread-ui-shell .thread-graph-composer-input {\n  position: relative;\n  border: 0;\n  background: transparent;\n  color: rgb(30 41 59);\n  box-shadow: none;\n  overflow-y: auto;\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-composer-input,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-composer-input,\n.thread-ui-shell.dark .thread-graph-composer-input {\n  color: rgb(241 245 249);\n}\n.thread-ui-shell .thread-graph-composer-input [contenteditable] {\n  display: block;\n  width: 100%;\n  min-width: 0;\n  overflow-y: auto;\n  background: transparent;\n  color: inherit;\n}\n.thread-ui-shell .thread-graph-composer-input .thread-composer-attachment-chip,\n.thread-ui-shell .thread-composer-input .thread-composer-attachment-chip {\n  box-sizing: border-box;\n  flex: 0 0 auto;\n  width: max-content !important;\n  max-width: min(100%, 7.25rem) !important;\n  vertical-align: middle;\n}\n.thread-ui-shell .thread-graph-composer-input .thread-composer-attachment-chip-photo,\n.thread-ui-shell .thread-composer-input .thread-composer-attachment-chip-photo {\n  display: inline-flex !important;\n  flex-direction: column;\n  align-items: flex-start;\n  gap: 0.25rem;\n  padding: 0.35rem !important;\n}\n.thread-ui-shell .thread-graph-composer-input .thread-composer-attachment-thumb,\n.thread-ui-shell .thread-composer-input .thread-composer-attachment-thumb {\n  display: block;\n  width: 5.75rem !important;\n  height: 3.75rem !important;\n  max-width: 100%;\n  border-radius: 0.6rem !important;\n  object-fit: cover;\n}\n.thread-ui-shell .thread-graph-composer-input .thread-composer-attachment-caption,\n.thread-ui-shell .thread-composer-input .thread-composer-attachment-caption {\n  display: block !important;\n  width: 100%;\n  max-width: 5.75rem !important;\n  margin-left: 0 !important;\n  overflow: hidden;\n  color: rgb(3 105 161);\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-composer-input .thread-composer-attachment-caption,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-composer-input .thread-composer-attachment-caption,\n:root[data-theme-effective=dark] .thread-ui-shell .thread-graph-composer-input .thread-composer-attachment-caption,\n.thread-ui-shell.dark .thread-graph-composer-input .thread-composer-attachment-caption,\n.thread-ui-shell.thread-ui-theme-dark .thread-composer-input .thread-composer-attachment-caption,\n.thread-ui-shell[data-theme-effective=dark] .thread-composer-input .thread-composer-attachment-caption,\n:root[data-theme-effective=dark] .thread-ui-shell .thread-composer-input .thread-composer-attachment-caption,\n.thread-ui-shell.dark .thread-composer-input .thread-composer-attachment-caption {\n  color: rgb(125 211 252);\n}\n.thread-ui-shell .thread-graph-composer-toolbar {\n  order: 2;\n  width: 100%;\n  min-height: 2.75rem;\n  flex-wrap: wrap;\n  justify-content: flex-start;\n  gap: 0.5rem;\n  border: 0;\n  background: transparent;\n  padding: 0 0.5rem 0.5rem;\n  color: rgb(100 116 139);\n  box-shadow: none;\n  overflow: visible !important;\n}\n@media (min-width: 640px) {\n  .thread-ui-shell:not([data-thread-layout=mobile]) .thread-graph-composer-toolbar {\n    flex-wrap: nowrap;\n    padding: 0 0.75rem 0.75rem;\n  }\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-composer-toolbar,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-composer-toolbar,\n.thread-ui-shell.dark .thread-graph-composer-toolbar {\n  color: rgb(148 163 184);\n}\n.thread-ui-shell .thread-graph-composer-send-button {\n  flex: 0 0 auto;\n}\n.thread-ui-shell .thread-graph-composer-stop-button {\n  border-color: rgb(244 63 94 / 0.28) !important;\n  box-shadow: 0 8px 18px rgb(15 23 42 / 0.14);\n}\n.thread-ui-shell .thread-graph-composer-prompt-region .thread-graph-composer-stop-button {\n  position: absolute;\n}\n@media (max-width: 639px) {\n  .thread-ui-shell .thread-graph-composer-form {\n    padding: 0.35rem 0.55rem calc(env(safe-area-inset-bottom) + 0.35rem) !important;\n  }\n  .thread-ui-shell .thread-graph-composer-shell {\n    border-radius: 14px !important;\n  }\n  .thread-ui-shell .thread-graph-composer-input {\n    min-height: 3.65rem !important;\n    max-height: 7.5rem !important;\n    padding: 0.65rem 0.75rem 0.2rem !important;\n  }\n  .thread-ui-shell .thread-graph-composer-input [contenteditable] {\n    min-height: 3rem !important;\n    padding-right: 2.5rem;\n  }\n  .thread-ui-shell .thread-graph-composer-toolbar {\n    min-height: 2.35rem;\n    gap: 0.3rem;\n    padding: 0 0.45rem 0.45rem;\n  }\n  .thread-ui-shell .thread-graph-composer-toolbar > .flex {\n    min-width: 0;\n    gap: 0.3rem;\n  }\n  .thread-ui-shell .thread-graph-composer-icon-button,\n  .thread-ui-shell .thread-graph-composer-send-button {\n    width: 1.95rem !important;\n    height: 1.95rem !important;\n  }\n  .thread-ui-shell .thread-graph-composer-inline-toggle {\n    height: 1.95rem;\n    max-width: 6.75rem !important;\n    padding-left: 0.5rem !important;\n    padding-right: 0.5rem !important;\n    font-size: 0.6875rem;\n  }\n  .thread-ui-shell .thread-graph-composer-stop-button {\n    top: 0.45rem !important;\n    right: 0.45rem !important;\n    width: 1.8rem !important;\n    height: 1.8rem !important;\n  }\n}\n.thread-ui-shell .thread-composer-icon-button,\n.thread-ui-shell .thread-composer-inline-toggle,\n.thread-ui-shell .thread-composer-chip-button,\n.thread-ui-shell .thread-composer-menu-item,\n.thread-ui-shell .thread-composer-panel-button,\n.thread-ui-shell .thread-graph-composer-icon-button,\n.thread-ui-shell .thread-graph-composer-inline-toggle,\n.thread-ui-shell .thread-graph-composer-chip-button,\n.thread-ui-shell .thread-graph-composer-menu-item,\n.thread-ui-shell .thread-graph-composer-panel-button {\n  border-color: var(--theme-border) !important;\n  background: transparent !important;\n  color: var(--theme-fg-soft) !important;\n}\n.thread-ui-shell .thread-composer-icon-button:hover,\n.thread-ui-shell .thread-composer-inline-toggle:hover,\n.thread-ui-shell .thread-composer-chip-button:hover,\n.thread-ui-shell .thread-composer-menu-item:hover,\n.thread-ui-shell .thread-composer-panel-button:hover,\n.thread-ui-shell .thread-graph-composer-icon-button:hover,\n.thread-ui-shell .thread-graph-composer-inline-toggle:hover,\n.thread-ui-shell .thread-graph-composer-chip-button:hover,\n.thread-ui-shell .thread-graph-composer-menu-item:hover,\n.thread-ui-shell .thread-graph-composer-panel-button:hover {\n  background: var(--theme-hover) !important;\n  color: var(--theme-fg) !important;\n}\n.thread-ui-shell .thread-composer-icon-button,\n.thread-ui-shell .thread-graph-composer-icon-button {\n  background: var(--theme-muted) !important;\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-composer-icon-button,\n.thread-ui-shell[data-theme-effective=dark] .thread-composer-icon-button,\n.thread-ui-shell.dark .thread-composer-icon-button,\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-composer-icon-button,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-composer-icon-button,\n.thread-ui-shell.dark .thread-graph-composer-icon-button {\n  border-color: #303642 !important;\n  background: #222733 !important;\n  color: rgb(203 213 225) !important;\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-composer-icon-button:hover,\n.thread-ui-shell[data-theme-effective=dark] .thread-composer-icon-button:hover,\n.thread-ui-shell.dark .thread-composer-icon-button:hover,\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-composer-icon-button:hover,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-composer-icon-button:hover,\n.thread-ui-shell.dark .thread-graph-composer-icon-button:hover {\n  background: #2b313d !important;\n  color: rgb(241 245 249) !important;\n}\n.thread-ui-shell .thread-composer-menu,\n.thread-ui-shell .thread-graph-composer-menu {\n  border-radius: 12px;\n  border-color: var(--theme-border) !important;\n  background: color-mix(in oklch, var(--theme-panel) 96%, transparent) !important;\n  color: var(--theme-fg) !important;\n  box-shadow: 0 16px 38px oklch(0.22 0.024 255 / 0.16);\n  z-index: 80;\n}\n.thread-ui-shell [data-composer-menu-surface=true] {\n  border-color: var(--theme-border) !important;\n  background: color-mix(in oklch, var(--theme-panel) 96%, transparent) !important;\n  color: var(--theme-fg) !important;\n  box-shadow: 0 16px 38px oklch(0.22 0.024 255 / 0.16) !important;\n}\n.thread-ui-shell .thread-graph-composer-menu {\n  max-height: min(27rem, calc(100svh - 8rem));\n  overflow: auto !important;\n}\n.thread-ui-shell :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(input, textarea, select) {\n  border-color: var(--theme-border) !important;\n  background: var(--theme-panel) !important;\n  color: var(--theme-fg) !important;\n}\n.thread-ui-shell :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(input, textarea)::placeholder {\n  color: var(--theme-fg-muted) !important;\n}\n.thread-ui-shell :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(input, textarea, select):focus {\n  border-color: color-mix(in oklch, var(--theme-accent-solid) 38%, var(--theme-border)) !important;\n}\n.thread-ui-shell :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(.border-sky-300\\/35, .border-emerald-400\\/45) {\n  border-color: color-mix(in oklch, var(--theme-accent-solid) 24%, var(--theme-border)) !important;\n}\n.thread-ui-shell :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(.bg-sky-300\\/10, .bg-sky-300\\/12, .bg-emerald-400\\/12) {\n  background: color-mix(in oklch, var(--theme-accent-solid) 8%, var(--theme-panel)) !important;\n}\n.thread-ui-shell :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(.text-rose-100\\/90, .text-rose-200) {\n  color: rgb(190 18 60) !important;\n}\n.thread-ui-shell :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(.text-amber-100\\/85, .text-amber-100\\/60) {\n  color: rgb(146 64 14) !important;\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-composer-menu,\n.thread-ui-shell[data-theme-effective=dark] .thread-composer-menu,\n:root[data-theme-effective=dark] .thread-ui-shell .thread-composer-menu,\n.thread-ui-shell.dark .thread-composer-menu,\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-composer-menu,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-composer-menu,\n:root[data-theme-effective=dark] .thread-ui-shell .thread-graph-composer-menu,\n.thread-ui-shell.dark .thread-graph-composer-menu,\n.thread-ui-shell.thread-ui-theme-dark [data-composer-menu-surface=true],\n.thread-ui-shell[data-theme-effective=dark] [data-composer-menu-surface=true],\n:root[data-theme-effective=dark] .thread-ui-shell [data-composer-menu-surface=true],\n.thread-ui-shell.dark [data-composer-menu-surface=true] {\n  border-color: #303642 !important;\n  background: rgb(23 26 34 / 0.96) !important;\n  color: rgb(241 245 249) !important;\n  box-shadow: 0 18px 48px rgb(0 0 0 / 0.28) !important;\n}\n.thread-ui-shell.thread-ui-theme-dark :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(input, textarea, select),\n.thread-ui-shell[data-theme-effective=dark] :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(input, textarea, select),\n:root[data-theme-effective=dark] .thread-ui-shell :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(input, textarea, select),\n.thread-ui-shell.dark :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(input, textarea, select) {\n  border-color: #303642 !important;\n  background: #11141a !important;\n  color: rgb(241 245 249) !important;\n}\n.thread-ui-shell.thread-ui-theme-dark :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(.text-rose-100\\/90, .text-rose-200),\n.thread-ui-shell[data-theme-effective=dark] :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(.text-rose-100\\/90, .text-rose-200),\n:root[data-theme-effective=dark] .thread-ui-shell :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(.text-rose-100\\/90, .text-rose-200),\n.thread-ui-shell.dark :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(.text-rose-100\\/90, .text-rose-200) {\n  color: rgb(254 205 211) !important;\n}\n.thread-ui-shell.thread-ui-theme-dark :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(.text-amber-100\\/85, .text-amber-100\\/60),\n.thread-ui-shell[data-theme-effective=dark] :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(.text-amber-100\\/85, .text-amber-100\\/60),\n:root[data-theme-effective=dark] .thread-ui-shell :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(.text-amber-100\\/85, .text-amber-100\\/60),\n.thread-ui-shell.dark :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(.text-amber-100\\/85, .text-amber-100\\/60) {\n  color: rgb(253 230 138) !important;\n}\n.thread-ui-shell .thread-composer-plan-toggle-active,\n.thread-ui-shell .thread-graph-composer-plan-toggle-active {\n  border-color: oklch(0.76 0.17 88 / 0.72) !important;\n  background:\n    linear-gradient(\n      135deg,\n      oklch(0.78 0.16 86 / 0.26),\n      oklch(0.64 0.12 190 / 0.2)),\n    var(--theme-accent-soft) !important;\n  color: oklch(0.92 0.09 92) !important;\n  box-shadow:\n    0 0 0 1px oklch(0.78 0.16 86 / 0.22),\n    0 0 18px oklch(0.78 0.16 86 / 0.28),\n    inset 0 0 0 1px oklch(0.95 0.04 90 / 0.16) !important;\n}\n.thread-ui-shell .thread-jump-latest-badge {\n  border-color: var(--theme-border);\n  background: var(--theme-panel);\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .ui-action-primary {\n  background: var(--theme-accent-solid);\n  color: var(--theme-accent-solid-fg);\n}\n.thread-ui-shell .ui-action-primary:hover {\n  background: var(--theme-accent-solid-hover);\n}\n.thread-ui-shell .ui-action-info {\n  background: oklch(0.46 0.1 235);\n  color: oklch(0.98 0.005 235);\n}\n.thread-ui-shell .ui-action-danger {\n  background: oklch(0.56 0.16 25);\n  color: oklch(0.98 0.005 25);\n}\n.thread-ui-shell .thread-composer-send-button.ui-action-danger,\n.thread-ui-shell .thread-graph-composer-send-button.ui-action-danger {\n  border: 1px solid var(--theme-border) !important;\n  background: var(--theme-muted) !important;\n  color: var(--theme-fg-soft) !important;\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-composer-send-button.ui-action-danger,\n.thread-ui-shell[data-theme-effective=dark] .thread-composer-send-button.ui-action-danger,\n.thread-ui-shell.dark .thread-composer-send-button.ui-action-danger,\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-composer-send-button.ui-action-danger,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-composer-send-button.ui-action-danger,\n.thread-ui-shell.dark .thread-graph-composer-send-button.ui-action-danger {\n  border-color: #303642 !important;\n  background: #222733 !important;\n  color: rgb(241 245 249) !important;\n}\n.thread-ui-shell .thread-composer-send-button.ui-action-danger:hover,\n.thread-ui-shell .thread-graph-composer-send-button.ui-action-danger:hover {\n  background: var(--theme-hover) !important;\n  color: var(--theme-fg) !important;\n}\n.thread-ui-shell .thread-empty-surface,\n.thread-ui-shell .timeline-pending-card,\n.thread-ui-shell .timeline-note-card,\n.thread-ui-shell .timeline-activity-card,\n.thread-ui-shell .timeline-live-plan-card,\n.thread-ui-shell .timeline-question-section,\n.thread-ui-shell .timeline-live-plan-step,\n.thread-ui-shell .timeline-detail-row {\n  border-color: var(--theme-border);\n  background: var(--theme-panel);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .prose,\n.thread-ui-shell .prose :where(p, li, strong, code, pre, blockquote) {\n  color: inherit;\n}\n.thread-ui-shell .prose img {\n  max-width: min(28rem, 100%);\n  height: auto;\n  border-radius: 10px;\n  border: 1px solid var(--theme-border);\n  box-shadow: 0 12px 35px oklch(0.22 0.024 255 / 0.14);\n  margin-top: 0.75rem;\n  margin-bottom: 0.75rem;\n}\n.thread-ui-shell .thread-graph-plan-card {\n  border-color: rgb(42 47 58);\n  background: #1b1f29;\n  color: rgb(241 245 249);\n  box-shadow: none;\n}\n.thread-ui-shell .thread-graph-plan-step {\n  border-color: rgb(48 54 66);\n  background: #181b23;\n  color: rgb(241 245 249);\n}\n.thread-ui-shell .thread-graph-plan-explanation {\n  color: rgb(148 163 184);\n}\n.thread-ui-shell .thread-graph-plan-badge {\n  border-color: transparent;\n  background: rgb(56 189 248 / 0.12);\n  color: rgb(186 230 253);\n  box-shadow: none;\n  text-transform: uppercase;\n  letter-spacing: 0.16em;\n}\n.thread-ui-shell .thread-graph-plan-status {\n  height: 1.75rem;\n  min-width: 1.75rem;\n  padding: 0;\n  border-color: transparent;\n  box-shadow: none;\n}\n.thread-ui-shell .thread-graph-plan-status.is-completed {\n  background: rgb(52 211 153 / 0.14);\n  color: rgb(167 243 208);\n}\n.thread-ui-shell .thread-graph-plan-status.is-running {\n  background: rgb(56 189 248 / 0.14);\n  color: rgb(186 230 253);\n}\n.thread-ui-shell .thread-graph-plan-status.is-pending,\n.thread-ui-shell .thread-graph-plan-status.is-unknown {\n  background: #2b313d;\n  color: rgb(203 213 225);\n}\n.thread-ui-shell .thread-graph-plan-status.is-failed {\n  background: rgb(251 113 133 / 0.14);\n  color: rgb(254 205 211);\n}\n.thread-ui-shell[data-theme-effective=light] .thread-graph-plan-card {\n  border-color: rgb(226 232 240);\n  background: rgb(248 250 252);\n  color: rgb(15 23 42);\n}\n.thread-ui-shell[data-theme-effective=light] .thread-graph-plan-step {\n  border-color: rgb(226 232 240);\n  background: rgb(255 255 255);\n  color: rgb(15 23 42);\n}\n.thread-ui-shell[data-theme-effective=light] .thread-graph-plan-explanation {\n  color: rgb(100 116 139);\n}\n.thread-ui-shell[data-theme-effective=light] .thread-graph-plan-badge {\n  background: rgb(14 165 233 / 0.1);\n  color: rgb(3 105 161);\n}\n.thread-ui-shell[data-theme-effective=light] .thread-graph-plan-status.is-completed {\n  background: rgb(16 185 129 / 0.12);\n  color: rgb(4 120 87);\n}\n.thread-ui-shell[data-theme-effective=light] .thread-graph-plan-status.is-running {\n  background: rgb(14 165 233 / 0.12);\n  color: rgb(3 105 161);\n}\n.thread-ui-shell[data-theme-effective=light] .thread-graph-plan-status.is-pending,\n.thread-ui-shell[data-theme-effective=light] .thread-graph-plan-status.is-unknown {\n  background: rgb(226 232 240);\n  color: rgb(71 85 105);\n}\n.thread-ui-shell[data-theme-effective=light] .thread-graph-plan-status.is-failed {\n  background: rgb(244 63 94 / 0.12);\n  color: rgb(190 18 60);\n}\n.thread-ui-shell .thread-graph-event {\n  background: transparent !important;\n  color: var(--theme-fg) !important;\n}\n.thread-ui-shell .thread-graph-event-card {\n  background: var(--theme-surface) !important;\n  color: var(--theme-fg) !important;\n}\n.thread-ui-shell .thread-graph-plan-card,\n.thread-ui-shell .thread-graph-plan-step,\n.thread-ui-shell .thread-graph-plan-step-text {\n  color: rgb(241 245 249) !important;\n}\n.thread-ui-shell[data-theme-effective=light] .thread-graph-plan-card,\n.thread-ui-shell[data-theme-effective=light] .thread-graph-plan-step,\n.thread-ui-shell[data-theme-effective=light] .thread-graph-plan-step-text {\n  color: rgb(15 23 42) !important;\n}\n");
 
 // src/styles/export-dialog.css
-styleInject(".thread-export-dialog-root {\n  --export-bg: rgb(248 250 252);\n  --export-panel: rgb(255 255 255);\n  --export-surface: rgb(241 245 249);\n  --export-surface-strong: rgb(226 232 240);\n  --export-border: rgb(203 213 225);\n  --export-fg: rgb(15 23 42);\n  --export-fg-soft: rgb(51 65 85);\n  --export-fg-muted: rgb(100 116 139);\n  --export-accent: rgb(217 119 6);\n  --export-accent-bg: rgb(254 243 199);\n  --export-accent-border: rgb(251 191 36);\n  --export-shadow: rgb(15 23 42 / 0.16);\n  color: var(--export-fg);\n}\n.thread-export-dialog-root.thread-ui-theme-dark,\n.thread-export-dialog-root[data-theme-effective=dark] {\n  --export-bg: #12151c;\n  --export-panel: #181d25;\n  --export-surface: #1d222c;\n  --export-surface-strong: #262c38;\n  --export-border: #343b48;\n  --export-fg: rgb(241 245 249);\n  --export-fg-soft: rgb(203 213 225);\n  --export-fg-muted: rgb(148 163 184);\n  --export-accent: rgb(245 158 11);\n  --export-accent-bg: rgb(245 158 11 / 0.16);\n  --export-accent-border: rgb(245 158 11 / 0.34);\n  --export-shadow: rgb(0 0 0 / 0.36);\n}\n.thread-export-dialog-backdrop {\n  background: color-mix(in oklch, var(--export-bg) 68%, transparent);\n}\n.thread-export-dialog-root.thread-ui-theme-dark .thread-export-dialog-backdrop,\n.thread-export-dialog-root[data-theme-effective=dark] .thread-export-dialog-backdrop {\n  background: rgb(2 6 23 / 0.74);\n}\n.thread-export-dialog-panel {\n  border-color: var(--export-border);\n  background: var(--export-panel);\n  box-shadow: 0 26px 80px var(--export-shadow);\n}\n.thread-export-dialog-header,\n.thread-export-dialog-footer,\n.thread-export-dialog-box-header {\n  border-color: var(--export-border);\n}\n.thread-export-dialog-title,\n.thread-export-dialog-strong,\n.thread-export-dialog-body-text {\n  color: var(--export-fg);\n}\n.thread-export-dialog-subtitle,\n.thread-export-dialog-status-pill {\n  color: var(--export-fg-muted);\n}\n.thread-export-dialog-icon-button,\n.thread-export-dialog-secondary-button,\n.thread-export-dialog-segment,\n.thread-export-dialog-box,\n.thread-export-dialog-status-pill {\n  border-color: var(--export-border);\n  background: var(--export-surface);\n}\n.thread-export-dialog-segment,\n.thread-export-dialog-box {\n  background: color-mix(in oklch, var(--export-surface) 72%, var(--export-panel));\n}\n.thread-export-dialog-icon-button,\n.thread-export-dialog-secondary-button {\n  color: var(--export-fg-soft);\n}\n.thread-export-dialog-icon-button:hover:not(:disabled),\n.thread-export-dialog-secondary-button:hover:not(:disabled),\n.thread-export-dialog-turn-row:hover {\n  background: var(--export-surface-strong);\n  color: var(--export-fg);\n}\n.thread-export-dialog-muted-action {\n  color: var(--export-fg-muted);\n}\n.thread-export-dialog-muted-action:hover {\n  color: var(--export-fg);\n}\n.thread-export-dialog-root .ui-status-warning {\n  border: 1px solid var(--export-accent-border);\n  background: var(--export-accent-bg);\n  color: color-mix(in oklch, var(--export-accent) 72%, var(--export-fg));\n}\n.thread-export-dialog-checkbox {\n  accent-color: var(--export-accent);\n}\n.thread-export-dialog-turn-row {\n  color: var(--export-fg-soft);\n}\n");
+styleInject(".thread-export-dialog-root {\n  --export-bg: rgb(248 250 252);\n  --export-panel: rgb(255 255 255);\n  --export-surface: rgb(241 245 249);\n  --export-surface-strong: rgb(226 232 240);\n  --export-border: rgb(203 213 225);\n  --export-fg: rgb(15 23 42);\n  --export-fg-soft: rgb(51 65 85);\n  --export-fg-muted: rgb(100 116 139);\n  --export-accent: rgb(217 119 6);\n  --export-accent-bg: rgb(254 243 199);\n  --export-accent-border: rgb(251 191 36);\n  --export-shadow: rgb(15 23 42 / 0.16);\n  color: var(--export-fg);\n  position: fixed;\n  inset: 0;\n  z-index: 96;\n  display: flex;\n  align-items: flex-end;\n  justify-content: center;\n  overflow: hidden;\n  padding: 0;\n}\n.thread-export-dialog-root.thread-ui-theme-dark,\n.thread-export-dialog-root[data-theme-effective=dark] {\n  --export-bg: #12151c;\n  --export-panel: #181d25;\n  --export-surface: #1d222c;\n  --export-surface-strong: #262c38;\n  --export-border: #343b48;\n  --export-fg: rgb(241 245 249);\n  --export-fg-soft: rgb(203 213 225);\n  --export-fg-muted: rgb(148 163 184);\n  --export-accent: rgb(245 158 11);\n  --export-accent-bg: rgb(245 158 11 / 0.16);\n  --export-accent-border: rgb(245 158 11 / 0.34);\n  --export-shadow: rgb(0 0 0 / 0.36);\n}\n.thread-export-dialog-backdrop {\n  background: color-mix(in oklch, var(--export-bg) 68%, transparent);\n}\n.thread-export-dialog-root.thread-ui-theme-dark .thread-export-dialog-backdrop,\n.thread-export-dialog-root[data-theme-effective=dark] .thread-export-dialog-backdrop {\n  background: rgb(2 6 23 / 0.74);\n}\n.thread-export-dialog-panel {\n  position: relative;\n  z-index: 1;\n  display: flex;\n  width: 100%;\n  max-width: 42rem;\n  flex-direction: column;\n  border-color: var(--export-border);\n  background: var(--export-panel);\n  box-shadow: 0 26px 80px var(--export-shadow);\n  max-height: calc(100% - max(env(safe-area-inset-top), var(--android-safe-area-top, 0px)) - max(0.75rem, env(safe-area-inset-bottom), var(--android-safe-area-bottom, 0px)));\n}\n.thread-export-dialog-header,\n.thread-export-dialog-footer,\n.thread-export-dialog-box-header {\n  border-color: var(--export-border);\n}\n.thread-export-dialog-title,\n.thread-export-dialog-strong,\n.thread-export-dialog-body-text {\n  color: var(--export-fg);\n}\n.thread-export-dialog-subtitle,\n.thread-export-dialog-status-pill {\n  color: var(--export-fg-muted);\n}\n.thread-export-dialog-icon-button,\n.thread-export-dialog-secondary-button,\n.thread-export-dialog-segment,\n.thread-export-dialog-box,\n.thread-export-dialog-status-pill {\n  border-color: var(--export-border);\n  background: var(--export-surface);\n}\n.thread-export-dialog-segment,\n.thread-export-dialog-box {\n  background: color-mix(in oklch, var(--export-surface) 72%, var(--export-panel));\n}\n.thread-export-dialog-icon-button,\n.thread-export-dialog-secondary-button {\n  color: var(--export-fg-soft);\n}\n.thread-export-dialog-icon-button:hover:not(:disabled),\n.thread-export-dialog-secondary-button:hover:not(:disabled),\n.thread-export-dialog-turn-row:hover {\n  background: var(--export-surface-strong);\n  color: var(--export-fg);\n}\n.thread-export-dialog-muted-action {\n  color: var(--export-fg-muted);\n}\n.thread-export-dialog-muted-action:hover {\n  color: var(--export-fg);\n}\n.thread-export-dialog-root .ui-status-warning {\n  border: 1px solid var(--export-accent-border);\n  background: var(--export-accent-bg);\n  color: color-mix(in oklch, var(--export-accent) 72%, var(--export-fg));\n}\n.thread-export-dialog-checkbox {\n  accent-color: var(--export-accent);\n}\n.thread-export-dialog-turn-row {\n  color: var(--export-fg-soft);\n}\n@media (max-width: 639px) {\n  .thread-export-dialog-panel {\n    position: fixed;\n    right: 0;\n    bottom: 0;\n    left: 0;\n    width: 100%;\n    max-width: none;\n    border-bottom-right-radius: 0;\n    border-bottom-left-radius: 0;\n    transform: translateZ(0);\n  }\n}\n@media (min-width: 640px) {\n  .thread-export-dialog-root {\n    align-items: center;\n    padding: 1.5rem;\n  }\n}\n");
 
 // src/components/ThreadComposer.tsx
 import {
@@ -9949,6 +9949,7 @@ function ThreadWorkspaceLayout({
   currentWorkspaceLabel = null,
   sessionLabel = null,
   usageLabel = null,
+  threadActionsButton,
   topbarActions,
   metaContent,
   settingsContent,
@@ -10524,7 +10525,7 @@ function ThreadWorkspaceLayout({
           ),
           /* @__PURE__ */ jsxs18(GraphChatMainShell, { children: [
             /* @__PURE__ */ jsx25(GraphChatTopbarShell, { children: /* @__PURE__ */ jsx25("div", { className: "thread-topbar-row flex min-h-12 items-center px-3 py-1.5 sm:min-h-12 sm:px-4", children: /* @__PURE__ */ jsxs18("div", { className: "flex w-full items-center justify-between gap-3 sm:gap-4", children: [
-              /* @__PURE__ */ jsxs18("div", { className: "flex min-w-0 items-center gap-2 sm:gap-3", children: [
+              /* @__PURE__ */ jsxs18("div", { className: "flex min-w-0 flex-1 items-center gap-2 sm:gap-3", children: [
                 shouldShowMobileRoomsButton ? /* @__PURE__ */ jsx25(
                   "button",
                   {
@@ -10620,8 +10621,12 @@ function ThreadWorkspaceLayout({
                   ] })
                 ] })
               ] }),
-              /* @__PURE__ */ jsxs18("div", { className: "inline-flex shrink-0 items-center gap-2", children: [
-                topbarActions ? /* @__PURE__ */ jsx25("div", { className: "thread-graph-topbar-actions thread-desktop-only-inline-flex items-center rounded-lg border p-0.5 shadow-none", children: topbarActions }) : null,
+              /* @__PURE__ */ jsxs18("div", { className: "relative z-[1] inline-flex shrink-0 items-center gap-2", children: [
+                threadActionsButton || topbarActions ? /* @__PURE__ */ jsxs18("div", { className: "thread-graph-topbar-actions thread-desktop-only-inline-flex items-center rounded-lg border p-0.5 shadow-none", children: [
+                  threadActionsButton,
+                  topbarActions
+                ] }) : null,
+                renderMobileTopbarControls && threadActionsButton ? /* @__PURE__ */ jsx25("div", { className: "thread-mobile-only-inline-flex", children: threadActionsButton }) : null,
                 renderMobileTopbarControls && hasWorkspace ? /* @__PURE__ */ jsx25(
                   "button",
                   {
@@ -19475,7 +19480,7 @@ function ConfirmDialog({
 // src/components/ExportTranscriptDialog.tsx
 import { useEffect as useEffect26, useMemo as useMemo16, useState as useState29 } from "react";
 import { createPortal as createPortal4 } from "react-dom";
-import { jsx as jsx68, jsxs as jsxs55 } from "react/jsx-runtime";
+import { Fragment as Fragment16, jsx as jsx68, jsxs as jsxs55 } from "react/jsx-runtime";
 function formatTurnTime(value) {
   if (!value) {
     return "No time";
@@ -19501,25 +19506,71 @@ function statusLabel2(status) {
       return "failed";
   }
 }
-function ExportTranscriptDialog({
+function turnSelectionLabel(mode) {
+  switch (mode) {
+    case "latest-3":
+      return "Latest 3";
+    case "latest-10":
+      return "Latest 10";
+    case "latest-20":
+      return "Latest 20";
+    case "all-loaded":
+      return "All loaded";
+    case "custom":
+      return "Custom";
+  }
+}
+function latestLimit(mode) {
+  switch (mode) {
+    case "latest-3":
+      return 3;
+    case "latest-10":
+      return 10;
+    case "latest-20":
+      return 20;
+    default:
+      return null;
+  }
+}
+function shareThreadAccessLabel(access) {
+  return access === "read" ? "View only" : "Collaborator";
+}
+function shareWorkspaceAccessLabel(access) {
+  switch (access) {
+    case "write":
+      return "Workspace write";
+    case "read":
+      return "Workspace read";
+    case "none":
+    default:
+      return "No workspace";
+  }
+}
+function ThreadActionsDialog({
   open,
   busy = false,
   turnsState,
+  shareAvailable = false,
+  shareUnavailableMessage = "Relay sharing will be enabled after the relay permission model is connected.",
+  shareState,
+  initialMode = "pdf",
   onCancel,
   onLoadTurns,
-  onExport
+  onExport,
+  onCreateShare,
+  onRevokeShare
 }) {
   const turns = useMemo16(() => turnsState.data?.turns ?? [], [turnsState.data?.turns]);
-  const latestTurnIds = useMemo16(
-    () => turns.slice(0, 10).map((turn) => turn.turnId),
-    [turns]
-  );
-  const [mode, setMode] = useState29("latest");
+  const [actionMode, setActionMode] = useState29(initialMode);
+  const [turnSelection, setTurnSelection] = useState29("latest-10");
   const [selectedTurnIds, setSelectedTurnIds] = useState29(
     () => /* @__PURE__ */ new Set()
   );
   const [includeTokenAndPrice, setIncludeTokenAndPrice] = useState29(true);
-  const [format, setFormat] = useState29("pdf");
+  const [targetIdentifier, setTargetIdentifier] = useState29("");
+  const [threadAccess, setThreadAccess] = useState29("read");
+  const [workspaceAccess, setWorkspaceAccess] = useState29("none");
+  const [shareLabel, setShareLabel] = useState29("");
   const [effectiveTheme, setEffectiveTheme] = useState29(
     () => typeof document !== "undefined" && !document.documentElement.classList.contains("dark") ? "light" : "dark"
   );
@@ -19527,16 +19578,20 @@ function ExportTranscriptDialog({
     if (!open) {
       return;
     }
-    setMode("latest");
-    setFormat("pdf");
+    setActionMode(initialMode);
+    setTurnSelection("latest-10");
     setIncludeTokenAndPrice(true);
+    setTargetIdentifier("");
+    setThreadAccess("read");
+    setWorkspaceAccess("none");
+    setShareLabel("");
     void onLoadTurns();
-  }, [onLoadTurns, open]);
+  }, [initialMode, onLoadTurns, open]);
   useEffect26(() => {
     if (open && turns.length > 0) {
-      setSelectedTurnIds(new Set(latestTurnIds));
+      setSelectedTurnIds(new Set(turns.slice(0, 10).map((turn) => turn.turnId)));
     }
-  }, [latestTurnIds, open, turns.length]);
+  }, [open, turns]);
   useEffect26(() => {
     if (!open) {
       return;
@@ -19574,8 +19629,10 @@ function ExportTranscriptDialog({
   if (!open) {
     return null;
   }
-  const selectedCount = mode === "latest" ? Math.min(10, turnsState.data?.totalTurnCount ?? 10) : selectedTurnIds.size;
-  const canExport = !busy && (mode === "latest" || selectedTurnIds.size > 0);
+  const latestSelectedLimit = latestLimit(turnSelection);
+  const selectedCount = latestSelectedLimit !== null ? Math.min(latestSelectedLimit, turnsState.data?.totalTurnCount ?? latestSelectedLimit) : turnSelection === "all-loaded" ? turns.length : selectedTurnIds.size;
+  const canExport = !busy && actionMode !== "share" && (latestSelectedLimit !== null || turnSelection === "all-loaded" || selectedTurnIds.size > 0);
+  const canShare = !busy && shareAvailable && Boolean(onCreateShare) && targetIdentifier.trim().length > 0;
   function toggleTurn(turnId) {
     setSelectedTurnIds((current) => {
       const next = new Set(current);
@@ -19588,10 +19645,12 @@ function ExportTranscriptDialog({
     });
   }
   function handleExport() {
+    if (actionMode === "share") {
+      return;
+    }
     const input = {
-      format,
-      mode,
-      ...mode === "latest" ? { limit: 10 } : { turnIds: [...selectedTurnIds] },
+      format: actionMode,
+      ...latestSelectedLimit !== null ? { mode: "latest", limit: latestSelectedLimit } : turnSelection === "all-loaded" ? { mode: "selected", turnIds: turns.map((turn) => turn.turnId) } : { mode: "selected", turnIds: [...selectedTurnIds] },
       profile: "review",
       options: {
         includeTokenAndPrice
@@ -19599,18 +19658,35 @@ function ExportTranscriptDialog({
     };
     void onExport(input);
   }
+  function handleShare(event) {
+    event.preventDefault();
+    if (!canShare) {
+      return;
+    }
+    void onCreateShare?.({
+      targetIdentifier: targetIdentifier.trim(),
+      threadAccess,
+      workspaceAccess,
+      label: shareLabel.trim() || null
+    });
+  }
+  const actionTabs = [
+    { mode: "pdf", label: "PDF" },
+    { mode: "html", label: "HTML" },
+    { mode: "share", label: "Share" }
+  ];
   return createPortal4(
     /* @__PURE__ */ jsxs55(
       "div",
       {
-        className: `thread-export-dialog-root thread-ui-theme-${effectiveTheme} fixed inset-0 z-[96] flex items-center justify-center p-3 sm:p-6`,
+        className: `thread-export-dialog-root thread-ui-theme-${effectiveTheme} fixed inset-0 z-[96] flex items-end justify-center p-0 sm:items-center sm:p-6`,
         "data-theme-effective": effectiveTheme,
         children: [
           /* @__PURE__ */ jsx68(
             "button",
             {
               type: "button",
-              "aria-label": "Close export dialog",
+              "aria-label": "Close thread actions",
               onClick: onCancel,
               disabled: busy,
               className: "thread-export-dialog-backdrop absolute inset-0 backdrop-blur-sm disabled:cursor-not-allowed"
@@ -19621,13 +19697,13 @@ function ExportTranscriptDialog({
             {
               role: "dialog",
               "aria-modal": "true",
-              "aria-label": "Export transcript",
-              className: "thread-export-dialog-panel relative z-[1] flex max-h-[min(46rem,calc(100vh-2rem))] w-full max-w-2xl flex-col rounded-[1.6rem] border shadow-2xl",
+              "aria-label": "Thread actions",
+              className: "thread-export-dialog-panel relative z-[1] flex max-h-[min(48rem,calc(100vh-1rem))] w-full max-w-2xl flex-col rounded-t-[1.6rem] border shadow-2xl sm:rounded-[1.6rem]",
               children: [
                 /* @__PURE__ */ jsxs55("div", { className: "thread-export-dialog-header flex items-start justify-between gap-3 border-b px-5 py-4", children: [
                   /* @__PURE__ */ jsxs55("div", { className: "min-w-0", children: [
-                    /* @__PURE__ */ jsx68("p", { className: "thread-export-dialog-title text-sm font-semibold", children: "Export transcript" }),
-                    /* @__PURE__ */ jsx68("p", { className: "thread-export-dialog-subtitle mt-1 text-xs", children: "Default review copy summarizes command batches and file changes." })
+                    /* @__PURE__ */ jsx68("p", { className: "thread-export-dialog-title text-sm font-semibold", children: "Thread actions" }),
+                    /* @__PURE__ */ jsx68("p", { className: "thread-export-dialog-subtitle mt-1 text-xs", children: "Export a review copy or share this relay session." })
                   ] }),
                   /* @__PURE__ */ jsx68(
                     "button",
@@ -19642,110 +19718,195 @@ function ExportTranscriptDialog({
                   )
                 ] }),
                 /* @__PURE__ */ jsxs55("div", { className: "min-h-0 flex-1 overflow-auto px-5 py-4", children: [
-                  /* @__PURE__ */ jsx68("div", { className: "thread-export-dialog-segment inline-flex rounded-full border p-1", children: [
-                    ["latest", "Latest 10"],
-                    ["selected", "Custom selection"]
-                  ].map(([entryMode, label]) => /* @__PURE__ */ jsx68(
+                  /* @__PURE__ */ jsx68("div", { className: "thread-export-dialog-segment inline-flex rounded-full border p-1", children: actionTabs.map((tab) => /* @__PURE__ */ jsx68(
                     "button",
                     {
                       type: "button",
-                      onClick: () => setMode(entryMode),
-                      className: `rounded-full px-3 py-1.5 text-sm transition ${mode === entryMode ? "ui-status-warning" : "thread-export-dialog-muted-action"}`,
-                      children: label
+                      onClick: () => setActionMode(tab.mode),
+                      className: `rounded-full px-3 py-1.5 text-sm transition ${actionMode === tab.mode ? "ui-status-warning" : "thread-export-dialog-muted-action"}`,
+                      children: tab.label
                     },
-                    entryMode
+                    tab.mode
                   )) }),
-                  /* @__PURE__ */ jsx68("div", { className: "thread-export-dialog-segment mt-4 inline-flex rounded-full border p-1", children: [
-                    ["pdf", "PDF"],
-                    ["html", "HTML"]
-                  ].map(([entryFormat, label]) => /* @__PURE__ */ jsx68(
-                    "button",
-                    {
-                      type: "button",
-                      onClick: () => setFormat(entryFormat),
-                      className: `rounded-full px-3 py-1.5 text-sm transition ${format === entryFormat ? "ui-status-warning" : "thread-export-dialog-muted-action"}`,
-                      children: label
-                    },
-                    entryFormat
-                  )) }),
-                  mode === "selected" ? /* @__PURE__ */ jsxs55("div", { className: "thread-export-dialog-box mt-4 rounded-2xl border", children: [
-                    /* @__PURE__ */ jsxs55("div", { className: "thread-export-dialog-box-header flex flex-wrap items-center justify-between gap-2 border-b px-3 py-2.5", children: [
-                      /* @__PURE__ */ jsxs55("p", { className: "thread-export-dialog-subtitle text-xs", children: [
-                        "Selected ",
-                        selectedTurnIds.size,
-                        " of ",
-                        turnsState.data?.totalTurnCount ?? turns.length
-                      ] }),
-                      /* @__PURE__ */ jsxs55("div", { className: "flex items-center gap-2", children: [
-                        /* @__PURE__ */ jsx68(
-                          "button",
-                          {
-                            type: "button",
-                            onClick: () => setSelectedTurnIds(new Set(turns.map((turn) => turn.turnId))),
-                            className: "thread-export-dialog-secondary-button rounded-full border px-2.5 py-1 text-xs transition",
-                            children: "Select all"
-                          }
-                        ),
-                        /* @__PURE__ */ jsx68(
-                          "button",
-                          {
-                            type: "button",
-                            onClick: () => setSelectedTurnIds(/* @__PURE__ */ new Set()),
-                            className: "thread-export-dialog-secondary-button rounded-full border px-2.5 py-1 text-xs transition",
-                            children: "Clear"
-                          }
-                        )
-                      ] })
-                    ] }),
-                    turnsState.status === "loading" ? /* @__PURE__ */ jsx68("p", { className: "thread-export-dialog-subtitle px-3 py-6 text-sm", children: "Loading turns..." }) : turnsState.status === "failed" ? /* @__PURE__ */ jsx68("p", { className: "px-3 py-6 text-sm text-rose-500 dark:text-rose-200", children: turnsState.error }) : /* @__PURE__ */ jsx68("div", { className: "max-h-80 overflow-auto p-2", children: turns.map((turn) => /* @__PURE__ */ jsxs55(
-                      "label",
-                      {
-                        className: "thread-export-dialog-turn-row flex cursor-pointer items-center gap-3 rounded-xl px-2.5 py-2 text-sm transition",
-                        children: [
-                          /* @__PURE__ */ jsx68(
-                            "input",
-                            {
-                              type: "checkbox",
-                              checked: selectedTurnIds.has(turn.turnId),
-                              onChange: () => toggleTurn(turn.turnId),
-                              className: "thread-export-dialog-checkbox h-4 w-4"
-                            }
-                          ),
-                          /* @__PURE__ */ jsxs55("span", { className: "thread-export-dialog-strong shrink-0 text-xs font-medium", children: [
-                            "Turn ",
-                            turn.turnNumber
-                          ] }),
-                          /* @__PURE__ */ jsx68("span", { className: "thread-export-dialog-subtitle shrink-0 text-xs", children: formatTurnTime(turn.startedAt) }),
-                          /* @__PURE__ */ jsx68("span", { className: "thread-export-dialog-body-text min-w-0 flex-1 truncate text-left", children: turn.userPromptPreview }),
-                          /* @__PURE__ */ jsx68("span", { className: "thread-export-dialog-status-pill hidden shrink-0 rounded-full border px-2 py-0.5 text-[10px] sm:inline", children: statusLabel2(turn.status) })
-                        ]
-                      },
-                      turn.turnId
-                    )) })
-                  ] }) : /* @__PURE__ */ jsx68("p", { className: "thread-export-dialog-box thread-export-dialog-body-text mt-4 rounded-2xl border px-3 py-3 text-sm", children: "Exports the latest 10 turns in chronological order." }),
-                  /* @__PURE__ */ jsxs55("div", { className: "thread-export-dialog-body-text mt-4 grid gap-2 text-sm sm:grid-cols-2", children: [
-                    /* @__PURE__ */ jsxs55("label", { className: "thread-export-dialog-box flex items-center gap-2 rounded-xl border px-3 py-2", children: [
+                  actionMode === "share" ? /* @__PURE__ */ jsxs55("form", { id: "thread-actions-share-form", className: "mt-4 space-y-4", onSubmit: handleShare, children: [
+                    !shareAvailable ? /* @__PURE__ */ jsx68("p", { className: "thread-export-dialog-box thread-export-dialog-subtitle rounded-2xl border px-3 py-3 text-sm", children: shareUnavailableMessage }) : null,
+                    /* @__PURE__ */ jsxs55("label", { className: "thread-export-dialog-body-text block text-sm", children: [
+                      "Relay identifier",
                       /* @__PURE__ */ jsx68(
                         "input",
                         {
-                          type: "checkbox",
-                          checked: includeTokenAndPrice,
-                          onChange: (event) => setIncludeTokenAndPrice(event.target.checked),
-                          className: "thread-export-dialog-checkbox h-4 w-4"
+                          className: "thread-export-dialog-box mt-2 w-full rounded-xl border bg-transparent px-3 py-2 outline-none",
+                          disabled: !shareAvailable || busy,
+                          onChange: (event) => setTargetIdentifier(event.target.value),
+                          placeholder: "username or email",
+                          value: targetIdentifier
                         }
-                      ),
-                      "Token and price"
+                      )
                     ] }),
-                    /* @__PURE__ */ jsx68("p", { className: "thread-export-dialog-box thread-export-dialog-subtitle flex items-center rounded-xl border px-3 py-2 text-xs", children: format === "html" ? "HTML keeps the chat timeline styling and omits raw command output." : "Review exports keep message text readable and omit tool activity." })
+                    /* @__PURE__ */ jsxs55("fieldset", { className: "thread-export-dialog-box rounded-2xl border p-3", children: [
+                      /* @__PURE__ */ jsx68("legend", { className: "thread-export-dialog-subtitle px-1 text-xs", children: "Thread access" }),
+                      /* @__PURE__ */ jsx68("div", { className: "mt-2 grid gap-2 sm:grid-cols-2", children: [
+                        ["read", "View only"],
+                        ["control", "Collaborator"]
+                      ].map(([value, label]) => /* @__PURE__ */ jsxs55("label", { className: "thread-export-dialog-turn-row flex items-center gap-2 rounded-xl px-2.5 py-2 text-sm", children: [
+                        /* @__PURE__ */ jsx68(
+                          "input",
+                          {
+                            type: "radio",
+                            checked: threadAccess === value,
+                            disabled: !shareAvailable || busy,
+                            onChange: () => setThreadAccess(value)
+                          }
+                        ),
+                        label
+                      ] }, value)) })
+                    ] }),
+                    /* @__PURE__ */ jsxs55("fieldset", { className: "thread-export-dialog-box rounded-2xl border p-3", children: [
+                      /* @__PURE__ */ jsx68("legend", { className: "thread-export-dialog-subtitle px-1 text-xs", children: "Workspace" }),
+                      /* @__PURE__ */ jsx68("div", { className: "mt-2 grid gap-2 sm:grid-cols-3", children: [
+                        ["none", "No access"],
+                        ["read", "Read files"],
+                        ["write", "Read and edit"]
+                      ].map(([value, label]) => /* @__PURE__ */ jsxs55("label", { className: "thread-export-dialog-turn-row flex items-center gap-2 rounded-xl px-2.5 py-2 text-sm", children: [
+                        /* @__PURE__ */ jsx68(
+                          "input",
+                          {
+                            type: "radio",
+                            checked: workspaceAccess === value,
+                            disabled: !shareAvailable || busy,
+                            onChange: () => setWorkspaceAccess(value)
+                          }
+                        ),
+                        label
+                      ] }, value)) })
+                    ] }),
+                    /* @__PURE__ */ jsxs55("label", { className: "thread-export-dialog-body-text block text-sm", children: [
+                      "Label",
+                      /* @__PURE__ */ jsx68(
+                        "input",
+                        {
+                          className: "thread-export-dialog-box mt-2 w-full rounded-xl border bg-transparent px-3 py-2 outline-none",
+                          disabled: !shareAvailable || busy,
+                          onChange: (event) => setShareLabel(event.target.value),
+                          placeholder: "optional",
+                          value: shareLabel
+                        }
+                      )
+                    ] }),
+                    /* @__PURE__ */ jsxs55("div", { className: "thread-export-dialog-box rounded-2xl border", children: [
+                      /* @__PURE__ */ jsxs55("div", { className: "thread-export-dialog-box-header flex items-center justify-between border-b px-3 py-2.5", children: [
+                        /* @__PURE__ */ jsx68("p", { className: "thread-export-dialog-strong text-sm font-medium", children: "Shared by me" }),
+                        /* @__PURE__ */ jsx68("span", { className: "thread-export-dialog-status-pill rounded-full border px-2 py-0.5 text-[10px]", children: shareState?.shares.length ?? 0 })
+                      ] }),
+                      shareState?.status === "failed" ? /* @__PURE__ */ jsx68("p", { className: "px-3 py-3 text-sm text-rose-500 dark:text-rose-200", children: shareState.error }) : shareState?.shares.length ? /* @__PURE__ */ jsx68("div", { className: "divide-y", children: shareState.shares.map((share) => /* @__PURE__ */ jsxs55("div", { className: "flex flex-wrap items-center justify-between gap-2 px-3 py-2.5 text-sm", children: [
+                        /* @__PURE__ */ jsxs55("div", { className: "min-w-0", children: [
+                          /* @__PURE__ */ jsx68("p", { className: "thread-export-dialog-strong truncate font-medium", children: share.targetUsername }),
+                          /* @__PURE__ */ jsxs55("p", { className: "thread-export-dialog-subtitle mt-0.5 text-xs", children: [
+                            share.label ? `${share.label} \xB7 ` : "",
+                            shareThreadAccessLabel(share.threadAccess),
+                            " / ",
+                            shareWorkspaceAccessLabel(share.workspaceAccess)
+                          ] })
+                        ] }),
+                        onRevokeShare ? /* @__PURE__ */ jsx68(
+                          "button",
+                          {
+                            type: "button",
+                            className: "thread-export-dialog-secondary-button rounded-full border px-3 py-1.5 text-xs transition",
+                            disabled: busy,
+                            onClick: () => void onRevokeShare(share.id),
+                            children: "Revoke"
+                          }
+                        ) : null
+                      ] }, share.id)) }) : /* @__PURE__ */ jsx68("p", { className: "thread-export-dialog-subtitle px-3 py-3 text-sm", children: "No active shares for this thread." })
+                    ] })
+                  ] }) : /* @__PURE__ */ jsxs55(Fragment16, { children: [
+                    /* @__PURE__ */ jsxs55("label", { className: "thread-export-dialog-body-text mt-4 block text-sm", children: [
+                      "Turns",
+                      /* @__PURE__ */ jsx68(
+                        "select",
+                        {
+                          className: "thread-export-dialog-box mt-2 w-full rounded-xl border bg-transparent px-3 py-2 outline-none",
+                          value: turnSelection,
+                          onChange: (event) => setTurnSelection(event.target.value),
+                          children: ["latest-3", "latest-10", "latest-20", "all-loaded", "custom"].map((entry) => /* @__PURE__ */ jsx68("option", { value: entry, children: turnSelectionLabel(entry) }, entry))
+                        }
+                      )
+                    ] }),
+                    turnSelection === "custom" ? /* @__PURE__ */ jsxs55("div", { className: "thread-export-dialog-box mt-4 rounded-2xl border", children: [
+                      /* @__PURE__ */ jsxs55("div", { className: "thread-export-dialog-box-header flex flex-wrap items-center justify-between gap-2 border-b px-3 py-2.5", children: [
+                        /* @__PURE__ */ jsxs55("p", { className: "thread-export-dialog-subtitle text-xs", children: [
+                          "Selected ",
+                          selectedTurnIds.size,
+                          " of ",
+                          turnsState.data?.totalTurnCount ?? turns.length
+                        ] }),
+                        /* @__PURE__ */ jsxs55("div", { className: "flex items-center gap-2", children: [
+                          /* @__PURE__ */ jsx68(
+                            "button",
+                            {
+                              type: "button",
+                              onClick: () => setSelectedTurnIds(new Set(turns.map((turn) => turn.turnId))),
+                              className: "thread-export-dialog-secondary-button rounded-full border px-2.5 py-1 text-xs transition",
+                              children: "Select all"
+                            }
+                          ),
+                          /* @__PURE__ */ jsx68(
+                            "button",
+                            {
+                              type: "button",
+                              onClick: () => setSelectedTurnIds(/* @__PURE__ */ new Set()),
+                              className: "thread-export-dialog-secondary-button rounded-full border px-2.5 py-1 text-xs transition",
+                              children: "Clear"
+                            }
+                          )
+                        ] })
+                      ] }),
+                      turnsState.status === "loading" ? /* @__PURE__ */ jsx68("p", { className: "thread-export-dialog-subtitle px-3 py-6 text-sm", children: "Loading turns..." }) : turnsState.status === "failed" ? /* @__PURE__ */ jsx68("p", { className: "px-3 py-6 text-sm text-rose-500 dark:text-rose-200", children: turnsState.error }) : /* @__PURE__ */ jsx68("div", { className: "max-h-80 overflow-auto p-2", children: turns.map((turn) => /* @__PURE__ */ jsxs55(
+                        "label",
+                        {
+                          className: "thread-export-dialog-turn-row flex cursor-pointer items-center gap-3 rounded-xl px-2.5 py-2 text-sm transition",
+                          children: [
+                            /* @__PURE__ */ jsx68(
+                              "input",
+                              {
+                                type: "checkbox",
+                                checked: selectedTurnIds.has(turn.turnId),
+                                onChange: () => toggleTurn(turn.turnId),
+                                className: "thread-export-dialog-checkbox h-4 w-4"
+                              }
+                            ),
+                            /* @__PURE__ */ jsxs55("span", { className: "thread-export-dialog-strong shrink-0 text-xs font-medium", children: [
+                              "Turn ",
+                              turn.turnNumber
+                            ] }),
+                            /* @__PURE__ */ jsx68("span", { className: "thread-export-dialog-subtitle shrink-0 text-xs", children: formatTurnTime(turn.startedAt) }),
+                            /* @__PURE__ */ jsx68("span", { className: "thread-export-dialog-body-text min-w-0 flex-1 truncate text-left", children: turn.userPromptPreview }),
+                            /* @__PURE__ */ jsx68("span", { className: "thread-export-dialog-status-pill hidden shrink-0 rounded-full border px-2 py-0.5 text-[10px] sm:inline", children: statusLabel2(turn.status) })
+                          ]
+                        },
+                        turn.turnId
+                      )) })
+                    ] }) : null,
+                    /* @__PURE__ */ jsxs55("div", { className: "thread-export-dialog-body-text mt-4 grid gap-2 text-sm sm:grid-cols-2", children: [
+                      /* @__PURE__ */ jsxs55("label", { className: "thread-export-dialog-box flex items-center gap-2 rounded-xl border px-3 py-2", children: [
+                        /* @__PURE__ */ jsx68(
+                          "input",
+                          {
+                            type: "checkbox",
+                            checked: includeTokenAndPrice,
+                            onChange: (event) => setIncludeTokenAndPrice(event.target.checked),
+                            className: "thread-export-dialog-checkbox h-4 w-4"
+                          }
+                        ),
+                        "Token and price"
+                      ] }),
+                      /* @__PURE__ */ jsx68("p", { className: "thread-export-dialog-box thread-export-dialog-subtitle flex items-center rounded-xl border px-3 py-2 text-xs", children: actionMode === "html" ? "HTML keeps the chat timeline styling and omits raw command output." : "Review exports keep message text readable and omit tool activity." })
+                    ] })
                   ] })
                 ] }),
                 /* @__PURE__ */ jsxs55("div", { className: "thread-export-dialog-footer flex items-center justify-between gap-3 border-t px-5 py-4", children: [
-                  /* @__PURE__ */ jsxs55("p", { className: "thread-export-dialog-subtitle min-w-0 text-xs", children: [
-                    selectedCount,
-                    " ",
-                    selectedCount === 1 ? "turn" : "turns",
-                    " will be exported."
-                  ] }),
+                  /* @__PURE__ */ jsx68("p", { className: "thread-export-dialog-subtitle min-w-0 text-xs", children: actionMode === "share" ? shareAvailable ? "Share access is enforced by the relay server." : "Share permissions are not wired yet." : `${selectedCount} ${selectedCount === 1 ? "turn" : "turns"} selected.` }),
                   /* @__PURE__ */ jsxs55("div", { className: "flex items-center gap-2", children: [
                     /* @__PURE__ */ jsx68(
                       "button",
@@ -19757,14 +19918,23 @@ function ExportTranscriptDialog({
                         children: "Cancel"
                       }
                     ),
-                    /* @__PURE__ */ jsx68(
+                    actionMode === "share" ? /* @__PURE__ */ jsx68(
+                      "button",
+                      {
+                        type: "submit",
+                        form: "thread-actions-share-form",
+                        disabled: !canShare,
+                        className: "ui-status-warning rounded-full px-4 py-2 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-60",
+                        children: busy ? "Sharing..." : "Share session"
+                      }
+                    ) : /* @__PURE__ */ jsx68(
                       "button",
                       {
                         type: "button",
                         onClick: handleExport,
                         disabled: !canExport,
                         className: "ui-status-warning rounded-full px-4 py-2 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-60",
-                        children: busy ? "Exporting..." : `Export ${format.toUpperCase()}`
+                        children: busy ? "Exporting..." : `Export ${actionMode.toUpperCase()}`
                       }
                     )
                   ] })
@@ -19778,10 +19948,11 @@ function ExportTranscriptDialog({
     document.body
   );
 }
+var ExportTranscriptDialog = ThreadActionsDialog;
 
 // src/ThreadDetailSurface.tsx
 import {
-  useMemo as useMemo17
+  useMemo as useMemo18
 } from "react";
 
 // src/components/graph-chat/GraphChatThreadChatPanel.tsx
@@ -19789,6 +19960,7 @@ import {
   useCallback as useCallback19,
   useEffect as useEffect27,
   useLayoutEffect as useLayoutEffect7,
+  useMemo as useMemo17,
   useRef as useRef16,
   useState as useState30
 } from "react";
@@ -19977,6 +20149,39 @@ function GraphChatThreadChatPanel({
     bottom: `${floatingMobileComposerBottomOffset + mobileComposerBottomOffset}px`,
     paddingBottom: "max(env(safe-area-inset-bottom), var(--android-safe-area-bottom, 0px))"
   } : void 0;
+  const timelineElement = useMemo17(() => {
+    const threadRunning = detail.thread.status === "running" || detail.thread.activeTurnId !== null;
+    return /* @__PURE__ */ jsx69(
+      TimelineComponent,
+      {
+        threadId: detail.thread.id,
+        turns: detail.turns,
+        totalTurnCount: detail.totalTurnCount ?? detail.turns.length,
+        pendingRequests: detail.pendingRequests,
+        activeTurnId: detail.thread.activeTurnId,
+        threadRunning,
+        liveOutput,
+        className: "thread-timeline-surface min-h-0 flex-1",
+        ...timelineProps,
+        adapter: timelineAdapter,
+        onOpenThread: timelineProps?.onOpenThread ?? adapter.openThread,
+        onTailVisibilityChange: handleTailVisibilityChange
+      }
+    );
+  }, [
+    TimelineComponent,
+    adapter.openThread,
+    detail.pendingRequests,
+    detail.thread.activeTurnId,
+    detail.thread.id,
+    detail.thread.status,
+    detail.totalTurnCount,
+    detail.turns,
+    handleTailVisibilityChange,
+    liveOutput,
+    timelineAdapter,
+    timelineProps
+  ]);
   return /* @__PURE__ */ jsxs56(
     "div",
     {
@@ -19985,23 +20190,7 @@ function GraphChatThreadChatPanel({
       style: panelStyle,
       children: [
         beforeTimelineContent,
-        /* @__PURE__ */ jsx69(
-          TimelineComponent,
-          {
-            threadId: detail.thread.id,
-            turns: detail.turns,
-            totalTurnCount: detail.totalTurnCount ?? detail.turns.length,
-            pendingRequests: detail.pendingRequests,
-            activeTurnId: detail.thread.activeTurnId,
-            threadRunning: detail.thread.status === "running" || detail.thread.activeTurnId !== null,
-            liveOutput,
-            className: "thread-timeline-surface min-h-0 flex-1",
-            ...timelineProps,
-            adapter: timelineAdapter,
-            onOpenThread: timelineProps?.onOpenThread ?? adapter.openThread,
-            onTailVisibilityChange: handleTailVisibilityChange
-          }
-        ),
+        timelineElement,
         /* @__PURE__ */ jsxs56("div", { className: "thread-chat-usage-footer hidden shrink-0 items-center justify-between gap-3 px-4 py-1 text-[10px] leading-4 sm:flex", children: [
           /* @__PURE__ */ jsxs56("span", { className: "min-w-0 truncate", children: [
             detail.turns.length,
@@ -20114,6 +20303,7 @@ function ThreadDetailSurface({
   appNavigationMenu,
   workspaceReturnHref,
   onWorkspaceReturn,
+  threadActionsButton,
   surfaceActions,
   floatingPanel,
   workspaceContent,
@@ -20161,7 +20351,7 @@ function ThreadDetailSurface({
     openThread,
     cancelPendingSteer
   } = adapter;
-  const timelineAdapter = useMemo17(
+  const timelineAdapter = useMemo18(
     () => ({
       ...getImageAssetUrl ? {
         getImageAssetUrl: (input) => getImageAssetUrl(input.path)
@@ -20180,15 +20370,15 @@ function ThreadDetailSurface({
     ]
   );
   const terminalPanelEnabled = plugins.getThreadPanels().some((panel) => panel.kind === "terminal");
-  const threadUsageSummary = useMemo17(
+  const threadUsageSummary = useMemo18(
     () => detail ? summarizeThreadUsage(detail) : null,
     [detail]
   );
-  const topbarUsageLabel = useMemo17(
+  const topbarUsageLabel = useMemo18(
     () => formatTopbarUsageSummary(threadUsageSummary),
     [threadUsageSummary]
   );
-  const transcriptItemCount = useMemo17(
+  const transcriptItemCount = useMemo18(
     () => detail ? detail.turns.reduce(
       (count, turn) => count + turn.items.length,
       detail.liveItems?.items.length ?? 0
@@ -20291,6 +20481,7 @@ function ThreadDetailSurface({
       currentWorkspaceLabel: currentWorkspaceLabel ?? detail?.workspace.label,
       sessionLabel: detail?.thread.providerSessionId ?? detail?.thread.id,
       usageLabel: topbarUsageLabel,
+      threadActionsButton,
       topbarActions: surfaceActions,
       metaContent,
       settingsContent,
@@ -20331,7 +20522,7 @@ function ThreadDetailSurface({
 import {
   useCallback as useCallback20,
   useEffect as useEffect28,
-  useMemo as useMemo18,
+  useMemo as useMemo19,
   useState as useState31
 } from "react";
 import { jsx as jsx71 } from "react/jsx-runtime";
@@ -20404,7 +20595,7 @@ function PluginProvider({
     },
     [adapter]
   );
-  const enabledModules = useMemo18(() => {
+  const enabledModules = useMemo19(() => {
     const enabledIds = new Set(
       plugins.filter((plugin) => plugin.enabled).map((plugin) => plugin.id)
     );
@@ -20452,7 +20643,7 @@ function PluginProvider({
     () => enabledModules.flatMap((module) => module.threadPanels ?? []),
     [enabledModules]
   );
-  const value = useMemo18(
+  const value = useMemo19(
     () => ({
       plugins,
       loading,
@@ -20898,6 +21089,7 @@ export {
   MemoizedThreadGraphWorkspacePanel2 as MemoizedThreadGraphWorkspacePanel,
   PluginContext,
   PluginProvider,
+  ThreadActionsDialog,
   ThreadCards,
   ThreadComposer,
   ThreadDetailSurface,

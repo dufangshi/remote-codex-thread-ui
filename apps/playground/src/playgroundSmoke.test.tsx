@@ -122,6 +122,10 @@ function textContent() {
   return host?.textContent ?? '';
 }
 
+function documentTextContent() {
+  return document.body.textContent ?? '';
+}
+
 function setElementScrollGeometry(
   element: HTMLElement,
   {
@@ -183,10 +187,12 @@ describe('playground smoke', () => {
 
     expect(textContent()).toContain('Safety review for Grignard setup');
     expect(textContent()).toContain('The main risks are ether vapor ignition');
-    expect(host?.querySelector('[data-testid="chat-composer"]')).not.toBeNull();
-    expect(
-      host?.querySelector('[data-testid="chat-scroll-container"]'),
-    ).not.toBeNull();
+    await vi.waitFor(() => {
+      expect(host?.querySelector('[data-testid="chat-composer"]')).not.toBeNull();
+      expect(
+        host?.querySelector('[data-testid="chat-panel"]'),
+      ).not.toBeNull();
+    });
 
     const slashButton = host?.querySelector<HTMLButtonElement>(
       'button[aria-label="Open slash toolbox"]',
@@ -237,18 +243,23 @@ describe('playground smoke', () => {
       root?.render(<PlaygroundApp />);
     });
 
-    const scrollContainer = host?.querySelector<HTMLElement>(
-      '[data-testid="chat-scroll-container"]',
-    );
-    const tailSentinel =
-      scrollContainer?.querySelector<HTMLElement>('[aria-hidden="true"].h-px.w-full');
-    const jumpButton = host?.querySelector<HTMLButtonElement>(
-      'button[aria-label="Jump to latest"]',
-    );
+    let scrollContainer: HTMLElement | null | undefined = null;
+    let tailSentinel: HTMLElement | null | undefined = null;
+    let jumpButton: HTMLButtonElement | null | undefined = null;
 
-    expect(scrollContainer).not.toBeNull();
-    expect(tailSentinel).not.toBeNull();
-    expect(jumpButton).not.toBeNull();
+    await vi.waitFor(() => {
+      scrollContainer = host?.querySelector<HTMLElement>(
+        '[data-testid="thread-scroll-container"]',
+      );
+      tailSentinel =
+        scrollContainer?.querySelector<HTMLElement>('[aria-hidden="true"].h-px.w-full');
+      jumpButton = host?.querySelector<HTMLButtonElement>(
+        'button[aria-label="Jump to latest"]',
+      );
+      expect(scrollContainer).not.toBeNull();
+      expect(tailSentinel).not.toBeNull();
+      expect(jumpButton).not.toBeNull();
+    });
 
     setElementScrollGeometry(scrollContainer!, {
       scrollHeight: 1200,
@@ -321,5 +332,42 @@ describe('playground smoke', () => {
         jumpButton?.querySelector('.thread-jump-latest-badge')?.className,
       ).toContain('is-active');
     });
+  });
+
+  it('opens the thread actions panel from the playground surface', async () => {
+    flushSync(() => {
+      root?.render(<PlaygroundApp />);
+    });
+
+    const actionsButton = host?.querySelector<HTMLButtonElement>(
+      'button[aria-label="Thread actions"]',
+    );
+    expect(actionsButton).not.toBeNull();
+
+    flushSync(() => {
+      actionsButton?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+
+    expect(documentTextContent()).toContain('Thread actions');
+    expect(documentTextContent()).toContain('Latest 10');
+    expect(documentTextContent()).toContain('Export PDF');
+    expect(documentTextContent()).not.toContain(
+      'Exports the latest 10 turns in chronological order.',
+    );
+
+    const shareTab = Array.from(
+      document.body.querySelectorAll<HTMLButtonElement>('button'),
+    ).find((button) => button.textContent === 'Share');
+    expect(shareTab).not.toBeNull();
+
+    flushSync(() => {
+      shareTab?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+
+    expect(documentTextContent()).toContain('Relay identifier');
+    expect(documentTextContent()).toContain('View only');
+    expect(documentTextContent()).toContain('Collaborator');
+    expect(documentTextContent()).toContain('alice');
+    expect(documentTextContent()).toContain('Workspace read');
   });
 });

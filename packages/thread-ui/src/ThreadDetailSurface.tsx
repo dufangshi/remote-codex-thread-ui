@@ -110,6 +110,7 @@ export interface ThreadDetailSurfaceProps {
   appNavigationMenu?: ReactNode;
   workspaceReturnHref?: string;
   onWorkspaceReturn?: () => void;
+  threadActionsButton?: ReactNode;
   surfaceActions?: ReactNode;
   floatingPanel?: ReactNode;
   workspaceContent?: ReactNode;
@@ -179,6 +180,7 @@ export function ThreadDetailSurface({
   appNavigationMenu,
   workspaceReturnHref,
   onWorkspaceReturn,
+  threadActionsButton,
   surfaceActions,
   floatingPanel,
   workspaceContent,
@@ -417,6 +419,7 @@ export function ThreadDetailSurface({
       currentWorkspaceLabel={currentWorkspaceLabel ?? detail?.workspace.label}
       sessionLabel={detail?.thread.providerSessionId ?? detail?.thread.id}
       usageLabel={topbarUsageLabel}
+      threadActionsButton={threadActionsButton}
       topbarActions={surfaceActions}
       metaContent={metaContent}
       settingsContent={settingsContent}

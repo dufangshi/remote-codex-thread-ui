@@ -43,7 +43,13 @@ export {
   type WorkspaceTab,
 } from './components/ThreadGraphWorkspacePanelLazy';
 export { ConfirmDialog } from './components/ConfirmDialog';
-export { ExportTranscriptDialog } from './components/ExportTranscriptDialog';
+export {
+  ExportTranscriptDialog,
+  ThreadActionsDialog,
+  type CreateThreadShareInput,
+  type ThreadActionsDialogProps,
+  type ThreadShareSummary,
+} from './components/ExportTranscriptDialog';
 export { LongTextDialog } from './components/LongTextDialog';
 export {
   formatLongTimestamp,

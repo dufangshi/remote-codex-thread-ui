@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import type {
+  ExportThreadPdfInput,
   ShellEventEnvelope,
   ThreadShellStateDto,
 } from '@remote-codex/shared';
@@ -14,6 +15,7 @@ import {
   AppShellNavContext,
   AppShellNavigationMenu,
   PluginProvider,
+  ThreadActionsDialog,
   ThreadDetailSurface,
 } from '@remote-codex/thread-ui';
 
@@ -38,6 +40,44 @@ const mockShellSession = {
   createdAt: '2026-06-08T14:19:00.000Z',
   updatedAt: '2026-06-08T14:19:00.000Z',
   lastActivityAt: null,
+};
+
+const mockExportTurnsState = {
+  status: 'ready' as const,
+  error: null,
+  data: {
+    totalTurnCount: 4,
+    turns: [
+      {
+        turnId: 'playground-turn-4',
+        turnNumber: 4,
+        startedAt: '2026-06-08T14:22:00.000Z',
+        status: 'completed' as const,
+        userPromptPreview: 'Summarize the safety plan',
+      },
+      {
+        turnId: 'playground-turn-3',
+        turnNumber: 3,
+        startedAt: '2026-06-08T14:20:00.000Z',
+        status: 'completed' as const,
+        userPromptPreview: 'Check the solvent notes',
+      },
+      {
+        turnId: 'playground-turn-2',
+        turnNumber: 2,
+        startedAt: '2026-06-08T14:18:00.000Z',
+        status: 'completed' as const,
+        userPromptPreview: 'Inspect the workspace artifacts',
+      },
+      {
+        turnId: 'playground-turn-1',
+        turnNumber: 1,
+        startedAt: '2026-06-08T14:16:00.000Z',
+        status: 'failed' as const,
+        userPromptPreview: 'Review Grignard setup risks',
+      },
+    ],
+  },
 };
 
 function mockShellState(
@@ -137,6 +177,7 @@ function createPlaygroundShellAdapter(): ThreadShellAdapter {
 export function PlaygroundApp() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [threadActionsOpen, setThreadActionsOpen] = useState(false);
   const [activeView, setActiveView] = useState<'chat' | 'shell'>('chat');
   const [followTail, setFollowTail] = useState(true);
   const [autoCollapseCompletedTurns, setAutoCollapseCompletedTurns] = useState(true);
@@ -191,6 +232,18 @@ export function PlaygroundApp() {
     [autoCollapseCompletedTurns, menuOpen, settingsOpen],
   );
 
+  const threadActionsButton = (
+    <button
+      type="button"
+      aria-label="Thread actions"
+      title="Thread actions"
+      className="thread-icon-button h-10 w-10 shrink-0 rounded-full text-sm font-semibold"
+      onClick={() => setThreadActionsOpen(true)}
+    >
+      ...
+    </button>
+  );
+
   return (
     <AppShellNavContext.Provider value={navContext}>
       <PluginProvider builtinPlugins={builtinFrontendPlugins}>
@@ -207,6 +260,7 @@ export function PlaygroundApp() {
           currentWorkspaceLabel={mockDetail.workspace.label}
           activeView={activeView}
           appMenuButton={<AppShellMenuButton />}
+          threadActionsButton={threadActionsButton}
           appNavigationMenu={
             <AppShellNavigationMenu
               items={[
@@ -262,6 +316,32 @@ export function PlaygroundApp() {
               </button>
             </div>
           }
+        />
+        <ThreadActionsDialog
+          open={threadActionsOpen}
+          turnsState={mockExportTurnsState}
+          shareAvailable
+          shareState={{
+            status: 'ready',
+            error: null,
+            shares: [
+              {
+                id: 'playground-share-1',
+                targetUsername: 'alice',
+                label: 'Review',
+                threadAccess: 'read',
+                workspaceAccess: 'read',
+                createdAt: '2026-06-08T14:25:00.000Z',
+              },
+            ],
+          }}
+          onCancel={() => setThreadActionsOpen(false)}
+          onLoadTurns={() => {}}
+          onExport={(_input: ExportThreadPdfInput) => {
+            setThreadActionsOpen(false);
+          }}
+          onCreateShare={() => {}}
+          onRevokeShare={() => {}}
         />
       </PluginProvider>
     </AppShellNavContext.Provider>
