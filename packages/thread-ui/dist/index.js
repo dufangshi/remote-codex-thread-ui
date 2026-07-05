@@ -10163,7 +10163,7 @@ function ThreadWorkspaceLayout({
               "data-testid": "create-thread-dialog",
               "data-theme-effective": effectiveTheme,
               "data-theme-mode": themeMode,
-              className: "thread-graph-create-thread-dialog thread-graph-dialog",
+              className: "thread-graph-create-thread-dialog thread-graph-dialog max-h-[min(86vh,42rem)] overflow-hidden p-4 sm:max-w-[34rem]",
               children: renderNewThreadDialogContent ? renderNewThreadDialogContent({
                 close: closeCreateThreadDialog,
                 closeNavigation: closeNavigationSurfaces,
