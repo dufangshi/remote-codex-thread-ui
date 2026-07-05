@@ -16,12 +16,6 @@ export interface FileReadHistoryItem extends ThreadHistoryItemDto {
   kind: 'fileRead';
 }
 
-export interface AgentMessageHistoryItemWithReasoning
-  extends ThreadHistoryItemDto {
-  kind: 'agentMessage';
-  reasoningItems?: Array<ThreadHistoryItemDto & { kind: 'reasoning' }>;
-}
-
 export type TimelineHistoryEntry =
   | {
       kind: 'item';
@@ -51,10 +45,6 @@ export type TimelineHistoryEntry =
 
 export type TimelineTurn = Omit<ThreadTurnDto, 'status'> & {
   status: ThreadTurnDto['status'] | 'sending';
-};
-
-type TimelineAgentMessageEntry = Extract<TimelineHistoryEntry, { kind: 'item' }> & {
-  item: AgentMessageHistoryItemWithReasoning;
 };
 
 function decodeXmlEntities(value: string) {
@@ -416,90 +406,11 @@ export function isActiveTurnStatus(status: TimelineTurn['status']) {
 export function groupTimelineHistoryItems(items: ThreadHistoryItemDto[]) {
   const entries: TimelineHistoryEntry[] = [];
   let index = 0;
-  const attachedReasoningIds = new Set<string>();
-  const pendingReasoningItems: Array<
-    ThreadHistoryItemDto & { kind: 'reasoning' }
-  > = [];
-
-  function lastAgentMessageEntry() {
-    const lastEntry = entries.at(-1);
-    if (lastEntry?.kind !== 'item' || lastEntry.item.kind !== 'agentMessage') {
-      return null;
-    }
-
-    return lastEntry as TimelineAgentMessageEntry;
-  }
-
-  function attachReasoningToAgentMessage(
-    entry: TimelineAgentMessageEntry,
-    reasoningItems: Array<ThreadHistoryItemDto & { kind: 'reasoning' }>,
-  ) {
-    if (reasoningItems.length === 0) {
-      return;
-    }
-
-    entry.item = {
-      ...entry.item,
-      reasoningItems: [
-        ...(entry.item.reasoningItems ?? []),
-        ...reasoningItems,
-      ],
-    };
-    for (const reasoningItem of reasoningItems) {
-      attachedReasoningIds.add(reasoningItem.id);
-    }
-  }
-
-  function flushPendingReasoningItems() {
-    const reasoningItems = pendingReasoningItems.splice(0);
-    for (const reasoningItem of reasoningItems) {
-      entries.push({
-        kind: 'item',
-        key: reasoningItem.id,
-        item: reasoningItem,
-      });
-    }
-  }
 
   while (index < items.length) {
     const current = items[index];
     if (!current) {
       break;
-    }
-
-    if (attachedReasoningIds.has(current.id)) {
-      index += 1;
-      continue;
-    }
-
-    if (current.kind === 'reasoning') {
-      let cursor = index;
-      const reasoningItems: Array<ThreadHistoryItemDto & { kind: 'reasoning' }> = [];
-      while (cursor < items.length && items[cursor]?.kind === 'reasoning') {
-        reasoningItems.push(items[cursor] as ThreadHistoryItemDto & { kind: 'reasoning' });
-        cursor += 1;
-      }
-      const previousAgentMessage = lastAgentMessageEntry();
-      if (previousAgentMessage) {
-        attachReasoningToAgentMessage(previousAgentMessage, reasoningItems);
-      } else {
-        pendingReasoningItems.push(...reasoningItems);
-      }
-      index = cursor;
-      continue;
-    }
-
-    if (current.kind === 'agentMessage') {
-      const reasoningItems = pendingReasoningItems.splice(0);
-      const entry: TimelineAgentMessageEntry = {
-        kind: 'item',
-        key: current.id,
-        item: current as AgentMessageHistoryItemWithReasoning,
-      };
-      attachReasoningToAgentMessage(entry, reasoningItems);
-      entries.push(entry);
-      index += 1;
-      continue;
     }
 
     if (
@@ -567,8 +478,6 @@ export function groupTimelineHistoryItems(items: ThreadHistoryItemDto[]) {
       items: groupedItems as SearchHistoryItem[],
     });
   }
-
-  flushPendingReasoningItems();
 
   return entries;
 }

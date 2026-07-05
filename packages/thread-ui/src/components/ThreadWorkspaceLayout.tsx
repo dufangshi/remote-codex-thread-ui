@@ -1190,28 +1190,10 @@ export function ThreadWorkspaceLayout({
                         </button>
                         {topbarDetailsOpen ? (
                           <div
-                            className="thread-topbar-details-popover absolute left-0 top-[calc(100%+0.5rem)] z-50 w-[min(26rem,calc(100vw-1.5rem))] rounded-lg border p-2.5 shadow-lg"
+                            className="thread-topbar-details-popover absolute left-0 top-[calc(100%+0.5rem)] z-50 w-[min(28rem,calc(100vw-1.5rem))] rounded-lg border p-2.5 shadow-lg"
                             role="dialog"
                             aria-label="Session and usage"
                           >
-                            <button
-                              type="button"
-                              onClick={() => {
-                                if (!topbarRoomLabel) {
-                                  return;
-                                }
-                                void navigator.clipboard?.writeText(
-                                  topbarRoomLabel,
-                                );
-                              }}
-                              className="thread-topbar-meta-row flex min-w-0 max-w-full items-center gap-2 text-left text-xs leading-5"
-                              title="Copy room ID"
-                            >
-                              <span className="w-12 shrink-0">Room</span>
-                              <span className="truncate font-mono">
-                                {topbarRoomLabel}
-                              </span>
-                            </button>
                             <button
                               type="button"
                               onClick={() => {
@@ -1225,16 +1207,16 @@ export function ThreadWorkspaceLayout({
                               className="thread-topbar-meta-row flex min-w-0 max-w-full items-center gap-2 text-left text-xs leading-5"
                               title="Copy session ID"
                             >
-                              <span className="w-12 shrink-0">Session</span>
+                              <span className="w-14 shrink-0">Session</span>
                               <span className="truncate font-mono">
                                 {topbarSessionLabel}
                               </span>
                             </button>
                             <div
                               className="thread-topbar-meta-row mt-1 flex min-w-0 max-w-full items-center gap-2 text-xs leading-5"
-                              title="Room token usage"
+                              title="Session token usage and estimated cost"
                             >
-                              <span className="w-12 shrink-0">Usage</span>
+                              <span className="w-14 shrink-0">Usage</span>
                               <span className="truncate font-mono">
                                 {topbarUsageLabel}
                               </span>

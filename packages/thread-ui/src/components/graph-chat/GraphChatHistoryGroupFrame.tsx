@@ -12,6 +12,7 @@ interface GraphChatHistoryGroupFrameProps {
   onToggleExpanded: () => void;
   runningIndicator?: ReactNode;
   summary: ReactNode;
+  timeMeta?: ReactNode;
   toggleAriaLabel: string;
   trailingSummary?: ReactNode;
 }
@@ -28,6 +29,7 @@ export function GraphChatHistoryGroupFrame({
   onToggleExpanded,
   runningIndicator,
   summary,
+  timeMeta,
   toggleAriaLabel,
   trailingSummary,
 }: GraphChatHistoryGroupFrameProps) {
@@ -60,7 +62,12 @@ export function GraphChatHistoryGroupFrame({
             <div className="thread-graph-history-group-summary min-w-0 flex flex-1 flex-wrap items-center gap-2 pr-1">
               {summary}
             </div>
-            {trailingSummary}
+            {(trailingSummary || timeMeta) ? (
+              <div className="inline-flex shrink-0 items-center gap-2">
+                {trailingSummary}
+                {timeMeta}
+              </div>
+            ) : null}
           </button>
 
           {expanded ? (

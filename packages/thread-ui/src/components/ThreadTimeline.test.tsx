@@ -9,6 +9,7 @@ import { afterEach, describe, expect, it } from 'vitest';
 import type { ThreadTurnDto } from '@remote-codex/shared';
 
 import { ThreadTimeline } from './ThreadTimeline';
+import { formatShortTimestamp } from './threadPresentation';
 
 let root: Root | null = null;
 let container: HTMLDivElement | null = null;
@@ -45,7 +46,7 @@ function completedTurn(items: ThreadTurnDto['items']): ThreadTurnDto {
 }
 
 describe('ThreadTimeline', () => {
-  it('does not show Worked when only reasoning would be hidden', () => {
+  it('shows Worked when reasoning is the collapsed middle agent bubble', () => {
     const element = render(
       <ThreadTimeline
         autoCollapseCompletedTurns={true}
@@ -77,12 +78,13 @@ describe('ThreadTimeline', () => {
 
     expect(element.textContent).toContain('reply me a 3');
     expect(element.textContent).toContain('3');
-    expect(element.textContent).not.toContain('Worked');
+    expect(element.textContent).toContain('Worked');
+    expect(element.textContent).not.toContain('The user asked for the exact number 3.');
     expect(
       Array.from(element.querySelectorAll('button')).some((button) =>
         button.getAttribute('aria-label')?.includes('Expand turn 1'),
       ),
-    ).toBe(false);
+    ).toBe(true);
   });
 
   it('shows Worked when an actual middle message bubble is collapsed', () => {
@@ -119,5 +121,55 @@ describe('ThreadTimeline', () => {
     expect(element.textContent).toContain('Final reply stays visible.');
     expect(element.textContent).toContain('Worked');
     expect(element.textContent).not.toContain('Intermediate note should collapse.');
+  });
+
+  it('shows relative timestamps for agent and tool events', () => {
+    const startedAt = new Date(Date.UTC(2026, 6, 3, 20, 10, 0)).toISOString();
+    const agentAt = new Date(Date.UTC(2026, 6, 3, 20, 11, 21)).toISOString();
+    const element = render(
+      <ThreadTimeline
+        autoCollapseCompletedTurns={false}
+        liveOutput=""
+        turns={[
+          {
+            ...completedTurn([
+              {
+                id: 'user-1',
+                kind: 'userMessage',
+                text: 'Inspect.',
+                createdAt: startedAt,
+              },
+              {
+                id: 'command-1',
+                kind: 'commandExecution',
+                text: 'pwd',
+                createdAt: new Date(Date.UTC(2026, 6, 3, 20, 10, 5)).toISOString(),
+                status: 'completed',
+              },
+              {
+                id: 'agent-1',
+                kind: 'agentMessage',
+                text: 'Done.',
+                createdAt: agentAt,
+              },
+            ]),
+            startedAt,
+          },
+        ]}
+      />,
+    );
+
+    expect(element.textContent).toContain('5s');
+    expect(element.textContent).toContain('1m 21s');
+    expect(element.textContent).not.toContain(formatShortTimestamp(agentAt));
+
+    const agentTime = Array.from(element.querySelectorAll('[role="button"]')).find(
+      (node) => node.textContent === '1m 21s',
+    );
+    expect(agentTime).toBeTruthy();
+    flushSync(() => {
+      (agentTime as HTMLElement | undefined)?.click();
+    });
+    expect(element.textContent).toContain(formatShortTimestamp(agentAt));
   });
 });

@@ -4,6 +4,7 @@ import {
   useMemo,
   useState,
   type RefCallback,
+  type ReactNode,
   type RefObject,
 } from 'react';
 import { ChevronRight } from 'lucide-react';
@@ -96,8 +97,9 @@ interface HistoryItemRowProps {
   threadId: string | undefined;
   item: ThreadHistoryItemDto;
   scrollRootRef: RefObject<HTMLDivElement | null>;
-  timeLabel?: string | null | undefined;
+  timeLabel?: ReactNode;
   timeTitle?: string | null | undefined;
+  timeMeta?: ReactNode;
   onOpenExpandedText: OpenExpandedTextHandler;
   onOpenCommandDetail: OpenCommandDetailHandler;
   onOpenToolCallDetail: OpenToolCallDetailHandler;
@@ -120,6 +122,7 @@ export const HistoryItemRow = memo(function HistoryItemRow({
   adapter,
   timeLabel,
   timeTitle,
+  timeMeta,
 }: HistoryItemRowProps) {
   if (isCompactChatItem(item.kind)) {
     return (
@@ -139,6 +142,22 @@ export const HistoryItemRow = memo(function HistoryItemRow({
     );
   }
 
+  if (item.kind === 'reasoning') {
+    return (
+      <CompactMessageItem
+        item={{
+          ...item,
+          kind: 'agentMessage',
+          status: item.status ?? null,
+        }}
+        scrollRootRef={scrollRootRef}
+        timeLabel={timeLabel}
+        timeTitle={timeTitle}
+        {...(onBeforeMessageResize ? { onBeforeMessageResize } : {})}
+      />
+    );
+  }
+
   if (item.kind === 'artifact') {
     return (
       <ArtifactHistoryItem
@@ -147,6 +166,7 @@ export const HistoryItemRow = memo(function HistoryItemRow({
             kind: 'artifact';
           }
         }
+        timeMeta={timeMeta}
         {...(onSelectArtifact
           ? {
               onSelect: (nextItem, artifact) =>
@@ -166,6 +186,7 @@ export const HistoryItemRow = memo(function HistoryItemRow({
           }
         }
         onOpen={onOpenCommandDetail}
+        timeMeta={timeMeta}
       />
     );
   }
@@ -179,6 +200,7 @@ export const HistoryItemRow = memo(function HistoryItemRow({
           }
         }
         onOpen={onOpenToolCallDetail}
+        timeMeta={timeMeta}
       />
     );
   }
@@ -192,6 +214,7 @@ export const HistoryItemRow = memo(function HistoryItemRow({
           }
         }
         onOpen={onOpenToolCallDetail}
+        timeMeta={timeMeta}
       />
     );
   }
@@ -205,6 +228,7 @@ export const HistoryItemRow = memo(function HistoryItemRow({
           }
         }
         onOpen={onOpenToolCallDetail}
+        timeMeta={timeMeta}
       />
     );
   }
@@ -217,6 +241,7 @@ export const HistoryItemRow = memo(function HistoryItemRow({
     return (
       <WebSearchItem
         item={typedItem}
+        timeMeta={timeMeta}
         onOpen={() =>
           onOpenDeferredHistoryItemDetail(
             typedItem,
@@ -238,6 +263,7 @@ export const HistoryItemRow = memo(function HistoryItemRow({
     return (
       <FileReadItem
         item={typedItem}
+        timeMeta={timeMeta}
         onOpen={() =>
           onOpenDeferredHistoryItemDetail(
             typedItem,
@@ -262,6 +288,7 @@ export const HistoryItemRow = memo(function HistoryItemRow({
         }
         onOpen={onOpenExpandedText}
         getImageAssetUrl={adapter?.getImageAssetUrl}
+        timeMeta={timeMeta}
       />
     );
   }
@@ -275,6 +302,7 @@ export const HistoryItemRow = memo(function HistoryItemRow({
           }
         }
         scrollRootRef={scrollRootRef}
+        timeMeta={timeMeta}
         {...(onBeforeMessageResize
           ? { onBeforeResize: onBeforeMessageResize }
           : {})}
@@ -290,6 +318,7 @@ export const HistoryItemRow = memo(function HistoryItemRow({
     return (
       <FileChangeItem
         item={typedItem}
+        timeMeta={timeMeta}
         onOpen={() =>
           onOpenDeferredHistoryItemDetail(
             typedItem,
@@ -311,6 +340,7 @@ export const HistoryItemRow = memo(function HistoryItemRow({
             kind: 'contextCompaction';
           }
         }
+        timeMeta={timeMeta}
       />
     );
   }
@@ -323,11 +353,12 @@ export const HistoryItemRow = memo(function HistoryItemRow({
             kind: 'hook';
           }
         }
+        timeMeta={timeMeta}
       />
     );
   }
 
-  return <GenericHistoryItem item={item} />;
+  return <GenericHistoryItem item={item} timeMeta={timeMeta} />;
 });
 
 interface ThreadTurnRowProps {
@@ -392,6 +423,82 @@ function formatWorkedDuration(startedAt: string | null | undefined, items: Threa
     return `Worked for ${minutes}m ${seconds}s`;
   }
   return `Worked for ${seconds}s`;
+}
+
+function formatRelativeTurnTime(
+  startedAt: string | null | undefined,
+  timestamp: string | null | undefined,
+) {
+  const startMillis = Date.parse(startedAt ?? '');
+  const itemMillis = Date.parse(timestamp ?? '');
+  if (!Number.isFinite(startMillis) || !Number.isFinite(itemMillis)) {
+    return timestamp ? formatShortTimestamp(timestamp) : 'Time unavailable';
+  }
+
+  const totalSeconds = Math.max(0, Math.round((itemMillis - startMillis) / 1000));
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+
+  if (hours > 0) {
+    return `${hours}h ${minutes}m`;
+  }
+  if (minutes > 0) {
+    return `${minutes}m ${seconds}s`;
+  }
+  return `${seconds}s`;
+}
+
+function TimelineTimeToggle({
+  absoluteLabel,
+  className = '',
+  timestamp,
+  turnStartedAt,
+}: {
+  absoluteLabel: string;
+  className?: string;
+  timestamp: string | null | undefined;
+  turnStartedAt: string | null | undefined;
+}) {
+  const [showAbsolute, setShowAbsolute] = useState(false);
+  if (!timestamp) {
+    return null;
+  }
+
+  const absoluteTitle = formatLongTimestamp(timestamp);
+  const relativeLabel = formatRelativeTurnTime(turnStartedAt, timestamp);
+  const label = showAbsolute ? absoluteLabel : relativeLabel;
+
+  return (
+    <span
+      role="button"
+      tabIndex={0}
+      className={`thread-graph-relative-time rounded-full px-1.5 py-0.5 text-[10px] leading-none transition sm:text-[11px] ${className}`}
+      title={showAbsolute ? relativeLabel : absoluteTitle}
+      aria-label={`Toggle timestamp, currently ${label}`}
+      onClick={(event) => {
+        event.stopPropagation();
+        setShowAbsolute((value) => !value);
+      }}
+      onKeyDown={(event) => {
+        if (event.key !== 'Enter' && event.key !== ' ') {
+          return;
+        }
+        event.preventDefault();
+        event.stopPropagation();
+        setShowAbsolute((value) => !value);
+      }}
+    >
+      <time dateTime={timestamp}>{label}</time>
+    </span>
+  );
+}
+
+function firstHistoryEntryTimestamp(entry: TimelineHistoryEntry) {
+  if (entry.kind === 'item') {
+    return entry.item.createdAt ?? null;
+  }
+  return entry.items.find((item) => item.createdAt)?.createdAt ?? null;
 }
 
 function collapsedSummaryMessages(entries: TimelineHistoryEntry[]) {
@@ -510,6 +617,7 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
       fallbackTimestamp={turn.startedAt}
       fallbackTimeLabel={turnTimeLabel}
       fallbackTimeTitle={turnTimeTitle}
+      turnStartedAt={turn.startedAt}
       {...(onSelectArtifact ? { onSelectArtifact } : {})}
       {...(adapter ? { adapter } : {})}
     />
@@ -523,8 +631,19 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
       onOpenCommandDetail={onOpenCommandDetail}
       onOpenToolCallDetail={onOpenToolCallDetail}
       onOpenDeferredHistoryItemDetail={onOpenDeferredHistoryItemDetail}
-      timeLabel={turnTimeLabel}
+      timeLabel={
+        turn.startedAt ? (
+          <TimelineTimeToggle
+            absoluteLabel={turnTimeLabel}
+            timestamp={turn.startedAt}
+            turnStartedAt={turn.startedAt}
+          />
+        ) : (
+          turnTimeLabel
+        )
+      }
       timeTitle={turnTimeTitle}
+      timeMeta={null}
       {...(onSelectArtifact ? { onSelectArtifact } : {})}
       {...(adapter ? { adapter } : {})}
     />
@@ -538,7 +657,17 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
           text: visibleLiveOutput,
         }}
         scrollRootRef={scrollRootRef}
-        timeLabel={turnTimeLabel}
+        timeLabel={
+          turn.startedAt ? (
+            <TimelineTimeToggle
+              absoluteLabel={turnTimeLabel}
+              timestamp={turn.startedAt}
+              turnStartedAt={turn.startedAt}
+            />
+          ) : (
+            turnTimeLabel
+          )
+        }
         timeTitle={turnTimeTitle}
         streaming
         {...(onBeforeMessageResize ? { onBeforeMessageResize } : {})}
@@ -598,7 +727,13 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
           scrollRootRef={scrollRootRef}
           timeLabel={
             collapsedSummary.finalAgent.createdAt
-              ? formatShortTimestamp(collapsedSummary.finalAgent.createdAt)
+              ? (
+                  <TimelineTimeToggle
+                    absoluteLabel={formatShortTimestamp(collapsedSummary.finalAgent.createdAt)}
+                    timestamp={collapsedSummary.finalAgent.createdAt}
+                    turnStartedAt={turn.startedAt}
+                  />
+                )
               : turnTimeLabel
           }
           timeTitle={
@@ -652,6 +787,7 @@ interface TimelineHistoryEntriesProps {
   fallbackTimestamp?: string | null | undefined;
   fallbackTimeLabel?: string | null | undefined;
   fallbackTimeTitle?: string | null | undefined;
+  turnStartedAt?: string | null | undefined;
   onOpenExpandedText: OpenExpandedTextHandler;
   onOpenCommandDetail: OpenCommandDetailHandler;
   onOpenToolCallDetail: OpenToolCallDetailHandler;
@@ -677,7 +813,20 @@ function TimelineHistoryEntries({
   fallbackTimestamp,
   fallbackTimeLabel,
   fallbackTimeTitle,
+  turnStartedAt,
 }: TimelineHistoryEntriesProps) {
+  const relativeTimeMeta = useCallback(
+    (timestamp: string | null | undefined) =>
+      timestamp ? (
+        <TimelineTimeToggle
+          absoluteLabel={formatShortTimestamp(timestamp)}
+          timestamp={timestamp}
+          turnStartedAt={turnStartedAt ?? fallbackTimestamp}
+        />
+      ) : null,
+    [fallbackTimestamp, turnStartedAt],
+  );
+
   return (
     <GraphChatHistoryEntries<TimelineHistoryEntry>
       entries={entries}
@@ -690,6 +839,7 @@ function TimelineHistoryEntries({
           expanded={expanded}
           onToggleExpanded={onToggleExpanded}
           onOpen={onOpenCommandDetail}
+          timeMeta={relativeTimeMeta(firstHistoryEntryTimestamp(entry))}
         />
       )}
       renderFileChangeGroup={(entry, expanded, onToggleExpanded) => (
@@ -699,6 +849,7 @@ function TimelineHistoryEntries({
           expanded={expanded}
           onToggleExpanded={onToggleExpanded}
           onOpen={onOpenExpandedText}
+          timeMeta={relativeTimeMeta(firstHistoryEntryTimestamp(entry))}
         />
       )}
       renderSearchGroup={(entry, expanded, onToggleExpanded) => (
@@ -708,6 +859,7 @@ function TimelineHistoryEntries({
           expanded={expanded}
           onToggleExpanded={onToggleExpanded}
           onOpen={onOpenExpandedText}
+          timeMeta={relativeTimeMeta(firstHistoryEntryTimestamp(entry))}
         />
       )}
       renderFileReadGroup={(entry, expanded, onToggleExpanded) => (
@@ -717,26 +869,40 @@ function TimelineHistoryEntries({
           expanded={expanded}
           onToggleExpanded={onToggleExpanded}
           onOpen={onOpenExpandedText}
+          timeMeta={relativeTimeMeta(firstHistoryEntryTimestamp(entry))}
         />
       )}
       renderItem={(entry) => {
         const timestamp = timestampForHistoryItem(entry.item, fallbackTimestamp ?? null);
+        const isUserMessage = entry.item.kind === 'userMessage';
+        const timeLabel = isUserMessage ? (
+          entry.item.createdAt ? (
+            formatShortTimestamp(timestamp)
+          ) : (
+            fallbackTimeLabel
+          )
+        ) : entry.item.createdAt ? (
+          <TimelineTimeToggle
+            absoluteLabel={formatShortTimestamp(timestamp)}
+            timestamp={timestamp}
+            turnStartedAt={turnStartedAt ?? fallbackTimestamp}
+          />
+        ) : (
+          fallbackTimeLabel
+        );
         return (
           <HistoryItemRow
             key={entry.key}
             threadId={threadId}
             item={entry.item}
             scrollRootRef={scrollRootRef}
-            timeLabel={
-              entry.item.createdAt
-                ? formatShortTimestamp(timestamp)
-                : fallbackTimeLabel
-            }
+            timeLabel={timeLabel}
             timeTitle={
               entry.item.createdAt
                 ? formatLongTimestamp(timestamp)
                 : fallbackTimeTitle
             }
+            timeMeta={relativeTimeMeta(timestamp)}
             onOpenExpandedText={onOpenExpandedText}
             onOpenCommandDetail={onOpenCommandDetail}
             onOpenToolCallDetail={onOpenToolCallDetail}

@@ -410,6 +410,7 @@ function GraphChatHistoryEventFrame({
   headerMeta,
   icon,
   item,
+  timeMeta,
   title,
   tone,
 }: {
@@ -419,6 +420,7 @@ function GraphChatHistoryEventFrame({
   headerMeta?: ReactNode;
   icon: ReactNode;
   item: ThreadHistoryItemDto;
+  timeMeta?: ReactNode;
   title: string;
   tone: GraphHistoryEventTone;
 }) {
@@ -454,9 +456,10 @@ function GraphChatHistoryEventFrame({
             ) : null}
             {headerMeta}
           </div>
-          {actions ? (
+          {(actions || timeMeta) ? (
             <div className="thread-graph-history-event-actions">
               {actions}
+              {timeMeta}
             </div>
           ) : null}
         </div>
@@ -477,6 +480,7 @@ function GraphChatHistoryToolFrame({
   item,
   onOpen,
   preview,
+  timeMeta,
   title,
   tone,
 }: {
@@ -488,6 +492,7 @@ function GraphChatHistoryToolFrame({
   item: ThreadHistoryItemDto;
   onOpen: () => void;
   preview: ReturnType<typeof summarizeInlinePreviewText>;
+  timeMeta?: ReactNode;
   title: string;
   tone: GraphHistoryToolTone;
 }) {
@@ -533,6 +538,11 @@ function GraphChatHistoryToolFrame({
                 </span>
               </Badge>
             </div>
+            {timeMeta ? (
+              <span className="thread-graph-history-tool-time shrink-0">
+                {timeMeta}
+              </span>
+            ) : null}
           </AccordionTrigger>
 
           <AccordionContent className="thread-graph-tool-content thread-graph-history-tool-content px-4 pb-4 pt-1">
@@ -568,16 +578,19 @@ export const GraphChatPlanHistoryItem = memo(function GraphChatPlanHistoryItem({
   item,
   scrollRootRef,
   onBeforeResize,
+  timeMeta,
 }: {
   item: ThreadHistoryItemDto & { kind: 'plan' };
   scrollRootRef: RefObject<HTMLDivElement | null>;
   onBeforeResize?: () => void;
+  timeMeta?: ReactNode;
 }) {
   return (
     <GraphChatHistoryEventFrame
       className="thread-graph-event-plan"
       icon={<ClipboardList className="h-4 w-4" />}
       item={item}
+      timeMeta={timeMeta}
       title="plan"
       tone="plan"
     >
@@ -597,8 +610,10 @@ export const GraphChatPlanHistoryItem = memo(function GraphChatPlanHistoryItem({
 export const GraphChatContextCompactionItem = memo(
   function GraphChatContextCompactionItem({
     item,
+    timeMeta,
   }: {
     item: ContextCompactionHistoryItem;
+    timeMeta?: ReactNode;
   }) {
     const isRunning =
       isRunningHistoryStatus(item.status) || item.text === 'Compacting context';
@@ -613,6 +628,7 @@ export const GraphChatContextCompactionItem = memo(
         className="thread-graph-event-context"
         icon={<Archive className="h-4 w-4" />}
         item={item}
+        timeMeta={timeMeta}
         title="context"
         tone="context"
       >
@@ -638,14 +654,17 @@ export const GraphChatContextCompactionItem = memo(
 export const GraphChatGenericHistoryItem = memo(
   function GraphChatGenericHistoryItem({
     item,
+    timeMeta,
   }: {
     item: ThreadHistoryItemDto;
+    timeMeta?: ReactNode;
   }) {
     return (
       <GraphChatHistoryEventFrame
         className="thread-graph-event-generic"
         icon={<Info className="h-4 w-4" />}
         item={item}
+        timeMeta={timeMeta}
         title={item.kind}
         tone="generic"
       >
@@ -660,12 +679,14 @@ export const GraphChatGenericHistoryItem = memo(
 export const GraphChatCommandItem = memo(function GraphChatCommandItem({
   item,
   onOpen,
+  timeMeta,
 }: {
   item: ThreadHistoryItemDto & { kind: 'commandExecution' };
   onOpen: (
     item: ThreadHistoryItemDto & { kind: 'commandExecution' },
     title: string,
   ) => void;
+  timeMeta?: ReactNode;
 }) {
   const summary = summarizeInlinePreviewText(item.previewText ?? item.text);
 
@@ -678,6 +699,7 @@ export const GraphChatCommandItem = memo(function GraphChatCommandItem({
       item={item}
       onOpen={() => onOpen(item, 'Command Output')}
       preview={summary}
+      timeMeta={timeMeta}
       title="command"
       tone="command"
     />
@@ -687,12 +709,14 @@ export const GraphChatCommandItem = memo(function GraphChatCommandItem({
 export const GraphChatToolCallItem = memo(function GraphChatToolCallItem({
   item,
   onOpen,
+  timeMeta,
 }: {
   item: ThreadHistoryItemDto & { kind: 'toolCall' };
   onOpen: (
     item: ThreadHistoryItemDto & { kind: 'toolCall' },
     title: string,
   ) => void;
+  timeMeta?: ReactNode;
 }) {
   const summary = summarizeInlinePreviewText(item.text);
 
@@ -705,6 +729,7 @@ export const GraphChatToolCallItem = memo(function GraphChatToolCallItem({
       item={item}
       onOpen={() => onOpen(item, 'Tool Call Details')}
       preview={summary}
+      timeMeta={timeMeta}
       title="tool_call"
       tone="tool"
     />
@@ -715,12 +740,14 @@ export const GraphChatAgentToolCallItem = memo(
   function GraphChatAgentToolCallItem({
     item,
     onOpen,
+    timeMeta,
   }: {
     item: ThreadHistoryItemDto & { kind: 'agentToolCall' };
     onOpen: (
       item: ThreadHistoryItemDto & { kind: 'agentToolCall' },
       title: string,
     ) => void;
+    timeMeta?: ReactNode;
   }) {
     const summary = summarizeInlinePreviewText(item.text);
 
@@ -733,6 +760,7 @@ export const GraphChatAgentToolCallItem = memo(
         item={item}
         onOpen={() => onOpen(item, 'Agent Details')}
         preview={summary}
+        timeMeta={timeMeta}
         title="agent"
         tone="agent"
       />
@@ -744,12 +772,14 @@ export const GraphChatSkillToolCallItem = memo(
   function GraphChatSkillToolCallItem({
     item,
     onOpen,
+    timeMeta,
   }: {
     item: ThreadHistoryItemDto & { kind: 'skillToolCall' };
     onOpen: (
       item: ThreadHistoryItemDto & { kind: 'skillToolCall' },
       title: string,
     ) => void;
+    timeMeta?: ReactNode;
   }) {
     const summary = summarizeInlinePreviewText(item.text);
 
@@ -762,6 +792,7 @@ export const GraphChatSkillToolCallItem = memo(
         item={item}
         onOpen={() => onOpen(item, 'Skill Details')}
         preview={summary}
+        timeMeta={timeMeta}
         title="skill"
         tone="skill"
       />
@@ -772,9 +803,11 @@ export const GraphChatSkillToolCallItem = memo(
 export const GraphChatWebSearchItem = memo(function GraphChatWebSearchItem({
   item,
   onOpen,
+  timeMeta,
 }: {
   item: ThreadHistoryItemDto & { kind: 'webSearch' };
   onOpen: (title: string, text: string) => void;
+  timeMeta?: ReactNode;
 }) {
   const previewText = item.previewText?.trim() || item.text || 'Web search';
   const detailText = item.detailText?.trim() || item.text || 'Web search';
@@ -789,6 +822,7 @@ export const GraphChatWebSearchItem = memo(function GraphChatWebSearchItem({
       item={item}
       onOpen={() => onOpen('Web Search Details', detailText)}
       preview={summary}
+      timeMeta={timeMeta}
       title="web_search"
       tone="search"
     />
@@ -798,9 +832,11 @@ export const GraphChatWebSearchItem = memo(function GraphChatWebSearchItem({
 export const GraphChatFileReadItem = memo(function GraphChatFileReadItem({
   item,
   onOpen,
+  timeMeta,
 }: {
   item: ThreadHistoryItemDto & { kind: 'fileRead' };
   onOpen: (title: string, text: string) => void;
+  timeMeta?: ReactNode;
 }) {
   const previewText = item.previewText?.trim() || item.text || 'File read';
   const detailText = item.detailText?.trim() || item.text || 'File read';
@@ -815,6 +851,7 @@ export const GraphChatFileReadItem = memo(function GraphChatFileReadItem({
       item={item}
       onOpen={() => onOpen('File Read Details', detailText)}
       preview={summary}
+      timeMeta={timeMeta}
       title="file_read"
       tone="fileRead"
     />
@@ -826,11 +863,13 @@ export const GraphChatImageItem = memo(function GraphChatImageItem({
   item,
   onOpen,
   getImageAssetUrl,
+  timeMeta,
 }: {
   threadId: string | undefined;
   item: ThreadHistoryItemDto & { kind: 'image' };
   onOpen: (title: string, text: string) => void;
   getImageAssetUrl?: GetImageAssetUrl | undefined;
+  timeMeta?: ReactNode;
 }) {
   const assetPath = item.assetPath ?? item.detailText ?? null;
   const imageUrl =
@@ -843,6 +882,7 @@ export const GraphChatImageItem = memo(function GraphChatImageItem({
       className="thread-graph-event-image"
       icon={<ImageIconLucide className="h-4 w-4" />}
       item={item}
+      timeMeta={timeMeta}
       title="image"
       tone="image"
     >
@@ -881,9 +921,11 @@ export const GraphChatImageItem = memo(function GraphChatImageItem({
 export const GraphChatFileChangeItem = memo(function GraphChatFileChangeItem({
   item,
   onOpen,
+  timeMeta,
 }: {
   item: ThreadHistoryItemDto & { kind: 'fileChange' };
   onOpen: (title: string, text: string) => void;
+  timeMeta?: ReactNode;
 }) {
   const pathSummary =
     item.previewText?.trim() && item.text.trim() !== item.previewText.trim()
@@ -944,6 +986,7 @@ export const GraphChatFileChangeItem = memo(function GraphChatFileChangeItem({
       headerMeta={inlineSummary}
       icon={<FilePenLine className="h-4 w-4" />}
       item={item}
+      timeMeta={timeMeta}
       title="file_change"
       tone="fileChange"
     />
@@ -954,12 +997,14 @@ export const GraphChatArtifactHistoryItem = memo(
   function GraphChatArtifactHistoryItem({
     item,
     onSelect,
+    timeMeta,
   }: {
     item: ThreadHistoryItemDto & { kind: 'artifact' };
     onSelect?: (
       item: ThreadHistoryItemDto & { kind: 'artifact' },
       artifact: NonNullable<ThreadHistoryItemDto['artifact']>,
     ) => void;
+    timeMeta?: ReactNode;
   }) {
     const plugins = usePlugins();
     const [expanded, setExpanded] = useState(false);
@@ -997,6 +1042,7 @@ export const GraphChatArtifactHistoryItem = memo(
         className="thread-graph-event-artifact"
         icon={<PackageOpen className="h-4 w-4" />}
         item={item}
+        timeMeta={timeMeta}
         title={artifact?.type ?? 'artifact'}
         tone="artifact"
       >
@@ -1033,8 +1079,10 @@ export const GraphChatArtifactHistoryItem = memo(
 
 export const GraphChatHookItem = memo(function GraphChatHookItem({
   item,
+  timeMeta,
 }: {
   item: ThreadHistoryItemDto & { kind: 'hook' };
+  timeMeta?: ReactNode;
 }) {
   const outputText =
     item.hookOutputEntries
@@ -1059,6 +1107,7 @@ export const GraphChatHookItem = memo(function GraphChatHookItem({
       className="thread-graph-event-hook"
       icon={<Webhook className="h-4 w-4" />}
       item={item}
+      timeMeta={timeMeta}
       title={item.hookEventLabel ? `${item.hookEventLabel}_hook` : 'hook'}
       tone="hook"
     >
@@ -1097,11 +1146,13 @@ export const GraphChatCommandGroupItem = memo(
     expanded,
     onToggleExpanded,
     onOpen,
+    timeMeta,
   }: {
     items: CommandHistoryItem[];
     expanded: boolean;
     onToggleExpanded: () => void;
     onOpen: (item: CommandHistoryItem, title: string) => void;
+    timeMeta?: ReactNode;
   }) {
     const runningCount = items.filter((item) =>
       isRunningHistoryStatus(item.status),
@@ -1135,6 +1186,7 @@ export const GraphChatCommandGroupItem = memo(
             ) : null}
           </>
         }
+        timeMeta={timeMeta}
         toggleAriaLabel={`${expanded ? 'Collapse' : 'Expand'} ${items.length} command entries`}
       >
         {items.map((item, index) => {
@@ -1179,11 +1231,13 @@ export const GraphChatSearchGroupItem = memo(
     expanded,
     onToggleExpanded,
     onOpen,
+    timeMeta,
   }: {
     items: SearchHistoryItem[];
     expanded: boolean;
     onToggleExpanded: () => void;
     onOpen: (title: string, text: string) => void;
+    timeMeta?: ReactNode;
   }) {
     const countLabel =
       items.length === 1 ? '1 search' : `${items.length} searches`;
@@ -1208,6 +1262,7 @@ export const GraphChatSearchGroupItem = memo(
             </span>
           </>
         }
+        timeMeta={timeMeta}
         toggleAriaLabel={`${expanded ? 'Collapse' : 'Expand'} ${items.length} web search entries`}
       >
         {items.map((item, index) => {
@@ -1257,11 +1312,13 @@ export const GraphChatFileReadGroupItem = memo(
     expanded,
     onToggleExpanded,
     onOpen,
+    timeMeta,
   }: {
     items: FileReadHistoryItem[];
     expanded: boolean;
     onToggleExpanded: () => void;
     onOpen: (title: string, text: string) => void;
+    timeMeta?: ReactNode;
   }) {
     const countLabel =
       items.length === 1 ? '1 file read' : `${items.length} file reads`;
@@ -1286,6 +1343,7 @@ export const GraphChatFileReadGroupItem = memo(
             </span>
           </>
         }
+        timeMeta={timeMeta}
         toggleAriaLabel={`${expanded ? 'Collapse' : 'Expand'} ${items.length} file read entries`}
       >
         {items.map((item, index) => {
@@ -1335,11 +1393,13 @@ export const GraphChatFileChangeGroupItem = memo(
     expanded,
     onToggleExpanded,
     onOpen,
+    timeMeta,
   }: {
     items: FileChangeHistoryItem[];
     expanded: boolean;
     onToggleExpanded: () => void;
     onOpen: (title: string, text: string) => void;
+    timeMeta?: ReactNode;
   }) {
     const changedFiles = items.reduce(
       (sum, item) => sum + (item.changedFiles ?? 0),
@@ -1381,6 +1441,7 @@ export const GraphChatFileChangeGroupItem = memo(
             ) : null}
           </>
         }
+        timeMeta={timeMeta}
         toggleAriaLabel={`${expanded ? 'Collapse' : 'Expand'} ${items.length} file change entries`}
         trailingSummary={
           <span className="inline-flex shrink-0 items-center gap-1.5">

@@ -45,6 +45,7 @@ import {
   GraphChatThreadChatPanel,
   type GraphChatThreadUsageSummary,
 } from './components/graph-chat/GraphChatThreadChatPanel';
+import { formatCompactUsd } from './components/timeline/tokenFormatting';
 
 function summarizeThreadUsage(
   detail: ThreadDetailDto,
@@ -59,10 +60,12 @@ function summarizeThreadUsage(
         input: summary.input + usage.inputTokens,
         output: summary.output + usage.outputTokens,
         cache: summary.cache + usage.cachedInputTokens,
+        priceUsd: summary.priceUsd + (turn.priceEstimate?.totalUsd ?? 0),
+        pricedTurns: summary.pricedTurns + (turn.priceEstimate ? 1 : 0),
         turns: summary.turns + 1,
       };
     },
-    { input: 0, output: 0, cache: 0, turns: 0 },
+    { input: 0, output: 0, cache: 0, priceUsd: 0, pricedTurns: 0, turns: 0 },
   );
 }
 
@@ -85,9 +88,12 @@ function formatTopbarUsageSummary(
   if (!usage || usage.turns <= 0) {
     return 'waiting for agent usage';
   }
-  return `in ${formatTopbarTokenCount(usage.input)} / out ${formatTopbarTokenCount(
+  const tokenParts = `in ${formatTopbarTokenCount(usage.input)} / out ${formatTopbarTokenCount(
     usage.output,
   )} / cache ${formatTopbarTokenCount(usage.cache)}`;
+  return usage.pricedTurns > 0
+    ? `${tokenParts} / cost ${formatCompactUsd(usage.priceUsd)}`
+    : tokenParts;
 }
 
 export interface ThreadDetailSurfaceProps {

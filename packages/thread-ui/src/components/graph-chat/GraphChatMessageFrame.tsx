@@ -81,18 +81,17 @@ export function GraphChatMessageFrame({
   metaControl?: ReactNode;
   reasoning?: ReactNode;
   status?: string | null | undefined;
-  timeLabel?: string | null | undefined;
+  timeLabel?: ReactNode;
   timeTitle?: string | null | undefined;
 }) {
   const isUser = kind === 'userMessage';
   const timeNode = timeLabel ? (
-    <time
-      dateTime={timeTitle ?? undefined}
+    <span
       title={timeTitle ?? undefined}
       className="thread-graph-message-time text-[10px] leading-none sm:text-[11px]"
     >
       {timeLabel}
-    </time>
+    </span>
   ) : null;
 
   return (

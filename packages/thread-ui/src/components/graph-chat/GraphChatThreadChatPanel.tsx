@@ -21,11 +21,14 @@ import {
   ThreadTimeline,
   type ThreadTimelineProps,
 } from '../ThreadTimeline';
+import { formatCompactUsd } from '../timeline/tokenFormatting';
 
 export interface GraphChatThreadUsageSummary {
   input: number;
   output: number;
   cache: number;
+  priceUsd: number;
+  pricedTurns: number;
   turns: number;
 }
 
@@ -61,9 +64,12 @@ function formatTokenCount(value: number | undefined) {
 }
 
 function formatThreadUsageParts(usage: GraphChatThreadUsageSummary) {
-  return `in ${formatTokenCount(usage.input)} / out ${formatTokenCount(
+  const tokenParts = `in ${formatTokenCount(usage.input)} / out ${formatTokenCount(
     usage.output,
   )} / cache ${formatTokenCount(usage.cache)}`;
+  return usage.pricedTurns > 0
+    ? `${tokenParts} / cost ${formatCompactUsd(usage.priceUsd)}`
+    : tokenParts;
 }
 
 export function GraphChatThreadChatPanel({

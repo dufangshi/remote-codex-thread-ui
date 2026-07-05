@@ -1712,6 +1712,23 @@
   white-space: nowrap;
 }
 
+.thread-ui-shell .thread-graph-relative-time {
+  border: 0;
+  background: transparent;
+  color: var(--theme-fg-muted);
+  font: inherit;
+  white-space: nowrap;
+}
+
+.thread-ui-shell .thread-graph-relative-time:hover {
+  background: var(--theme-hover);
+  color: var(--theme-fg);
+}
+
+.thread-ui-shell .thread-graph-history-tool-time {
+  color: var(--theme-fg-muted);
+}
+
 .thread-ui-shell .thread-graph-message-status {
   box-shadow: none;
 }

@@ -120,7 +120,7 @@ describe('timeline item utilities', () => {
     });
   });
 
-  it('groups consecutive tool-like history items and attaches reasoning to agent messages', () => {
+  it('groups consecutive tool-like history items and keeps reasoning as its own bubble', () => {
     const entries = groupTimelineHistoryItems([
       item('reason-before', 'reasoning'),
       item('agent', 'agentMessage'),
@@ -134,20 +134,21 @@ describe('timeline item utilities', () => {
 
     expect(entries.map((entry) => entry.kind)).toEqual([
       'item',
+      'item',
       'commandGroup',
       'fileReadGroup',
       'item',
       'item',
     ]);
-    const agentEntry = entries[0];
-    expect(agentEntry?.kind).toBe('item');
-    if (agentEntry?.kind === 'item') {
-      expect(agentEntry.item).toMatchObject({
-        id: 'agent',
-        reasoningItems: [{ id: 'reason-before' }],
-      });
-    }
-    const commandGroup = entries[1];
+    expect(entries[0]).toMatchObject({
+      kind: 'item',
+      item: { id: 'reason-before' },
+    });
+    expect(entries[1]).toMatchObject({
+      kind: 'item',
+      item: { id: 'agent' },
+    });
+    const commandGroup = entries[2];
     expect(commandGroup?.kind).toBe('commandGroup');
     if (commandGroup?.kind === 'commandGroup') {
       expect(commandGroup.items.map((entry) => entry.id)).toEqual([

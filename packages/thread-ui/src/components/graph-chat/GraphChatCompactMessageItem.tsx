@@ -1,4 +1,4 @@
-import { memo, useEffect, useRef, useState, type RefObject } from 'react';
+import { memo, useEffect, useRef, useState, type ReactNode, type RefObject } from 'react';
 import { Brain, Copy } from 'lucide-react';
 
 import type { ThreadHistoryItemDto } from '@remote-codex/shared';
@@ -77,7 +77,7 @@ export const GraphChatCompactMessageItem = memo(
     scrollRootRef: RefObject<HTMLDivElement | null>;
     streaming?: boolean;
     adapter?: ThreadTimelineAdapter;
-    timeLabel?: string | null | undefined;
+    timeLabel?: ReactNode;
     timeTitle?: string | null | undefined;
     onBeforeMessageResize?: () => void;
   }) {
