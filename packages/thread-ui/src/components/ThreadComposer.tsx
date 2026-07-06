@@ -157,6 +157,10 @@ export interface ThreadComposerProps {
   }) => Promise<void> | void;
   onUntrustHook?: (input: { key: string }) => Promise<void> | void;
   onOpenGoal?: () => Promise<void> | void;
+  onPrepareGoalSubmit?: (input: {
+    objective: string;
+    tokenBudget: number | null;
+  }) => Promise<boolean | void> | boolean | void;
   onUpdateGoal?: (input: {
     objective?: string | null;
     status?: ThreadGoalStatusDto | null;
@@ -246,6 +250,7 @@ export function ThreadComposer({
   onTrustHook,
   onUntrustHook,
   onOpenGoal,
+  onPrepareGoalSubmit,
   onUpdateGoal,
   onOpenForkTurns,
   onForkLatest,
@@ -391,6 +396,7 @@ export function ThreadComposer({
     goalTokenBudgetSource: goalState.data,
     promptRef,
     onOpenGoal,
+    onPrepareGoalSubmit,
     onUpdateGoal,
     updateDraft,
     closeMenu: () => setOpenMenu(null),

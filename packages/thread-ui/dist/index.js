@@ -7171,6 +7171,7 @@ function useComposerGoal({
   goalTokenBudgetSource,
   promptRef,
   onOpenGoal,
+  onPrepareGoalSubmit,
   onUpdateGoal,
   updateDraft,
   closeMenu,
@@ -7199,6 +7200,15 @@ function useComposerGoal({
     setGoalBusy(true);
     setGoalLocalError(null);
     try {
+      if (onPrepareGoalSubmit) {
+        const prepared = await onPrepareGoalSubmit({
+          objective,
+          tokenBudget
+        });
+        if (prepared === false) {
+          return false;
+        }
+      }
       await onUpdateGoal({
         objective,
         status: "active",
@@ -7219,7 +7229,7 @@ function useComposerGoal({
     } finally {
       setGoalBusy(false);
     }
-  }, [goalTokenBudget, onUpdateGoal, prompt, updateDraft]);
+  }, [goalTokenBudget, onPrepareGoalSubmit, onUpdateGoal, prompt, updateDraft]);
   const enterGoalComposeMode = useCallback4(() => {
     closeMenu();
     resetSlashPanel();
@@ -8544,6 +8554,7 @@ function ThreadComposer({
   onTrustHook,
   onUntrustHook,
   onOpenGoal,
+  onPrepareGoalSubmit,
   onUpdateGoal,
   onOpenForkTurns,
   onForkLatest,
@@ -8685,6 +8696,7 @@ function ThreadComposer({
     goalTokenBudgetSource: goalState.data,
     promptRef,
     onOpenGoal,
+    onPrepareGoalSubmit,
     onUpdateGoal,
     updateDraft,
     closeMenu: () => setOpenMenu(null),
@@ -10490,7 +10502,7 @@ function ThreadWorkspaceLayout({
                 /* @__PURE__ */ jsx25(
                   "div",
                   {
-                    className: `thread-rooms-rail-header flex h-[calc(3.75rem+env(safe-area-inset-top))] shrink-0 items-end border-b border-[var(--theme-border)] px-4 pb-3 sm:h-16 sm:items-center sm:pb-0 ${roomsRailCollapsed ? "sm:w-full sm:justify-center sm:px-2" : ""}`,
+                    className: `thread-rooms-rail-header flex h-[calc(3rem+env(safe-area-inset-top))] shrink-0 items-end border-b border-[var(--theme-border)] px-4 pb-2 sm:h-16 sm:items-center sm:pb-0 ${roomsRailCollapsed ? "sm:w-full sm:justify-center sm:px-2" : ""}`,
                     children: /* @__PURE__ */ jsxs18(
                       "div",
                       {

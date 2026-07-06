@@ -1053,7 +1053,7 @@ export function ThreadWorkspaceLayout({
             mobileOpen={mobileRoomsOpen}
           >
             <div
-              className={`thread-rooms-rail-header flex h-[calc(3.75rem+env(safe-area-inset-top))] shrink-0 items-end border-b border-[var(--theme-border)] px-4 pb-3 sm:h-16 sm:items-center sm:pb-0 ${
+              className={`thread-rooms-rail-header flex h-[calc(3rem+env(safe-area-inset-top))] shrink-0 items-end border-b border-[var(--theme-border)] px-4 pb-2 sm:h-16 sm:items-center sm:pb-0 ${
                 roomsRailCollapsed ? "sm:w-full sm:justify-center sm:px-2" : ""
               }`}
             >

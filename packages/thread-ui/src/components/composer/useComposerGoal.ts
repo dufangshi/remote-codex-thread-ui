@@ -19,6 +19,10 @@ interface UseComposerGoalInput {
   goalTokenBudgetSource: ThreadGoalDto | null | undefined;
   promptRef: RefObject<HTMLElement | null>;
   onOpenGoal?: () => Promise<void> | void;
+  onPrepareGoalSubmit?: (input: {
+    objective: string;
+    tokenBudget: number | null;
+  }) => Promise<boolean | void> | boolean | void;
   onUpdateGoal?: (input: {
     objective?: string | null;
     status?: ThreadGoalStatusDto | null;
@@ -45,6 +49,7 @@ export function useComposerGoal({
   goalTokenBudgetSource,
   promptRef,
   onOpenGoal,
+  onPrepareGoalSubmit,
   onUpdateGoal,
   updateDraft,
   closeMenu,
@@ -82,6 +87,15 @@ export function useComposerGoal({
     setGoalBusy(true);
     setGoalLocalError(null);
     try {
+      if (onPrepareGoalSubmit) {
+        const prepared = await onPrepareGoalSubmit({
+          objective,
+          tokenBudget,
+        });
+        if (prepared === false) {
+          return false;
+        }
+      }
       await onUpdateGoal({
         objective,
         status: 'active',
@@ -102,7 +116,7 @@ export function useComposerGoal({
     } finally {
       setGoalBusy(false);
     }
-  }, [goalTokenBudget, onUpdateGoal, prompt, updateDraft]);
+  }, [goalTokenBudget, onPrepareGoalSubmit, onUpdateGoal, prompt, updateDraft]);
 
   const enterGoalComposeMode = useCallback(() => {
     closeMenu();

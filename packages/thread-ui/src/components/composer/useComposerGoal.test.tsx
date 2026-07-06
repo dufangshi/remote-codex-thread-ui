@@ -197,6 +197,55 @@ describe('useComposerGoal', () => {
     harness.unmount();
   });
 
+  it('prepares the thread before submitting a goal', async () => {
+    const onPrepareGoalSubmit = vi.fn().mockResolvedValue(undefined);
+    const onUpdateGoal = vi.fn();
+    const harness = renderHookHarness({
+      prompt: ' ship it ',
+      onPrepareGoalSubmit,
+      onUpdateGoal,
+    });
+
+    flushSync(() => {
+      latestResult?.enterGoalComposeMode();
+      latestResult?.setGoalTokenBudget('5');
+    });
+    const submitted = await submitLatestGoal();
+
+    expect(submitted).toBe(true);
+    expect(onPrepareGoalSubmit).toHaveBeenCalledWith({
+      objective: 'ship it',
+      tokenBudget: 5000,
+    });
+    expect(onUpdateGoal).toHaveBeenCalledWith({
+      objective: 'ship it',
+      status: 'active',
+      tokenBudget: 5000,
+    });
+    harness.unmount();
+  });
+
+  it('keeps compose mode open when goal preparation returns false', async () => {
+    const onPrepareGoalSubmit = vi.fn().mockResolvedValue(false);
+    const onUpdateGoal = vi.fn();
+    const harness = renderHookHarness({
+      prompt: 'ship it',
+      onPrepareGoalSubmit,
+      onUpdateGoal,
+    });
+
+    flushSync(() => {
+      latestResult?.enterGoalComposeMode();
+    });
+    const submitted = await submitLatestGoal();
+
+    expect(submitted).toBe(false);
+    expect(onUpdateGoal).not.toHaveBeenCalled();
+    expect(latestResult?.goalComposeMode).toBe(true);
+    expect(latestResult?.goalBusy).toBe(false);
+    harness.unmount();
+  });
+
   it('keeps compose mode open and shows the thrown error on failure', async () => {
     const harness = renderHookHarness({
       prompt: 'ship it',
