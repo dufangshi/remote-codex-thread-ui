@@ -10,6 +10,7 @@ import {
   ChevronDown,
   ChevronRight,
   ChevronsLeft,
+  Copy,
   Download,
   Eye,
   File,
@@ -190,6 +191,7 @@ function WorkspaceTreeRow({
   expandedPaths,
   loadingPaths,
   node,
+  onCopyPath,
   onDownload,
   onPreview,
   onSelect,
@@ -200,6 +202,7 @@ function WorkspaceTreeRow({
   expandedPaths: Set<string>;
   loadingPaths: Set<string>;
   node: WorkspaceTreeNode;
+  onCopyPath?: ((node: WorkspaceTreeNode) => void) | undefined;
   onDownload?: ((node: WorkspaceTreeNode) => void) | undefined;
   onPreview?: ((node: WorkspaceTreeNode) => void) | undefined;
   onSelect: (nodeId: string) => void;
@@ -249,6 +252,17 @@ function WorkspaceTreeRow({
               <Download className="h-3.5 w-3.5" />
             </button>
           ) : null}
+          {onCopyPath && node.path ? (
+            <button
+              type="button"
+              onClick={() => onCopyPath(node)}
+              className="thread-graph-tree-action mr-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-md text-slate-400 transition hover:bg-white hover:text-slate-900 sm:h-7 sm:w-7 sm:opacity-0 sm:group-hover:opacity-100 sm:focus:opacity-100 dark:text-slate-500 dark:hover:bg-[#1d222c] dark:hover:text-slate-100"
+              title={`Copy path for ${node.name}`}
+              aria-label={`Copy path for ${node.name}`}
+            >
+              <Copy className="h-3.5 w-3.5" />
+            </button>
+          ) : null}
         </div>
         {expanded ? (
           <div>
@@ -259,6 +273,7 @@ function WorkspaceTreeRow({
                 expandedPaths={expandedPaths}
                 loadingPaths={loadingPaths}
                 node={child}
+                {...(onCopyPath ? { onCopyPath } : {})}
                 {...(onDownload ? { onDownload } : {})}
                 {...(onPreview ? { onPreview } : {})}
                 onSelect={onSelect}
@@ -297,7 +312,7 @@ function WorkspaceTreeRow({
         {iconForWorkspaceNode(node, false)}
         <span className="truncate">{node.name}</span>
       </button>
-      {node.kind === 'file' && (onPreview || onDownload) ? (
+      {node.kind === 'file' && (onPreview || onDownload || onCopyPath) ? (
         <div className="mr-1 flex shrink-0 items-center gap-0.5">
           {onPreview ? (
             <button
@@ -327,6 +342,21 @@ function WorkspaceTreeRow({
               aria-label={`Download ${node.name}`}
             >
               <Download className="h-3.5 w-3.5" />
+            </button>
+          ) : null}
+          {onCopyPath ? (
+            <button
+              type="button"
+              onClick={() => onCopyPath(node)}
+              className={`thread-graph-tree-action flex h-9 w-9 shrink-0 items-center justify-center rounded-md transition sm:h-7 sm:w-7 sm:opacity-0 sm:group-hover:opacity-100 sm:focus:opacity-100 ${
+                selected
+                  ? 'is-selected'
+                  : 'text-slate-400 hover:bg-white hover:text-slate-900 dark:text-slate-500 dark:hover:bg-[#1d222c] dark:hover:text-slate-100'
+              }`}
+              title={`Copy path for ${node.name}`}
+              aria-label={`Copy path for ${node.name}`}
+            >
+              <Copy className="h-3.5 w-3.5" />
             </button>
           ) : null}
         </div>
@@ -393,6 +423,7 @@ function WorkspaceExplorerPanel({
   loadingPaths,
   loading,
   onDownload,
+  onCopyPath,
   onEmptyGarbage,
   onPreview,
   onRefresh,
@@ -412,6 +443,7 @@ function WorkspaceExplorerPanel({
   loadingPaths: Set<string>;
   loading?: boolean;
   onDownload?: ((node: WorkspaceTreeNode) => void) | undefined;
+  onCopyPath?: ((node: WorkspaceTreeNode) => void) | undefined;
   onEmptyGarbage?: (() => void) | undefined;
   onPreview?: ((node: WorkspaceTreeNode) => void) | undefined;
   onRefresh?: (() => void) | undefined;
@@ -518,6 +550,7 @@ function WorkspaceExplorerPanel({
           expandedPaths={expandedPaths}
           loadingPaths={loadingPaths}
           node={visibleTree}
+          {...(onCopyPath ? { onCopyPath } : {})}
           {...(onDownload ? { onDownload } : {})}
           {...(onPreview ? { onPreview } : {})}
           onSelect={onSelect}
@@ -1077,6 +1110,23 @@ export function GraphWorkspaceExplorer({
     });
   }
 
+  function handleCopyPath(node: WorkspaceTreeNode) {
+    if (!node.path || typeof navigator === 'undefined' || !navigator.clipboard) {
+      return;
+    }
+    const workspaceRoot = detail.workspace.absPath.replace(/\/+$/, '');
+    const copyPath = node.path.startsWith('/')
+      ? node.path
+      : workspaceRoot
+        ? `${workspaceRoot}/${node.path.replace(/^\/+/, '')}`
+        : node.path;
+    void navigator.clipboard.writeText(copyPath).catch((error) => {
+      setWorkspaceError(
+        error instanceof Error ? error.message : 'Failed to copy file path',
+      );
+    });
+  }
+
   function handlePreview(node: WorkspaceTreeNode) {
     if (node.kind !== 'file') {
       return;
@@ -1126,6 +1176,7 @@ export function GraphWorkspaceExplorer({
   }
 
   const explorerActions = {
+    onCopyPath: handleCopyPath,
     ...(workspaceAdapter?.downloadNode
       ? { onDownload: handleDownload }
       : {}),

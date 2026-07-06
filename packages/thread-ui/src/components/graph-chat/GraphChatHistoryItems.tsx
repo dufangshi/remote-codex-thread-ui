@@ -1,4 +1,11 @@
-import { memo, useState, type ReactNode, type RefObject } from 'react';
+import {
+  memo,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type ReactNode,
+  type RefObject,
+} from 'react';
 import {
   Archive,
   Bot,
@@ -474,6 +481,7 @@ function GraphChatHistoryEventFrame({
 function GraphChatHistoryToolFrame({
   actionLabel = 'Open details',
   actionTitle,
+  autoOpen = false,
   className,
   details,
   icon,
@@ -486,6 +494,7 @@ function GraphChatHistoryToolFrame({
 }: {
   actionLabel?: string;
   actionTitle: string;
+  autoOpen?: boolean;
   className?: string;
   details?: ReactNode;
   icon: ReactNode;
@@ -498,8 +507,18 @@ function GraphChatHistoryToolFrame({
 }) {
   const statusConfig = graphHistoryStatusConfig(item.status);
   const [openItem, setOpenItem] = useState<string | undefined>(
-    isRunningHistoryStatus(item.status) ? 'item-1' : undefined,
+    autoOpen ? 'item-1' : undefined,
   );
+  const previousAutoOpenRef = useRef(autoOpen);
+
+  useLayoutEffect(() => {
+    if (autoOpen) {
+      setOpenItem('item-1');
+    } else if (previousAutoOpenRef.current) {
+      setOpenItem(undefined);
+    }
+    previousAutoOpenRef.current = autoOpen;
+  }, [autoOpen, item.id]);
 
   return (
     <div
@@ -510,9 +529,11 @@ function GraphChatHistoryToolFrame({
       <Accordion
         type="single"
         collapsible
-        onValueChange={(value) => setOpenItem(value || undefined)}
+        onValueChange={(value) => {
+          setOpenItem(value || undefined);
+        }}
         className="thread-graph-tool-accordion thread-graph-history-tool-accordion w-full overflow-hidden rounded-lg border"
-        {...(openItem !== undefined ? { value: openItem } : {})}
+        value={openItem ?? ''}
       >
           <AccordionItem value="item-1" className="border-0">
           <AccordionTrigger
@@ -677,10 +698,12 @@ export const GraphChatGenericHistoryItem = memo(
 );
 
 export const GraphChatCommandItem = memo(function GraphChatCommandItem({
+  autoOpen,
   item,
   onOpen,
   timeMeta,
 }: {
+  autoOpen?: boolean;
   item: ThreadHistoryItemDto & { kind: 'commandExecution' };
   onOpen: (
     item: ThreadHistoryItemDto & { kind: 'commandExecution' },
@@ -694,6 +717,7 @@ export const GraphChatCommandItem = memo(function GraphChatCommandItem({
     <GraphChatHistoryToolFrame
       actionLabel="Open full command"
       actionTitle="Command Output"
+      autoOpen={autoOpen}
       className="thread-graph-event-command"
       icon={<Terminal className="h-4 w-4" />}
       item={item}
@@ -707,10 +731,12 @@ export const GraphChatCommandItem = memo(function GraphChatCommandItem({
 });
 
 export const GraphChatToolCallItem = memo(function GraphChatToolCallItem({
+  autoOpen,
   item,
   onOpen,
   timeMeta,
 }: {
+  autoOpen?: boolean;
   item: ThreadHistoryItemDto & { kind: 'toolCall' };
   onOpen: (
     item: ThreadHistoryItemDto & { kind: 'toolCall' },
@@ -724,6 +750,7 @@ export const GraphChatToolCallItem = memo(function GraphChatToolCallItem({
     <GraphChatHistoryToolFrame
       actionLabel="Open full tool call"
       actionTitle="Tool Call Details"
+      autoOpen={autoOpen}
       className="thread-graph-event-tool"
       icon={<Wrench className="h-4 w-4" />}
       item={item}
@@ -738,10 +765,12 @@ export const GraphChatToolCallItem = memo(function GraphChatToolCallItem({
 
 export const GraphChatAgentToolCallItem = memo(
   function GraphChatAgentToolCallItem({
+    autoOpen,
     item,
     onOpen,
     timeMeta,
   }: {
+    autoOpen?: boolean;
     item: ThreadHistoryItemDto & { kind: 'agentToolCall' };
     onOpen: (
       item: ThreadHistoryItemDto & { kind: 'agentToolCall' },
@@ -755,6 +784,7 @@ export const GraphChatAgentToolCallItem = memo(
       <GraphChatHistoryToolFrame
         actionLabel="Open agent details"
         actionTitle="Agent Details"
+        autoOpen={autoOpen}
         className="thread-graph-event-agent-tool"
         icon={<Bot className="h-4 w-4" />}
         item={item}
@@ -770,10 +800,12 @@ export const GraphChatAgentToolCallItem = memo(
 
 export const GraphChatSkillToolCallItem = memo(
   function GraphChatSkillToolCallItem({
+    autoOpen,
     item,
     onOpen,
     timeMeta,
   }: {
+    autoOpen?: boolean;
     item: ThreadHistoryItemDto & { kind: 'skillToolCall' };
     onOpen: (
       item: ThreadHistoryItemDto & { kind: 'skillToolCall' },
@@ -787,6 +819,7 @@ export const GraphChatSkillToolCallItem = memo(
       <GraphChatHistoryToolFrame
         actionLabel="Open skill details"
         actionTitle="Skill Details"
+        autoOpen={autoOpen}
         className="thread-graph-event-skill-tool"
         icon={<Sparkles className="h-4 w-4" />}
         item={item}
@@ -801,10 +834,12 @@ export const GraphChatSkillToolCallItem = memo(
 );
 
 export const GraphChatWebSearchItem = memo(function GraphChatWebSearchItem({
+  autoOpen,
   item,
   onOpen,
   timeMeta,
 }: {
+  autoOpen?: boolean;
   item: ThreadHistoryItemDto & { kind: 'webSearch' };
   onOpen: (title: string, text: string) => void;
   timeMeta?: ReactNode;
@@ -817,6 +852,7 @@ export const GraphChatWebSearchItem = memo(function GraphChatWebSearchItem({
     <GraphChatHistoryToolFrame
       actionLabel="Open full web search"
       actionTitle="Web Search Details"
+      autoOpen={autoOpen}
       className="thread-graph-event-search"
       icon={<Search className="h-4 w-4" />}
       item={item}
@@ -830,10 +866,12 @@ export const GraphChatWebSearchItem = memo(function GraphChatWebSearchItem({
 });
 
 export const GraphChatFileReadItem = memo(function GraphChatFileReadItem({
+  autoOpen,
   item,
   onOpen,
   timeMeta,
 }: {
+  autoOpen?: boolean;
   item: ThreadHistoryItemDto & { kind: 'fileRead' };
   onOpen: (title: string, text: string) => void;
   timeMeta?: ReactNode;
@@ -846,6 +884,7 @@ export const GraphChatFileReadItem = memo(function GraphChatFileReadItem({
     <GraphChatHistoryToolFrame
       actionLabel="Open full file read"
       actionTitle="File Read Details"
+      autoOpen={autoOpen}
       className="thread-graph-event-file-read"
       icon={<FileText className="h-4 w-4" />}
       item={item}

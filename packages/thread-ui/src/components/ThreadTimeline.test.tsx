@@ -123,6 +123,60 @@ describe('ThreadTimeline', () => {
     expect(element.textContent).not.toContain('Intermediate note should collapse.');
   });
 
+  it('keeps the Worked control available after expanding so the turn can collapse again', () => {
+    const element = render(
+      <ThreadTimeline
+        autoCollapseCompletedTurns={true}
+        liveOutput=""
+        turns={[
+          completedTurn([
+            {
+              id: 'user-1',
+              kind: 'userMessage',
+              text: 'Keep prompt visible.',
+              createdAt: new Date(Date.UTC(2026, 6, 3, 20, 10, 0)).toISOString(),
+            },
+            {
+              id: 'agent-intermediate-1',
+              kind: 'agentMessage',
+              text: 'Intermediate note can be toggled.',
+              createdAt: new Date(Date.UTC(2026, 6, 3, 20, 10, 20)).toISOString(),
+            },
+            {
+              id: 'agent-1',
+              kind: 'agentMessage',
+              text: 'Final reply stays visible.',
+              createdAt: new Date(Date.UTC(2026, 6, 3, 20, 11, 21)).toISOString(),
+            },
+          ]),
+        ]}
+      />,
+    );
+
+    const expandWorkedButton = Array.from(element.querySelectorAll('button')).find(
+      (button) => button.getAttribute('aria-label')?.includes('Expand turn 1'),
+    );
+    expect(expandWorkedButton).toBeTruthy();
+    flushSync(() => {
+      expandWorkedButton?.click();
+    });
+
+    expect(element.textContent).toContain('Intermediate note can be toggled.');
+    const collapseWorkedButton = Array.from(element.querySelectorAll('button')).find(
+      (button) =>
+        button.getAttribute('aria-label')?.includes('Collapse turn 1') &&
+        button.textContent?.includes('Worked'),
+    );
+    expect(collapseWorkedButton?.textContent).toContain('Worked');
+
+    flushSync(() => {
+      collapseWorkedButton?.click();
+    });
+
+    expect(element.textContent).toContain('Worked');
+    expect(element.textContent).not.toContain('Intermediate note can be toggled.');
+  });
+
   it('shows relative timestamps for agent and tool events', () => {
     const startedAt = new Date(Date.UTC(2026, 6, 3, 20, 10, 0)).toISOString();
     const agentAt = new Date(Date.UTC(2026, 6, 3, 20, 11, 21)).toISOString();
@@ -171,5 +225,81 @@ describe('ThreadTimeline', () => {
       (agentTime as HTMLElement | undefined)?.click();
     });
     expect(element.textContent).toContain(formatShortTimestamp(agentAt));
+  });
+
+  it('auto-collapses a single tool item after newer live history arrives', () => {
+    const startedAt = new Date(Date.UTC(2026, 6, 3, 20, 10, 0)).toISOString();
+    const fileReadAt = new Date(Date.UTC(2026, 6, 3, 20, 10, 5)).toISOString();
+    const laterAgentAt = new Date(Date.UTC(2026, 6, 3, 20, 10, 8)).toISOString();
+    const activeTurn: ThreadTurnDto = {
+      ...completedTurn([
+        {
+          id: 'user-1',
+          kind: 'userMessage',
+          text: 'Inspect the source.',
+          createdAt: startedAt,
+        },
+        {
+          id: 'file-read-1',
+          kind: 'fileRead',
+          text: 'Read file: src/agent-runtime.ts',
+          previewText: 'Read file: src/agent-runtime.ts',
+          createdAt: fileReadAt,
+          status: 'running',
+        },
+      ]),
+      startedAt,
+      status: 'inProgress',
+    };
+    const element = render(
+      <ThreadTimeline
+        autoCollapseCompletedTurns={false}
+        liveOutput=""
+        turns={[activeTurn]}
+      />,
+    );
+
+    expect(element.textContent).toContain('file_read');
+    expect(element.textContent).toContain('Read file: src/agent-runtime.ts');
+    expect(
+      Array.from(element.querySelectorAll('button')).find((button) =>
+        button.getAttribute('aria-label')?.includes('file_read history item'),
+      )?.getAttribute('aria-expanded'),
+    ).toBe('true');
+
+    flushSync(() => {
+      root?.render(
+        <ThreadTimeline
+          autoCollapseCompletedTurns={false}
+          liveOutput=""
+          turns={[
+            {
+              ...activeTurn,
+              items: [
+                ...activeTurn.items.map((item) =>
+                  item.id === 'file-read-1'
+                    ? { ...item, status: 'completed' }
+                    : item,
+                ),
+                {
+                  id: 'agent-1',
+                  kind: 'agentMessage',
+                  text: 'I found the next step.',
+                  createdAt: laterAgentAt,
+                },
+              ],
+            },
+          ]}
+        />,
+      );
+    });
+
+    expect(element.textContent).toContain('file_read');
+    expect(
+      Array.from(element.querySelectorAll('button')).find((button) =>
+        button.getAttribute('aria-label')?.includes('file_read history item'),
+      )?.getAttribute('aria-expanded'),
+    ).toBe('false');
+    expect(element.textContent).toContain('I found the next step.');
   });
 });

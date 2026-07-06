@@ -778,7 +778,7 @@ import {
   Trash2 as Trash22,
   Waypoints
 } from "lucide-react";
-import { Fragment as Fragment13, jsx as jsx52, jsxs as jsxs41 } from "react/jsx-runtime";
+import { Fragment as Fragment14, jsx as jsx52, jsxs as jsxs41 } from "react/jsx-runtime";
 function GraphMoleculeViewerLowerButtonGroup({
   cameraInfo,
   onClearSelection,
@@ -796,7 +796,7 @@ function GraphMoleculeViewerLowerButtonGroup({
 }) {
   const hasSelection = selectedSerials.length > 0;
   const hasStaged = stagedAtoms > 0;
-  return /* @__PURE__ */ jsxs41(Fragment13, { children: [
+  return /* @__PURE__ */ jsxs41(Fragment14, { children: [
     /* @__PURE__ */ jsxs41("div", { className: "flex w-full justify-between gap-2 overflow-x-auto", children: [
       /* @__PURE__ */ jsxs41(GraphMoleculeButtonGroup, { children: [
         /* @__PURE__ */ jsx52(GraphMoleculeIconButton, { label: "Distance", children: /* @__PURE__ */ jsx52(AlignVerticalDistributeCenter, { className: "size-4" }) }),
@@ -1233,7 +1233,7 @@ var init_GraphMoleculeViewerData = __esm({
 
 // src/components/graph-workspace/GraphMoleculeViewer.tsx
 import { Pause, Play } from "lucide-react";
-import { useCallback as useCallback17, useEffect as useEffect19, useMemo as useMemo12, useRef as useRef13, useState as useState24 } from "react";
+import { useCallback as useCallback17, useEffect as useEffect19, useMemo as useMemo12, useRef as useRef14, useState as useState24 } from "react";
 import { jsx as jsx55, jsxs as jsxs44 } from "react/jsx-runtime";
 function GraphMoleculeViewer({
   className = "",
@@ -1243,11 +1243,11 @@ function GraphMoleculeViewer({
   source,
   title = "PyMOL-style (PDB/CIF)"
 }) {
-  const viewerHostRef = useRef13(null);
-  const viewerRef = useRef13(null);
-  const modelRef = useRef13(null);
-  const zoomedRef = useRef13(false);
-  const unitCellPreferenceRef = useRef13(true);
+  const viewerHostRef = useRef14(null);
+  const viewerRef = useRef14(null);
+  const modelRef = useRef14(null);
+  const zoomedRef = useRef14(false);
+  const unitCellPreferenceRef = useRef14(true);
   const [cameraInfo, setCameraInfo] = useState24(
     null
   );
@@ -1730,7 +1730,7 @@ import {
   Save,
   X as X2
 } from "lucide-react";
-import { Fragment as Fragment14, jsx as jsx56, jsxs as jsxs45 } from "react/jsx-runtime";
+import { Fragment as Fragment15, jsx as jsx56, jsxs as jsxs45 } from "react/jsx-runtime";
 function isSmallEditableTextFile(file) {
   return !file.truncated && file.size <= SMALL_TEXT_FILE_MAX_BYTES && file.content.split("\n").length <= SMALL_TEXT_FILE_MAX_LINES;
 }
@@ -1875,7 +1875,7 @@ function GraphWorkspacePreviewPane({
                   " bytes"
                 ] }) : null
               ] }),
-              canEditFile ? /* @__PURE__ */ jsx56("div", { className: "flex shrink-0 items-center gap-1", children: editing ? /* @__PURE__ */ jsxs45(Fragment14, { children: [
+              canEditFile ? /* @__PURE__ */ jsx56("div", { className: "flex shrink-0 items-center gap-1", children: editing ? /* @__PURE__ */ jsxs45(Fragment15, { children: [
                 /* @__PURE__ */ jsx56(
                   "button",
                   {
@@ -2038,15 +2038,16 @@ var init_GraphEmptyGarbageDialog = __esm({
 // src/components/graph-workspace/GraphWorkspaceExplorer.tsx
 import {
   useEffect as useEffect21,
-  useLayoutEffect as useLayoutEffect6,
+  useLayoutEffect as useLayoutEffect7,
   useMemo as useMemo13,
-  useRef as useRef14,
+  useRef as useRef15,
   useState as useState26
 } from "react";
 import {
-  ChevronDown,
+  ChevronDown as ChevronDown2,
   ChevronRight as ChevronRight2,
   ChevronsLeft as ChevronsLeft2,
+  Copy as Copy5,
   Download as Download2,
   Eye,
   File,
@@ -2132,6 +2133,7 @@ function WorkspaceTreeRow({
   expandedPaths,
   loadingPaths,
   node,
+  onCopyPath,
   onDownload,
   onPreview,
   onSelect,
@@ -2154,7 +2156,7 @@ function WorkspaceTreeRow({
             className: "flex min-h-9 min-w-0 flex-1 items-center gap-2 px-2 py-2 text-left sm:min-h-0 sm:py-1.5",
             style: { paddingLeft },
             children: [
-              expanded ? /* @__PURE__ */ jsx58(ChevronDown, { className: "h-3.5 w-3.5 shrink-0 text-slate-400 dark:text-slate-500" }) : /* @__PURE__ */ jsx58(ChevronRight2, { className: "h-3.5 w-3.5 shrink-0 text-slate-400 dark:text-slate-500" }),
+              expanded ? /* @__PURE__ */ jsx58(ChevronDown2, { className: "h-3.5 w-3.5 shrink-0 text-slate-400 dark:text-slate-500" }) : /* @__PURE__ */ jsx58(ChevronRight2, { className: "h-3.5 w-3.5 shrink-0 text-slate-400 dark:text-slate-500" }),
               iconForWorkspaceNode(node, expanded),
               /* @__PURE__ */ jsx58("span", { className: "truncate", children: node.name }),
               loadingChildren ? /* @__PURE__ */ jsx58("span", { className: "ml-auto shrink-0 text-xs text-slate-400 dark:text-slate-500", children: "Loading" }) : null
@@ -2171,6 +2173,17 @@ function WorkspaceTreeRow({
             "aria-label": node.path ? `Download ${node.name}` : "Download workspace",
             children: /* @__PURE__ */ jsx58(Download2, { className: "h-3.5 w-3.5" })
           }
+        ) : null,
+        onCopyPath && node.path ? /* @__PURE__ */ jsx58(
+          "button",
+          {
+            type: "button",
+            onClick: () => onCopyPath(node),
+            className: "thread-graph-tree-action mr-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-md text-slate-400 transition hover:bg-white hover:text-slate-900 sm:h-7 sm:w-7 sm:opacity-0 sm:group-hover:opacity-100 sm:focus:opacity-100 dark:text-slate-500 dark:hover:bg-[#1d222c] dark:hover:text-slate-100",
+            title: `Copy path for ${node.name}`,
+            "aria-label": `Copy path for ${node.name}`,
+            children: /* @__PURE__ */ jsx58(Copy5, { className: "h-3.5 w-3.5" })
+          }
         ) : null
       ] }),
       expanded ? /* @__PURE__ */ jsxs47("div", { children: [
@@ -2181,6 +2194,7 @@ function WorkspaceTreeRow({
             expandedPaths,
             loadingPaths,
             node: child,
+            ...onCopyPath ? { onCopyPath } : {},
             ...onDownload ? { onDownload } : {},
             ...onPreview ? { onPreview } : {},
             onSelect,
@@ -2218,7 +2232,7 @@ function WorkspaceTreeRow({
             ]
           }
         ),
-        node.kind === "file" && (onPreview || onDownload) ? /* @__PURE__ */ jsxs47("div", { className: "mr-1 flex shrink-0 items-center gap-0.5", children: [
+        node.kind === "file" && (onPreview || onDownload || onCopyPath) ? /* @__PURE__ */ jsxs47("div", { className: "mr-1 flex shrink-0 items-center gap-0.5", children: [
           onPreview ? /* @__PURE__ */ jsx58(
             "button",
             {
@@ -2239,6 +2253,17 @@ function WorkspaceTreeRow({
               title: `Download ${node.name}`,
               "aria-label": `Download ${node.name}`,
               children: /* @__PURE__ */ jsx58(Download2, { className: "h-3.5 w-3.5" })
+            }
+          ) : null,
+          onCopyPath ? /* @__PURE__ */ jsx58(
+            "button",
+            {
+              type: "button",
+              onClick: () => onCopyPath(node),
+              className: `thread-graph-tree-action flex h-9 w-9 shrink-0 items-center justify-center rounded-md transition sm:h-7 sm:w-7 sm:opacity-0 sm:group-hover:opacity-100 sm:focus:opacity-100 ${selected ? "is-selected" : "text-slate-400 hover:bg-white hover:text-slate-900 dark:text-slate-500 dark:hover:bg-[#1d222c] dark:hover:text-slate-100"}`,
+              title: `Copy path for ${node.name}`,
+              "aria-label": `Copy path for ${node.name}`,
+              children: /* @__PURE__ */ jsx58(Copy5, { className: "h-3.5 w-3.5" })
             }
           ) : null
         ] }) : null
@@ -2289,6 +2314,7 @@ function WorkspaceExplorerPanel({
   loadingPaths,
   loading,
   onDownload,
+  onCopyPath,
   onEmptyGarbage,
   onPreview,
   onRefresh,
@@ -2308,7 +2334,7 @@ function WorkspaceExplorerPanel({
     }),
     [tree]
   );
-  useLayoutEffect6(() => {
+  useLayoutEffect7(() => {
     const scroller = explorerScrollerRef.current;
     if (!scroller) {
       return;
@@ -2396,6 +2422,7 @@ function WorkspaceExplorerPanel({
               expandedPaths,
               loadingPaths,
               node: visibleTree,
+              ...onCopyPath ? { onCopyPath } : {},
               ...onDownload ? { onDownload } : {},
               ...onPreview ? { onPreview } : {},
               onSelect,
@@ -2458,10 +2485,10 @@ function GraphWorkspaceExplorer({
   const [imageUrl, setImageUrl] = useState26(null);
   const [pdfUrl, setPdfUrl] = useState26(null);
   const [isMobileViewport, setIsMobileViewport] = useState26(false);
-  const fileInputRef = useRef14(null);
-  const explorerScrollerRef = useRef14(null);
-  const explorerScrollTopRef = useRef14(0);
-  const pendingExplorerScrollRestoreRef = useRef14(null);
+  const fileInputRef = useRef15(null);
+  const explorerScrollerRef = useRef15(null);
+  const explorerScrollTopRef = useRef15(0);
+  const pendingExplorerScrollRestoreRef = useRef15(null);
   const workspaceAdapterAvailable = Boolean(workspaceAdapter);
   const activeNode = (selectedNodeId ? nodeMap.get(selectedNodeId) : null) ?? firstSelectableNode ?? null;
   const workspaceIdentity = {
@@ -2513,7 +2540,7 @@ function GraphWorkspaceExplorer({
     };
     window.requestAnimationFrame(restore);
   }
-  useLayoutEffect6(() => {
+  useLayoutEffect7(() => {
     if (collapsedPanel === "explorer") {
       return;
     }
@@ -2856,6 +2883,18 @@ function GraphWorkspaceExplorer({
       kind: node.kind === "directory" ? "directory" : "file"
     });
   }
+  function handleCopyPath(node) {
+    if (!node.path || typeof navigator === "undefined" || !navigator.clipboard) {
+      return;
+    }
+    const workspaceRoot = detail.workspace.absPath.replace(/\/+$/, "");
+    const copyPath = node.path.startsWith("/") ? node.path : workspaceRoot ? `${workspaceRoot}/${node.path.replace(/^\/+/, "")}` : node.path;
+    void navigator.clipboard.writeText(copyPath).catch((error) => {
+      setWorkspaceError(
+        error instanceof Error ? error.message : "Failed to copy file path"
+      );
+    });
+  }
   function handlePreview(node) {
     if (node.kind !== "file") {
       return;
@@ -2902,6 +2941,7 @@ function GraphWorkspaceExplorer({
     }
   }
   const explorerActions = {
+    onCopyPath: handleCopyPath,
     ...workspaceAdapter?.downloadNode ? { onDownload: handleDownload } : {},
     ...workspaceAdapter?.emptyGarbage ? { onEmptyGarbage: handleOpenGarbage } : {},
     ...workspaceAdapter ? { onRefresh: () => void refreshWorkspaceTree(activeNode?.path ?? null) } : {},
@@ -3077,7 +3117,7 @@ import {
   Upload as Upload2,
   Zap
 } from "lucide-react";
-import { Fragment as Fragment15, jsx as jsx59, jsxs as jsxs48 } from "react/jsx-runtime";
+import { Fragment as Fragment16, jsx as jsx59, jsxs as jsxs48 } from "react/jsx-runtime";
 function GuideTag({ children }) {
   return /* @__PURE__ */ jsx59("span", { className: "thread-guide-tag inline-flex items-center rounded px-1.5 py-0.5 font-mono text-[10px]", children });
 }
@@ -3194,15 +3234,15 @@ function GraphGuidePanel() {
                     GuideBullets,
                     {
                       items: [
-                        /* @__PURE__ */ jsxs48(Fragment15, { children: [
+                        /* @__PURE__ */ jsxs48(Fragment16, { children: [
                           /* @__PURE__ */ jsx59(GuideTag, { children: ".xyz .extxyz .cif" }),
                           " use the 3D molecule plugin."
                         ] }),
-                        /* @__PURE__ */ jsxs48(Fragment15, { children: [
+                        /* @__PURE__ */ jsxs48(Fragment16, { children: [
                           /* @__PURE__ */ jsx59(GuideTag, { children: ".png .jpg .gif .svg .webp" }),
                           " use inline image preview."
                         ] }),
-                        /* @__PURE__ */ jsxs48(Fragment15, { children: [
+                        /* @__PURE__ */ jsxs48(Fragment16, { children: [
                           /* @__PURE__ */ jsx59(GuideTag, { children: ".py .json .ts .md .csv" }),
                           " use text/code preview."
                         ] }),
@@ -3309,7 +3349,7 @@ var init_GraphGuidePanel = __esm({
 });
 
 // src/components/graph-workspace/GraphToolUsagePanel.tsx
-import { useEffect as useEffect22, useRef as useRef15, useState as useState27 } from "react";
+import { useEffect as useEffect22, useRef as useRef16, useState as useState27 } from "react";
 import { RefreshCw as RefreshCw3 } from "lucide-react";
 import { jsx as jsx60, jsxs as jsxs49 } from "react/jsx-runtime";
 function formatValue(value) {
@@ -3364,7 +3404,7 @@ function GraphToolUsagePanel({
   const [expandedEventId, setExpandedEventId] = useState27(
     () => toolEvents.at(-1)?.id ?? null
   );
-  const bottomRef = useRef15(null);
+  const bottomRef = useRef16(null);
   useEffect22(() => {
     setExpandedEventId((current) => current ?? toolEvents.at(-1)?.id ?? null);
   }, [toolEvents]);
@@ -12963,7 +13003,7 @@ import {
   useMemo as useMemo7,
   useState as useState18
 } from "react";
-import { ChevronRight } from "lucide-react";
+import { ChevronDown, ChevronRight } from "lucide-react";
 
 // src/components/graph-chat/GraphChatHistoryEntries.tsx
 import { Fragment as Fragment7, jsx as jsx34 } from "react/jsx-runtime";
@@ -13013,7 +13053,12 @@ function GraphChatHistoryEntries({
 }
 
 // src/components/graph-chat/GraphChatHistoryItems.tsx
-import { memo as memo4, useState as useState16 } from "react";
+import {
+  memo as memo4,
+  useLayoutEffect as useLayoutEffect4,
+  useRef as useRef8,
+  useState as useState16
+} from "react";
 import {
   Archive,
   Bot,
@@ -13473,6 +13518,7 @@ function GraphChatHistoryEventFrame({
 function GraphChatHistoryToolFrame({
   actionLabel = "Open details",
   actionTitle,
+  autoOpen = false,
   className,
   details,
   icon,
@@ -13485,8 +13531,17 @@ function GraphChatHistoryToolFrame({
 }) {
   const statusConfig = graphHistoryStatusConfig(item.status);
   const [openItem, setOpenItem] = useState16(
-    isRunningHistoryStatus2(item.status) ? "item-1" : void 0
+    autoOpen ? "item-1" : void 0
   );
+  const previousAutoOpenRef = useRef8(autoOpen);
+  useLayoutEffect4(() => {
+    if (autoOpen) {
+      setOpenItem("item-1");
+    } else if (previousAutoOpenRef.current) {
+      setOpenItem(void 0);
+    }
+    previousAutoOpenRef.current = autoOpen;
+  }, [autoOpen, item.id]);
   return /* @__PURE__ */ jsx37(
     "div",
     {
@@ -13498,9 +13553,11 @@ function GraphChatHistoryToolFrame({
         {
           type: "single",
           collapsible: true,
-          onValueChange: (value) => setOpenItem(value || void 0),
+          onValueChange: (value) => {
+            setOpenItem(value || void 0);
+          },
           className: "thread-graph-tool-accordion thread-graph-history-tool-accordion w-full overflow-hidden rounded-lg border",
-          ...openItem !== void 0 ? { value: openItem } : {},
+          value: openItem ?? "",
           children: /* @__PURE__ */ jsxs28(AccordionItem, { value: "item-1", className: "border-0", children: [
             /* @__PURE__ */ jsxs28(
               AccordionTrigger,
@@ -13641,6 +13698,7 @@ var GraphChatGenericHistoryItem = memo4(
   }
 );
 var GraphChatCommandItem = memo4(function GraphChatCommandItem2({
+  autoOpen,
   item,
   onOpen,
   timeMeta
@@ -13651,6 +13709,7 @@ var GraphChatCommandItem = memo4(function GraphChatCommandItem2({
     {
       actionLabel: "Open full command",
       actionTitle: "Command Output",
+      autoOpen,
       className: "thread-graph-event-command",
       icon: /* @__PURE__ */ jsx37(Terminal, { className: "h-4 w-4" }),
       item,
@@ -13663,6 +13722,7 @@ var GraphChatCommandItem = memo4(function GraphChatCommandItem2({
   );
 });
 var GraphChatToolCallItem = memo4(function GraphChatToolCallItem2({
+  autoOpen,
   item,
   onOpen,
   timeMeta
@@ -13673,6 +13733,7 @@ var GraphChatToolCallItem = memo4(function GraphChatToolCallItem2({
     {
       actionLabel: "Open full tool call",
       actionTitle: "Tool Call Details",
+      autoOpen,
       className: "thread-graph-event-tool",
       icon: /* @__PURE__ */ jsx37(Wrench2, { className: "h-4 w-4" }),
       item,
@@ -13686,6 +13747,7 @@ var GraphChatToolCallItem = memo4(function GraphChatToolCallItem2({
 });
 var GraphChatAgentToolCallItem = memo4(
   function GraphChatAgentToolCallItem2({
+    autoOpen,
     item,
     onOpen,
     timeMeta
@@ -13696,6 +13758,7 @@ var GraphChatAgentToolCallItem = memo4(
       {
         actionLabel: "Open agent details",
         actionTitle: "Agent Details",
+        autoOpen,
         className: "thread-graph-event-agent-tool",
         icon: /* @__PURE__ */ jsx37(Bot, { className: "h-4 w-4" }),
         item,
@@ -13710,6 +13773,7 @@ var GraphChatAgentToolCallItem = memo4(
 );
 var GraphChatSkillToolCallItem = memo4(
   function GraphChatSkillToolCallItem2({
+    autoOpen,
     item,
     onOpen,
     timeMeta
@@ -13720,6 +13784,7 @@ var GraphChatSkillToolCallItem = memo4(
       {
         actionLabel: "Open skill details",
         actionTitle: "Skill Details",
+        autoOpen,
         className: "thread-graph-event-skill-tool",
         icon: /* @__PURE__ */ jsx37(Sparkles, { className: "h-4 w-4" }),
         item,
@@ -13733,6 +13798,7 @@ var GraphChatSkillToolCallItem = memo4(
   }
 );
 var GraphChatWebSearchItem = memo4(function GraphChatWebSearchItem2({
+  autoOpen,
   item,
   onOpen,
   timeMeta
@@ -13745,6 +13811,7 @@ var GraphChatWebSearchItem = memo4(function GraphChatWebSearchItem2({
     {
       actionLabel: "Open full web search",
       actionTitle: "Web Search Details",
+      autoOpen,
       className: "thread-graph-event-search",
       icon: /* @__PURE__ */ jsx37(Search, { className: "h-4 w-4" }),
       item,
@@ -13757,6 +13824,7 @@ var GraphChatWebSearchItem = memo4(function GraphChatWebSearchItem2({
   );
 });
 var GraphChatFileReadItem = memo4(function GraphChatFileReadItem2({
+  autoOpen,
   item,
   onOpen,
   timeMeta
@@ -13769,6 +13837,7 @@ var GraphChatFileReadItem = memo4(function GraphChatFileReadItem2({
     {
       actionLabel: "Open full file read",
       actionTitle: "File Read Details",
+      autoOpen,
       className: "thread-graph-event-file-read",
       icon: /* @__PURE__ */ jsx37(FileText, { className: "h-4 w-4" }),
       item,
@@ -14399,8 +14468,8 @@ function GraphChatTurnFrame({
 // src/components/timeline/tokenFormatting.tsx
 import {
   useEffect as useEffect14,
-  useLayoutEffect as useLayoutEffect4,
-  useRef as useRef8,
+  useLayoutEffect as useLayoutEffect5,
+  useRef as useRef9,
   useState as useState17
 } from "react";
 import { Fragment as Fragment10, jsx as jsx40, jsxs as jsxs31 } from "react/jsx-runtime";
@@ -14630,10 +14699,10 @@ function TurnTokenSummary({ turn }) {
   const [isMobileOpen, setIsMobileOpen] = useState17(false);
   const [isDesktopOpen, setIsDesktopOpen] = useState17(false);
   const [mobilePopoverShift, setMobilePopoverShift] = useState17(0);
-  const containerRef = useRef8(null);
-  const desktopPriceRef = useRef8(null);
-  const mobilePopoverRef = useRef8(null);
-  useLayoutEffect4(() => {
+  const containerRef = useRef9(null);
+  const desktopPriceRef = useRef9(null);
+  const mobilePopoverRef = useRef9(null);
+  useLayoutEffect5(() => {
     if (!isMobileOpen || details.length === 0) {
       setMobilePopoverShift(0);
       return;
@@ -15017,7 +15086,7 @@ function TurnStatusBar({
 }
 
 // src/components/timeline/TimelineTurnRows.tsx
-import { jsx as jsx42, jsxs as jsxs33 } from "react/jsx-runtime";
+import { Fragment as Fragment11, jsx as jsx42, jsxs as jsxs33 } from "react/jsx-runtime";
 function timestampForHistoryItem(item, fallback) {
   return item.createdAt ?? fallback;
 }
@@ -15034,7 +15103,8 @@ var HistoryItemRow = memo5(function HistoryItemRow2({
   adapter,
   timeLabel,
   timeTitle,
-  timeMeta
+  timeMeta,
+  autoOpenToolDetails = false
 }) {
   if (isCompactChatItem(item.kind)) {
     return /* @__PURE__ */ jsx42(
@@ -15082,6 +15152,7 @@ var HistoryItemRow = memo5(function HistoryItemRow2({
     return /* @__PURE__ */ jsx42(
       GraphChatCommandItem,
       {
+        autoOpen: autoOpenToolDetails,
         item,
         onOpen: onOpenCommandDetail,
         timeMeta
@@ -15092,6 +15163,7 @@ var HistoryItemRow = memo5(function HistoryItemRow2({
     return /* @__PURE__ */ jsx42(
       GraphChatToolCallItem,
       {
+        autoOpen: autoOpenToolDetails,
         item,
         onOpen: onOpenToolCallDetail,
         timeMeta
@@ -15102,6 +15174,7 @@ var HistoryItemRow = memo5(function HistoryItemRow2({
     return /* @__PURE__ */ jsx42(
       GraphChatAgentToolCallItem,
       {
+        autoOpen: autoOpenToolDetails,
         item,
         onOpen: onOpenToolCallDetail,
         timeMeta
@@ -15112,6 +15185,7 @@ var HistoryItemRow = memo5(function HistoryItemRow2({
     return /* @__PURE__ */ jsx42(
       GraphChatSkillToolCallItem,
       {
+        autoOpen: autoOpenToolDetails,
         item,
         onOpen: onOpenToolCallDetail,
         timeMeta
@@ -15124,6 +15198,7 @@ var HistoryItemRow = memo5(function HistoryItemRow2({
     return /* @__PURE__ */ jsx42(
       GraphChatWebSearchItem,
       {
+        autoOpen: autoOpenToolDetails,
         item: typedItem,
         timeMeta,
         onOpen: () => onOpenDeferredHistoryItemDetail(
@@ -15142,6 +15217,7 @@ var HistoryItemRow = memo5(function HistoryItemRow2({
     return /* @__PURE__ */ jsx42(
       GraphChatFileReadItem,
       {
+        autoOpen: autoOpenToolDetails,
         item: typedItem,
         timeMeta,
         onOpen: () => onOpenDeferredHistoryItemDetail(
@@ -15378,6 +15454,7 @@ var ThreadTurnRow = memo5(function ThreadTurnRow2({
     [activeForRendering, mergedItems]
   );
   const groupedItems = useMemo7(() => groupTimelineHistoryItems(preparedItems), [preparedItems]);
+  const autoOpenLatestToolDetails = forceActive || isActiveTurnStatus(turn.status) || hasLiveActivity;
   const turnTimeLabel = formatShortTimestamp(turn.startedAt);
   const turnTimeTitle = formatLongTimestamp(turn.startedAt);
   const visibleLiveHookPrompt = useMemo7(
@@ -15410,6 +15487,7 @@ var ThreadTurnRow = memo5(function ThreadTurnRow2({
       fallbackTimeLabel: turnTimeLabel,
       fallbackTimeTitle: turnTimeTitle,
       turnStartedAt: turn.startedAt,
+      autoOpenLatestToolDetails,
       ...onSelectArtifact ? { onSelectArtifact } : {},
       ...adapter ? { adapter } : {}
     }
@@ -15471,6 +15549,21 @@ var ThreadTurnRow = memo5(function ThreadTurnRow2({
   );
   const hasCollapsedHiddenItems = collapsedSummary.hiddenEntries.length > 0;
   const effectiveCollapsed = isCollapsed && hasCollapsedHiddenItems;
+  const canToggleWorkedSummary = isTerminalTurnStatus(turn.status) && hasCollapsedHiddenItems;
+  const expandedWorkedToggleNode = canToggleWorkedSummary && !effectiveCollapsed ? /* @__PURE__ */ jsxs33(
+    "button",
+    {
+      type: "button",
+      className: "thread-graph-worked-summary group flex w-full items-center gap-2 py-2 text-left text-sm transition",
+      onClick: () => onToggleCollapse(turn.id, false),
+      "aria-label": `${workedLabel}. Collapse turn ${absoluteIndex}`,
+      children: [
+        /* @__PURE__ */ jsx42("span", { className: "thread-graph-worked-label shrink-0", children: workedLabel }),
+        /* @__PURE__ */ jsx42(ChevronDown, { className: "h-4 w-4 shrink-0 transition group-hover:translate-y-0.5" }),
+        /* @__PURE__ */ jsx42("span", { className: "thread-graph-worked-rule h-px min-w-0 flex-1", "aria-hidden": "true" })
+      ]
+    }
+  ) : null;
   const collapsedSummaryNode = isTerminalTurnStatus(turn.status) && hasCollapsedHiddenItems ? /* @__PURE__ */ jsxs33("div", { className: "thread-graph-turn-collapsed-summary space-y-2", children: [
     collapsedSummary.users.map((item) => /* @__PURE__ */ jsx42(
       GraphChatCompactMessageItem,
@@ -15523,7 +15616,10 @@ var ThreadTurnRow = memo5(function ThreadTurnRow2({
     GraphChatTurnBody,
     {
       footer: footerNode,
-      history: historyNode,
+      history: /* @__PURE__ */ jsxs33(Fragment11, { children: [
+        expandedWorkedToggleNode,
+        historyNode
+      ] }),
       liveHookPrompt: liveHookPromptNode,
       liveOutput: liveOutputNode,
       livePlan: displayedLivePlan
@@ -15564,8 +15660,10 @@ function TimelineHistoryEntries({
   fallbackTimestamp,
   fallbackTimeLabel,
   fallbackTimeTitle,
-  turnStartedAt
+  turnStartedAt,
+  autoOpenLatestToolDetails = false
 }) {
+  const latestEntryKey = entries.at(-1)?.key ?? null;
   const relativeTimeMeta = useCallback11(
     (timestamp) => timestamp ? /* @__PURE__ */ jsx42(
       TimelineTimeToggle,
@@ -15647,6 +15745,7 @@ function TimelineHistoryEntries({
             timeLabel,
             timeTitle: entry.item.createdAt ? formatLongTimestamp(timestamp) : fallbackTimeTitle,
             timeMeta: relativeTimeMeta(timestamp),
+            autoOpenToolDetails: autoOpenLatestToolDetails && entry.key === latestEntryKey,
             onOpenExpandedText,
             onOpenCommandDetail,
             onOpenToolCallDetail,
@@ -15701,7 +15800,7 @@ function buildSyntheticLiveTurn(turnId, items) {
 }
 
 // src/components/timeline/useDeferredHistoryDetail.ts
-import { useCallback as useCallback12, useRef as useRef9, useState as useState19 } from "react";
+import { useCallback as useCallback12, useRef as useRef10, useState as useState19 } from "react";
 function inlineDetail(item, title, text) {
   return {
     id: item.id,
@@ -15714,8 +15813,8 @@ function useDeferredHistoryDetail({
   loadHistoryItemDetail,
   onSelectHistoryItemDetail
 }) {
-  const requestIdRef = useRef9(0);
-  const detailCacheRef = useRef9(
+  const requestIdRef = useRef10(0);
+  const detailCacheRef = useRef10(
     /* @__PURE__ */ new Map()
   );
   const [expandedText, setExpandedText] = useState19(
@@ -15846,13 +15945,13 @@ function useDeferredHistoryDetail({
 import {
   useCallback as useCallback13,
   useEffect as useEffect15,
-  useLayoutEffect as useLayoutEffect5,
-  useRef as useRef10,
+  useLayoutEffect as useLayoutEffect6,
+  useRef as useRef11,
   useState as useState20
 } from "react";
 function useChangeRevision(inputs) {
-  const previousInputsRef = useRef10(null);
-  const revisionRef = useRef10(0);
+  const previousInputsRef = useRef11(null);
+  const revisionRef = useRef11(0);
   const previousInputs = previousInputsRef.current;
   const changed = previousInputs === null || previousInputs.length !== inputs.length || inputs.some((input, index) => !Object.is(input, previousInputs[index]));
   if (changed) {
@@ -15872,24 +15971,24 @@ function useTimelineScroll({
   onTailVisibilityChange,
   contentRevisionInputs
 }) {
-  const scrollContainerRef = useRef10(null);
-  const scrollContentRef = useRef10(null);
-  const lastHandledScrollRequestKeyRef = useRef10(scrollRequestKey);
-  const previousContentRevisionRef = useRef10(null);
-  const previousBottomSpacerRef = useRef10(bottomSpacer);
-  const lastObservedScrollHeightRef = useRef10(0);
-  const lastScrollTopRef = useRef10(0);
-  const pendingPrependScrollRef = useRef10(null);
-  const tailSentinelRef = useRef10(null);
-  const topSentinelRef = useRef10(null);
-  const isTailVisibleRef = useRef10(true);
-  const shouldStickToBottomRef = useRef10(true);
-  const userScrolledAwayFromTailRef = useRef10(false);
-  const userScrolledHistoryRef = useRef10(false);
-  const autoLoadedEarlierRef = useRef10(false);
-  const topLoadArmedRef = useRef10(false);
-  const lastTouchYRef = useRef10(null);
-  const touchPullDistanceRef = useRef10(0);
+  const scrollContainerRef = useRef11(null);
+  const scrollContentRef = useRef11(null);
+  const lastHandledScrollRequestKeyRef = useRef11(scrollRequestKey);
+  const previousContentRevisionRef = useRef11(null);
+  const previousBottomSpacerRef = useRef11(bottomSpacer);
+  const lastObservedScrollHeightRef = useRef11(0);
+  const lastScrollTopRef = useRef11(0);
+  const pendingPrependScrollRef = useRef11(null);
+  const tailSentinelRef = useRef11(null);
+  const topSentinelRef = useRef11(null);
+  const isTailVisibleRef = useRef11(true);
+  const shouldStickToBottomRef = useRef11(true);
+  const userScrolledAwayFromTailRef = useRef11(false);
+  const userScrolledHistoryRef = useRef11(false);
+  const autoLoadedEarlierRef = useRef11(false);
+  const topLoadArmedRef = useRef11(false);
+  const lastTouchYRef = useRef11(null);
+  const touchPullDistanceRef = useRef11(0);
   const [visibleCount, setVisibleCount] = useState20(INITIAL_VISIBLE_TURNS);
   const [loadMoreClicks, setLoadMoreClicks] = useState20(0);
   const [isTailVisible, setIsTailVisible] = useState20(true);
@@ -16052,7 +16151,7 @@ function useTimelineScroll({
   const handleLoadAllClick = useCallback13(() => {
     setVisibleCount(turnsLength);
   }, [turnsLength]);
-  useLayoutEffect5(() => {
+  useLayoutEffect6(() => {
     const frame = window.requestAnimationFrame(() => {
       scrollToBottom();
     });
@@ -16071,7 +16170,7 @@ function useTimelineScroll({
       autoLoadedEarlierRef.current = false;
     }
   }, [loadingEarlier, turnsLength]);
-  useLayoutEffect5(() => {
+  useLayoutEffect6(() => {
     const anchor = pendingPrependScrollRef.current;
     const container = scrollContainerRef.current;
     if (!anchor || !container || loadingEarlier) {
@@ -16204,7 +16303,7 @@ function useTimelineScroll({
 }
 
 // src/components/ThreadTimeline.tsx
-import { Fragment as Fragment11, jsx as jsx43, jsxs as jsxs34 } from "react/jsx-runtime";
+import { Fragment as Fragment12, jsx as jsx43, jsxs as jsxs34 } from "react/jsx-runtime";
 function isTerminalTurnStatus2(status) {
   return status === "completed" || status === "failed" || status === "interrupted";
 }
@@ -16394,7 +16493,7 @@ function ThreadTimelineComponent({
     }),
     [activityNotes, optimisticTurn, visibleTurns]
   );
-  return /* @__PURE__ */ jsxs34(Fragment11, { children: [
+  return /* @__PURE__ */ jsxs34(Fragment12, { children: [
     /* @__PURE__ */ jsx43("section", { className: `flex min-h-0 flex-1 flex-col ${className}`.trim(), children: /* @__PURE__ */ jsx43(
       "div",
       {
@@ -16519,7 +16618,7 @@ function ThreadTimelineComponent({
                 }
               ) : null
             ] }, turn.id)),
-            optimisticTurn && visibleTurns.every((turn) => turn.id !== optimisticTurn.id) && /* @__PURE__ */ jsxs34(Fragment11, { children: [
+            optimisticTurn && visibleTurns.every((turn) => turn.id !== optimisticTurn.id) && /* @__PURE__ */ jsxs34(Fragment12, { children: [
               (activityNoteAnchors.beforeTurnId.get(optimisticTurn.id)?.length ?? 0) > 0 ? /* @__PURE__ */ jsx43(
                 ActivityNoteSection,
                 {
@@ -16726,7 +16825,7 @@ import {
   useEffect as useEffect18,
   useImperativeHandle as useImperativeHandle2,
   useMemo as useMemo10,
-  useRef as useRef12,
+  useRef as useRef13,
   useState as useState23
 } from "react";
 
@@ -16737,7 +16836,7 @@ import {
   useEffect as useEffect17,
   useImperativeHandle,
   useMemo as useMemo9,
-  useRef as useRef11,
+  useRef as useRef12,
   useState as useState22
 } from "react";
 import "xterm/css/xterm.css";
@@ -18077,35 +18176,35 @@ var ShellPane = forwardRef(
     onRuntimeStateChange,
     onFeedback
   }, ref) {
-    const terminalRef = useRef11(null);
-    const fitAddonRef = useRef11(null);
-    const socketRef = useRef11(null);
-    const viewerIdRef = useRef11(null);
-    const shellIdRef = useRef11(null);
-    const reconnectTimerRef = useRef11(null);
-    const attachTimeoutRef = useRef11(null);
-    const attachRetryTimerRef = useRef11(null);
-    const intentionalDisconnectRef = useRef11(false);
-    const userDisconnectedShellIdRef = useRef11(null);
-    const shellSnapshotRef = useRef11("");
-    const pendingCommandRef = useRef11(null);
-    const lastCommandOutputRef = useRef11("");
-    const resizeObserverRef = useRef11(null);
-    const lastSentSizeRef = useRef11(null);
-    const snapshotCursorRef = useRef11({
+    const terminalRef = useRef12(null);
+    const fitAddonRef = useRef12(null);
+    const socketRef = useRef12(null);
+    const viewerIdRef = useRef12(null);
+    const shellIdRef = useRef12(null);
+    const reconnectTimerRef = useRef12(null);
+    const attachTimeoutRef = useRef12(null);
+    const attachRetryTimerRef = useRef12(null);
+    const intentionalDisconnectRef = useRef12(false);
+    const userDisconnectedShellIdRef = useRef12(null);
+    const shellSnapshotRef = useRef12("");
+    const pendingCommandRef = useRef12(null);
+    const lastCommandOutputRef = useRef12("");
+    const resizeObserverRef = useRef12(null);
+    const lastSentSizeRef = useRef12(null);
+    const snapshotCursorRef = useRef12({
       cursorX: void 0,
       cursorY: void 0,
       paneHeight: void 0
     });
-    const terminalInitializingRef = useRef11(false);
-    const terminalInputSubscriptionRef = useRef11(null);
-    const isVisibleRef = useRef11(isVisible);
-    const isMobileShellRef = useRef11(isMobileShell);
-    const sendShellInputRef = useRef11(() => false);
-    const syncTerminalSizeRef = useRef11(() => null);
-    const refreshTerminalLayoutRef = useRef11(() => {
+    const terminalInitializingRef = useRef12(false);
+    const terminalInputSubscriptionRef = useRef12(null);
+    const isVisibleRef = useRef12(isVisible);
+    const isMobileShellRef = useRef12(isMobileShell);
+    const sendShellInputRef = useRef12(() => false);
+    const syncTerminalSizeRef = useRef12(() => null);
+    const refreshTerminalLayoutRef = useRef12(() => {
     });
-    const attachPromiseControllerRef = useRef11(
+    const attachPromiseControllerRef = useRef12(
       createShellAttachPromiseController({
         clearTimeout: window.clearTimeout
       })
@@ -18611,7 +18710,7 @@ var ShellPane = forwardRef(
 );
 
 // src/components/ThreadShellPanel.tsx
-import { Fragment as Fragment12, jsx as jsx46, jsxs as jsxs37 } from "react/jsx-runtime";
+import { Fragment as Fragment13, jsx as jsx46, jsxs as jsxs37 } from "react/jsx-runtime";
 var ThreadShellPanel = forwardRef2(function ThreadShellPanel2({
   threadId,
   shellAdapter,
@@ -18623,12 +18722,12 @@ var ThreadShellPanel = forwardRef2(function ThreadShellPanel2({
   saveSplitRatio,
   onStateChange
 }, ref) {
-  const primaryPaneRef = useRef12(null);
-  const secondaryPaneRef = useRef12(null);
-  const feedbackTimerRef = useRef12(null);
-  const terminalSplitHostRef = useRef12(null);
-  const dragFrameRef = useRef12(null);
-  const createShellInFlightRef = useRef12(false);
+  const primaryPaneRef = useRef13(null);
+  const secondaryPaneRef = useRef13(null);
+  const feedbackTimerRef = useRef13(null);
+  const terminalSplitHostRef = useRef13(null);
+  const dragFrameRef = useRef13(null);
+  const createShellInFlightRef = useRef13(false);
   const [shellState, setShellState] = useState23(null);
   const [loading, setLoading] = useState23(true);
   const [busy, setBusy] = useState23(false);
@@ -19176,7 +19275,7 @@ var ThreadShellPanel = forwardRef2(function ThreadShellPanel2({
           }
         ),
         /* @__PURE__ */ jsxs37("div", { className: "flex shrink-0 items-center gap-1", children: [
-          renamingShellId === shell.id ? /* @__PURE__ */ jsxs37(Fragment12, { children: [
+          renamingShellId === shell.id ? /* @__PURE__ */ jsxs37(Fragment13, { children: [
             /* @__PURE__ */ jsx46(
               "button",
               {
@@ -19207,7 +19306,7 @@ var ThreadShellPanel = forwardRef2(function ThreadShellPanel2({
               children: "Rename"
             }
           ),
-          splitMode === "columns" && /* @__PURE__ */ jsxs37(Fragment12, { children: [
+          splitMode === "columns" && /* @__PURE__ */ jsxs37(Fragment13, { children: [
             /* @__PURE__ */ jsx46(
               "button",
               {
@@ -19683,7 +19782,7 @@ function ConfirmDialog({
 // src/components/ExportTranscriptDialog.tsx
 import { useEffect as useEffect26, useMemo as useMemo16, useState as useState29 } from "react";
 import { createPortal as createPortal4 } from "react-dom";
-import { Fragment as Fragment16, jsx as jsx68, jsxs as jsxs55 } from "react/jsx-runtime";
+import { Fragment as Fragment17, jsx as jsx68, jsxs as jsxs55 } from "react/jsx-runtime";
 function formatTurnTime(value) {
   if (!value) {
     return "No time";
@@ -20023,7 +20122,7 @@ function ThreadActionsDialog({
                         ) : null
                       ] }, share.id)) }) : /* @__PURE__ */ jsx68("p", { className: "thread-export-dialog-subtitle px-3 py-3 text-sm", children: "No active shares for this thread." })
                     ] })
-                  ] }) : /* @__PURE__ */ jsxs55(Fragment16, { children: [
+                  ] }) : /* @__PURE__ */ jsxs55(Fragment17, { children: [
                     /* @__PURE__ */ jsxs55("label", { className: "thread-export-dialog-body-text mt-4 block text-sm", children: [
                       "Turns",
                       /* @__PURE__ */ jsx68(
@@ -20162,9 +20261,9 @@ import {
 import {
   useCallback as useCallback19,
   useEffect as useEffect27,
-  useLayoutEffect as useLayoutEffect7,
+  useLayoutEffect as useLayoutEffect8,
   useMemo as useMemo17,
-  useRef as useRef16,
+  useRef as useRef17,
   useState as useState30
 } from "react";
 import { jsx as jsx69, jsxs as jsxs56 } from "react/jsx-runtime";
@@ -20206,7 +20305,7 @@ function GraphChatThreadChatPanel({
   const [mobileComposerOverlap, setMobileComposerOverlap] = useState30(0);
   const [mobileKeyboardInset, setMobileKeyboardInset] = useState30(0);
   const [mobilePromptFocused, setMobilePromptFocused] = useState30(false);
-  const internalComposerHostRef = useRef16(null);
+  const internalComposerHostRef = useRef17(null);
   const timelineTailVisibilityChange = timelineProps?.onTailVisibilityChange;
   const hasPendingRequests = detail.pendingRequests.length > 0;
   const handleTailVisibilityChange = useCallback19(
@@ -20252,7 +20351,7 @@ function GraphChatThreadChatPanel({
       window.removeEventListener("resize", updateKeyboardInset);
     };
   }, []);
-  useLayoutEffect7(() => {
+  useLayoutEffect8(() => {
     const node = internalComposerHostRef.current;
     if (!node || !isMobileViewport) {
       setMobileComposerHeight(0);
@@ -20271,7 +20370,7 @@ function GraphChatThreadChatPanel({
       observer.disconnect();
     };
   }, [isMobileViewport, composerProps, hasPendingRequests]);
-  useLayoutEffect7(() => {
+  useLayoutEffect8(() => {
     const node = internalComposerHostRef.current;
     if (!node || !isMobileViewport) {
       setMobileComposerOverlap(0);
@@ -20883,7 +20982,7 @@ function PluginProvider({
 }
 
 // src/app-shell/AppShellNavigation.tsx
-import { useEffect as useEffect29, useRef as useRef17, useState as useState32 } from "react";
+import { useEffect as useEffect29, useRef as useRef18, useState as useState32 } from "react";
 import { jsx as jsx72, jsxs as jsxs58 } from "react/jsx-runtime";
 function MenuIcon() {
   return /* @__PURE__ */ jsx72("svg", { "aria-hidden": "true", viewBox: "0 0 16 16", className: "h-4 w-4 fill-current", children: /* @__PURE__ */ jsx72("path", { d: "M2 3.25h12v1.5H2Zm0 4h12v1.5H2Zm0 4h12v1.5H2Z" }) });
@@ -20936,7 +21035,7 @@ function AppShellNavigationMenu({
   onNavigate
 }) {
   const shellNav = useAppShellNav();
-  const menuRef = useRef17(null);
+  const menuRef = useRef18(null);
   useEffect29(() => {
     if (!shellNav?.navOpen) {
       return;

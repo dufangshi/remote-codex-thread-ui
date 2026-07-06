@@ -7,7 +7,7 @@ import {
   type ReactNode,
   type RefObject,
 } from 'react';
-import { ChevronRight } from 'lucide-react';
+import { ChevronDown, ChevronRight } from 'lucide-react';
 
 import type { ThreadHistoryItemDto } from '@remote-codex/shared';
 
@@ -100,6 +100,7 @@ interface HistoryItemRowProps {
   timeLabel?: ReactNode;
   timeTitle?: string | null | undefined;
   timeMeta?: ReactNode;
+  autoOpenToolDetails?: boolean;
   onOpenExpandedText: OpenExpandedTextHandler;
   onOpenCommandDetail: OpenCommandDetailHandler;
   onOpenToolCallDetail: OpenToolCallDetailHandler;
@@ -123,6 +124,7 @@ export const HistoryItemRow = memo(function HistoryItemRow({
   timeLabel,
   timeTitle,
   timeMeta,
+  autoOpenToolDetails = false,
 }: HistoryItemRowProps) {
   if (isCompactChatItem(item.kind)) {
     return (
@@ -180,6 +182,7 @@ export const HistoryItemRow = memo(function HistoryItemRow({
   if (item.kind === 'commandExecution') {
     return (
       <CommandItem
+        autoOpen={autoOpenToolDetails}
         item={
           item as ThreadHistoryItemDto & {
             kind: 'commandExecution';
@@ -194,6 +197,7 @@ export const HistoryItemRow = memo(function HistoryItemRow({
   if (item.kind === 'toolCall') {
     return (
       <ToolCallItem
+        autoOpen={autoOpenToolDetails}
         item={
           item as ThreadHistoryItemDto & {
             kind: 'toolCall';
@@ -208,6 +212,7 @@ export const HistoryItemRow = memo(function HistoryItemRow({
   if (item.kind === 'agentToolCall') {
     return (
       <AgentToolCallItem
+        autoOpen={autoOpenToolDetails}
         item={
           item as ThreadHistoryItemDto & {
             kind: 'agentToolCall';
@@ -222,6 +227,7 @@ export const HistoryItemRow = memo(function HistoryItemRow({
   if (item.kind === 'skillToolCall') {
     return (
       <SkillToolCallItem
+        autoOpen={autoOpenToolDetails}
         item={
           item as ThreadHistoryItemDto & {
             kind: 'skillToolCall';
@@ -240,6 +246,7 @@ export const HistoryItemRow = memo(function HistoryItemRow({
     const detailText = typedItem.detailText?.trim() || typedItem.text || 'Web search';
     return (
       <WebSearchItem
+        autoOpen={autoOpenToolDetails}
         item={typedItem}
         timeMeta={timeMeta}
         onOpen={() =>
@@ -262,6 +269,7 @@ export const HistoryItemRow = memo(function HistoryItemRow({
     const detailText = typedItem.detailText?.trim() || typedItem.text || 'File read';
     return (
       <FileReadItem
+        autoOpen={autoOpenToolDetails}
         item={typedItem}
         timeMeta={timeMeta}
         onOpen={() =>
@@ -585,6 +593,8 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
     [activeForRendering, mergedItems],
   );
   const groupedItems = useMemo(() => groupTimelineHistoryItems(preparedItems), [preparedItems]);
+  const autoOpenLatestToolDetails =
+    forceActive || isActiveTurnStatus(turn.status) || hasLiveActivity;
   const turnTimeLabel = formatShortTimestamp(turn.startedAt);
   const turnTimeTitle = formatLongTimestamp(turn.startedAt);
   const visibleLiveHookPrompt = useMemo(
@@ -618,6 +628,7 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
       fallbackTimeLabel={turnTimeLabel}
       fallbackTimeTitle={turnTimeTitle}
       turnStartedAt={turn.startedAt}
+      autoOpenLatestToolDetails={autoOpenLatestToolDetails}
       {...(onSelectArtifact ? { onSelectArtifact } : {})}
       {...(adapter ? { adapter } : {})}
     />
@@ -686,6 +697,20 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
   );
   const hasCollapsedHiddenItems = collapsedSummary.hiddenEntries.length > 0;
   const effectiveCollapsed = isCollapsed && hasCollapsedHiddenItems;
+  const canToggleWorkedSummary =
+    isTerminalTurnStatus(turn.status) && hasCollapsedHiddenItems;
+  const expandedWorkedToggleNode = canToggleWorkedSummary && !effectiveCollapsed ? (
+    <button
+      type="button"
+      className="thread-graph-worked-summary group flex w-full items-center gap-2 py-2 text-left text-sm transition"
+      onClick={() => onToggleCollapse(turn.id, false)}
+      aria-label={`${workedLabel}. Collapse turn ${absoluteIndex}`}
+    >
+      <span className="thread-graph-worked-label shrink-0">{workedLabel}</span>
+      <ChevronDown className="h-4 w-4 shrink-0 transition group-hover:translate-y-0.5" />
+      <span className="thread-graph-worked-rule h-px min-w-0 flex-1" aria-hidden="true" />
+    </button>
+  ) : null;
   const collapsedSummaryNode = isTerminalTurnStatus(turn.status) && hasCollapsedHiddenItems ? (
     <div className="thread-graph-turn-collapsed-summary space-y-2">
       {collapsedSummary.users.map((item) => (
@@ -752,7 +777,12 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
   const turnBody = (
     <GraphChatTurnBody
       footer={footerNode}
-      history={historyNode}
+      history={
+        <>
+          {expandedWorkedToggleNode}
+          {historyNode}
+        </>
+      }
       liveHookPrompt={liveHookPromptNode}
       liveOutput={liveOutputNode}
       livePlan={displayedLivePlan}
@@ -788,6 +818,7 @@ interface TimelineHistoryEntriesProps {
   fallbackTimeLabel?: string | null | undefined;
   fallbackTimeTitle?: string | null | undefined;
   turnStartedAt?: string | null | undefined;
+  autoOpenLatestToolDetails?: boolean;
   onOpenExpandedText: OpenExpandedTextHandler;
   onOpenCommandDetail: OpenCommandDetailHandler;
   onOpenToolCallDetail: OpenToolCallDetailHandler;
@@ -814,7 +845,9 @@ function TimelineHistoryEntries({
   fallbackTimeLabel,
   fallbackTimeTitle,
   turnStartedAt,
+  autoOpenLatestToolDetails = false,
 }: TimelineHistoryEntriesProps) {
+  const latestEntryKey = entries.at(-1)?.key ?? null;
   const relativeTimeMeta = useCallback(
     (timestamp: string | null | undefined) =>
       timestamp ? (
@@ -903,6 +936,9 @@ function TimelineHistoryEntries({
                 : fallbackTimeTitle
             }
             timeMeta={relativeTimeMeta(timestamp)}
+            autoOpenToolDetails={
+              autoOpenLatestToolDetails && entry.key === latestEntryKey
+            }
             onOpenExpandedText={onOpenExpandedText}
             onOpenCommandDetail={onOpenCommandDetail}
             onOpenToolCallDetail={onOpenToolCallDetail}

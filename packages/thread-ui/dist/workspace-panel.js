@@ -22,6 +22,7 @@ import {
   ChevronDown,
   ChevronRight,
   ChevronsLeft,
+  Copy as Copy2,
   Download as Download2,
   Eye,
   File,
@@ -1977,6 +1978,7 @@ function WorkspaceTreeRow({
   expandedPaths,
   loadingPaths,
   node,
+  onCopyPath,
   onDownload,
   onPreview,
   onSelect,
@@ -2016,6 +2018,17 @@ function WorkspaceTreeRow({
             "aria-label": node.path ? `Download ${node.name}` : "Download workspace",
             children: /* @__PURE__ */ jsx14(Download2, { className: "h-3.5 w-3.5" })
           }
+        ) : null,
+        onCopyPath && node.path ? /* @__PURE__ */ jsx14(
+          "button",
+          {
+            type: "button",
+            onClick: () => onCopyPath(node),
+            className: "thread-graph-tree-action mr-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-md text-slate-400 transition hover:bg-white hover:text-slate-900 sm:h-7 sm:w-7 sm:opacity-0 sm:group-hover:opacity-100 sm:focus:opacity-100 dark:text-slate-500 dark:hover:bg-[#1d222c] dark:hover:text-slate-100",
+            title: `Copy path for ${node.name}`,
+            "aria-label": `Copy path for ${node.name}`,
+            children: /* @__PURE__ */ jsx14(Copy2, { className: "h-3.5 w-3.5" })
+          }
         ) : null
       ] }),
       expanded ? /* @__PURE__ */ jsxs10("div", { children: [
@@ -2026,6 +2039,7 @@ function WorkspaceTreeRow({
             expandedPaths,
             loadingPaths,
             node: child,
+            ...onCopyPath ? { onCopyPath } : {},
             ...onDownload ? { onDownload } : {},
             ...onPreview ? { onPreview } : {},
             onSelect,
@@ -2063,7 +2077,7 @@ function WorkspaceTreeRow({
             ]
           }
         ),
-        node.kind === "file" && (onPreview || onDownload) ? /* @__PURE__ */ jsxs10("div", { className: "mr-1 flex shrink-0 items-center gap-0.5", children: [
+        node.kind === "file" && (onPreview || onDownload || onCopyPath) ? /* @__PURE__ */ jsxs10("div", { className: "mr-1 flex shrink-0 items-center gap-0.5", children: [
           onPreview ? /* @__PURE__ */ jsx14(
             "button",
             {
@@ -2084,6 +2098,17 @@ function WorkspaceTreeRow({
               title: `Download ${node.name}`,
               "aria-label": `Download ${node.name}`,
               children: /* @__PURE__ */ jsx14(Download2, { className: "h-3.5 w-3.5" })
+            }
+          ) : null,
+          onCopyPath ? /* @__PURE__ */ jsx14(
+            "button",
+            {
+              type: "button",
+              onClick: () => onCopyPath(node),
+              className: `thread-graph-tree-action flex h-9 w-9 shrink-0 items-center justify-center rounded-md transition sm:h-7 sm:w-7 sm:opacity-0 sm:group-hover:opacity-100 sm:focus:opacity-100 ${selected ? "is-selected" : "text-slate-400 hover:bg-white hover:text-slate-900 dark:text-slate-500 dark:hover:bg-[#1d222c] dark:hover:text-slate-100"}`,
+              title: `Copy path for ${node.name}`,
+              "aria-label": `Copy path for ${node.name}`,
+              children: /* @__PURE__ */ jsx14(Copy2, { className: "h-3.5 w-3.5" })
             }
           ) : null
         ] }) : null
@@ -2134,6 +2159,7 @@ function WorkspaceExplorerPanel({
   loadingPaths,
   loading,
   onDownload,
+  onCopyPath,
   onEmptyGarbage,
   onPreview,
   onRefresh,
@@ -2241,6 +2267,7 @@ function WorkspaceExplorerPanel({
               expandedPaths,
               loadingPaths,
               node: visibleTree,
+              ...onCopyPath ? { onCopyPath } : {},
               ...onDownload ? { onDownload } : {},
               ...onPreview ? { onPreview } : {},
               onSelect,
@@ -2701,6 +2728,18 @@ function GraphWorkspaceExplorer({
       kind: node.kind === "directory" ? "directory" : "file"
     });
   }
+  function handleCopyPath(node) {
+    if (!node.path || typeof navigator === "undefined" || !navigator.clipboard) {
+      return;
+    }
+    const workspaceRoot = detail.workspace.absPath.replace(/\/+$/, "");
+    const copyPath = node.path.startsWith("/") ? node.path : workspaceRoot ? `${workspaceRoot}/${node.path.replace(/^\/+/, "")}` : node.path;
+    void navigator.clipboard.writeText(copyPath).catch((error) => {
+      setWorkspaceError(
+        error instanceof Error ? error.message : "Failed to copy file path"
+      );
+    });
+  }
   function handlePreview(node) {
     if (node.kind !== "file") {
       return;
@@ -2747,6 +2786,7 @@ function GraphWorkspaceExplorer({
     }
   }
   const explorerActions = {
+    onCopyPath: handleCopyPath,
     ...workspaceAdapter?.downloadNode ? { onDownload: handleDownload } : {},
     ...workspaceAdapter?.emptyGarbage ? { onEmptyGarbage: handleOpenGarbage } : {},
     ...workspaceAdapter ? { onRefresh: () => void refreshWorkspaceTree(activeNode?.path ?? null) } : {},
