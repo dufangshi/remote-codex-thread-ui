@@ -52,15 +52,13 @@
 }
 
 .thread-ui-shell .thread-graph-history-button,
-.thread-ui-shell .thread-graph-turn-index,
-.thread-ui-shell .thread-graph-turn-collapse {
+.thread-ui-shell .thread-graph-turn-index {
   border-color: var(--theme-border);
   background: var(--theme-panel);
   color: var(--theme-fg-muted);
 }
 
-.thread-ui-shell .thread-graph-history-button:hover,
-.thread-ui-shell .thread-graph-turn-collapse:hover {
+.thread-ui-shell .thread-graph-history-button:hover {
   background: var(--theme-hover);
   color: var(--theme-fg);
 }

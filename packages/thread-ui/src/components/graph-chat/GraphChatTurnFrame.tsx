@@ -9,7 +9,6 @@ export interface GraphChatTurnFrameProps {
   footer?: ReactNode;
   headerStatus?: ReactNode;
   isActive?: boolean;
-  onToggleCollapse: () => void;
   refCallback?: RefCallback<HTMLElement> | undefined;
   startedAt?: string | null;
   timeLabel: string;
@@ -26,7 +25,6 @@ export function GraphChatTurnFrame({
   footer,
   headerStatus,
   isActive = false,
-  onToggleCollapse,
   refCallback,
   startedAt,
   timeLabel,
@@ -62,28 +60,6 @@ export function GraphChatTurnFrame({
           </div>
           {tokenSummary}
         </div>
-        <button
-          type="button"
-          aria-label={`${collapsed ? 'Expand' : 'Collapse'} turn ${absoluteIndex}`}
-          title={collapsed ? 'Expand turn' : 'Collapse turn'}
-          onClick={onToggleCollapse}
-          className="thread-graph-turn-collapse inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-md transition"
-        >
-          <svg
-            aria-hidden="true"
-            viewBox="0 0 16 16"
-            className="h-3.5 w-3.5 fill-none stroke-current"
-            strokeWidth="1.6"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            {collapsed ? (
-              <path d="m4.5 10 3.5-3.5L11.5 10" />
-            ) : (
-              <path d="m4.5 6 3.5 3.5L11.5 6" />
-            )}
-          </svg>
-        </button>
       </div>
 
       {error ? (

@@ -14,7 +14,7 @@ import type { ThreadTimelineAdapter } from '../../adapters';
 import { hasLikelyMarkdownSyntax } from '../markdownHeuristics';
 import { GraphChatMessageContent } from './GraphChatMessageContent';
 
-const LARGE_MESSAGE_PREVIEW_CHARS = 4_000;
+const LARGE_MESSAGE_PREVIEW_CHARS = 2_400;
 const PLAIN_URL_PATTERN = /\b(?:https?:\/\/|www\.)[^\s<>"'`]+/gi;
 const TRAILING_URL_PUNCTUATION_PATTERN = /[),.;:!?]+$/;
 

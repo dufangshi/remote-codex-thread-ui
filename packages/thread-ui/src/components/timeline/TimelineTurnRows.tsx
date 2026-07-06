@@ -798,7 +798,6 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
       error={turn.error}
       headerStatus={<TurnStatusBar turn={turn} />}
       isActive={activeForRendering}
-      onToggleCollapse={() => onToggleCollapse(turn.id, effectiveCollapsed)}
       refCallback={articleRef}
       startedAt={turn.startedAt}
       timeLabel={turnTimeLabel}
