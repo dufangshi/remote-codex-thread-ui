@@ -10269,6 +10269,7 @@ function ThreadWorkspaceLayout({
     }
     const hasSessionSettings = Boolean(settingsContent || metaContent);
     const hasGlobalSettings = Boolean(globalSettingsContent);
+    const showSettingsTabs = hasSessionSettings && hasGlobalSettings;
     const activeSettingsTab = settingsTab === "global" && hasGlobalSettings ? "global" : !hasSessionSettings && hasGlobalSettings ? "global" : "session";
     return /* @__PURE__ */ jsxs18(
       Dialog,
@@ -10335,7 +10336,7 @@ function ThreadWorkspaceLayout({
                     }
                   )
                 ] }) }) : null,
-                /* @__PURE__ */ jsxs18("div", { className: "thread-graph-settings-tabs grid grid-cols-2 gap-1 rounded-lg border p-1", children: [
+                showSettingsTabs ? /* @__PURE__ */ jsxs18("div", { className: "thread-graph-settings-tabs grid grid-cols-2 gap-1 rounded-lg border p-1", children: [
                   /* @__PURE__ */ jsx25(
                     "button",
                     {
@@ -10351,13 +10352,12 @@ function ThreadWorkspaceLayout({
                     {
                       type: "button",
                       "aria-pressed": activeSettingsTab === "global",
-                      disabled: !hasGlobalSettings,
                       onClick: () => setSettingsTab("global"),
                       className: `thread-graph-settings-tab-button rounded-md px-3 py-2 text-sm font-medium transition ${activeSettingsTab === "global" ? "is-active" : ""}`,
                       children: "Global"
                     }
                   )
-                ] }),
+                ] }) : null,
                 /* @__PURE__ */ jsx25("div", { className: "thread-graph-settings-body mt-4 min-h-0 overflow-y-auto pr-1 text-sm", children: activeSettingsTab === "session" ? /* @__PURE__ */ jsxs18("div", { className: "grid gap-4", children: [
                   settingsContent ? /* @__PURE__ */ jsx25("div", { className: "thread-graph-settings-card rounded-lg border p-3", children: settingsContent }) : null,
                   metaContent ? /* @__PURE__ */ jsx25("div", { className: "thread-graph-settings-card rounded-lg border p-3", children: metaContent }) : null,

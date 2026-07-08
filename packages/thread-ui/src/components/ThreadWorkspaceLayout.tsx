@@ -748,6 +748,7 @@ export function ThreadWorkspaceLayout({
 
     const hasSessionSettings = Boolean(settingsContent || metaContent);
     const hasGlobalSettings = Boolean(globalSettingsContent);
+    const showSettingsTabs = hasSessionSettings && hasGlobalSettings;
     const activeSettingsTab =
       settingsTab === "global" && hasGlobalSettings
         ? "global"
@@ -827,29 +828,30 @@ export function ThreadWorkspaceLayout({
               </div>
             </div>
           ) : null}
-          <div className="thread-graph-settings-tabs grid grid-cols-2 gap-1 rounded-lg border p-1">
-            <button
-              type="button"
-              aria-pressed={activeSettingsTab === "session"}
-              onClick={() => setSettingsTab("session")}
-              className={`thread-graph-settings-tab-button rounded-md px-3 py-2 text-sm font-medium transition ${
-                activeSettingsTab === "session" ? "is-active" : ""
-              }`}
-            >
-              Session
-            </button>
-            <button
-              type="button"
-              aria-pressed={activeSettingsTab === "global"}
-              disabled={!hasGlobalSettings}
-              onClick={() => setSettingsTab("global")}
-              className={`thread-graph-settings-tab-button rounded-md px-3 py-2 text-sm font-medium transition ${
-                activeSettingsTab === "global" ? "is-active" : ""
-              }`}
-            >
-              Global
-            </button>
-          </div>
+          {showSettingsTabs ? (
+            <div className="thread-graph-settings-tabs grid grid-cols-2 gap-1 rounded-lg border p-1">
+              <button
+                type="button"
+                aria-pressed={activeSettingsTab === "session"}
+                onClick={() => setSettingsTab("session")}
+                className={`thread-graph-settings-tab-button rounded-md px-3 py-2 text-sm font-medium transition ${
+                  activeSettingsTab === "session" ? "is-active" : ""
+                }`}
+              >
+                Session
+              </button>
+              <button
+                type="button"
+                aria-pressed={activeSettingsTab === "global"}
+                onClick={() => setSettingsTab("global")}
+                className={`thread-graph-settings-tab-button rounded-md px-3 py-2 text-sm font-medium transition ${
+                  activeSettingsTab === "global" ? "is-active" : ""
+                }`}
+              >
+                Global
+              </button>
+            </div>
+          ) : null}
           <div className="thread-graph-settings-body mt-4 min-h-0 overflow-y-auto pr-1 text-sm">
             {activeSettingsTab === "session" ? (
               <div className="grid gap-4">
