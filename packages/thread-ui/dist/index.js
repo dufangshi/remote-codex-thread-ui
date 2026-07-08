@@ -19846,7 +19846,8 @@ function ThreadActionsDialog({
   onLoadTurns,
   onExport,
   onCreateShare,
-  onRevokeShare
+  onRevokeShare,
+  onOpenDeviceSharing
 }) {
   const turns = useMemo16(() => turnsState.data?.turns ?? [], [turnsState.data?.turns]);
   const [actionMode, setActionMode] = useState29(initialMode);
@@ -19991,7 +19992,7 @@ function ThreadActionsDialog({
                 /* @__PURE__ */ jsxs55("div", { className: "thread-export-dialog-header flex items-start justify-between gap-3 border-b px-5 py-4", children: [
                   /* @__PURE__ */ jsxs55("div", { className: "min-w-0", children: [
                     /* @__PURE__ */ jsx68("p", { className: "thread-export-dialog-title text-sm font-semibold", children: "Thread actions" }),
-                    /* @__PURE__ */ jsx68("p", { className: "thread-export-dialog-subtitle mt-1 text-xs", children: "Export a review copy or share this relay session." })
+                    /* @__PURE__ */ jsx68("p", { className: "thread-export-dialog-subtitle mt-1 text-xs", children: "Export a review copy or share this thread." })
                   ] }),
                   /* @__PURE__ */ jsx68(
                     "button",
@@ -20018,6 +20019,22 @@ function ThreadActionsDialog({
                   )) }),
                   actionMode === "share" ? /* @__PURE__ */ jsxs55("form", { id: "thread-actions-share-form", className: "mt-4 space-y-4", onSubmit: handleShare, children: [
                     !shareAvailable ? /* @__PURE__ */ jsx68("p", { className: "thread-export-dialog-box thread-export-dialog-subtitle rounded-2xl border px-3 py-3 text-sm", children: shareUnavailableMessage }) : null,
+                    shareAvailable && onOpenDeviceSharing ? /* @__PURE__ */ jsxs55("div", { className: "thread-export-dialog-box flex flex-wrap items-center justify-between gap-3 rounded-2xl border px-3 py-3", children: [
+                      /* @__PURE__ */ jsxs55("div", { className: "min-w-0", children: [
+                        /* @__PURE__ */ jsx68("p", { className: "thread-export-dialog-strong text-sm font-medium", children: "Share this thread" }),
+                        /* @__PURE__ */ jsx68("p", { className: "thread-export-dialog-subtitle mt-1 text-xs", children: "Need broader access? Share the whole device from Relay Portal." })
+                      ] }),
+                      /* @__PURE__ */ jsx68(
+                        "button",
+                        {
+                          type: "button",
+                          className: "thread-export-dialog-secondary-button rounded-full border px-3 py-1.5 text-xs font-medium transition",
+                          disabled: busy,
+                          onClick: onOpenDeviceSharing,
+                          children: "Share whole device"
+                        }
+                      )
+                    ] }) : null,
                     /* @__PURE__ */ jsxs55("label", { className: "thread-export-dialog-body-text block text-sm", children: [
                       "Relay identifier",
                       /* @__PURE__ */ jsx68(
@@ -20213,7 +20230,7 @@ function ThreadActionsDialog({
                         form: "thread-actions-share-form",
                         disabled: !canShare,
                         className: "ui-status-warning rounded-full px-4 py-2 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-60",
-                        children: busy ? "Sharing..." : "Share session"
+                        children: busy ? "Sharing..." : "Share this thread"
                       }
                     ) : /* @__PURE__ */ jsx68(
                       "button",

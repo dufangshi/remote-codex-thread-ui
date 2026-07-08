@@ -54,6 +54,7 @@ export interface ThreadActionsDialogProps {
   onExport: (input: ExportThreadPdfInput) => void | Promise<void>;
   onCreateShare?: (input: CreateThreadShareInput) => void | Promise<void>;
   onRevokeShare?: (shareId: string) => void | Promise<void>;
+  onOpenDeviceSharing?: () => void;
 }
 
 function formatTurnTime(value: string | null) {
@@ -142,6 +143,7 @@ export function ThreadActionsDialog({
   onExport,
   onCreateShare,
   onRevokeShare,
+  onOpenDeviceSharing,
 }: ThreadActionsDialogProps) {
   const turns = useMemo(() => turnsState.data?.turns ?? [], [turnsState.data?.turns]);
   const [actionMode, setActionMode] = useState<ThreadActionMode>(initialMode);
@@ -325,7 +327,7 @@ export function ThreadActionsDialog({
           <div className="min-w-0">
             <p className="thread-export-dialog-title text-sm font-semibold">Thread actions</p>
             <p className="thread-export-dialog-subtitle mt-1 text-xs">
-              Export a review copy or share this relay session.
+              Export a review copy or share this thread.
             </p>
           </div>
           <button
@@ -365,6 +367,24 @@ export function ThreadActionsDialog({
                 <p className="thread-export-dialog-box thread-export-dialog-subtitle rounded-2xl border px-3 py-3 text-sm">
                   {shareUnavailableMessage}
                 </p>
+              ) : null}
+              {shareAvailable && onOpenDeviceSharing ? (
+                <div className="thread-export-dialog-box flex flex-wrap items-center justify-between gap-3 rounded-2xl border px-3 py-3">
+                  <div className="min-w-0">
+                    <p className="thread-export-dialog-strong text-sm font-medium">Share this thread</p>
+                    <p className="thread-export-dialog-subtitle mt-1 text-xs">
+                      Need broader access? Share the whole device from Relay Portal.
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    className="thread-export-dialog-secondary-button rounded-full border px-3 py-1.5 text-xs font-medium transition"
+                    disabled={busy}
+                    onClick={onOpenDeviceSharing}
+                  >
+                    Share whole device
+                  </button>
+                </div>
               ) : null}
 
               <label className="thread-export-dialog-body-text block text-sm">
@@ -592,7 +612,7 @@ export function ThreadActionsDialog({
                 disabled={!canShare}
                 className="ui-status-warning rounded-full px-4 py-2 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-60"
               >
-                {busy ? 'Sharing...' : 'Share session'}
+                {busy ? 'Sharing...' : 'Share this thread'}
               </button>
             ) : (
               <button

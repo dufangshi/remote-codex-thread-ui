@@ -352,8 +352,9 @@ interface ThreadActionsDialogProps {
     onExport: (input: ExportThreadPdfInput) => void | Promise<void>;
     onCreateShare?: (input: CreateThreadShareInput) => void | Promise<void>;
     onRevokeShare?: (shareId: string) => void | Promise<void>;
+    onOpenDeviceSharing?: () => void;
 }
-declare function ThreadActionsDialog({ open, busy, turnsState, shareAvailable, shareUnavailableMessage, shareState, initialMode, onCancel, onLoadTurns, onExport, onCreateShare, onRevokeShare, }: ThreadActionsDialogProps): react.ReactPortal | null;
+declare function ThreadActionsDialog({ open, busy, turnsState, shareAvailable, shareUnavailableMessage, shareState, initialMode, onCancel, onLoadTurns, onExport, onCreateShare, onRevokeShare, onOpenDeviceSharing, }: ThreadActionsDialogProps): react.ReactPortal | null;
 declare const ExportTranscriptDialog: typeof ThreadActionsDialog;
 
 interface LongTextDialogProps {
