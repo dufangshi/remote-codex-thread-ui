@@ -60,12 +60,22 @@ function summarizeThreadUsage(
         input: summary.input + usage.inputTokens,
         output: summary.output + usage.outputTokens,
         cache: summary.cache + usage.cachedInputTokens,
+        cacheWrite:
+          summary.cacheWrite + (usage.cacheWriteInputTokens ?? 0),
         priceUsd: summary.priceUsd + (turn.priceEstimate?.totalUsd ?? 0),
         pricedTurns: summary.pricedTurns + (turn.priceEstimate ? 1 : 0),
         turns: summary.turns + 1,
       };
     },
-    { input: 0, output: 0, cache: 0, priceUsd: 0, pricedTurns: 0, turns: 0 },
+    {
+      input: 0,
+      output: 0,
+      cache: 0,
+      cacheWrite: 0,
+      priceUsd: 0,
+      pricedTurns: 0,
+      turns: 0,
+    },
   );
 }
 
@@ -88,9 +98,12 @@ function formatTopbarUsageSummary(
   if (!usage || usage.turns <= 0) {
     return 'waiting for agent usage';
   }
-  const tokenParts = `in ${formatTopbarTokenCount(usage.input)} / out ${formatTopbarTokenCount(
+  const baseTokenParts = `in ${formatTopbarTokenCount(usage.input)} / out ${formatTopbarTokenCount(
     usage.output,
-  )} / cache ${formatTopbarTokenCount(usage.cache)}`;
+  )} / cache read ${formatTopbarTokenCount(usage.cache)}`;
+  const tokenParts = usage.cacheWrite > 0
+    ? `${baseTokenParts} / cache write ${formatTopbarTokenCount(usage.cacheWrite)}`
+    : baseTokenParts;
   return usage.pricedTurns > 0
     ? `${tokenParts} / cost ${formatCompactUsd(usage.priceUsd)}`
     : tokenParts;

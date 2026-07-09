@@ -27,6 +27,7 @@ export interface GraphChatThreadUsageSummary {
   input: number;
   output: number;
   cache: number;
+  cacheWrite: number;
   priceUsd: number;
   pricedTurns: number;
   turns: number;
@@ -64,9 +65,12 @@ function formatTokenCount(value: number | undefined) {
 }
 
 function formatThreadUsageParts(usage: GraphChatThreadUsageSummary) {
-  const tokenParts = `in ${formatTokenCount(usage.input)} / out ${formatTokenCount(
+  const baseTokenParts = `in ${formatTokenCount(usage.input)} / out ${formatTokenCount(
     usage.output,
-  )} / cache ${formatTokenCount(usage.cache)}`;
+  )} / cache read ${formatTokenCount(usage.cache)}`;
+  const tokenParts = usage.cacheWrite > 0
+    ? `${baseTokenParts} / cache write ${formatTokenCount(usage.cacheWrite)}`
+    : baseTokenParts;
   return usage.pricedTurns > 0
     ? `${tokenParts} / cost ${formatCompactUsd(usage.priceUsd)}`
     : tokenParts;

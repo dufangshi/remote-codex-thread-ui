@@ -223,7 +223,7 @@ interface WorkspaceTreeDto {
     nodes: WorkspaceTreeNodeDto[];
 }
 type ApprovalMode = 'yolo' | 'guarded';
-type ReasoningEffortDto = 'none' | 'minimal' | 'low' | 'medium' | 'high' | 'xhigh';
+type ReasoningEffortDto = 'none' | 'minimal' | 'low' | 'medium' | 'high' | 'xhigh' | 'max' | 'ultra';
 type CollaborationModeDto = 'default' | 'plan';
 type SandboxModeDto = 'read-only' | 'workspace-write' | 'danger-full-access';
 interface ReasoningEffortOptionDto {
@@ -375,6 +375,7 @@ interface ThreadTurnTokenBreakdownDto {
     totalTokens: number;
     inputTokens: number;
     cachedInputTokens: number;
+    cacheWriteInputTokens?: number;
     outputTokens: number;
     reasoningOutputTokens: number;
 }
@@ -390,6 +391,7 @@ interface ThreadTurnPriceEstimateDto {
     currency: 'USD';
     inputUsd: number;
     cachedInputUsd: number;
+    cacheWriteInputUsd?: number;
     outputUsd: number;
     totalUsd: number;
 }

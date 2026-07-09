@@ -164,6 +164,52 @@ describe('timeline token formatting', () => {
     ]);
   });
 
+  it('shows cache writes separately from uncached and cached input', () => {
+    const details = buildTurnTokenDetails(
+      turn({
+        tokenUsage: {
+          total: {
+            inputTokens: 1_500,
+            cachedInputTokens: 500,
+            cacheWriteInputTokens: 200,
+            outputTokens: 0,
+            reasoningOutputTokens: 0,
+            totalTokens: 1_500,
+          },
+          last: {
+            inputTokens: 1_500,
+            cachedInputTokens: 500,
+            cacheWriteInputTokens: 200,
+            outputTokens: 0,
+            reasoningOutputTokens: 0,
+            totalTokens: 1_500,
+          },
+          modelContextWindow: 1_050_000,
+        },
+        priceEstimate: {
+          pricingModelKey: 'gpt-5.6-sol',
+          pricingTierKey: 'standard',
+          currency: 'USD',
+          inputUsd: 0.004,
+          cachedInputUsd: 0.00025,
+          cacheWriteInputUsd: 0.00125,
+          outputUsd: 0,
+          totalUsd: 0.0055,
+        },
+      }),
+    );
+
+    expect(details.map((detail) => ({
+      id: detail.id,
+      tokens: detail.tokenRawValue,
+      usd: detail.usdRawValue,
+    }))).toEqual([
+      { id: 'in', tokens: 800, usd: 0.004 },
+      { id: 'cache', tokens: 500, usd: 0.00025 },
+      { id: 'cache-write', tokens: 200, usd: 0.00125 },
+    ]);
+  });
+
   it('builds compact header badges and unavailable price labels', () => {
     const currentTurn = turn({
       tokenUsage: {

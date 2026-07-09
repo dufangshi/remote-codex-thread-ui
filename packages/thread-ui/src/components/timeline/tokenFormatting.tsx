@@ -187,10 +187,16 @@ export function buildTurnTokenDetails(turn: TimelineTurn) {
   }
 
   const nonCachedInputTokens = Math.max(
-    usage.inputTokens - usage.cachedInputTokens,
+    usage.inputTokens -
+      usage.cachedInputTokens -
+      (usage.cacheWriteInputTokens ?? 0),
     0,
   );
   const cachedInputTokens = Math.max(usage.cachedInputTokens, 0);
+  const cacheWriteInputTokens = Math.max(
+    usage.cacheWriteInputTokens ?? 0,
+    0,
+  );
   const reasoningOutputTokens = Math.max(usage.reasoningOutputTokens, 0);
   const nonReasoningOutputTokens = Math.max(
     usage.outputTokens - reasoningOutputTokens,
@@ -222,6 +228,20 @@ export function buildTurnTokenDetails(turn: TimelineTurn) {
             ? formatDetailedUsd(turn.priceEstimate.cachedInputUsd)
             : '--',
           usdRawValue: turn.priceEstimate?.cachedInputUsd ?? null,
+          className: 'token-badge-cache',
+          icon: <TokenCacheIcon />,
+        }
+      : null,
+    cacheWriteInputTokens > 0
+      ? {
+          id: 'cache-write',
+          label: 'Cache write',
+          tokenCompactValue: formatCompactTokenCount(cacheWriteInputTokens),
+          tokenRawValue: cacheWriteInputTokens,
+          usdCompactValue: turn.priceEstimate
+            ? formatDetailedUsd(turn.priceEstimate.cacheWriteInputUsd ?? 0)
+            : '--',
+          usdRawValue: turn.priceEstimate?.cacheWriteInputUsd ?? null,
           className: 'token-badge-cache',
           icon: <TokenCacheIcon />,
         }

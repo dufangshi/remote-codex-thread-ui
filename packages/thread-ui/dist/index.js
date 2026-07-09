@@ -14590,10 +14590,14 @@ function buildTurnTokenDetails(turn) {
     return [];
   }
   const nonCachedInputTokens = Math.max(
-    usage.inputTokens - usage.cachedInputTokens,
+    usage.inputTokens - usage.cachedInputTokens - (usage.cacheWriteInputTokens ?? 0),
     0
   );
   const cachedInputTokens = Math.max(usage.cachedInputTokens, 0);
+  const cacheWriteInputTokens = Math.max(
+    usage.cacheWriteInputTokens ?? 0,
+    0
+  );
   const reasoningOutputTokens = Math.max(usage.reasoningOutputTokens, 0);
   const nonReasoningOutputTokens = Math.max(
     usage.outputTokens - reasoningOutputTokens,
@@ -14617,6 +14621,16 @@ function buildTurnTokenDetails(turn) {
       tokenRawValue: cachedInputTokens,
       usdCompactValue: turn.priceEstimate ? formatDetailedUsd(turn.priceEstimate.cachedInputUsd) : "--",
       usdRawValue: turn.priceEstimate?.cachedInputUsd ?? null,
+      className: "token-badge-cache",
+      icon: /* @__PURE__ */ jsx40(TokenCacheIcon, {})
+    } : null,
+    cacheWriteInputTokens > 0 ? {
+      id: "cache-write",
+      label: "Cache write",
+      tokenCompactValue: formatCompactTokenCount(cacheWriteInputTokens),
+      tokenRawValue: cacheWriteInputTokens,
+      usdCompactValue: turn.priceEstimate ? formatDetailedUsd(turn.priceEstimate.cacheWriteInputUsd ?? 0) : "--",
+      usdRawValue: turn.priceEstimate?.cacheWriteInputUsd ?? null,
       className: "token-badge-cache",
       icon: /* @__PURE__ */ jsx40(TokenCacheIcon, {})
     } : null,
@@ -20283,9 +20297,10 @@ function formatTokenCount(value) {
   return value.toLocaleString();
 }
 function formatThreadUsageParts(usage) {
-  const tokenParts = `in ${formatTokenCount(usage.input)} / out ${formatTokenCount(
+  const baseTokenParts = `in ${formatTokenCount(usage.input)} / out ${formatTokenCount(
     usage.output
-  )} / cache ${formatTokenCount(usage.cache)}`;
+  )} / cache read ${formatTokenCount(usage.cache)}`;
+  const tokenParts = usage.cacheWrite > 0 ? `${baseTokenParts} / cache write ${formatTokenCount(usage.cacheWrite)}` : baseTokenParts;
   return usage.pricedTurns > 0 ? `${tokenParts} / cost ${formatCompactUsd(usage.priceUsd)}` : tokenParts;
 }
 function GraphChatThreadChatPanel({
@@ -20565,12 +20580,21 @@ function summarizeThreadUsage(detail) {
         input: summary.input + usage.inputTokens,
         output: summary.output + usage.outputTokens,
         cache: summary.cache + usage.cachedInputTokens,
+        cacheWrite: summary.cacheWrite + (usage.cacheWriteInputTokens ?? 0),
         priceUsd: summary.priceUsd + (turn.priceEstimate?.totalUsd ?? 0),
         pricedTurns: summary.pricedTurns + (turn.priceEstimate ? 1 : 0),
         turns: summary.turns + 1
       };
     },
-    { input: 0, output: 0, cache: 0, priceUsd: 0, pricedTurns: 0, turns: 0 }
+    {
+      input: 0,
+      output: 0,
+      cache: 0,
+      cacheWrite: 0,
+      priceUsd: 0,
+      pricedTurns: 0,
+      turns: 0
+    }
   );
 }
 function formatTopbarTokenCount(value) {
@@ -20589,9 +20613,10 @@ function formatTopbarUsageSummary(usage) {
   if (!usage || usage.turns <= 0) {
     return "waiting for agent usage";
   }
-  const tokenParts = `in ${formatTopbarTokenCount(usage.input)} / out ${formatTopbarTokenCount(
+  const baseTokenParts = `in ${formatTopbarTokenCount(usage.input)} / out ${formatTopbarTokenCount(
     usage.output
-  )} / cache ${formatTopbarTokenCount(usage.cache)}`;
+  )} / cache read ${formatTopbarTokenCount(usage.cache)}`;
+  const tokenParts = usage.cacheWrite > 0 ? `${baseTokenParts} / cache write ${formatTopbarTokenCount(usage.cacheWrite)}` : baseTokenParts;
   return usage.pricedTurns > 0 ? `${tokenParts} / cost ${formatCompactUsd(usage.priceUsd)}` : tokenParts;
 }
 function ThreadDetailSurface({
