@@ -24,6 +24,8 @@ export interface ComposerFrameProps {
     kind: PromptAttachmentKindDto,
   ) => void;
   onToggleFollow?: () => void;
+  canJumpToNextTurn?: boolean;
+  onJumpToNextTurn?: () => void;
   onSubmit: (event: FormEvent<HTMLFormElement>) => void;
   formRef: MutableRefObject<HTMLFormElement | null>;
   promptSlot: ReactNode;
@@ -44,6 +46,8 @@ export function ComposerFrame({
   fileInputRef,
   onAppendAttachments,
   onToggleFollow,
+  canJumpToNextTurn,
+  onJumpToNextTurn,
   onSubmit,
   formRef,
   promptSlot,
@@ -62,6 +66,8 @@ export function ComposerFrame({
         activeView={activeView}
         followTail={followTail}
         onToggleFollow={onToggleFollow}
+        canJumpToNextTurn={canJumpToNextTurn}
+        onJumpToNextTurn={onJumpToNextTurn}
       />
 
       <form

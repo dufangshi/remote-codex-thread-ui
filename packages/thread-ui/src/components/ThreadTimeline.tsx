@@ -1,4 +1,4 @@
-import { memo, useCallback, useMemo, useState } from 'react';
+import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 
 import type {
   RespondThreadActionRequestInput,
@@ -62,9 +62,11 @@ export interface ThreadTimelineProps {
   ) => Promise<void> | void;
   liveOutput: string;
   scrollRequestKey?: number;
+  nextTurnScrollRequestKey?: number;
   bottomSpacer?: number;
   className?: string;
   onTailVisibilityChange?: (isVisible: boolean) => void;
+  onNextTurnAvailabilityChange?: (available: boolean) => void;
   loadingEarlier?: boolean;
   onLoadEarlier?: () => void;
   ephemeralUserNote?: string | null;
@@ -137,9 +139,11 @@ function ThreadTimelineComponent({
   onRespondToRequest,
   liveOutput,
   scrollRequestKey = 0,
+  nextTurnScrollRequestKey = 0,
   bottomSpacer = 0,
   className = '',
   onTailVisibilityChange,
+  onNextTurnAvailabilityChange,
   loadingEarlier = false,
   onLoadEarlier,
   ephemeralUserNote = null,
@@ -350,13 +354,44 @@ function ThreadTimelineComponent({
     [activityNotes, optimisticTurn, visibleTurns],
   );
 
+  const findNextTurn = useCallback(() => {
+    const container = scrollContainerRef.current;
+    if (!container) return null;
+    const containerTop = container.getBoundingClientRect().top;
+    return Array.from(
+      container.querySelectorAll<HTMLElement>('[data-timeline-turn]'),
+    ).find((element) => element.getBoundingClientRect().top > containerTop + 8) ?? null;
+  }, [scrollContainerRef]);
+
+  const updateNextTurnAvailability = useCallback(() => {
+    onNextTurnAvailabilityChange?.(Boolean(findNextTurn()));
+  }, [findNextTurn, onNextTurnAvailabilityChange]);
+
+  const handleTimelineScroll = useCallback(() => {
+    handleScroll();
+    updateNextTurnAvailability();
+  }, [handleScroll, updateNextTurnAvailability]);
+
+  useEffect(() => {
+    updateNextTurnAvailability();
+  }, [updateNextTurnAvailability, visibleTurns]);
+
+  useEffect(() => {
+    if (nextTurnScrollRequestKey === 0) return;
+    const container = scrollContainerRef.current;
+    const nextTurn = findNextTurn();
+    if (!container || !nextTurn) return;
+    const offset = nextTurn.getBoundingClientRect().top - container.getBoundingClientRect().top;
+    container.scrollTo({ top: container.scrollTop + offset - 8, behavior: 'smooth' });
+  }, [findNextTurn, nextTurnScrollRequestKey, scrollContainerRef]);
+
   return (
     <>
       <section className={`flex min-h-0 flex-1 flex-col ${className}`.trim()}>
         <div
           ref={scrollContainerRef}
           data-testid="thread-scroll-container"
-          onScroll={handleScroll}
+          onScroll={handleTimelineScroll}
           onWheel={handleWheel}
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
@@ -422,7 +457,7 @@ function ThreadTimelineComponent({
                 />
               ) : null}
               {visibleTurns.map((turn, visibleIndex) => (
-                <div key={turn.id}>
+                <div key={turn.id} data-timeline-turn data-turn-id={turn.id}>
                   {(activityNoteAnchors.beforeTurnId.get(turn.id)?.length ?? 0) > 0 ? (
                     <ActivityNoteSection
                       notes={activityNoteAnchors.beforeTurnId.get(turn.id) ?? []}
