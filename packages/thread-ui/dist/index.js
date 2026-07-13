@@ -5506,15 +5506,15 @@ function ComposerSubscriptionUsage({
     "button",
     {
       type: "button",
-      className: "thread-subscription-usage ml-1 inline-flex h-5 items-center gap-2 rounded-[0.7rem] border border-stone-500/60 bg-stone-950/20 px-2 text-[9px] text-stone-200/90 shadow-sm backdrop-blur transition hover:border-sky-300/50 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-sky-200/70",
+      className: "thread-subscription-usage pointer-events-auto absolute bottom-1 right-2 inline-flex h-4 items-center gap-1 rounded-[0.55rem] border border-stone-500/45 bg-stone-950/15 px-1 text-[8px] leading-none text-stone-200/80 opacity-70 shadow-sm transition hover:border-sky-300/45 hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-sky-200/70 sm:right-3",
       "aria-label": `${usage.provider} subscription usage. ${description}`,
       title: `${description}${usage.stale ? ". Last known values." : ""}`,
       children: windows.map((window2) => {
         const remaining = Math.max(0, Math.min(100, 100 - window2.usedPercent));
         const tone = remaining <= 10 ? "bg-rose-400" : remaining <= 25 ? "bg-amber-300" : "bg-sky-300";
-        return /* @__PURE__ */ jsxs3("span", { className: "inline-flex items-center gap-1", children: [
+        return /* @__PURE__ */ jsxs3("span", { className: "inline-flex items-center gap-0.5", children: [
           /* @__PURE__ */ jsx5("span", { className: "font-semibold", children: window2.label }),
-          /* @__PURE__ */ jsx5("span", { className: "h-1 w-7 overflow-hidden rounded-full bg-stone-600/70", children: /* @__PURE__ */ jsx5(
+          /* @__PURE__ */ jsx5("span", { className: "h-0.5 w-3.5 overflow-hidden rounded-full bg-stone-600/60", children: /* @__PURE__ */ jsx5(
             "span",
             {
               className: `block h-full rounded-full ${tone}`,
@@ -5546,57 +5546,65 @@ function ComposerJumpLatestButton({
   if (activeView !== "chat") {
     return null;
   }
-  return /* @__PURE__ */ jsxs4("div", { className: "absolute left-1/2 top-0 z-[90] inline-flex h-11 min-w-[9rem] -translate-x-1/2 -translate-y-full items-end justify-center bg-transparent pb-1 touch-manipulation sm:h-10", children: [
-    /* @__PURE__ */ jsxs4("span", { className: `thread-jump-latest-badge inline-flex h-5 min-w-[7.5rem] overflow-hidden rounded-[0.7rem] border shadow-sm transition ${followTail ? "is-active border-sky-300/36 bg-sky-300/[0.03] text-sky-100/86" : "border-stone-500/70 bg-stone-950/[0.08] text-stone-200/86"}`, children: [
-      /* @__PURE__ */ jsx6(
-        "button",
-        {
-          type: "button",
-          "aria-label": "Jump to previous turn",
-          title: canJumpToPreviousTurn ? "Jump to the start of the previous turn" : "No earlier turn",
-          disabled: !canJumpToPreviousTurn,
-          onClick: () => onJumpToPreviousTurn?.(),
-          className: "inline-flex w-10 items-center justify-center transition hover:bg-sky-300/10 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-inset focus-visible:ring-sky-200/70 disabled:cursor-default disabled:opacity-35",
-          children: /* @__PURE__ */ jsx6("svg", { "aria-hidden": "true", viewBox: "0 0 16 16", className: "h-3.5 w-3.5 fill-none stroke-current", strokeWidth: "1.5", strokeLinecap: "round", strokeLinejoin: "round", children: /* @__PURE__ */ jsx6("path", { d: "M3.5 12h9M8 10V5M6 7l2-2 2 2" }) })
-        }
-      ),
-      /* @__PURE__ */ jsx6("span", { "aria-hidden": "true", className: "w-px bg-current opacity-20" }),
-      /* @__PURE__ */ jsx6(
-        "button",
-        {
-          type: "button",
-          "aria-label": "Jump to latest",
-          title: followTail ? "Latest messages are in view" : "Jump to the bottom",
-          onClick: () => onToggleFollow?.(),
-          className: "inline-flex w-10 items-center justify-center transition hover:bg-sky-300/10 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-inset focus-visible:ring-sky-200/70",
-          children: /* @__PURE__ */ jsx6(
-            "svg",
+  return /* @__PURE__ */ jsxs4("div", { className: "pointer-events-none absolute inset-x-0 top-0 z-[90] h-11 -translate-y-full bg-transparent touch-manipulation sm:h-10", children: [
+    /* @__PURE__ */ jsxs4(
+      "span",
+      {
+        role: "group",
+        "aria-label": "Timeline navigation",
+        className: `thread-jump-latest-badge pointer-events-auto absolute bottom-1 left-1/2 inline-flex h-5 min-w-[7.5rem] -translate-x-1/2 overflow-hidden rounded-[0.7rem] border shadow-sm transition ${followTail ? "is-active border-sky-300/36 bg-sky-300/[0.03] text-sky-100/86" : "border-stone-500/70 bg-stone-950/[0.08] text-stone-200/86"}`,
+        children: [
+          /* @__PURE__ */ jsx6(
+            "button",
             {
-              "aria-hidden": "true",
-              viewBox: "0 0 16 16",
-              className: "h-3.5 w-3.5 fill-none stroke-current",
-              strokeWidth: "1.5",
-              strokeLinecap: "round",
-              strokeLinejoin: "round",
-              children: /* @__PURE__ */ jsx6("path", { d: "m4 5.5 4 4 4-4M3.5 12.5h9" })
+              type: "button",
+              "aria-label": "Jump to previous turn",
+              title: canJumpToPreviousTurn ? "Jump to the start of the previous turn" : "No earlier turn",
+              disabled: !canJumpToPreviousTurn,
+              onClick: () => onJumpToPreviousTurn?.(),
+              className: "inline-flex w-10 items-center justify-center transition hover:bg-sky-300/10 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-inset focus-visible:ring-sky-200/70 disabled:cursor-default disabled:opacity-35",
+              children: /* @__PURE__ */ jsx6("svg", { "aria-hidden": "true", viewBox: "0 0 16 16", className: "h-3.5 w-3.5 fill-none stroke-current", strokeWidth: "1.5", strokeLinecap: "round", strokeLinejoin: "round", children: /* @__PURE__ */ jsx6("path", { d: "M3.5 12h9M8 10V5M6 7l2-2 2 2" }) })
+            }
+          ),
+          /* @__PURE__ */ jsx6("span", { "aria-hidden": "true", className: "w-px bg-current opacity-20" }),
+          /* @__PURE__ */ jsx6(
+            "button",
+            {
+              type: "button",
+              "aria-label": "Jump to latest",
+              title: followTail ? "Latest messages are in view" : "Jump to the bottom",
+              onClick: () => onToggleFollow?.(),
+              className: "inline-flex w-10 items-center justify-center transition hover:bg-sky-300/10 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-inset focus-visible:ring-sky-200/70",
+              children: /* @__PURE__ */ jsx6(
+                "svg",
+                {
+                  "aria-hidden": "true",
+                  viewBox: "0 0 16 16",
+                  className: "h-3.5 w-3.5 fill-none stroke-current",
+                  strokeWidth: "1.5",
+                  strokeLinecap: "round",
+                  strokeLinejoin: "round",
+                  children: /* @__PURE__ */ jsx6("path", { d: "m4 5.5 4 4 4-4M3.5 12.5h9" })
+                }
+              )
+            }
+          ),
+          /* @__PURE__ */ jsx6("span", { "aria-hidden": "true", className: "w-px bg-current opacity-20" }),
+          /* @__PURE__ */ jsx6(
+            "button",
+            {
+              type: "button",
+              "aria-label": "Jump to next turn",
+              title: canJumpToNextTurn ? "Jump to the start of the next turn" : "No later turn",
+              disabled: !canJumpToNextTurn,
+              onClick: () => onJumpToNextTurn?.(),
+              className: "inline-flex w-10 items-center justify-center transition hover:bg-sky-300/10 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-inset focus-visible:ring-sky-200/70 disabled:cursor-default disabled:opacity-35",
+              children: /* @__PURE__ */ jsx6("svg", { "aria-hidden": "true", viewBox: "0 0 16 16", className: "h-3.5 w-3.5 fill-none stroke-current", strokeWidth: "1.5", strokeLinecap: "round", strokeLinejoin: "round", children: /* @__PURE__ */ jsx6("path", { d: "M3.5 4h9M8 6v5m-2-2 2 2 2-2" }) })
             }
           )
-        }
-      ),
-      /* @__PURE__ */ jsx6("span", { "aria-hidden": "true", className: "w-px bg-current opacity-20" }),
-      /* @__PURE__ */ jsx6(
-        "button",
-        {
-          type: "button",
-          "aria-label": "Jump to next turn",
-          title: canJumpToNextTurn ? "Jump to the start of the next turn" : "No later turn",
-          disabled: !canJumpToNextTurn,
-          onClick: () => onJumpToNextTurn?.(),
-          className: "inline-flex w-10 items-center justify-center transition hover:bg-sky-300/10 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-inset focus-visible:ring-sky-200/70 disabled:cursor-default disabled:opacity-35",
-          children: /* @__PURE__ */ jsx6("svg", { "aria-hidden": "true", viewBox: "0 0 16 16", className: "h-3.5 w-3.5 fill-none stroke-current", strokeWidth: "1.5", strokeLinecap: "round", strokeLinejoin: "round", children: /* @__PURE__ */ jsx6("path", { d: "M3.5 4h9M8 6v5m-2-2 2 2 2-2" }) })
-        }
-      )
-    ] }),
+        ]
+      }
+    ),
     /* @__PURE__ */ jsx6(ComposerSubscriptionUsage, { usage: subscriptionUsage })
   ] });
 }
