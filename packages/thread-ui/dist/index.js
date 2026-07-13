@@ -1233,7 +1233,7 @@ var init_GraphMoleculeViewerData = __esm({
 
 // src/components/graph-workspace/GraphMoleculeViewer.tsx
 import { Pause, Play } from "lucide-react";
-import { useCallback as useCallback17, useEffect as useEffect20, useMemo as useMemo12, useRef as useRef14, useState as useState24 } from "react";
+import { useCallback as useCallback17, useEffect as useEffect20, useMemo as useMemo12, useRef as useRef15, useState as useState24 } from "react";
 import { jsx as jsx55, jsxs as jsxs45 } from "react/jsx-runtime";
 function GraphMoleculeViewer({
   className = "",
@@ -1243,11 +1243,11 @@ function GraphMoleculeViewer({
   source,
   title = "PyMOL-style (PDB/CIF)"
 }) {
-  const viewerHostRef = useRef14(null);
-  const viewerRef = useRef14(null);
-  const modelRef = useRef14(null);
-  const zoomedRef = useRef14(false);
-  const unitCellPreferenceRef = useRef14(true);
+  const viewerHostRef = useRef15(null);
+  const viewerRef = useRef15(null);
+  const modelRef = useRef15(null);
+  const zoomedRef = useRef15(false);
+  const unitCellPreferenceRef = useRef15(true);
   const [cameraInfo, setCameraInfo] = useState24(
     null
   );
@@ -2040,7 +2040,7 @@ import {
   useEffect as useEffect22,
   useLayoutEffect as useLayoutEffect7,
   useMemo as useMemo13,
-  useRef as useRef15,
+  useRef as useRef16,
   useState as useState26
 } from "react";
 import {
@@ -2485,10 +2485,10 @@ function GraphWorkspaceExplorer({
   const [imageUrl, setImageUrl] = useState26(null);
   const [pdfUrl, setPdfUrl] = useState26(null);
   const [isMobileViewport, setIsMobileViewport] = useState26(false);
-  const fileInputRef = useRef15(null);
-  const explorerScrollerRef = useRef15(null);
-  const explorerScrollTopRef = useRef15(0);
-  const pendingExplorerScrollRestoreRef = useRef15(null);
+  const fileInputRef = useRef16(null);
+  const explorerScrollerRef = useRef16(null);
+  const explorerScrollTopRef = useRef16(0);
+  const pendingExplorerScrollRestoreRef = useRef16(null);
   const workspaceAdapterAvailable = Boolean(workspaceAdapter);
   const activeNode = (selectedNodeId ? nodeMap.get(selectedNodeId) : null) ?? firstSelectableNode ?? null;
   const workspaceIdentity = {
@@ -3349,7 +3349,7 @@ var init_GraphGuidePanel = __esm({
 });
 
 // src/components/graph-workspace/GraphToolUsagePanel.tsx
-import { useEffect as useEffect23, useRef as useRef16, useState as useState27 } from "react";
+import { useEffect as useEffect23, useRef as useRef17, useState as useState27 } from "react";
 import { RefreshCw as RefreshCw3 } from "lucide-react";
 import { jsx as jsx60, jsxs as jsxs50 } from "react/jsx-runtime";
 function formatValue(value) {
@@ -3404,7 +3404,7 @@ function GraphToolUsagePanel({
   const [expandedEventId, setExpandedEventId] = useState27(
     () => toolEvents.at(-1)?.id ?? null
   );
-  const bottomRef = useRef16(null);
+  const bottomRef = useRef17(null);
   useEffect23(() => {
     setExpandedEventId((current) => current ?? toolEvents.at(-1)?.id ?? null);
   }, [toolEvents]);
@@ -10785,7 +10785,7 @@ function ThreadWorkspaceLayout({
 }
 
 // src/components/ThreadTimeline.tsx
-import { memo as memo6, useCallback as useCallback14, useEffect as useEffect16, useMemo as useMemo8, useState as useState21 } from "react";
+import { memo as memo6, useCallback as useCallback14, useEffect as useEffect16, useMemo as useMemo8, useRef as useRef12, useState as useState21 } from "react";
 
 // src/components/LongTextDialog.tsx
 import { useEffect as useEffect9 } from "react";
@@ -16383,6 +16383,7 @@ function ThreadTimelineComponent({
   const [cancelingSteerIds, setCancelingSteerIds] = useState21(
     () => /* @__PURE__ */ new Set()
   );
+  const lastNextTurnTargetIdRef = useRef12(null);
   const loadHistoryItemDetail = adapter?.onLoadHistoryItemDetail ?? onLoadHistoryItemDetail;
   const openLinkedThread = adapter?.onOpenLinkedThread;
   const {
@@ -16535,11 +16536,18 @@ function ThreadTimelineComponent({
   useEffect16(() => {
     if (nextTurnScrollRequestKey === 0) return;
     const container = scrollContainerRef.current;
-    const nextTurn = findNextTurn();
+    const firstCandidate = findNextTurn();
+    const turns2 = container ? Array.from(container.querySelectorAll("[data-timeline-turn]")) : [];
+    const firstCandidateIndex = firstCandidate ? turns2.indexOf(firstCandidate) : -1;
+    const nextTurn = firstCandidate && firstCandidate.dataset.turnId === lastNextTurnTargetIdRef.current ? turns2[firstCandidateIndex + 1] ?? null : firstCandidate;
     if (!container || !nextTurn) return;
+    lastNextTurnTargetIdRef.current = nextTurn.dataset.turnId ?? null;
     const offset = nextTurn.getBoundingClientRect().top - container.getBoundingClientRect().top;
     container.scrollTo({ top: container.scrollTop + offset - 8, behavior: "smooth" });
-  }, [findNextTurn, nextTurnScrollRequestKey, scrollContainerRef]);
+    if (turns2.indexOf(nextTurn) === turns2.length - 1) {
+      onNextTurnAvailabilityChange?.(false);
+    }
+  }, [findNextTurn, nextTurnScrollRequestKey, onNextTurnAvailabilityChange, scrollContainerRef]);
   return /* @__PURE__ */ jsxs35(Fragment12, { children: [
     /* @__PURE__ */ jsx43("section", { className: `flex min-h-0 flex-1 flex-col ${className}`.trim(), children: /* @__PURE__ */ jsx43(
       "div",
@@ -16872,7 +16880,7 @@ import {
   useEffect as useEffect19,
   useImperativeHandle as useImperativeHandle2,
   useMemo as useMemo10,
-  useRef as useRef13,
+  useRef as useRef14,
   useState as useState23
 } from "react";
 
@@ -16883,7 +16891,7 @@ import {
   useEffect as useEffect18,
   useImperativeHandle,
   useMemo as useMemo9,
-  useRef as useRef12,
+  useRef as useRef13,
   useState as useState22
 } from "react";
 import "xterm/css/xterm.css";
@@ -18223,35 +18231,35 @@ var ShellPane = forwardRef(
     onRuntimeStateChange,
     onFeedback
   }, ref) {
-    const terminalRef = useRef12(null);
-    const fitAddonRef = useRef12(null);
-    const socketRef = useRef12(null);
-    const viewerIdRef = useRef12(null);
-    const shellIdRef = useRef12(null);
-    const reconnectTimerRef = useRef12(null);
-    const attachTimeoutRef = useRef12(null);
-    const attachRetryTimerRef = useRef12(null);
-    const intentionalDisconnectRef = useRef12(false);
-    const userDisconnectedShellIdRef = useRef12(null);
-    const shellSnapshotRef = useRef12("");
-    const pendingCommandRef = useRef12(null);
-    const lastCommandOutputRef = useRef12("");
-    const resizeObserverRef = useRef12(null);
-    const lastSentSizeRef = useRef12(null);
-    const snapshotCursorRef = useRef12({
+    const terminalRef = useRef13(null);
+    const fitAddonRef = useRef13(null);
+    const socketRef = useRef13(null);
+    const viewerIdRef = useRef13(null);
+    const shellIdRef = useRef13(null);
+    const reconnectTimerRef = useRef13(null);
+    const attachTimeoutRef = useRef13(null);
+    const attachRetryTimerRef = useRef13(null);
+    const intentionalDisconnectRef = useRef13(false);
+    const userDisconnectedShellIdRef = useRef13(null);
+    const shellSnapshotRef = useRef13("");
+    const pendingCommandRef = useRef13(null);
+    const lastCommandOutputRef = useRef13("");
+    const resizeObserverRef = useRef13(null);
+    const lastSentSizeRef = useRef13(null);
+    const snapshotCursorRef = useRef13({
       cursorX: void 0,
       cursorY: void 0,
       paneHeight: void 0
     });
-    const terminalInitializingRef = useRef12(false);
-    const terminalInputSubscriptionRef = useRef12(null);
-    const isVisibleRef = useRef12(isVisible);
-    const isMobileShellRef = useRef12(isMobileShell);
-    const sendShellInputRef = useRef12(() => false);
-    const syncTerminalSizeRef = useRef12(() => null);
-    const refreshTerminalLayoutRef = useRef12(() => {
+    const terminalInitializingRef = useRef13(false);
+    const terminalInputSubscriptionRef = useRef13(null);
+    const isVisibleRef = useRef13(isVisible);
+    const isMobileShellRef = useRef13(isMobileShell);
+    const sendShellInputRef = useRef13(() => false);
+    const syncTerminalSizeRef = useRef13(() => null);
+    const refreshTerminalLayoutRef = useRef13(() => {
     });
-    const attachPromiseControllerRef = useRef12(
+    const attachPromiseControllerRef = useRef13(
       createShellAttachPromiseController({
         clearTimeout: window.clearTimeout
       })
@@ -18769,12 +18777,12 @@ var ThreadShellPanel = forwardRef2(function ThreadShellPanel2({
   saveSplitRatio,
   onStateChange
 }, ref) {
-  const primaryPaneRef = useRef13(null);
-  const secondaryPaneRef = useRef13(null);
-  const feedbackTimerRef = useRef13(null);
-  const terminalSplitHostRef = useRef13(null);
-  const dragFrameRef = useRef13(null);
-  const createShellInFlightRef = useRef13(false);
+  const primaryPaneRef = useRef14(null);
+  const secondaryPaneRef = useRef14(null);
+  const feedbackTimerRef = useRef14(null);
+  const terminalSplitHostRef = useRef14(null);
+  const dragFrameRef = useRef14(null);
+  const createShellInFlightRef = useRef14(false);
   const [shellState, setShellState] = useState23(null);
   const [loading, setLoading] = useState23(true);
   const [busy, setBusy] = useState23(false);
@@ -20327,7 +20335,7 @@ import {
   useEffect as useEffect28,
   useLayoutEffect as useLayoutEffect8,
   useMemo as useMemo17,
-  useRef as useRef17,
+  useRef as useRef18,
   useState as useState30
 } from "react";
 import { jsx as jsx69, jsxs as jsxs57 } from "react/jsx-runtime";
@@ -20370,7 +20378,7 @@ function GraphChatThreadChatPanel({
   const [mobileComposerOverlap, setMobileComposerOverlap] = useState30(0);
   const [mobileKeyboardInset, setMobileKeyboardInset] = useState30(0);
   const [mobilePromptFocused, setMobilePromptFocused] = useState30(false);
-  const internalComposerHostRef = useRef17(null);
+  const internalComposerHostRef = useRef18(null);
   const timelineTailVisibilityChange = timelineProps?.onTailVisibilityChange;
   const hasPendingRequests = detail.pendingRequests.length > 0;
   const handleTailVisibilityChange = useCallback19(
@@ -21057,7 +21065,7 @@ function PluginProvider({
 }
 
 // src/app-shell/AppShellNavigation.tsx
-import { useEffect as useEffect30, useRef as useRef18, useState as useState32 } from "react";
+import { useEffect as useEffect30, useRef as useRef19, useState as useState32 } from "react";
 import { jsx as jsx72, jsxs as jsxs59 } from "react/jsx-runtime";
 function MenuIcon() {
   return /* @__PURE__ */ jsx72("svg", { "aria-hidden": "true", viewBox: "0 0 16 16", className: "h-4 w-4 fill-current", children: /* @__PURE__ */ jsx72("path", { d: "M2 3.25h12v1.5H2Zm0 4h12v1.5H2Zm0 4h12v1.5H2Z" }) });
@@ -21110,7 +21118,7 @@ function AppShellNavigationMenu({
   onNavigate
 }) {
   const shellNav = useAppShellNav();
-  const menuRef = useRef18(null);
+  const menuRef = useRef19(null);
   useEffect30(() => {
     if (!shellNav?.navOpen) {
       return;

@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect, useMemo, useState } from 'react';
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import type {
   RespondThreadActionRequestInput,
@@ -169,6 +169,7 @@ function ThreadTimelineComponent({
   const [cancelingSteerIds, setCancelingSteerIds] = useState<Set<string>>(
     () => new Set(),
   );
+  const lastNextTurnTargetIdRef = useRef<string | null>(null);
   const loadHistoryItemDetail =
     adapter?.onLoadHistoryItemDetail ?? onLoadHistoryItemDetail;
   const openLinkedThread = adapter?.onOpenLinkedThread;
@@ -379,11 +380,23 @@ function ThreadTimelineComponent({
   useEffect(() => {
     if (nextTurnScrollRequestKey === 0) return;
     const container = scrollContainerRef.current;
-    const nextTurn = findNextTurn();
+    const firstCandidate = findNextTurn();
+    const turns = container
+      ? Array.from(container.querySelectorAll<HTMLElement>('[data-timeline-turn]'))
+      : [];
+    const firstCandidateIndex = firstCandidate ? turns.indexOf(firstCandidate) : -1;
+    const nextTurn =
+      firstCandidate && firstCandidate.dataset.turnId === lastNextTurnTargetIdRef.current
+        ? turns[firstCandidateIndex + 1] ?? null
+        : firstCandidate;
     if (!container || !nextTurn) return;
+    lastNextTurnTargetIdRef.current = nextTurn.dataset.turnId ?? null;
     const offset = nextTurn.getBoundingClientRect().top - container.getBoundingClientRect().top;
     container.scrollTo({ top: container.scrollTop + offset - 8, behavior: 'smooth' });
-  }, [findNextTurn, nextTurnScrollRequestKey, scrollContainerRef]);
+    if (turns.indexOf(nextTurn) === turns.length - 1) {
+      onNextTurnAvailabilityChange?.(false);
+    }
+  }, [findNextTurn, nextTurnScrollRequestKey, onNextTurnAvailabilityChange, scrollContainerRef]);
 
   return (
     <>
