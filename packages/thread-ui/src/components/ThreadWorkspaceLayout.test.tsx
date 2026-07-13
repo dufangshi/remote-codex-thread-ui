@@ -117,6 +117,37 @@ describe('ThreadWorkspaceLayout', () => {
     expect(element.querySelector('[aria-label="Thread actions"]')).toBeTruthy();
   });
 
+  it('shows the complete usage summary without truncating it', () => {
+    const usage = 'in 143k / out 27 / cache read 119k / cache write 23.9k / cost $0.072';
+    const element = render(
+      <ThreadWorkspaceLayout
+        threads={[]}
+        currentWorkspaceLabel="el-agente-cloud-infrastructure"
+        sessionLabel="session-1"
+        usageLabel={usage}
+        status={{
+          state: 'ready',
+          transport: 'sdk',
+          lastStartedAt: null,
+          lastError: null,
+          restartCount: 0,
+        }}
+      >
+        <div>Chat</div>
+      </ThreadWorkspaceLayout>,
+    );
+
+    flushSync(() => {
+      element.querySelector<HTMLButtonElement>('[title="Session and usage"]')?.click();
+    });
+    const usageValue = element.querySelector(
+      '[title="Session token usage and estimated cost"] span:last-child',
+    );
+    expect(usageValue?.textContent).toBe(usage);
+    expect(usageValue?.className).toContain('whitespace-normal');
+    expect(usageValue?.className).not.toContain('truncate');
+  });
+
   it('renders host-provided new chat dialog content', () => {
     const element = render(
       <ThreadWorkspaceLayout

@@ -21,7 +21,6 @@ import {
   ThreadTimeline,
   type ThreadTimelineProps,
 } from '../ThreadTimeline';
-import { formatCompactUsd } from '../timeline/tokenFormatting';
 
 export interface GraphChatThreadUsageSummary {
   input: number;
@@ -44,36 +43,10 @@ interface GraphChatThreadChatPanelProps {
   timelineProps?: Partial<
     Omit<ThreadTimelineProps, 'threadId' | 'turns' | 'liveOutput' | 'adapter'>
   >;
-  threadUsageSummary: GraphChatThreadUsageSummary | null;
   transcriptItemCount: number;
   useFloatingMobileComposer?: boolean;
   floatingMobileComposerBottomOffset?: number;
   composerHostRef?: RefObject<HTMLDivElement | null>;
-}
-
-function formatTokenCount(value: number | undefined) {
-  if (value === undefined) {
-    return '-';
-  }
-  if (Math.abs(value) > 10_000) {
-    const maximumFractionDigits = Math.abs(value) >= 100_000 ? 0 : 1;
-    return `${(value / 1_000).toLocaleString(undefined, {
-      maximumFractionDigits,
-    })}k`;
-  }
-  return value.toLocaleString();
-}
-
-function formatThreadUsageParts(usage: GraphChatThreadUsageSummary) {
-  const baseTokenParts = `in ${formatTokenCount(usage.input)} / out ${formatTokenCount(
-    usage.output,
-  )} / cache read ${formatTokenCount(usage.cache)}`;
-  const tokenParts = usage.cacheWrite > 0
-    ? `${baseTokenParts} / cache write ${formatTokenCount(usage.cacheWrite)}`
-    : baseTokenParts;
-  return usage.pricedTurns > 0
-    ? `${tokenParts} / cost ${formatCompactUsd(usage.priceUsd)}`
-    : tokenParts;
 }
 
 export function GraphChatThreadChatPanel({
@@ -85,7 +58,6 @@ export function GraphChatThreadChatPanel({
   beforeTimelineContent,
   composerProps,
   timelineProps,
-  threadUsageSummary,
   transcriptItemCount,
   useFloatingMobileComposer = false,
   floatingMobileComposerBottomOffset = 0,
@@ -336,17 +308,11 @@ export function GraphChatThreadChatPanel({
     >
       {beforeTimelineContent}
       {timelineElement}
-      <div className="thread-chat-usage-footer hidden shrink-0 items-center justify-between gap-3 px-4 py-1 text-[10px] leading-4 sm:flex">
-        <span className="min-w-0 truncate">
+      <div className="thread-chat-usage-footer hidden shrink-0 items-center px-4 py-1 text-[10px] leading-4 sm:flex">
+        <span className="min-w-0">
           {detail.turns.length} turn{detail.turns.length !== 1 ? 's' : ''}
           <span className="mx-1 text-[var(--theme-border-contrast)]">|</span>
           {transcriptItemCount} item{transcriptItemCount !== 1 ? 's' : ''}
-        </span>
-        <span className="shrink-0">
-          Usage{' '}
-          {threadUsageSummary && threadUsageSummary.turns > 0
-            ? formatThreadUsageParts(threadUsageSummary)
-            : 'waiting for agent usage'}
         </span>
       </div>
       {composerProps ? (

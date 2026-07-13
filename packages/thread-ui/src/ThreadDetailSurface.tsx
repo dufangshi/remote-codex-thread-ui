@@ -350,7 +350,6 @@ export function ThreadDetailSurface({
           timelineAdapter={timelineAdapter}
           TimelineComponent={TimelineComponent}
           liveOutput={liveOutput}
-          threadUsageSummary={threadUsageSummary}
           transcriptItemCount={transcriptItemCount}
           useFloatingMobileComposer={useFloatingMobileComposer}
           floatingMobileComposerBottomOffset={floatingMobileComposerBottomOffset}

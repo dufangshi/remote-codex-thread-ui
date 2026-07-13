@@ -40,6 +40,9 @@ describe('ComposerSubscriptionUsage', () => {
     await new Promise((resolve) => setTimeout(resolve, 0));
     expect(host.textContent).toContain('5h');
     expect(host.textContent).toContain('60%');
+    expect(host.querySelector('.thread-subscription-usage')?.className).toContain('opacity-80');
+    expect(host.querySelector('.thread-subscription-usage')?.className).toContain('font-normal');
+    expect(host.querySelector('.thread-subscription-usage .font-semibold')).toBeNull();
   });
 
   it('renders nothing for API-key authentication', async () => {

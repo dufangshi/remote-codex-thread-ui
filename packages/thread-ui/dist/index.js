@@ -5506,14 +5506,14 @@ function ComposerSubscriptionUsage({
     "button",
     {
       type: "button",
-      className: "thread-subscription-usage pointer-events-auto absolute bottom-1 right-2 inline-flex h-4 items-center gap-1 rounded-[0.55rem] border border-stone-500/45 bg-stone-950/15 px-1 text-[8px] leading-none text-stone-200/80 opacity-70 shadow-sm transition hover:border-sky-300/45 hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-sky-200/70 sm:right-3",
+      className: "thread-subscription-usage pointer-events-auto absolute bottom-1 right-2 inline-flex h-4 items-center gap-1 rounded-[0.55rem] border border-stone-500/50 bg-stone-950/20 px-1 text-[8px] font-normal leading-none text-stone-200/90 opacity-80 shadow-sm transition hover:border-sky-300/45 hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-sky-200/70 sm:right-3",
       "aria-label": `${usage.provider} subscription usage. ${description}`,
       title: `${description}${usage.stale ? ". Last known values." : ""}`,
       children: windows.map((window2) => {
         const remaining = Math.max(0, Math.min(100, 100 - window2.usedPercent));
         const tone = remaining <= 10 ? "bg-rose-400" : remaining <= 25 ? "bg-amber-300" : "bg-sky-300";
         return /* @__PURE__ */ jsxs3("span", { className: "inline-flex items-center gap-0.5", children: [
-          /* @__PURE__ */ jsx5("span", { className: "font-semibold", children: window2.label }),
+          /* @__PURE__ */ jsx5("span", { children: window2.label }),
           /* @__PURE__ */ jsx5("span", { className: "h-0.5 w-3.5 overflow-hidden rounded-full bg-stone-600/60", children: /* @__PURE__ */ jsx5(
             "span",
             {
@@ -10952,11 +10952,11 @@ function ThreadWorkspaceLayout({
                           /* @__PURE__ */ jsxs21(
                             "div",
                             {
-                              className: "thread-topbar-meta-row mt-1 flex min-w-0 max-w-full items-center gap-2 text-xs leading-5",
+                              className: "thread-topbar-meta-row mt-1 flex min-w-0 max-w-full items-start gap-2 text-xs leading-5",
                               title: "Session token usage and estimated cost",
                               children: [
                                 /* @__PURE__ */ jsx27("span", { className: "w-14 shrink-0", children: "Usage" }),
-                                /* @__PURE__ */ jsx27("span", { className: "truncate font-mono", children: topbarUsageLabel })
+                                /* @__PURE__ */ jsx27("span", { className: "min-w-0 whitespace-normal break-words font-mono", children: topbarUsageLabel })
                               ]
                             }
                           )
@@ -20655,25 +20655,6 @@ import {
   useState as useState30
 } from "react";
 import { jsx as jsx71, jsxs as jsxs59 } from "react/jsx-runtime";
-function formatTokenCount(value) {
-  if (value === void 0) {
-    return "-";
-  }
-  if (Math.abs(value) > 1e4) {
-    const maximumFractionDigits = Math.abs(value) >= 1e5 ? 0 : 1;
-    return `${(value / 1e3).toLocaleString(void 0, {
-      maximumFractionDigits
-    })}k`;
-  }
-  return value.toLocaleString();
-}
-function formatThreadUsageParts(usage) {
-  const baseTokenParts = `in ${formatTokenCount(usage.input)} / out ${formatTokenCount(
-    usage.output
-  )} / cache read ${formatTokenCount(usage.cache)}`;
-  const tokenParts = usage.cacheWrite > 0 ? `${baseTokenParts} / cache write ${formatTokenCount(usage.cacheWrite)}` : baseTokenParts;
-  return usage.pricedTurns > 0 ? `${tokenParts} / cost ${formatCompactUsd(usage.priceUsd)}` : tokenParts;
-}
 function GraphChatThreadChatPanel({
   detail,
   adapter,
@@ -20683,7 +20664,6 @@ function GraphChatThreadChatPanel({
   beforeTimelineContent,
   composerProps,
   timelineProps,
-  threadUsageSummary,
   transcriptItemCount,
   useFloatingMobileComposer = false,
   floatingMobileComposerBottomOffset = 0,
@@ -20883,22 +20863,15 @@ function GraphChatThreadChatPanel({
       children: [
         beforeTimelineContent,
         timelineElement,
-        /* @__PURE__ */ jsxs59("div", { className: "thread-chat-usage-footer hidden shrink-0 items-center justify-between gap-3 px-4 py-1 text-[10px] leading-4 sm:flex", children: [
-          /* @__PURE__ */ jsxs59("span", { className: "min-w-0 truncate", children: [
-            detail.turns.length,
-            " turn",
-            detail.turns.length !== 1 ? "s" : "",
-            /* @__PURE__ */ jsx71("span", { className: "mx-1 text-[var(--theme-border-contrast)]", children: "|" }),
-            transcriptItemCount,
-            " item",
-            transcriptItemCount !== 1 ? "s" : ""
-          ] }),
-          /* @__PURE__ */ jsxs59("span", { className: "shrink-0", children: [
-            "Usage",
-            " ",
-            threadUsageSummary && threadUsageSummary.turns > 0 ? formatThreadUsageParts(threadUsageSummary) : "waiting for agent usage"
-          ] })
-        ] }),
+        /* @__PURE__ */ jsx71("div", { className: "thread-chat-usage-footer hidden shrink-0 items-center px-4 py-1 text-[10px] leading-4 sm:flex", children: /* @__PURE__ */ jsxs59("span", { className: "min-w-0", children: [
+          detail.turns.length,
+          " turn",
+          detail.turns.length !== 1 ? "s" : "",
+          /* @__PURE__ */ jsx71("span", { className: "mx-1 text-[var(--theme-border-contrast)]", children: "|" }),
+          transcriptItemCount,
+          " item",
+          transcriptItemCount !== 1 ? "s" : ""
+        ] }) }),
         composerProps ? useFloatingMobileComposer ? /* @__PURE__ */ jsx71(
           "div",
           {
@@ -21123,7 +21096,6 @@ function ThreadDetailSurface({
             timelineAdapter,
             TimelineComponent,
             liveOutput,
-            threadUsageSummary,
             transcriptItemCount,
             useFloatingMobileComposer,
             floatingMobileComposerBottomOffset,

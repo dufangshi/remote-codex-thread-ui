@@ -1216,11 +1216,11 @@ export function ThreadWorkspaceLayout({
                               </span>
                             </button>
                             <div
-                              className="thread-topbar-meta-row mt-1 flex min-w-0 max-w-full items-center gap-2 text-xs leading-5"
+                              className="thread-topbar-meta-row mt-1 flex min-w-0 max-w-full items-start gap-2 text-xs leading-5"
                               title="Session token usage and estimated cost"
                             >
                               <span className="w-14 shrink-0">Usage</span>
-                              <span className="truncate font-mono">
+                              <span className="min-w-0 whitespace-normal break-words font-mono">
                                 {topbarUsageLabel}
                               </span>
                             </div>

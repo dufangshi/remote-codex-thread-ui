@@ -32,7 +32,7 @@ export function ComposerSubscriptionUsage({
   return (
     <button
       type="button"
-      className="thread-subscription-usage pointer-events-auto absolute bottom-1 right-2 inline-flex h-4 items-center gap-1 rounded-[0.55rem] border border-stone-500/45 bg-stone-950/15 px-1 text-[8px] leading-none text-stone-200/80 opacity-70 shadow-sm transition hover:border-sky-300/45 hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-sky-200/70 sm:right-3"
+      className="thread-subscription-usage pointer-events-auto absolute bottom-1 right-2 inline-flex h-4 items-center gap-1 rounded-[0.55rem] border border-stone-500/50 bg-stone-950/20 px-1 text-[8px] font-normal leading-none text-stone-200/90 opacity-80 shadow-sm transition hover:border-sky-300/45 hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-sky-200/70 sm:right-3"
       aria-label={`${usage.provider} subscription usage. ${description}`}
       title={`${description}${usage.stale ? '. Last known values.' : ''}`}
     >
@@ -45,7 +45,7 @@ export function ComposerSubscriptionUsage({
             : 'bg-sky-300';
         return (
           <span key={window.id} className="inline-flex items-center gap-0.5">
-            <span className="font-semibold">{window.label}</span>
+            <span>{window.label}</span>
             <span className="h-0.5 w-3.5 overflow-hidden rounded-full bg-stone-600/60">
               <span
                 className={`block h-full rounded-full ${tone}`}
