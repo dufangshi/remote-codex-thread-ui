@@ -14,12 +14,16 @@ function renderButton({
   activeView,
   followTail = false,
   onToggleFollow = vi.fn(),
+  canJumpToPreviousTurn = true,
+  onJumpToPreviousTurn = vi.fn(),
   canJumpToNextTurn = true,
   onJumpToNextTurn = vi.fn(),
 }: {
   activeView: 'chat' | 'shell';
   followTail?: boolean;
   onToggleFollow?: () => void;
+  canJumpToPreviousTurn?: boolean;
+  onJumpToPreviousTurn?: () => void;
   canJumpToNextTurn?: boolean;
   onJumpToNextTurn?: () => void;
 }) {
@@ -33,13 +37,15 @@ function renderButton({
         activeView={activeView}
         followTail={followTail}
         onToggleFollow={onToggleFollow}
+        canJumpToPreviousTurn={canJumpToPreviousTurn}
+        onJumpToPreviousTurn={onJumpToPreviousTurn}
         canJumpToNextTurn={canJumpToNextTurn}
         onJumpToNextTurn={onJumpToNextTurn}
       />,
     );
   });
 
-  return { view: container, onToggleFollow, onJumpToNextTurn };
+  return { view: container, onToggleFollow, onJumpToPreviousTurn, onJumpToNextTurn };
 }
 
 describe('ComposerJumpLatestButton', () => {
@@ -96,6 +102,18 @@ describe('ComposerJumpLatestButton', () => {
     renderButton({ activeView: 'chat', canJumpToNextTurn: false });
     expect(
       container?.querySelector<HTMLButtonElement>('[aria-label="Jump to next turn"]')?.disabled,
+    ).toBe(true);
+  });
+
+  it('jumps to the previous turn and disables that segment at the first turn', () => {
+    const { view, onJumpToPreviousTurn } = renderButton({ activeView: 'chat' });
+    const previous = view.querySelector<HTMLButtonElement>('[aria-label="Jump to previous turn"]');
+    previous?.click();
+    expect(onJumpToPreviousTurn).toHaveBeenCalledTimes(1);
+
+    renderButton({ activeView: 'chat', canJumpToPreviousTurn: false });
+    expect(
+      container?.querySelector<HTMLButtonElement>('[aria-label="Jump to previous turn"]')?.disabled,
     ).toBe(true);
   });
 });

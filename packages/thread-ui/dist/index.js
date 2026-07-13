@@ -5490,13 +5490,28 @@ function ComposerJumpLatestButton({
   activeView,
   followTail,
   onToggleFollow,
+  canJumpToPreviousTurn,
+  onJumpToPreviousTurn,
   canJumpToNextTurn,
   onJumpToNextTurn
 }) {
   if (activeView !== "chat") {
     return null;
   }
-  return /* @__PURE__ */ jsx5("div", { className: "absolute left-1/2 top-0 z-[90] inline-flex h-11 min-w-[7rem] -translate-x-1/2 -translate-y-full items-end justify-center bg-transparent pb-1 touch-manipulation sm:h-10", children: /* @__PURE__ */ jsxs3("span", { className: `thread-jump-latest-badge inline-flex h-5 min-w-[5rem] overflow-hidden rounded-[0.7rem] border shadow-sm transition ${followTail ? "is-active border-sky-300/36 bg-sky-300/[0.03] text-sky-100/86" : "border-stone-500/70 bg-stone-950/[0.08] text-stone-200/86"}`, children: [
+  return /* @__PURE__ */ jsx5("div", { className: "absolute left-1/2 top-0 z-[90] inline-flex h-11 min-w-[9rem] -translate-x-1/2 -translate-y-full items-end justify-center bg-transparent pb-1 touch-manipulation sm:h-10", children: /* @__PURE__ */ jsxs3("span", { className: `thread-jump-latest-badge inline-flex h-5 min-w-[7.5rem] overflow-hidden rounded-[0.7rem] border shadow-sm transition ${followTail ? "is-active border-sky-300/36 bg-sky-300/[0.03] text-sky-100/86" : "border-stone-500/70 bg-stone-950/[0.08] text-stone-200/86"}`, children: [
+    /* @__PURE__ */ jsx5(
+      "button",
+      {
+        type: "button",
+        "aria-label": "Jump to previous turn",
+        title: canJumpToPreviousTurn ? "Jump to the start of the previous turn" : "No earlier turn",
+        disabled: !canJumpToPreviousTurn,
+        onClick: () => onJumpToPreviousTurn?.(),
+        className: "inline-flex w-10 items-center justify-center transition hover:bg-sky-300/10 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-inset focus-visible:ring-sky-200/70 disabled:cursor-default disabled:opacity-35",
+        children: /* @__PURE__ */ jsx5("svg", { "aria-hidden": "true", viewBox: "0 0 16 16", className: "h-3.5 w-3.5 fill-none stroke-current", strokeWidth: "1.5", strokeLinecap: "round", strokeLinejoin: "round", children: /* @__PURE__ */ jsx5("path", { d: "M3.5 12h9M8 10V5M6 7l2-2 2 2" }) })
+      }
+    ),
+    /* @__PURE__ */ jsx5("span", { "aria-hidden": "true", className: "w-px bg-current opacity-20" }),
     /* @__PURE__ */ jsx5(
       "button",
       {
@@ -5549,6 +5564,8 @@ function ComposerFrame({
   fileInputRef,
   onAppendAttachments,
   onToggleFollow,
+  canJumpToPreviousTurn,
+  onJumpToPreviousTurn,
   canJumpToNextTurn,
   onJumpToNextTurn,
   onSubmit,
@@ -5573,6 +5590,8 @@ function ComposerFrame({
         activeView,
         followTail,
         onToggleFollow,
+        canJumpToPreviousTurn,
+        onJumpToPreviousTurn,
         canJumpToNextTurn,
         onJumpToNextTurn
       }
@@ -8577,6 +8596,8 @@ function ThreadComposer({
   onReadProviderConfig,
   onWriteProviderConfig,
   onToggleFollow,
+  canJumpToPreviousTurn,
+  onJumpToPreviousTurn,
   canJumpToNextTurn,
   onJumpToNextTurn,
   onUpdateSettings,
@@ -9282,6 +9303,8 @@ function ThreadComposer({
       fileInputRef,
       onAppendAttachments: appendAttachments,
       onToggleFollow,
+      canJumpToPreviousTurn,
+      onJumpToPreviousTurn,
       canJumpToNextTurn,
       onJumpToNextTurn,
       onSubmit: handleSubmit,
@@ -16356,10 +16379,12 @@ function ThreadTimelineComponent({
   onRespondToRequest,
   liveOutput,
   scrollRequestKey = 0,
+  previousTurnScrollRequestKey = 0,
   nextTurnScrollRequestKey = 0,
   bottomSpacer = 0,
   className = "",
   onTailVisibilityChange,
+  onPreviousTurnAvailabilityChange,
   onNextTurnAvailabilityChange,
   loadingEarlier = false,
   onLoadEarlier,
@@ -16383,6 +16408,7 @@ function ThreadTimelineComponent({
   const [cancelingSteerIds, setCancelingSteerIds] = useState21(
     () => /* @__PURE__ */ new Set()
   );
+  const lastPreviousTurnTargetIdRef = useRef12(null);
   const lastNextTurnTargetIdRef = useRef12(null);
   const loadHistoryItemDetail = adapter?.onLoadHistoryItemDetail ?? onLoadHistoryItemDetail;
   const openLinkedThread = adapter?.onOpenLinkedThread;
@@ -16523,16 +16549,44 @@ function ThreadTimelineComponent({
       container.querySelectorAll("[data-timeline-turn]")
     ).find((element) => element.getBoundingClientRect().top > containerTop + 8) ?? null;
   }, [scrollContainerRef]);
+  const findPreviousTurn = useCallback14(() => {
+    const container = scrollContainerRef.current;
+    if (!container) return null;
+    const containerTop = container.getBoundingClientRect().top;
+    return Array.from(
+      container.querySelectorAll("[data-timeline-turn]")
+    ).findLast((element) => element.getBoundingClientRect().top < containerTop - 8) ?? null;
+  }, [scrollContainerRef]);
+  const updatePreviousTurnAvailability = useCallback14(() => {
+    onPreviousTurnAvailabilityChange?.(Boolean(findPreviousTurn()));
+  }, [findPreviousTurn, onPreviousTurnAvailabilityChange]);
   const updateNextTurnAvailability = useCallback14(() => {
     onNextTurnAvailabilityChange?.(Boolean(findNextTurn()));
   }, [findNextTurn, onNextTurnAvailabilityChange]);
   const handleTimelineScroll = useCallback14(() => {
     handleScroll();
+    updatePreviousTurnAvailability();
     updateNextTurnAvailability();
-  }, [handleScroll, updateNextTurnAvailability]);
+  }, [handleScroll, updateNextTurnAvailability, updatePreviousTurnAvailability]);
   useEffect16(() => {
+    updatePreviousTurnAvailability();
     updateNextTurnAvailability();
-  }, [updateNextTurnAvailability, visibleTurns]);
+  }, [updateNextTurnAvailability, updatePreviousTurnAvailability, visibleTurns]);
+  useEffect16(() => {
+    if (previousTurnScrollRequestKey === 0) return;
+    const container = scrollContainerRef.current;
+    const firstCandidate = findPreviousTurn();
+    const turns2 = container ? Array.from(container.querySelectorAll("[data-timeline-turn]")) : [];
+    const firstCandidateIndex = firstCandidate ? turns2.indexOf(firstCandidate) : -1;
+    const previousTurn = firstCandidate && firstCandidate.dataset.turnId === lastPreviousTurnTargetIdRef.current ? turns2[firstCandidateIndex - 1] ?? null : firstCandidate;
+    if (!container || !previousTurn) return;
+    lastPreviousTurnTargetIdRef.current = previousTurn.dataset.turnId ?? null;
+    const offset = previousTurn.getBoundingClientRect().top - container.getBoundingClientRect().top;
+    container.scrollTo({ top: container.scrollTop + offset - 8, behavior: "smooth" });
+    if (turns2.indexOf(previousTurn) === 0) {
+      onPreviousTurnAvailabilityChange?.(false);
+    }
+  }, [findPreviousTurn, onPreviousTurnAvailabilityChange, previousTurnScrollRequestKey, scrollContainerRef]);
   useEffect16(() => {
     if (nextTurnScrollRequestKey === 0) return;
     const container = scrollContainerRef.current;

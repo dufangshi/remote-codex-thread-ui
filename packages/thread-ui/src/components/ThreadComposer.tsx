@@ -176,6 +176,8 @@ export interface ThreadComposerProps {
     | ((content: string) => Promise<ProviderHostFileDto> | ProviderHostFileDto)
     | undefined;
   onToggleFollow?: () => void;
+  canJumpToPreviousTurn?: boolean;
+  onJumpToPreviousTurn?: () => void;
   canJumpToNextTurn?: boolean;
   onJumpToNextTurn?: () => void;
   onUpdateSettings?: (input: UpdateThreadSettingsInput) => Promise<void> | void;
@@ -260,6 +262,8 @@ export function ThreadComposer({
   onReadProviderConfig,
   onWriteProviderConfig,
   onToggleFollow,
+  canJumpToPreviousTurn,
+  onJumpToPreviousTurn,
   canJumpToNextTurn,
   onJumpToNextTurn,
   onUpdateSettings,
@@ -1046,6 +1050,8 @@ export function ThreadComposer({
       fileInputRef={fileInputRef}
       onAppendAttachments={appendAttachments}
       onToggleFollow={onToggleFollow}
+      canJumpToPreviousTurn={canJumpToPreviousTurn}
+      onJumpToPreviousTurn={onJumpToPreviousTurn}
       canJumpToNextTurn={canJumpToNextTurn}
       onJumpToNextTurn={onJumpToNextTurn}
       onSubmit={handleSubmit}

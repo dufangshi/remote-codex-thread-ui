@@ -343,4 +343,45 @@ describe('ThreadTimeline', () => {
     expect(scrollTo).toHaveBeenNthCalledWith(1, { top: 192, behavior: 'smooth' });
     expect(scrollTo).toHaveBeenNthCalledWith(2, { top: 392, behavior: 'smooth' });
   });
+
+  it('moves backward across turns on repeated clicks while smooth scrolling is pending', () => {
+    const turns = [1, 2, 3].map((index) => ({
+      ...completedTurn([
+        { id: `user-${index}`, kind: 'userMessage' as const, text: `Prompt ${index}` },
+      ]),
+      id: `turn-${index}`,
+    }));
+    const element = render(
+      <ThreadTimeline liveOutput="" turns={turns} previousTurnScrollRequestKey={0} />,
+    );
+    const scrollContainer = element.querySelector<HTMLElement>(
+      '[data-testid="thread-scroll-container"]',
+    )!;
+    Object.defineProperty(scrollContainer, 'scrollTop', { configurable: true, value: 600 });
+    scrollContainer.getBoundingClientRect = () =>
+      ({ top: 0, bottom: 300, height: 300 } as DOMRect);
+    const turnElements = Array.from(
+      element.querySelectorAll<HTMLElement>('[data-timeline-turn]'),
+    );
+    turnElements.forEach((turn, index) => {
+      turn.getBoundingClientRect = () =>
+        ({ top: -400 + index * 200, bottom: -300 + index * 200, height: 100 } as DOMRect);
+    });
+    const scrollTo = vi.fn();
+    scrollContainer.scrollTo = scrollTo;
+
+    flushSync(() => {
+      root?.render(
+        <ThreadTimeline liveOutput="" turns={turns} previousTurnScrollRequestKey={1} />,
+      );
+    });
+    flushSync(() => {
+      root?.render(
+        <ThreadTimeline liveOutput="" turns={turns} previousTurnScrollRequestKey={2} />,
+      );
+    });
+
+    expect(scrollTo).toHaveBeenNthCalledWith(1, { top: 392, behavior: 'smooth' });
+    expect(scrollTo).toHaveBeenNthCalledWith(2, { top: 192, behavior: 'smooth' });
+  });
 });

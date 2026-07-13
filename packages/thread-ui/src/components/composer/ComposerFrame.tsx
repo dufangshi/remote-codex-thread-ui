@@ -24,6 +24,8 @@ export interface ComposerFrameProps {
     kind: PromptAttachmentKindDto,
   ) => void;
   onToggleFollow?: () => void;
+  canJumpToPreviousTurn?: boolean;
+  onJumpToPreviousTurn?: () => void;
   canJumpToNextTurn?: boolean;
   onJumpToNextTurn?: () => void;
   onSubmit: (event: FormEvent<HTMLFormElement>) => void;
@@ -46,6 +48,8 @@ export function ComposerFrame({
   fileInputRef,
   onAppendAttachments,
   onToggleFollow,
+  canJumpToPreviousTurn,
+  onJumpToPreviousTurn,
   canJumpToNextTurn,
   onJumpToNextTurn,
   onSubmit,
@@ -66,6 +70,8 @@ export function ComposerFrame({
         activeView={activeView}
         followTail={followTail}
         onToggleFollow={onToggleFollow}
+        canJumpToPreviousTurn={canJumpToPreviousTurn}
+        onJumpToPreviousTurn={onJumpToPreviousTurn}
         canJumpToNextTurn={canJumpToNextTurn}
         onJumpToNextTurn={onJumpToNextTurn}
       />
