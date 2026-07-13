@@ -4,7 +4,7 @@ import type {
   ReactNode,
 } from 'react';
 
-import type { PromptAttachmentKindDto } from '@remote-codex/shared';
+import type { AgentSubscriptionUsageDto, PromptAttachmentKindDto } from '@remote-codex/shared';
 import { InputGroup } from '../graph-ui/InputGroup';
 import { ComposerHiddenAttachmentInputs } from './ComposerHiddenAttachmentInputs';
 import { ComposerJumpLatestButton } from './ComposerJumpLatestButton';
@@ -28,6 +28,7 @@ export interface ComposerFrameProps {
   onJumpToPreviousTurn?: () => void;
   canJumpToNextTurn?: boolean;
   onJumpToNextTurn?: () => void;
+  subscriptionUsage?: AgentSubscriptionUsageDto | null;
   onSubmit: (event: FormEvent<HTMLFormElement>) => void;
   formRef: MutableRefObject<HTMLFormElement | null>;
   promptSlot: ReactNode;
@@ -52,6 +53,7 @@ export function ComposerFrame({
   onJumpToPreviousTurn,
   canJumpToNextTurn,
   onJumpToNextTurn,
+  subscriptionUsage,
   onSubmit,
   formRef,
   promptSlot,
@@ -74,6 +76,7 @@ export function ComposerFrame({
         onJumpToPreviousTurn={onJumpToPreviousTurn}
         canJumpToNextTurn={canJumpToNextTurn}
         onJumpToNextTurn={onJumpToNextTurn}
+        subscriptionUsage={subscriptionUsage}
       />
 
       <form

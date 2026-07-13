@@ -1169,12 +1169,13 @@ export function ThreadWorkspaceLayout({
                       </button>
                     ) : null}
                     <div className="min-w-0">
-                      {renderMobileTopbarControls ? (
-                        <h1 className="thread-mobile-only-block min-w-0 truncate text-sm font-semibold leading-none text-[var(--theme-fg)]">
-                          {currentThreadLabel ?? "Shared Workspace"}
-                        </h1>
-                      ) : null}
-                      <div className="relative flex min-w-0 items-center gap-1.5">
+                      <h1
+                        className="min-w-0 truncate text-sm font-semibold leading-tight text-[var(--theme-fg)] sm:text-base"
+                        title={currentThreadLabel ?? "Shared Workspace"}
+                      >
+                        {currentThreadLabel ?? "Shared Workspace"}
+                      </h1>
+                      <div className="relative mt-0.5 flex min-w-0 items-center gap-1.5">
                         <button
                           type="button"
                           onClick={() => {

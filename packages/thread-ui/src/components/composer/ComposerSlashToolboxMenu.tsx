@@ -6,7 +6,9 @@ import type {
   ThreadHooksDto,
   ThreadMcpServersDto,
   ThreadSkillsDto,
+  ThreadGoalDto,
   UpdateThreadHookInput,
+  UpdateThreadGoalInput,
 } from '@remote-codex/shared';
 import type { MouseEvent } from 'react';
 
@@ -14,6 +16,7 @@ import { InputGroupButton } from '../graph-ui/InputGroup';
 import { SlashIcon } from './composerPresentation';
 import { ComposerForkPanel, ComposerForkTurnsPanel } from './ComposerForkPanels';
 import { ComposerHooksPanel } from './ComposerHooksPanel';
+import { ComposerGoalsPanel } from './ComposerGoalsPanel';
 import { ComposerMcpPanel } from './ComposerMcpPanel';
 import { ComposerSkillsPanel } from './ComposerSkillsPanel';
 import type {
@@ -32,6 +35,9 @@ export function ComposerSlashToolboxMenu({
   forkBusy,
   forkTurnOptionsState,
   skillsState,
+  goalState,
+  goalHistory,
+  goalBusy,
   copiedSkillName,
   hooksPanelMode,
   hooksState,
@@ -68,6 +74,8 @@ export function ComposerSlashToolboxMenu({
   toolboxItemClassName,
   toolboxItemStatus,
   onSetSlashPanelView,
+  onViewGoals,
+  onUpdateGoal,
   onOpenForkTurns,
   onForkLatest,
   onForkTurn,
@@ -102,6 +110,9 @@ export function ComposerSlashToolboxMenu({
   forkBusy: boolean;
   forkTurnOptionsState: SlashPanelState<ThreadForkTurnOptionDto[]>;
   skillsState: SlashPanelState<ThreadSkillsDto>;
+  goalState: SlashPanelState<ThreadGoalDto | null | undefined>;
+  goalHistory: ThreadGoalDto[];
+  goalBusy: boolean;
   copiedSkillName: string | null;
   hooksPanelMode: HooksPanelMode;
   hooksState: SlashPanelState<ThreadHooksDto>;
@@ -141,6 +152,8 @@ export function ComposerSlashToolboxMenu({
   toolboxItemClassName: (item: AgentBackendToolboxItemSchemaDto) => string;
   toolboxItemStatus: (item: AgentBackendToolboxItemSchemaDto) => string;
   onSetSlashPanelView: (view: SlashPanelView) => void;
+  onViewGoals?: () => Promise<void> | void;
+  onUpdateGoal?: (input: UpdateThreadGoalInput) => Promise<void> | void;
   onOpenForkTurns: () => Promise<void> | void;
   onForkLatest: () => Promise<void> | void;
   onForkTurn: (turnId: string) => Promise<void> | void;
@@ -204,15 +217,41 @@ export function ComposerSlashToolboxMenu({
         >
           {slashPanelView === 'root' ? (
             <div className="p-2">
-              {availableToolboxItems.map((item, index) => (
+              {availableToolboxItems.map((item, index) => item.action === 'goal' ? (
+                <div
+                  key={`${item.action}:${item.command}`}
+                  className={`mt-1 flex min-h-11 overflow-hidden rounded-xl border border-[var(--theme-border)] ${index === 0 ? 'mt-0' : ''}`}
+                  title={item.description ?? item.label}
+                >
+                  <button
+                    type="button"
+                    disabled={toolboxItemDisabled(item)}
+                    onClick={() => {
+                      onSetSlashPanelView('goals');
+                      void onViewGoals?.();
+                    }}
+                    className="min-w-0 flex-1 px-3 py-2.5 text-left text-sm text-[var(--theme-fg)] transition hover:bg-[var(--theme-hover)] focus-visible:z-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--theme-accent-border)] disabled:cursor-not-allowed disabled:opacity-45"
+                    aria-label="View goals"
+                  >
+                    <span>{item.command}</span>
+                  </button>
+                  <button
+                    type="button"
+                    disabled={toolboxItemDisabled(item)}
+                    onClick={(event) => onToolboxItemClick(item, event)}
+                    className="min-w-14 border-l border-[var(--theme-border)] px-3 text-xs font-semibold text-[var(--theme-fg-muted)] transition hover:bg-[var(--theme-hover)] hover:text-[var(--theme-fg)] focus-visible:z-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--theme-accent-border)] disabled:cursor-not-allowed disabled:opacity-45"
+                    aria-label="Open goal composer"
+                  >
+                    Open
+                  </button>
+                </div>
+              ) : (
                 <button
                   key={`${item.action}:${item.command}`}
                   type="button"
                   disabled={toolboxItemDisabled(item)}
                   onClick={(event) => onToolboxItemClick(item, event)}
-                  className={`${toolboxItemClassName(item)} ${
-                    index === 0 ? 'mt-0' : ''
-                  }`}
+                  className={`${toolboxItemClassName(item)} ${index === 0 ? 'mt-0' : ''}`}
                   title={item.description ?? item.label}
                 >
                   <div className="flex items-center justify-between gap-3">
@@ -231,7 +270,15 @@ export function ComposerSlashToolboxMenu({
             </div>
           ) : (
             <div className="max-h-80 overflow-auto">
-              {slashPanelView === 'fork' ? (
+              {slashPanelView === 'goals' ? (
+                <ComposerGoalsPanel
+                  goalState={goalState}
+                  goalHistory={goalHistory}
+                  busy={goalBusy}
+                  onBack={() => onSetSlashPanelView('root')}
+                  onUpdateGoal={onUpdateGoal}
+                />
+              ) : slashPanelView === 'fork' ? (
                 <ComposerForkPanel
                   busy={busy}
                   forkBusy={forkBusy}

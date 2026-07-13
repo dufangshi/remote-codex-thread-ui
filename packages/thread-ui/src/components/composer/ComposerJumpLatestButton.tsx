@@ -1,3 +1,6 @@
+import type { AgentSubscriptionUsageDto } from '@remote-codex/shared';
+import { ComposerSubscriptionUsage } from './ComposerSubscriptionUsage';
+
 export function ComposerJumpLatestButton({
   activeView,
   followTail,
@@ -6,6 +9,7 @@ export function ComposerJumpLatestButton({
   onJumpToPreviousTurn,
   canJumpToNextTurn,
   onJumpToNextTurn,
+  subscriptionUsage,
 }: {
   activeView: 'chat' | 'shell';
   followTail: boolean;
@@ -14,6 +18,7 @@ export function ComposerJumpLatestButton({
   onJumpToPreviousTurn?: (() => void) | undefined;
   canJumpToNextTurn?: boolean | undefined;
   onJumpToNextTurn?: (() => void) | undefined;
+  subscriptionUsage?: AgentSubscriptionUsageDto | null;
 }) {
   if (activeView !== 'chat') {
     return null;
@@ -71,6 +76,7 @@ export function ComposerJumpLatestButton({
           </svg>
         </button>
       </span>
+      <ComposerSubscriptionUsage usage={subscriptionUsage} />
     </div>
   );
 }

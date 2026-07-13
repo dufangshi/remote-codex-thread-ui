@@ -142,6 +142,9 @@ function renderMenu({
         forkBusy={false}
         forkTurnOptionsState={forkTurnOptionsState}
         skillsState={skills}
+        goalState={{ status: 'idle', data: null, error: null }}
+        goalHistory={[]}
+        goalBusy={false}
         copiedSkillName={null}
         hooksPanelMode="list"
         hooksState={hooksState}
@@ -180,6 +183,7 @@ function renderMenu({
           item.action === 'fast' ? 'Off' : 'View'
         }
         onSetSlashPanelView={setSlashPanelView}
+        onUpdateGoal={vi.fn()}
         onOpenForkTurns={onOpenForkTurns}
         onForkLatest={vi.fn()}
         onForkTurn={vi.fn()}
@@ -260,6 +264,40 @@ describe('ComposerSlashToolboxMenu', () => {
       action: 'skills',
       command: '/skills',
     });
+  });
+
+  it('splits goal list navigation from opening the goal composer', () => {
+    const goalItem: AgentBackendToolboxItemSchemaDto = {
+      action: 'goal',
+      command: '/goal',
+      label: 'Goal',
+      description: 'Manage goals',
+    };
+    const onToolboxItemClick = vi.fn();
+    const view = renderMenu({ items: [goalItem], onToolboxItemClick });
+
+    flushSync(() => {
+      view.querySelector<HTMLButtonElement>('[aria-label="View goals"]')?.click();
+    });
+    expect(view.textContent).toContain('No goals in this thread yet.');
+    expect(onToolboxItemClick).not.toHaveBeenCalled();
+  });
+
+  it('opens goal compose mode only from the trailing Open action', () => {
+    const goalItem: AgentBackendToolboxItemSchemaDto = {
+      action: 'goal',
+      command: '/goal',
+      label: 'Goal',
+      description: 'Manage goals',
+    };
+    const onToolboxItemClick = vi.fn();
+    const view = renderMenu({ items: [goalItem], onToolboxItemClick });
+
+    view
+      .querySelector<HTMLButtonElement>('[aria-label="Open goal composer"]')
+      ?.click();
+    expect(onToolboxItemClick).toHaveBeenCalledTimes(1);
+    expect(onToolboxItemClick.mock.calls[0]?.[0]).toMatchObject({ action: 'goal' });
   });
 
   it('renders the empty root state', () => {

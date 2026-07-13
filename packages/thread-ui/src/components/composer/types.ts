@@ -22,5 +22,6 @@ export type SlashPanelView =
   | 'skills'
   | 'mcp'
   | 'hooks'
+  | 'goals'
   | 'fork'
   | 'forkTurns';

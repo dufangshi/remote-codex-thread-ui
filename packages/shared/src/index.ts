@@ -67,6 +67,22 @@ export interface AgentRuntimeStatusDto {
   restartCount: number;
 }
 
+export interface AgentSubscriptionUsageWindowDto {
+  id: string;
+  durationMinutes: number | null;
+  label: string;
+  usedPercent: number;
+  resetsAt: string | null;
+}
+
+export interface AgentSubscriptionUsageDto {
+  provider: 'codex' | 'claude';
+  authKind: 'subscription' | 'apiKey' | 'unknown';
+  observedAt: string;
+  stale: boolean;
+  windows: AgentSubscriptionUsageWindowDto[];
+}
+
 export interface AgentProviderCapabilitiesDto {
   sessions: {
     list: boolean;

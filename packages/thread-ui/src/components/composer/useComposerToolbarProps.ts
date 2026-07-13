@@ -84,6 +84,8 @@ export interface UseComposerToolbarPropsInput {
   effortControlTitle: string;
   forkTurnOptionsState: SlashPanelState<ThreadForkTurnOptionDto[]>;
   skillsState: SlashPanelState<ThreadSkillsDto>;
+  goalState: ComposerSlashToolboxProps['goalState'];
+  goalHistory: ComposerSlashToolboxProps['goalHistory'];
   copiedSkillName: string | null;
   hooksPanelMode: HooksPanelMode;
   hooksState: SlashPanelState<ThreadHooksDto>;
@@ -113,6 +115,8 @@ export interface UseComposerToolbarPropsInput {
   onSetOpenMenu: ComposerToolbarProps['onSetOpenMenu'];
   onToolboxItemClick: ComposerSlashToolboxProps['onToolboxItemClick'];
   onSetSlashPanelView: ComposerSlashToolboxProps['onSetSlashPanelView'];
+  onViewGoals?: ComposerSlashToolboxProps['onViewGoals'];
+  onUpdateGoal: ComposerSlashToolboxProps['onUpdateGoal'];
   onOpenForkTurns: ComposerSlashToolboxProps['onOpenForkTurns'];
   onForkLatest: ComposerSlashToolboxProps['onForkLatest'];
   onForkTurn: ComposerSlashToolboxProps['onForkTurn'];
@@ -190,6 +194,8 @@ export function useComposerToolbarProps({
   effortControlTitle,
   forkTurnOptionsState,
   skillsState,
+  goalState,
+  goalHistory,
   copiedSkillName,
   hooksPanelMode,
   hooksState,
@@ -219,6 +225,8 @@ export function useComposerToolbarProps({
   onSetOpenMenu,
   onToolboxItemClick,
   onSetSlashPanelView,
+  onViewGoals,
+  onUpdateGoal,
   onOpenForkTurns,
   onForkLatest,
   onForkTurn,
@@ -263,6 +271,9 @@ export function useComposerToolbarProps({
         forkBusy,
         forkTurnOptionsState,
         skillsState,
+        goalState,
+        goalHistory,
+        goalBusy,
         copiedSkillName,
         hooksPanelMode,
         hooksState,
@@ -321,6 +332,8 @@ export function useComposerToolbarProps({
             busy,
           }),
         onSetSlashPanelView,
+        onViewGoals,
+        onUpdateGoal,
         onOpenForkTurns,
         onForkLatest,
         onForkTurn,

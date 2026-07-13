@@ -15,6 +15,7 @@ import type {
   AgentBackendHookCommandTemplateDto,
   AgentBackendManagementSchemaDto,
   AgentBackendToolboxItemSchemaDto,
+  AgentSubscriptionUsageDto,
   AgentProviderCapabilitiesDto,
   CollaborationModeDto,
   PromptAttachmentKindDto,
@@ -132,6 +133,7 @@ export interface ThreadComposerProps {
   hooksState?: SlashPanelState<ThreadHooksDto>;
   forkTurnOptionsState?: SlashPanelState<ThreadForkTurnOptionDto[]>;
   goalState?: SlashPanelState<ThreadGoalDto | null | undefined>;
+  goalHistory?: ThreadGoalDto[];
   onDraftChange?:
     | Dispatch<
         SetStateAction<{
@@ -180,6 +182,7 @@ export interface ThreadComposerProps {
   onJumpToPreviousTurn?: () => void;
   canJumpToNextTurn?: boolean;
   onJumpToNextTurn?: () => void;
+  subscriptionUsage?: AgentSubscriptionUsageDto | null;
   onUpdateSettings?: (input: UpdateThreadSettingsInput) => Promise<void> | void;
   onToggleView?: () => void;
   onShellCopy?: () => Promise<void> | void;
@@ -237,6 +240,7 @@ export function ThreadComposer({
     data: null,
     error: null,
   },
+  goalHistory = [],
   forkTurnOptionsState = {
     status: 'idle',
     data: null,
@@ -266,6 +270,7 @@ export function ThreadComposer({
   onJumpToPreviousTurn,
   canJumpToNextTurn,
   onJumpToNextTurn,
+  subscriptionUsage,
   onUpdateSettings,
   onToggleView,
   onShellCopy,
@@ -274,6 +279,7 @@ export function ThreadComposer({
 }: ThreadComposerProps) {
   const [openMenu, setOpenMenu] = useState<SettingsMenu>(null);
   const [slashPanelView, setSlashPanelView] = useState<SlashPanelView>('root');
+  const submitInFlightRef = useRef(false);
   const [mcpPanelMode, setMcpPanelMode] = useState<McpPanelMode>('list');
   const slashCapabilities = useMemo(
     () => ({
@@ -658,32 +664,41 @@ export function ThreadComposer({
   }
 
   async function submitPrompt() {
-    if (isDraftControlled) {
-      flushControlledDraftToHost();
-    }
-
-    if (goalComposeMode && !isShellView) {
-      await submitGoal();
+    if (submitInFlightRef.current) {
       return;
     }
+    submitInFlightRef.current = true;
 
-    const submitInput = buildComposerSubmitInput({
-      prompt,
-      attachments,
-      isShellView,
-    });
-    if (!submitInput) {
-      return;
-    }
+    try {
+      if (isDraftControlled) {
+        flushControlledDraftToHost();
+      }
 
-    const submitted = await onSubmit(submitInput);
-    if (submitted === false) {
-      return;
+      if (goalComposeMode && !isShellView) {
+        await submitGoal();
+        return;
+      }
+
+      const submitInput = buildComposerSubmitInput({
+        prompt,
+        attachments,
+        isShellView,
+      });
+      if (!submitInput) {
+        return;
+      }
+
+      const submitted = await onSubmit(submitInput);
+      if (submitted === false) {
+        return;
+      }
+      updateDraft(() => ({
+        prompt: '',
+        attachments: [],
+      }));
+    } finally {
+      submitInFlightRef.current = false;
     }
-    updateDraft(() => ({
-      prompt: '',
-      attachments: [],
-    }));
   }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -789,6 +804,10 @@ export function ThreadComposer({
   }
 
   function handlePromptKeyDown(event: KeyboardEvent<HTMLDivElement>) {
+    if (event.key === 'Enter' && event.repeat) {
+      event.preventDefault();
+      return;
+    }
     if (
       activeView === 'chat' &&
       event.key === '/' &&
@@ -908,6 +927,8 @@ export function ThreadComposer({
     effortControlTitle,
     forkTurnOptionsState,
     skillsState,
+    goalState,
+    goalHistory,
     copiedSkillName,
     hooksPanelMode,
     hooksState,
@@ -943,6 +964,8 @@ export function ThreadComposer({
     onSetOpenMenu: setOpenMenu,
     onToolboxItemClick: handleToolboxItemClick,
     onSetSlashPanelView: setSlashPanelView,
+    onViewGoals: onOpenGoal,
+    onUpdateGoal,
     onOpenForkTurns: () => onOpenForkTurns?.(),
     onForkLatest: forkLatest,
     onForkTurn: forkTurn,
@@ -1054,6 +1077,7 @@ export function ThreadComposer({
       onJumpToPreviousTurn={onJumpToPreviousTurn}
       canJumpToNextTurn={canJumpToNextTurn}
       onJumpToNextTurn={onJumpToNextTurn}
+      subscriptionUsage={subscriptionUsage}
       onSubmit={handleSubmit}
       formRef={menuRef}
       promptSlot={promptSlot}
