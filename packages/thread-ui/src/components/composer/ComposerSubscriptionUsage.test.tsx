@@ -46,10 +46,13 @@ describe('ComposerSubscriptionUsage', () => {
     const fill = track?.firstElementChild as HTMLElement | null;
     const details = control?.querySelector<HTMLElement>('[aria-hidden]');
 
-    expect(control?.className).toContain('opacity-90');
+    expect(control?.className).toContain('h-4');
+    expect(control?.className).toContain('bottom-0');
+    expect(control?.className).toContain('bg-stone-950');
+    expect(control?.className).toContain('opacity-95');
     expect(host.querySelector('.thread-subscription-usage')?.className).toContain('font-normal');
     expect(host.querySelector('.thread-subscription-usage .font-semibold')).toBeNull();
-    expect(track?.className).toContain('w-8');
+    expect(track?.className).toContain('w-7');
     expect(fill?.style.width).toBe('60%');
     expect(fill?.style.backgroundImage).toContain('linear-gradient');
     expect(control?.getAttribute('aria-expanded')).toBe('false');

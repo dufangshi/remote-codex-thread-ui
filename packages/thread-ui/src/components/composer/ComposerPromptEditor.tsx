@@ -2,6 +2,7 @@ import type {
   ClipboardEvent,
   DragEvent,
   KeyboardEvent,
+  PointerEvent,
   RefObject,
 } from 'react';
 
@@ -18,6 +19,7 @@ interface ComposerPromptEditorProps {
   graphChatInputClassName: string;
   onInterrupt?: () => Promise<void> | void;
   onInput: () => void;
+  onPointerDown?: (event: PointerEvent<HTMLDivElement>) => void;
   onPaste: (event: ClipboardEvent<HTMLDivElement>) => void;
   onKeyDown: (event: KeyboardEvent<HTMLDivElement>) => void;
   onKeyUp: () => void;
@@ -40,6 +42,7 @@ export function ComposerPromptEditor({
   graphChatInputClassName,
   onInterrupt,
   onInput,
+  onPointerDown,
   onPaste,
   onKeyDown,
   onKeyUp,
@@ -71,7 +74,16 @@ export function ComposerPromptEditor({
           aria-label="Prompt"
           aria-multiline="true"
           contentEditable={!disabled}
+          inputMode="text"
           suppressContentEditableWarning
+          onPointerDown={(event) => {
+            if (!disabled && document.activeElement !== event.currentTarget) {
+              // WKWebView only opens the software keyboard reliably when focus
+              // is requested synchronously from the user's touch gesture.
+              event.currentTarget.focus({ preventScroll: true });
+            }
+            onPointerDown?.(event);
+          }}
           onInput={onInput}
           onPaste={onPaste}
           onKeyDown={onKeyDown}

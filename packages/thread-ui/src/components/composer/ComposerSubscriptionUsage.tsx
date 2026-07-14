@@ -35,7 +35,7 @@ export function ComposerSubscriptionUsage({
   return (
     <button
       type="button"
-      className={`thread-subscription-usage group pointer-events-auto absolute bottom-1 right-2 inline-flex h-5 items-center gap-1.5 rounded-full border border-stone-500/45 bg-stone-950/20 px-1.5 text-[8px] font-normal leading-none text-stone-200/90 shadow-sm transition-[border-color,background-color,opacity] duration-200 hover:border-stone-400/70 hover:bg-stone-900/40 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-sky-200/70 sm:right-3 ${usage.stale ? 'opacity-60' : 'opacity-90'}`}
+      className={`thread-subscription-usage group pointer-events-auto absolute bottom-0 right-2 inline-flex h-4 items-center gap-1 rounded-t-md border border-b-0 border-stone-500/50 bg-stone-950 px-1 text-[7px] font-normal leading-none text-stone-200 shadow-sm transition-[border-color,background-color,opacity] duration-200 hover:border-stone-400/75 hover:bg-stone-900 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-sky-200/70 sm:right-3 sm:text-[7px] ${usage.stale ? 'opacity-70' : 'opacity-95'}`}
       aria-label={`${usage.provider} subscription usage. ${description}`}
       aria-expanded={detailsVisible}
       onClick={() => setDetailsVisible((current) => !current)}
@@ -44,11 +44,11 @@ export function ComposerSubscriptionUsage({
         const remaining = Math.max(0, Math.min(100, 100 - window.usedPercent));
         const hue = Math.round(18 + (remaining / 100) * 190);
         return (
-          <span key={window.id} className="inline-flex items-center gap-1">
-            <span>{window.label}</span>
+          <span key={window.id} className="inline-flex items-center gap-0.5">
+            <span className="font-normal tracking-[-0.01em]">{window.label}</span>
             <span
               data-subscription-window-track="true"
-              className="h-[3px] w-8 overflow-hidden rounded-full bg-stone-600/55 sm:w-10"
+              className="h-0.5 w-7 overflow-hidden rounded-full bg-stone-600/55 sm:w-9"
             >
               <span
                 className="block h-full rounded-full transition-[width] duration-500 ease-out"
