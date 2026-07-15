@@ -159,6 +159,10 @@ export interface ThreadDetailUiAdapter {
     threadId: string,
     pendingSteerId: string,
   ) => Promise<void> | void;
+  steerPendingPrompt?: (
+    threadId: string,
+    pendingSteerId: string,
+  ) => Promise<void> | void;
   sendPrompt(input: SendPromptInput): Promise<boolean | void> | boolean | void;
   interrupt?: () => Promise<void> | void;
   compact?: () => Promise<void> | void;

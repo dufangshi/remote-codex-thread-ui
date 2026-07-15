@@ -9,7 +9,7 @@ import {
   type ReactElement,
   type ReactNode,
 } from 'react';
-import { Copy } from 'lucide-react';
+import { Check, Copy } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import rehypeKatex from 'rehype-katex';
 import remarkGfm from 'remark-gfm';
@@ -380,7 +380,11 @@ export const GraphChatMessageContent = memo(function GraphChatMessageContent({
             }
             aria-label="Copy code"
           >
-            <Copy className="h-3.5 w-3.5" />
+            {copyState[id] === "copied" ? (
+              <Check className="h-3.5 w-3.5" />
+            ) : (
+              <Copy className="h-3.5 w-3.5" />
+            )}
           </Button>
           {html ? (
             <div dangerouslySetInnerHTML={{ __html: html }} />

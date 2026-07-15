@@ -680,6 +680,51 @@
   opacity: 0;
 }
 
+.thread-ui-shell .thread-composer-pending-queue {
+  border-color: var(--theme-border);
+  background: color-mix(in srgb, var(--theme-panel) 94%, transparent);
+  box-shadow: 0 8px 24px color-mix(in srgb, var(--app-bg) 18%, transparent);
+}
+
+.thread-ui-shell .thread-composer-pending-row {
+  border-color: var(--theme-border);
+  background: var(--theme-surface);
+}
+
+.thread-ui-shell .thread-composer-steer-button {
+  border-color: color-mix(
+    in srgb,
+    var(--theme-accent) 35%,
+    var(--theme-border)
+  );
+  background: color-mix(in srgb, var(--theme-accent) 10%, var(--theme-surface));
+  color: var(--theme-fg);
+}
+
+.thread-ui-shell .thread-composer-steer-button:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--theme-accent) 18%, var(--theme-surface));
+}
+
+.thread-ui-shell .thread-composer-queue-remove {
+  color: var(--theme-fg-muted);
+}
+
+.thread-ui-shell .thread-composer-queue-remove:hover:not(:disabled) {
+  background: var(--theme-hover);
+  color: var(--theme-fg);
+}
+
+@media (max-width: 639px) {
+  .thread-ui-shell .thread-composer-pending-queue {
+    margin-bottom: 0.375rem;
+    border-radius: 0.75rem;
+  }
+
+  .thread-ui-shell .thread-composer-pending-row {
+    min-height: 2.75rem;
+  }
+}
+
 .thread-ui-shell .thread-graph-room-card:hover .thread-card-session-copy-button,
 .thread-ui-shell .thread-card-session-copy-button:focus-visible,
 .thread-ui-shell .thread-card-session-copy-button:active {

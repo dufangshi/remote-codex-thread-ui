@@ -71,6 +71,7 @@ import {
   textFromClipboardHtml,
 } from './composer/contentEditablePrompt';
 import { ComposerFrame } from './composer/ComposerFrame';
+import { ComposerPendingQueue } from './composer/ComposerPendingQueue';
 import { ComposerToolbar } from './composer/ComposerToolbar';
 import { useComposerAttachments } from './composer/useComposerAttachments';
 import { useAttachmentPreviewUrls } from './composer/useAttachmentPreviewUrls';
@@ -190,6 +191,13 @@ export interface ThreadComposerProps {
     action: 'ctrl_c' | 'ctrl_d' | 'esc' | 'tab' | 'up' | 'down' | 'clear',
   ) => Promise<void> | void;
   canInterrupt?: boolean;
+  pendingPrompts?: Array<{
+    id: string;
+    prompt: string;
+    optimistic?: boolean;
+  }>;
+  onSteerPendingPrompt?: (pendingPromptId: string) => Promise<void> | void;
+  onCancelPendingPrompt?: (pendingPromptId: string) => Promise<void> | void;
 }
 
 export function ThreadComposer({
@@ -276,6 +284,9 @@ export function ThreadComposer({
   onShellCopy,
   onShellControl,
   canInterrupt = false,
+  pendingPrompts = [],
+  onSteerPendingPrompt,
+  onCancelPendingPrompt,
 }: ThreadComposerProps) {
   const [openMenu, setOpenMenu] = useState<SettingsMenu>(null);
   const [slashPanelView, setSlashPanelView] = useState<SlashPanelView>('root');
@@ -1081,6 +1092,15 @@ export function ThreadComposer({
       onSubmit={handleSubmit}
       formRef={menuRef}
       promptSlot={promptSlot}
+      pendingQueueSlot={
+        !isShellView && pendingPrompts.length > 0 ? (
+          <ComposerPendingQueue
+            prompts={pendingPrompts}
+            onSteer={onSteerPendingPrompt}
+            onCancel={onCancelPendingPrompt}
+          />
+        ) : null
+      }
       toolbarSlot={
         <ComposerToolbar {...toolbarProps} />
       }

@@ -1,0 +1,85 @@
+/**
+ * @vitest-environment jsdom
+ */
+import { act } from "react";
+import { createRoot } from "react-dom/client";
+import { afterEach, describe, expect, it, vi } from "vitest";
+
+import { ComposerPendingQueue } from "./ComposerPendingQueue";
+
+(
+  globalThis as { IS_REACT_ACT_ENVIRONMENT?: boolean }
+).IS_REACT_ACT_ENVIRONMENT = true;
+
+let cleanup: (() => void) | null = null;
+
+afterEach(() => {
+  cleanup?.();
+  cleanup = null;
+});
+
+describe("ComposerPendingQueue", () => {
+  it("renders queued prompts and exposes explicit steer and remove actions", async () => {
+    const container = document.createElement("div");
+    document.body.appendChild(container);
+    const root = createRoot(container);
+    cleanup = () => {
+      root.unmount();
+      container.remove();
+    };
+    const onSteer = vi.fn().mockResolvedValue(undefined);
+    const onCancel = vi.fn().mockResolvedValue(undefined);
+
+    await act(async () => {
+      root.render(
+        <ComposerPendingQueue
+          prompts={[{ id: "queued-1", prompt: "Inspect the failing test" }]}
+          onSteer={onSteer}
+          onCancel={onCancel}
+        />,
+      );
+    });
+
+    expect(container.textContent).toContain("Inspect the failing test");
+    const steer = Array.from(container.querySelectorAll("button")).find(
+      (button) => button.textContent?.includes("Steer"),
+    );
+    await act(async () => {
+      steer?.click();
+    });
+    expect(onSteer).toHaveBeenCalledWith("queued-1");
+
+    const remove = container.querySelector<HTMLButtonElement>(
+      '[aria-label="Remove queued prompt"]',
+    );
+    await act(async () => {
+      remove?.click();
+    });
+    expect(onCancel).toHaveBeenCalledWith("queued-1");
+  });
+
+  it("shows optimistic prompts as queueing without premature actions", async () => {
+    const container = document.createElement("div");
+    document.body.appendChild(container);
+    const root = createRoot(container);
+    cleanup = () => {
+      root.unmount();
+      container.remove();
+    };
+
+    await act(async () => {
+      root.render(
+        <ComposerPendingQueue
+          prompts={[
+            { id: "optimistic-1", prompt: "Queued locally", optimistic: true },
+          ]}
+          onSteer={vi.fn()}
+          onCancel={vi.fn()}
+        />,
+      );
+    });
+
+    expect(container.textContent).toContain("Queueing");
+    expect(container.querySelectorAll("button")).toHaveLength(0);
+  });
+});

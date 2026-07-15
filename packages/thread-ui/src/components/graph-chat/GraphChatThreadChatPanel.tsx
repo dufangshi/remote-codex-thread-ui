@@ -71,6 +71,74 @@ export function GraphChatThreadChatPanel({
   const internalComposerHostRef = useRef<HTMLDivElement | null>(null);
   const timelineTailVisibilityChange = timelineProps?.onTailVisibilityChange;
   const hasPendingRequests = detail.pendingRequests.length > 0;
+  const queuedPrompts = useMemo(() => {
+    const pendingSteers = detail.pendingSteers ?? [];
+    const materializedClientRequestIds = new Set(
+      pendingSteers
+        .map((prompt) => prompt.clientRequestId)
+        .filter((value): value is string => Boolean(value)),
+    );
+    return [
+      ...pendingSteers
+        .filter((prompt) => prompt.delivery === "continuation")
+        .map((prompt) => ({
+          id: prompt.id,
+          prompt: prompt.prompt,
+          ...(prompt.id.startsWith("optimistic-") ? { optimistic: true } : {}),
+        })),
+      ...(timelineProps?.optimisticSteers ?? [])
+        .filter(
+          (prompt) => !materializedClientRequestIds.has(prompt.clientRequestId),
+        )
+        .map((prompt) => ({
+          id: prompt.id,
+          prompt: prompt.prompt,
+          optimistic: true,
+        })),
+    ];
+  }, [detail.pendingSteers, timelineProps?.optimisticSteers]);
+  const steeredPrompts = useMemo(
+    () =>
+      (detail.pendingSteers ?? []).filter(
+        (prompt) => prompt.delivery === "steer",
+      ),
+    [detail.pendingSteers],
+  );
+  const resolvedComposerProps = useMemo(
+    () =>
+      composerProps
+        ? {
+            ...composerProps,
+            pendingPrompts: queuedPrompts,
+            ...(adapter.steerPendingPrompt &&
+            composerProps.capabilities?.turns.steer
+              ? {
+                  onSteerPendingPrompt: (pendingPromptId: string) =>
+                    adapter.steerPendingPrompt?.(
+                      detail.thread.id,
+                      pendingPromptId,
+                    ),
+                }
+              : {}),
+            ...(adapter.cancelPendingSteer
+              ? {
+                  onCancelPendingPrompt: (pendingPromptId: string) =>
+                    adapter.cancelPendingSteer?.(
+                      detail.thread.id,
+                      pendingPromptId,
+                    ),
+                }
+              : {}),
+          }
+        : null,
+    [
+      adapter.cancelPendingSteer,
+      adapter.steerPendingPrompt,
+      composerProps,
+      detail.thread.id,
+      queuedPrompts,
+    ],
+  );
 
   const handleTailVisibilityChange = useCallback(
     (nextIsTailVisible: boolean) => {
@@ -280,6 +348,8 @@ export function GraphChatThreadChatPanel({
         liveOutput={liveOutput}
         className="thread-timeline-surface min-h-0 flex-1"
         {...timelineProps}
+        pendingSteers={steeredPrompts}
+        optimisticSteers={[]}
         adapter={timelineAdapter}
         onOpenThread={timelineProps?.onOpenThread ?? adapter.openThread}
         onTailVisibilityChange={handleTailVisibilityChange}
@@ -298,6 +368,7 @@ export function GraphChatThreadChatPanel({
     liveOutput,
     timelineAdapter,
     timelineProps,
+    steeredPrompts,
   ]);
 
   return (
@@ -315,7 +386,7 @@ export function GraphChatThreadChatPanel({
           {transcriptItemCount} item{transcriptItemCount !== 1 ? 's' : ''}
         </span>
       </div>
-      {composerProps ? (
+      {resolvedComposerProps ? (
         useFloatingMobileComposer ? (
           <div
             ref={setComposerHostRefs}
@@ -329,7 +400,7 @@ export function GraphChatThreadChatPanel({
             }
           >
             <ThreadComposer
-              {...composerProps}
+              {...resolvedComposerProps}
               activeView="chat"
               edgeToEdgeMobile
               onSubmit={adapter.sendPrompt}
@@ -341,7 +412,7 @@ export function GraphChatThreadChatPanel({
             className="thread-graph-composer-host shrink-0"
           >
             <ThreadComposer
-              {...composerProps}
+              {...resolvedComposerProps}
               activeView="chat"
               onSubmit={adapter.sendPrompt}
             />

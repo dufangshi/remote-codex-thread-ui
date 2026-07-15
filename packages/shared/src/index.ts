@@ -769,6 +769,7 @@ export interface ThreadPendingSteerDto {
   clientRequestId: string | null;
   turnId: string;
   prompt: string;
+  delivery: "steer" | "continuation";
   createdAt: string;
 }
 

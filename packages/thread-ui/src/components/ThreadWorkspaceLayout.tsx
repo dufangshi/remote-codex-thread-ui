@@ -3,6 +3,7 @@ import {
   ArrowLeft,
   ChevronsLeft,
   ChevronsRight,
+  Check,
   Copy,
   Folder,
   Menu,
@@ -269,7 +270,11 @@ function ThreadCard({
               }}
               className="thread-card-quiet-button thread-card-session-copy-button inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full transition"
             >
-              <Copy className="h-3.5 w-3.5" />
+              {copyState === "copied" ? (
+                <Check className="h-3.5 w-3.5" />
+              ) : (
+                <Copy className="h-3.5 w-3.5" />
+              )}
             </button>
           ) : null}
         </div>

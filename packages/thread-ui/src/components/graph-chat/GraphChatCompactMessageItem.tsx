@@ -1,5 +1,5 @@
 import { memo, useEffect, useRef, useState, type ReactNode, type RefObject } from 'react';
-import { Brain, Copy } from 'lucide-react';
+import { Brain, Check, Copy } from 'lucide-react';
 
 import type { ThreadHistoryItemDto } from '@remote-codex/shared';
 import type { ThreadTimelineAdapter } from '../../adapters';
@@ -154,7 +154,11 @@ export const GraphChatCompactMessageItem = memo(
                 : ''
           }`}
         >
-          <Copy className="h-3.5 w-3.5" />
+          {copyState === "copied" ? (
+            <Check className="h-3.5 w-3.5" />
+          ) : (
+            <Copy className="h-3.5 w-3.5" />
+          )}
         </button>
       ) : null;
 

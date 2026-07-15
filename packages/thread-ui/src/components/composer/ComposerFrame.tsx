@@ -32,6 +32,7 @@ export interface ComposerFrameProps {
   onSubmit: (event: FormEvent<HTMLFormElement>) => void;
   formRef: MutableRefObject<HTMLFormElement | null>;
   promptSlot: ReactNode;
+  pendingQueueSlot?: ReactNode;
   toolbarSlot: ReactNode;
   goalSlot: ReactNode;
   shellPromptSlot: ReactNode;
@@ -57,6 +58,7 @@ export function ComposerFrame({
   onSubmit,
   formRef,
   promptSlot,
+  pendingQueueSlot,
   toolbarSlot,
   goalSlot,
   shellPromptSlot,
@@ -78,6 +80,8 @@ export function ComposerFrame({
         onJumpToNextTurn={onJumpToNextTurn}
         subscriptionUsage={subscriptionUsage}
       />
+
+      {pendingQueueSlot}
 
       <form
         ref={formRef}
