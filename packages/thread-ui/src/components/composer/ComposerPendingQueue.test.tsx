@@ -82,4 +82,40 @@ describe("ComposerPendingQueue", () => {
     expect(container.textContent).toContain("Queueing");
     expect(container.querySelectorAll("button")).toHaveLength(0);
   });
+
+  it("keeps non-steer backends in the same queue UI without a steer action", async () => {
+    const container = document.createElement("div");
+    document.body.appendChild(container);
+    const root = createRoot(container);
+    cleanup = () => {
+      root.unmount();
+      container.remove();
+    };
+    const onCancel = vi.fn().mockResolvedValue(undefined);
+
+    await act(async () => {
+      root.render(
+        <ComposerPendingQueue
+          prompts={[{ id: "claude-queued-1", prompt: "Wait for this turn" }]}
+          onCancel={onCancel}
+        />,
+      );
+    });
+
+    expect(container.querySelector('[aria-label="Queued prompts"]')).not.toBeNull();
+    expect(container.textContent).toContain("Queued");
+    expect(container.textContent).toContain("Wait for this turn");
+    expect(
+      Array.from(container.querySelectorAll("button")).some((button) =>
+        button.textContent?.includes("Steer"),
+      ),
+    ).toBe(false);
+
+    await act(async () => {
+      container
+        .querySelector<HTMLButtonElement>('[aria-label="Remove queued prompt"]')
+        ?.click();
+    });
+    expect(onCancel).toHaveBeenCalledWith("claude-queued-1");
+  });
 });
