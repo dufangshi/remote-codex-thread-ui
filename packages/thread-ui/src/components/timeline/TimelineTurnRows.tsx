@@ -483,7 +483,7 @@ function TimelineTimeToggle({
     <span
       role="button"
       tabIndex={0}
-      className={`thread-graph-relative-time rounded-full px-1.5 py-0.5 text-[10px] leading-none transition sm:text-[11px] ${className}`}
+      className={`thread-graph-relative-time rounded-full px-1.5 py-0.5 ${className}`}
       title={showAbsolute ? relativeLabel : absoluteTitle}
       aria-label={`Toggle timestamp, currently ${label}`}
       onClick={(event) => {
