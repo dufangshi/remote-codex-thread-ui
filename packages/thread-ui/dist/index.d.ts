@@ -207,8 +207,8 @@ interface ThreadCardsProps {
 declare function ThreadCards({ threads, currentThreadId, currentWorkspaceId, workspaceLabels, onOpenThread, getThreadHref, renderThreadLink, onBeginRenameThread, onDeleteThread, scrollable, maxHeightClassName, showDeleteButton, showSessionCopyButton, collapsed, }: ThreadCardsProps): react.JSX.Element;
 declare function ThreadWorkspaceLayout({ threads, status, loading, error, viewportConstrained, layoutMode, effectiveTheme: effectiveThemeProp, themeMode: themeModeProp, onThemeModeChange, showMobileNewThreadShortcut, settingsDialogOpen, onSettingsDialogOpenChange, mobileHeaderAction, currentThreadId, currentThreadLabel, currentWorkspaceId, currentWorkspaceLabel, sessionLabel, usageLabel, threadActionsButton, topbarActions, metaContent, settingsContent, globalSettingsContent, workspaceLabels, workspaceReturnHref, onWorkspaceReturn, getThreadHref, onOpenThread, getNewThreadHref, newThreadHref: explicitNewThreadHref, newThreadLabel, onNewThread, onNewThreadTitle, renderNewThreadDialogContent, renderThreadLink, onCloseAppNavigation, onRenameThread, onDeleteThread, workspaceContent, workspaceTitle, workspaceActions, children, }: ThreadWorkspaceLayoutProps): react.JSX.Element;
 
-type TimelineTurn = Omit<ThreadTurnDto, 'status'> & {
-    status: ThreadTurnDto['status'] | 'sending';
+type TimelineTurn = Omit<ThreadTurnDto, "status"> & {
+    status: ThreadTurnDto["status"] | "sending";
 };
 
 interface ThreadTimelineProps {
@@ -434,16 +434,16 @@ interface ThreadDetailSurfaceProps {
     currentWorkspaceLabel?: string | null;
     onCloseAppNavigation?: () => void;
     className?: string;
-    activeView?: 'chat' | 'shell';
+    activeView?: "chat" | "shell";
     liveOutput?: string;
-    timelineProps?: Partial<Omit<ThreadTimelineProps, 'threadId' | 'turns' | 'liveOutput' | 'adapter'>>;
-    composerProps?: Omit<ThreadComposerProps, 'activeView' | 'onSubmit'>;
-    shellComposerProps?: Omit<ThreadComposerProps, 'activeView' | 'onSubmit'>;
+    timelineProps?: Partial<Omit<ThreadTimelineProps, "threadId" | "turns" | "liveOutput" | "adapter">>;
+    composerProps?: Omit<ThreadComposerProps, "activeView" | "onSubmit">;
+    shellComposerProps?: Omit<ThreadComposerProps, "activeView" | "onSubmit">;
     useFloatingMobileComposer?: boolean;
     floatingMobileComposerBottomOffset?: number;
     composerHostRef?: RefObject<HTMLDivElement | null>;
     shellPanelRef?: Ref<ThreadShellPanelHandle>;
-    shellEffectiveTheme?: 'light' | 'dark';
+    shellEffectiveTheme?: "light" | "dark";
     shellThemeMode?: ThemeMode;
     onShellThemeModeChange?: (mode: ThemeMode) => void;
     onShellStateChange?: (state: ThreadShellControlState) => void;
@@ -452,18 +452,18 @@ interface ThreadDetailSurfaceProps {
     timelineComponent?: ComponentType<ThreadTimelineProps>;
     shellPanelComponent?: ForwardRefExoticComponent<{
         threadId: string;
-        shellAdapter: NonNullable<ThreadDetailUiAdapter['shell']>;
+        shellAdapter: NonNullable<ThreadDetailUiAdapter["shell"]>;
         isVisible?: boolean;
         showHeader?: boolean;
         showFloatingToolbox?: boolean;
-        effectiveTheme?: 'light' | 'dark';
+        effectiveTheme?: "light" | "dark";
         onStateChange?: (state: ThreadShellControlState) => void;
     } & RefAttributes<ThreadShellPanelHandle>>;
     shellContent?: ReactNode;
     loadingContent?: ReactNode;
     emptyContent?: ReactNode;
 }
-declare function ThreadDetailSurface({ threads, detail, loading, error, status, plugins: providedPlugins, adapter, metaContent, settingsContent, globalSettingsContent, settingsDialogOpen, onSettingsDialogOpenChange, mobileHeaderAction, appMenuButton, appNavigationMenu, workspaceReturnHref, onWorkspaceReturn, threadActionsButton, surfaceActions, floatingPanel, workspaceContent, workspaceTitle, workspaceActions, workspaceFeatures, workspaceFocusPathRequest, onNewThreadTitle, beforeTimelineContent, errorContent, workspaceMissingContent, dialogs, currentThreadId, currentWorkspaceId, currentWorkspaceLabel, onCloseAppNavigation, className, activeView, liveOutput, timelineProps, composerProps, shellComposerProps, useFloatingMobileComposer, floatingMobileComposerBottomOffset, composerHostRef, shellPanelRef, shellEffectiveTheme, shellThemeMode, onShellThemeModeChange, onShellStateChange, shellUnavailableContent, shellDisconnectedContent, timelineComponent: TimelineComponent, shellPanelComponent: ShellPanelComponent, shellContent, loadingContent, emptyContent, }: ThreadDetailSurfaceProps): react.JSX.Element;
+declare function ThreadDetailSurface({ threads, detail: rawDetail, loading, error, status, plugins: providedPlugins, adapter, metaContent, settingsContent, globalSettingsContent, settingsDialogOpen, onSettingsDialogOpenChange, mobileHeaderAction, appMenuButton, appNavigationMenu, workspaceReturnHref, onWorkspaceReturn, threadActionsButton, surfaceActions, floatingPanel, workspaceContent, workspaceTitle, workspaceActions, workspaceFeatures, workspaceFocusPathRequest, onNewThreadTitle, beforeTimelineContent, errorContent, workspaceMissingContent, dialogs, currentThreadId, currentWorkspaceId, currentWorkspaceLabel, onCloseAppNavigation, className, activeView, liveOutput, timelineProps, composerProps, shellComposerProps, useFloatingMobileComposer, floatingMobileComposerBottomOffset, composerHostRef, shellPanelRef, shellEffectiveTheme, shellThemeMode, onShellThemeModeChange, onShellStateChange, shellUnavailableContent, shellDisconnectedContent, timelineComponent: TimelineComponent, shellPanelComponent: ShellPanelComponent, shellContent, loadingContent, emptyContent, }: ThreadDetailSurfaceProps): react.JSX.Element;
 
 interface PluginProviderAdapter {
     fetchPlugins?: () => Promise<PluginDto[]> | PluginDto[];

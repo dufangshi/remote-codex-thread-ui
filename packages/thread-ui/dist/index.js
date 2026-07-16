@@ -12671,7 +12671,9 @@ var GraphChatCompactMessageItem = memo3(
 
 // src/components/timeline/timelineItems.ts
 function isRenderableHistoryItem(item) {
-  return Boolean(item && typeof item.id === "string" && typeof item.kind === "string");
+  return Boolean(
+    item && typeof item.id === "string" && typeof item.kind === "string"
+  );
 }
 function renderableHistoryItems(items) {
   return items.filter(isRenderableHistoryItem);
@@ -12680,7 +12682,9 @@ function decodeXmlEntities(value) {
   return value.replace(/&quot;/g, '"').replace(/&apos;/g, "'").replace(/&gt;/g, ">").replace(/&lt;/g, "<").replace(/&amp;/g, "&");
 }
 function parseHookPromptText(text) {
-  const match = text.trim().match(/^<hook_prompt(?:\s+hook_run_id="([^"]+)")?>([\s\S]*)<\/hook_prompt>$/);
+  const match = text.trim().match(
+    /^<hook_prompt(?:\s+hook_run_id="([^"]+)")?>([\s\S]*)<\/hook_prompt>$/
+  );
   if (!match) {
     return null;
   }
@@ -12721,7 +12725,9 @@ function prepareTurnItemsForRendering(items, active) {
     return renderableItems;
   }
   const prepared = [...renderableItems];
-  const firstUserIndex = prepared.findIndex((item) => item.kind === "userMessage");
+  const firstUserIndex = prepared.findIndex(
+    (item) => item.kind === "userMessage"
+  );
   if (firstUserIndex < 0) {
     return prepared;
   }
@@ -12785,7 +12791,11 @@ function sortTurnItemsByRecordedSequence(items) {
   while (cursor < trailingItems.length) {
     const item = trailingItems[cursor];
     if (hasHistoryItemSequence(item)) {
-      orderedItems.push({ item, index: cursor, order: historyItemSequence(item) });
+      orderedItems.push({
+        item,
+        index: cursor,
+        order: historyItemSequence(item)
+      });
       cursor += 1;
       continue;
     }
@@ -12827,7 +12837,9 @@ function mergeLiveTurnItems(items, liveItems) {
   if (renderableLiveItems.length === 0) {
     return sortTurnItemsByRecordedSequence(persistedItems);
   }
-  const liveItemsById = new Map(renderableLiveItems.map((item) => [item.id, item]));
+  const liveItemsById = new Map(
+    renderableLiveItems.map((item) => [item.id, item])
+  );
   const mergedItems = persistedItems.map((item) => {
     const liveItem = liveItemsById.get(item.id);
     if (!liveItem) {
@@ -21408,9 +21420,30 @@ function formatTopbarUsageSummary(usage) {
   const tokenParts = usage.cacheWrite > 0 ? `${baseTokenParts} / cache write ${formatTopbarTokenCount(usage.cacheWrite)}` : baseTokenParts;
   return usage.pricedTurns > 0 ? `${tokenParts} / cost ${formatCompactUsd(usage.priceUsd)}` : tokenParts;
 }
+function isRenderableHistoryItem2(value) {
+  return Boolean(
+    value && typeof value === "object" && typeof value.id === "string" && typeof value.kind === "string"
+  );
+}
+function sanitizeThreadDetailHistory(detail) {
+  const sanitizeItems = (items) => Array.isArray(items) ? items.filter(isRenderableHistoryItem2) : [];
+  return {
+    ...detail,
+    turns: Array.isArray(detail.turns) ? detail.turns.map((turn) => ({
+      ...turn,
+      items: sanitizeItems(turn.items)
+    })) : [],
+    ...detail.liveItems ? {
+      liveItems: {
+        ...detail.liveItems,
+        items: sanitizeItems(detail.liveItems.items)
+      }
+    } : {}
+  };
+}
 function ThreadDetailSurface({
   threads,
-  detail,
+  detail: rawDetail,
   loading,
   error,
   status = null,
@@ -21465,6 +21498,10 @@ function ThreadDetailSurface({
   loadingContent,
   emptyContent
 }) {
+  const detail = useMemo18(
+    () => rawDetail ? sanitizeThreadDetailHistory(rawDetail) : null,
+    [rawDetail]
+  );
   const contextPlugins = usePlugins();
   const plugins = providedPlugins ?? contextPlugins ?? createDefaultPluginContextValue();
   const {

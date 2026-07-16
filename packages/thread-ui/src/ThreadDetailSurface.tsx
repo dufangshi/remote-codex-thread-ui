@@ -6,46 +6,47 @@ import {
   type RefAttributes,
   type RefObject,
   type ReactNode,
-} from 'react';
+} from "react";
 
 import type {
   AgentBackendManagementSchemaDto,
   AgentProviderCapabilitiesDto,
   AgentRuntimeStatusDto,
   ThreadDetailDto,
+  ThreadHistoryItemDto,
   ThreadDto,
-} from '@remote-codex/shared';
-import type { ThreadDetailUiAdapter } from './adapters';
-import type { ThemeMode } from './app-shell/AppShellNavContext';
+} from "@remote-codex/shared";
+import type { ThreadDetailUiAdapter } from "./adapters";
+import type { ThemeMode } from "./app-shell/AppShellNavContext";
 import {
   createDefaultPluginContextValue,
   PluginContext,
   type PluginContextValue,
-} from './plugins/plugin-context';
-import { usePlugins } from './plugins/usePlugins';
-import { ThreadWorkspaceLayout } from './components/ThreadWorkspaceLayout';
+} from "./plugins/plugin-context";
+import { usePlugins } from "./plugins/usePlugins";
+import { ThreadWorkspaceLayout } from "./components/ThreadWorkspaceLayout";
 import {
   ThreadTimeline,
   type ThreadTimelineProps,
-} from './components/ThreadTimeline';
+} from "./components/ThreadTimeline";
 import {
   ThreadComposer,
   type ThreadComposerProps,
-} from './components/ThreadComposer';
+} from "./components/ThreadComposer";
 import {
   ThreadShellPanel,
   type ThreadShellControlState,
   type ThreadShellPanelHandle,
-} from './components/ThreadShellPanel';
+} from "./components/ThreadShellPanel";
 import {
   ThreadGraphWorkspacePanel,
   type ThreadGraphWorkspaceFeatures,
-} from './components/ThreadGraphWorkspacePanelLazy';
+} from "./components/ThreadGraphWorkspacePanelLazy";
 import {
   GraphChatThreadChatPanel,
   type GraphChatThreadUsageSummary,
-} from './components/graph-chat/GraphChatThreadChatPanel';
-import { formatCompactUsd } from './components/timeline/tokenFormatting';
+} from "./components/graph-chat/GraphChatThreadChatPanel";
+import { formatCompactUsd } from "./components/timeline/tokenFormatting";
 
 function summarizeThreadUsage(
   detail: ThreadDetailDto,
@@ -60,8 +61,7 @@ function summarizeThreadUsage(
         input: summary.input + usage.inputTokens,
         output: summary.output + usage.outputTokens,
         cache: summary.cache + usage.cachedInputTokens,
-        cacheWrite:
-          summary.cacheWrite + (usage.cacheWriteInputTokens ?? 0),
+        cacheWrite: summary.cacheWrite + (usage.cacheWriteInputTokens ?? 0),
         priceUsd: summary.priceUsd + (turn.priceEstimate?.totalUsd ?? 0),
         pricedTurns: summary.pricedTurns + (turn.priceEstimate ? 1 : 0),
         turns: summary.turns + 1,
@@ -80,8 +80,8 @@ function summarizeThreadUsage(
 }
 
 function formatTopbarTokenCount(value: number | undefined) {
-  if (typeof value !== 'number' || !Number.isFinite(value) || value <= 0) {
-    return '0';
+  if (typeof value !== "number" || !Number.isFinite(value) || value <= 0) {
+    return "0";
   }
   if (value >= 1_000_000) {
     return `${(value / 1_000_000).toFixed(value >= 10_000_000 ? 0 : 1)}m`;
@@ -92,21 +92,60 @@ function formatTopbarTokenCount(value: number | undefined) {
   return String(Math.round(value));
 }
 
-function formatTopbarUsageSummary(
-  usage: GraphChatThreadUsageSummary | null,
-) {
+function formatTopbarUsageSummary(usage: GraphChatThreadUsageSummary | null) {
   if (!usage || usage.turns <= 0) {
-    return 'waiting for agent usage';
+    return "waiting for agent usage";
   }
   const baseTokenParts = `in ${formatTopbarTokenCount(usage.input)} / out ${formatTopbarTokenCount(
     usage.output,
   )} / cache read ${formatTopbarTokenCount(usage.cache)}`;
-  const tokenParts = usage.cacheWrite > 0
-    ? `${baseTokenParts} / cache write ${formatTopbarTokenCount(usage.cacheWrite)}`
-    : baseTokenParts;
+  const tokenParts =
+    usage.cacheWrite > 0
+      ? `${baseTokenParts} / cache write ${formatTopbarTokenCount(usage.cacheWrite)}`
+      : baseTokenParts;
   return usage.pricedTurns > 0
     ? `${tokenParts} / cost ${formatCompactUsd(usage.priceUsd)}`
     : tokenParts;
+}
+
+function isRenderableHistoryItem(
+  value: unknown,
+): value is ThreadHistoryItemDto {
+  return Boolean(
+    value &&
+    typeof value === "object" &&
+    typeof (value as { id?: unknown }).id === "string" &&
+    typeof (value as { kind?: unknown }).kind === "string",
+  );
+}
+
+/**
+ * The workspace side panels inspect the same transcript as the timeline. A
+ * malformed historical event should be omitted once at the surface boundary,
+ * rather than allowing an optional item from a streamed payload to blank the
+ * entire screen.
+ */
+function sanitizeThreadDetailHistory(detail: ThreadDetailDto): ThreadDetailDto {
+  const sanitizeItems = (items: unknown): ThreadHistoryItemDto[] =>
+    Array.isArray(items) ? items.filter(isRenderableHistoryItem) : [];
+
+  return {
+    ...detail,
+    turns: Array.isArray(detail.turns)
+      ? detail.turns.map((turn) => ({
+          ...turn,
+          items: sanitizeItems(turn.items),
+        }))
+      : [],
+    ...(detail.liveItems
+      ? {
+          liveItems: {
+            ...detail.liveItems,
+            items: sanitizeItems(detail.liveItems.items),
+          },
+        }
+      : {}),
+  };
 }
 
 export interface ThreadDetailSurfaceProps {
@@ -136,7 +175,11 @@ export interface ThreadDetailSurfaceProps {
   workspaceTitle?: string;
   workspaceActions?: ReactNode;
   workspaceFeatures?: ThreadGraphWorkspaceFeatures;
-  workspaceFocusPathRequest?: { path: string; line?: number; requestId: number } | null;
+  workspaceFocusPathRequest?: {
+    path: string;
+    line?: number;
+    requestId: number;
+  } | null;
   onNewThreadTitle?: (title: string) => Promise<void> | void;
   beforeTimelineContent?: ReactNode;
   errorContent?: ReactNode;
@@ -147,18 +190,18 @@ export interface ThreadDetailSurfaceProps {
   currentWorkspaceLabel?: string | null;
   onCloseAppNavigation?: () => void;
   className?: string;
-  activeView?: 'chat' | 'shell';
+  activeView?: "chat" | "shell";
   liveOutput?: string;
   timelineProps?: Partial<
-    Omit<ThreadTimelineProps, 'threadId' | 'turns' | 'liveOutput' | 'adapter'>
+    Omit<ThreadTimelineProps, "threadId" | "turns" | "liveOutput" | "adapter">
   >;
-  composerProps?: Omit<ThreadComposerProps, 'activeView' | 'onSubmit'>;
-  shellComposerProps?: Omit<ThreadComposerProps, 'activeView' | 'onSubmit'>;
+  composerProps?: Omit<ThreadComposerProps, "activeView" | "onSubmit">;
+  shellComposerProps?: Omit<ThreadComposerProps, "activeView" | "onSubmit">;
   useFloatingMobileComposer?: boolean;
   floatingMobileComposerBottomOffset?: number;
   composerHostRef?: RefObject<HTMLDivElement | null>;
   shellPanelRef?: Ref<ThreadShellPanelHandle>;
-  shellEffectiveTheme?: 'light' | 'dark';
+  shellEffectiveTheme?: "light" | "dark";
   shellThemeMode?: ThemeMode;
   onShellThemeModeChange?: (mode: ThemeMode) => void;
   onShellStateChange?: (state: ThreadShellControlState) => void;
@@ -168,11 +211,11 @@ export interface ThreadDetailSurfaceProps {
   shellPanelComponent?: ForwardRefExoticComponent<
     {
       threadId: string;
-      shellAdapter: NonNullable<ThreadDetailUiAdapter['shell']>;
+      shellAdapter: NonNullable<ThreadDetailUiAdapter["shell"]>;
       isVisible?: boolean;
       showHeader?: boolean;
       showFloatingToolbox?: boolean;
-      effectiveTheme?: 'light' | 'dark';
+      effectiveTheme?: "light" | "dark";
       onStateChange?: (state: ThreadShellControlState) => void;
     } & RefAttributes<ThreadShellPanelHandle>
   >;
@@ -183,7 +226,7 @@ export interface ThreadDetailSurfaceProps {
 
 export function ThreadDetailSurface({
   threads,
-  detail,
+  detail: rawDetail,
   loading,
   error,
   status = null,
@@ -216,9 +259,9 @@ export function ThreadDetailSurface({
   currentWorkspaceId,
   currentWorkspaceLabel,
   onCloseAppNavigation,
-  className = 'thread-detail-surface relative flex h-full min-h-0 flex-1 flex-col overflow-hidden',
-  activeView = 'chat',
-  liveOutput = '',
+  className = "thread-detail-surface relative flex h-full min-h-0 flex-1 flex-col overflow-hidden",
+  activeView = "chat",
+  liveOutput = "",
   timelineProps,
   composerProps,
   shellComposerProps,
@@ -226,7 +269,7 @@ export function ThreadDetailSurface({
   floatingMobileComposerBottomOffset = 0,
   composerHostRef,
   shellPanelRef,
-  shellEffectiveTheme = 'dark',
+  shellEffectiveTheme = "dark",
   shellThemeMode = shellEffectiveTheme,
   onShellThemeModeChange,
   onShellStateChange,
@@ -238,6 +281,10 @@ export function ThreadDetailSurface({
   loadingContent,
   emptyContent,
 }: ThreadDetailSurfaceProps) {
+  const detail = useMemo(
+    () => (rawDetail ? sanitizeThreadDetailHistory(rawDetail) : null),
+    [rawDetail],
+  );
   const contextPlugins = usePlugins();
   const plugins =
     providedPlugins ?? contextPlugins ?? createDefaultPluginContextValue();
@@ -257,9 +304,7 @@ export function ThreadDetailSurface({
           }
         : {}),
       onOpenLinkedThread: openThread,
-      ...(openWorkspaceFile
-        ? { onOpenWorkspaceFile: openWorkspaceFile }
-        : {}),
+      ...(openWorkspaceFile ? { onOpenWorkspaceFile: openWorkspaceFile } : {}),
       ...(loadHistoryItemDetail
         ? { onLoadHistoryItemDetail: loadHistoryItemDetail }
         : {}),
@@ -275,7 +320,7 @@ export function ThreadDetailSurface({
   );
   const terminalPanelEnabled = plugins
     .getThreadPanels()
-    .some((panel) => panel.kind === 'terminal');
+    .some((panel) => panel.kind === "terminal");
   const threadUsageSummary = useMemo(
     () => (detail ? summarizeThreadUsage(detail) : null),
     [detail],
@@ -330,7 +375,7 @@ export function ThreadDetailSurface({
             {error}
           </div>
         ))}
-      {detail.workspacePathStatus === 'missing' &&
+      {detail.workspacePathStatus === "missing" &&
         (workspaceMissingContent ?? (
           <div className="shrink-0 border-b border-rose-500/20 bg-rose-500/10 px-5 py-4 text-sm text-rose-100 sm:px-6">
             <p className="font-medium text-rose-50">Workspace path missing</p>
@@ -341,7 +386,7 @@ export function ThreadDetailSurface({
         ))}
       <div
         className={
-          activeView === 'chat' ? 'flex min-h-0 flex-1 flex-col' : 'hidden'
+          activeView === "chat" ? "flex min-h-0 flex-1 flex-col" : "hidden"
         }
       >
         <GraphChatThreadChatPanel
@@ -352,7 +397,9 @@ export function ThreadDetailSurface({
           liveOutput={liveOutput}
           transcriptItemCount={transcriptItemCount}
           useFloatingMobileComposer={useFloatingMobileComposer}
-          floatingMobileComposerBottomOffset={floatingMobileComposerBottomOffset}
+          floatingMobileComposerBottomOffset={
+            floatingMobileComposerBottomOffset
+          }
           {...(beforeTimelineContent ? { beforeTimelineContent } : {})}
           {...(composerProps ? { composerProps } : {})}
           {...(timelineProps ? { timelineProps } : {})}
@@ -361,7 +408,7 @@ export function ThreadDetailSurface({
       </div>
       <div
         className={
-          activeView === 'shell' ? 'flex min-h-0 flex-1 flex-col' : 'hidden'
+          activeView === "shell" ? "flex min-h-0 flex-1 flex-col" : "hidden"
         }
       >
         {shellContent ??
@@ -371,7 +418,7 @@ export function ThreadDetailSurface({
               threadId={detail.thread.id}
               shellAdapter={adapter.shell}
               effectiveTheme={shellEffectiveTheme}
-              isVisible={activeView === 'shell'}
+              isVisible={activeView === "shell"}
               showHeader={false}
               showFloatingToolbox={false}
               {...(onShellStateChange
@@ -406,7 +453,7 @@ export function ThreadDetailSurface({
               </div>
             ))
           ))}
-        {activeView === 'shell' && shellComposerProps && !shellContent ? (
+        {activeView === "shell" && shellComposerProps && !shellContent ? (
           <ThreadComposer
             {...shellComposerProps}
             activeView="shell"
@@ -456,7 +503,7 @@ export function ThreadDetailSurface({
       showMobileNewThreadShortcut={false}
       onOpenThread={adapter.openThread}
       workspaceContent={resolvedWorkspaceContent}
-      workspaceTitle={workspaceTitle ?? 'Workspace'}
+      workspaceTitle={workspaceTitle ?? "Workspace"}
       workspaceActions={workspaceActions}
       {...(onNewThreadTitle ? { onNewThreadTitle } : {})}
       {...(onCloseAppNavigation ? { onCloseAppNavigation } : {})}
