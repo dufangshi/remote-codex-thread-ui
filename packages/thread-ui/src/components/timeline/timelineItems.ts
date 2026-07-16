@@ -16,6 +16,18 @@ export interface FileReadHistoryItem extends ThreadHistoryItemDto {
   kind: 'fileRead';
 }
 
+export interface ToolCallHistoryItem extends ThreadHistoryItemDto {
+  kind: 'toolCall';
+}
+
+export interface AgentToolCallHistoryItem extends ThreadHistoryItemDto {
+  kind: 'agentToolCall';
+}
+
+export interface SkillToolCallHistoryItem extends ThreadHistoryItemDto {
+  kind: 'skillToolCall';
+}
+
 export type TimelineHistoryEntry =
   | {
       kind: 'item';
@@ -41,6 +53,27 @@ export type TimelineHistoryEntry =
       kind: 'fileReadGroup';
       key: string;
       items: FileReadHistoryItem[];
+    }
+  | {
+      kind: 'toolCallGroup';
+      key: string;
+      items: ToolCallHistoryItem[];
+    }
+  | {
+      kind: 'agentToolCallGroup';
+      key: string;
+      items: AgentToolCallHistoryItem[];
+    }
+  | {
+      kind: 'skillToolCallGroup';
+      key: string;
+      items: SkillToolCallHistoryItem[];
+    }
+  | {
+      kind: 'agentActivityGroup';
+      key: string;
+      entries: TimelineHistoryEntry[];
+      itemCount: number;
     };
 
 export type TimelineTurn = Omit<ThreadTurnDto, 'status'> & {
@@ -404,6 +437,10 @@ export function isActiveTurnStatus(status: TimelineTurn['status']) {
 }
 
 export function groupTimelineHistoryItems(items: ThreadHistoryItemDto[]) {
+  return groupAgentActivitySequences(groupConsecutiveTimelineHistoryItems(items));
+}
+
+function groupConsecutiveTimelineHistoryItems(items: ThreadHistoryItemDto[]) {
   const entries: TimelineHistoryEntry[] = [];
   let index = 0;
 
@@ -417,7 +454,10 @@ export function groupTimelineHistoryItems(items: ThreadHistoryItemDto[]) {
       current.kind !== 'commandExecution' &&
       current.kind !== 'fileChange' &&
       current.kind !== 'webSearch' &&
-      current.kind !== 'fileRead'
+      current.kind !== 'fileRead' &&
+      current.kind !== 'toolCall' &&
+      current.kind !== 'agentToolCall' &&
+      current.kind !== 'skillToolCall'
     ) {
       entries.push({
         kind: 'item',
@@ -472,6 +512,33 @@ export function groupTimelineHistoryItems(items: ThreadHistoryItemDto[]) {
       continue;
     }
 
+    if (current.kind === 'toolCall') {
+      entries.push({
+        kind: 'toolCallGroup',
+        key: groupKey,
+        items: groupedItems as ToolCallHistoryItem[],
+      });
+      continue;
+    }
+
+    if (current.kind === 'agentToolCall') {
+      entries.push({
+        kind: 'agentToolCallGroup',
+        key: groupKey,
+        items: groupedItems as AgentToolCallHistoryItem[],
+      });
+      continue;
+    }
+
+    if (current.kind === 'skillToolCall') {
+      entries.push({
+        kind: 'skillToolCallGroup',
+        key: groupKey,
+        items: groupedItems as SkillToolCallHistoryItem[],
+      });
+      continue;
+    }
+
     entries.push({
       kind: 'searchGroup',
       key: groupKey,
@@ -480,4 +547,76 @@ export function groupTimelineHistoryItems(items: ThreadHistoryItemDto[]) {
   }
 
   return entries;
+}
+
+function isAgentActivityEntry(entry: TimelineHistoryEntry) {
+  if (entry.kind !== 'item') {
+    return entry.kind !== 'agentActivityGroup';
+  }
+
+  return (
+    entry.item.kind === 'commandExecution' ||
+    entry.item.kind === 'fileChange' ||
+    entry.item.kind === 'webSearch' ||
+    entry.item.kind === 'fileRead' ||
+    entry.item.kind === 'toolCall' ||
+    entry.item.kind === 'agentToolCall' ||
+    entry.item.kind === 'skillToolCall'
+  );
+}
+
+function isCompletedAgentNarrative(entry: TimelineHistoryEntry) {
+  return (
+    entry.kind === 'item' &&
+    entry.item.kind === 'agentMessage' &&
+    entry.item.text.trim().length > 0 &&
+    !isRunningHistoryStatus(entry.item.status)
+  );
+}
+
+function entryItemCount(entry: TimelineHistoryEntry): number {
+  if (entry.kind === 'item') {
+    return 1;
+  }
+  if (entry.kind === 'agentActivityGroup') {
+    return entry.itemCount;
+  }
+  return entry.items.length;
+}
+
+function groupAgentActivitySequences(entries: TimelineHistoryEntry[]) {
+  const grouped: TimelineHistoryEntry[] = [];
+  let index = 0;
+
+  while (index < entries.length) {
+    if (!isAgentActivityEntry(entries[index]!)) {
+      grouped.push(entries[index]!);
+      index += 1;
+      continue;
+    }
+
+    const start = index;
+    while (index < entries.length && isAgentActivityEntry(entries[index]!)) {
+      index += 1;
+    }
+    const activityEntries = entries.slice(start, index);
+    const itemCount = activityEntries.reduce(
+      (total, entry) => total + entryItemCount(entry),
+      0,
+    );
+
+    if (itemCount > 1 && isCompletedAgentNarrative(entries[index]!)) {
+      grouped.push({
+        kind: 'agentActivityGroup',
+        key: `agent-activity:${activityEntries.map((entry) => entry.key).join(':')}`,
+        entries: activityEntries,
+        itemCount,
+      });
+      continue;
+    }
+
+    grouped.push(...activityEntries);
+  }
+
+  return grouped;
 }

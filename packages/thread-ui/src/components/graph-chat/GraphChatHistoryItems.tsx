@@ -63,6 +63,10 @@ interface FileReadHistoryItem extends ThreadHistoryItemDto {
   kind: 'fileRead';
 }
 
+type ToolActivityHistoryItem = ThreadHistoryItemDto & {
+  kind: 'toolCall' | 'agentToolCall' | 'skillToolCall';
+};
+
 function isRunningHistoryStatus(status?: string | null) {
   if (!status) return false;
   const normalized = status.trim().toLowerCase();
@@ -1259,6 +1263,124 @@ export const GraphChatCommandGroupItem = memo(
             </button>
           );
         })}
+      </GraphChatHistoryGroupFrame>
+    );
+  },
+);
+
+export const GraphChatToolCallGroupItem = memo(
+  function GraphChatToolCallGroupItem({
+    items,
+    expanded,
+    onToggleExpanded,
+    onOpen,
+    timeMeta,
+  }: {
+    items: ToolActivityHistoryItem[];
+    expanded: boolean;
+    onToggleExpanded: () => void;
+    onOpen: (item: ToolActivityHistoryItem, title: string) => void;
+    timeMeta?: ReactNode;
+  }) {
+    const runningCount = items.filter((item) => isRunningHistoryStatus(item.status)).length;
+    const firstKind = items[0]?.kind ?? 'toolCall';
+    const label =
+      firstKind === 'agentToolCall'
+        ? 'agent action'
+        : firstKind === 'skillToolCall'
+          ? 'skill call'
+          : 'tool call';
+    const countLabel = items.length === 1 ? `1 ${label}` : `${items.length} ${label}s`;
+
+    return (
+      <GraphChatHistoryGroupFrame
+        className="thread-graph-history-group-tool"
+        count={items.length}
+        countBadgeClassName="border-teal-200/35 text-teal-100"
+        desktopIconClassName="border-teal-300/30 bg-teal-300/[0.14] text-teal-100"
+        expanded={expanded}
+        expandedListClassName="border-teal-300/12"
+        icon={firstKind === 'agentToolCall' ? <Bot className="h-3.5 w-3.5" /> : <Wrench className="h-3.5 w-3.5" />}
+        onToggleExpanded={onToggleExpanded}
+        runningIndicator={runningCount > 0 ? <RunningDots /> : null}
+        summary={
+          <>
+            <span className="rounded-full border border-teal-300/28 bg-teal-300/12 px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.24em] text-teal-100">
+              Batch
+            </span>
+            <span className="rounded-full border border-stone-700/90 bg-stone-900/80 px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.16em] text-stone-300">
+              {countLabel}
+            </span>
+          </>
+        }
+        timeMeta={timeMeta}
+        toggleAriaLabel={`${expanded ? 'Collapse' : 'Expand'} ${countLabel}`}
+      >
+        {items.map((item, index) => {
+          const summary = summarizeInlinePreviewText(item.text);
+          return (
+            <button
+              key={item.id}
+              type="button"
+              aria-label={`Open ${label} ${index + 1}`}
+              onClick={() => onOpen(item, `${label} ${index + 1}`)}
+              className="thread-graph-history-detail-row block w-full rounded-md border px-3 py-2 text-left transition"
+            >
+              <div className="flex min-w-0 items-center gap-2 text-sm leading-6">
+                <p className="thread-graph-history-detail-text min-w-0 flex-1 overflow-hidden whitespace-nowrap text-clip">
+                  {summary.firstLine}
+                </p>
+                {item.status ? (
+                  <span className="thread-graph-history-detail-meta shrink-0 text-xs">
+                    {item.status}
+                  </span>
+                ) : null}
+              </div>
+            </button>
+          );
+        })}
+      </GraphChatHistoryGroupFrame>
+    );
+  },
+);
+
+export const GraphChatAgentActivityGroupItem = memo(
+  function GraphChatAgentActivityGroupItem({
+    itemCount,
+    expanded,
+    onToggleExpanded,
+    timeMeta,
+    children,
+  }: {
+    itemCount: number;
+    expanded: boolean;
+    onToggleExpanded: () => void;
+    timeMeta?: ReactNode;
+    children: ReactNode;
+  }) {
+    const countLabel = itemCount === 1 ? '1 operation' : `${itemCount} operations`;
+    return (
+      <GraphChatHistoryGroupFrame
+        className="thread-graph-history-group-activity"
+        count={itemCount}
+        countBadgeClassName="border-slate-200/35 text-slate-100"
+        desktopIconClassName="border-slate-300/30 bg-slate-300/[0.14] text-slate-100"
+        expanded={expanded}
+        expandedListClassName="border-slate-300/12"
+        icon={<Bot className="h-3.5 w-3.5" />}
+        onToggleExpanded={onToggleExpanded}
+        summary={
+          <>
+            <span className="text-sm font-medium text-stone-100">Agent activity</span>
+            <span className="rounded-full border border-stone-700/90 bg-stone-900/80 px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.16em] text-stone-300">
+              {countLabel}
+            </span>
+          </>
+        }
+        timeMeta={timeMeta}
+        toggleAriaLabel={`${expanded ? 'Collapse' : 'Expand'} ${countLabel}`}
+      >
+        {children}
       </GraphChatHistoryGroupFrame>
     );
   },

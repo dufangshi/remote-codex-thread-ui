@@ -12908,6 +12908,9 @@ function isActiveTurnStatus(status) {
   return status === "inProgress" || status === "sending";
 }
 function groupTimelineHistoryItems(items) {
+  return groupAgentActivitySequences(groupConsecutiveTimelineHistoryItems(items));
+}
+function groupConsecutiveTimelineHistoryItems(items) {
   const entries = [];
   let index = 0;
   while (index < items.length) {
@@ -12915,7 +12918,7 @@ function groupTimelineHistoryItems(items) {
     if (!current) {
       break;
     }
-    if (current.kind !== "commandExecution" && current.kind !== "fileChange" && current.kind !== "webSearch" && current.kind !== "fileRead") {
+    if (current.kind !== "commandExecution" && current.kind !== "fileChange" && current.kind !== "webSearch" && current.kind !== "fileRead" && current.kind !== "toolCall" && current.kind !== "agentToolCall" && current.kind !== "skillToolCall") {
       entries.push({
         kind: "item",
         key: current.id,
@@ -12962,6 +12965,30 @@ function groupTimelineHistoryItems(items) {
       });
       continue;
     }
+    if (current.kind === "toolCall") {
+      entries.push({
+        kind: "toolCallGroup",
+        key: groupKey,
+        items: groupedItems
+      });
+      continue;
+    }
+    if (current.kind === "agentToolCall") {
+      entries.push({
+        kind: "agentToolCallGroup",
+        key: groupKey,
+        items: groupedItems
+      });
+      continue;
+    }
+    if (current.kind === "skillToolCall") {
+      entries.push({
+        kind: "skillToolCallGroup",
+        key: groupKey,
+        items: groupedItems
+      });
+      continue;
+    }
     entries.push({
       kind: "searchGroup",
       key: groupKey,
@@ -12969,6 +12996,55 @@ function groupTimelineHistoryItems(items) {
     });
   }
   return entries;
+}
+function isAgentActivityEntry(entry) {
+  if (entry.kind !== "item") {
+    return entry.kind !== "agentActivityGroup";
+  }
+  return entry.item.kind === "commandExecution" || entry.item.kind === "fileChange" || entry.item.kind === "webSearch" || entry.item.kind === "fileRead" || entry.item.kind === "toolCall" || entry.item.kind === "agentToolCall" || entry.item.kind === "skillToolCall";
+}
+function isCompletedAgentNarrative(entry) {
+  return entry.kind === "item" && entry.item.kind === "agentMessage" && entry.item.text.trim().length > 0 && !isRunningHistoryStatus(entry.item.status);
+}
+function entryItemCount(entry) {
+  if (entry.kind === "item") {
+    return 1;
+  }
+  if (entry.kind === "agentActivityGroup") {
+    return entry.itemCount;
+  }
+  return entry.items.length;
+}
+function groupAgentActivitySequences(entries) {
+  const grouped = [];
+  let index = 0;
+  while (index < entries.length) {
+    if (!isAgentActivityEntry(entries[index])) {
+      grouped.push(entries[index]);
+      index += 1;
+      continue;
+    }
+    const start = index;
+    while (index < entries.length && isAgentActivityEntry(entries[index])) {
+      index += 1;
+    }
+    const activityEntries = entries.slice(start, index);
+    const itemCount = activityEntries.reduce(
+      (total, entry) => total + entryItemCount(entry),
+      0
+    );
+    if (itemCount > 1 && isCompletedAgentNarrative(entries[index])) {
+      grouped.push({
+        kind: "agentActivityGroup",
+        key: `agent-activity:${activityEntries.map((entry) => entry.key).join(":")}`,
+        entries: activityEntries,
+        itemCount
+      });
+      continue;
+    }
+    grouped.push(...activityEntries);
+  }
+  return grouped;
 }
 
 // src/components/timeline/timelineAnchors.ts
@@ -13490,7 +13566,9 @@ function GraphChatHistoryEntries({
   renderFileChangeGroup,
   renderFileReadGroup,
   renderItem,
-  renderSearchGroup
+  renderSearchGroup,
+  renderToolCallGroup,
+  renderAgentActivityGroup
 }) {
   return /* @__PURE__ */ jsx37(Fragment8, { children: entries.map((entry) => {
     const expanded = expandedGroups[entry.key] ?? false;
@@ -13518,6 +13596,20 @@ function GraphChatHistoryEntries({
     }
     if (entry.kind === "fileReadGroup") {
       return renderFileReadGroup(
+        entry,
+        expanded,
+        onToggleExpanded
+      );
+    }
+    if (entry.kind === "toolCallGroup" || entry.kind === "agentToolCallGroup" || entry.kind === "skillToolCallGroup") {
+      return renderToolCallGroup(
+        entry,
+        expanded,
+        onToggleExpanded
+      );
+    }
+    if (entry.kind === "agentActivityGroup") {
+      return renderAgentActivityGroup(
         entry,
         expanded,
         onToggleExpanded
@@ -14581,6 +14673,88 @@ var GraphChatCommandGroupItem = memo4(
             item.id
           );
         })
+      }
+    );
+  }
+);
+var GraphChatToolCallGroupItem = memo4(
+  function GraphChatToolCallGroupItem2({
+    items,
+    expanded,
+    onToggleExpanded,
+    onOpen,
+    timeMeta
+  }) {
+    const runningCount = items.filter((item) => isRunningHistoryStatus2(item.status)).length;
+    const firstKind = items[0]?.kind ?? "toolCall";
+    const label = firstKind === "agentToolCall" ? "agent action" : firstKind === "skillToolCall" ? "skill call" : "tool call";
+    const countLabel = items.length === 1 ? `1 ${label}` : `${items.length} ${label}s`;
+    return /* @__PURE__ */ jsx40(
+      GraphChatHistoryGroupFrame,
+      {
+        className: "thread-graph-history-group-tool",
+        count: items.length,
+        countBadgeClassName: "border-teal-200/35 text-teal-100",
+        desktopIconClassName: "border-teal-300/30 bg-teal-300/[0.14] text-teal-100",
+        expanded,
+        expandedListClassName: "border-teal-300/12",
+        icon: firstKind === "agentToolCall" ? /* @__PURE__ */ jsx40(Bot, { className: "h-3.5 w-3.5" }) : /* @__PURE__ */ jsx40(Wrench2, { className: "h-3.5 w-3.5" }),
+        onToggleExpanded,
+        runningIndicator: runningCount > 0 ? /* @__PURE__ */ jsx40(RunningDots, {}) : null,
+        summary: /* @__PURE__ */ jsxs32(Fragment9, { children: [
+          /* @__PURE__ */ jsx40("span", { className: "rounded-full border border-teal-300/28 bg-teal-300/12 px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.24em] text-teal-100", children: "Batch" }),
+          /* @__PURE__ */ jsx40("span", { className: "rounded-full border border-stone-700/90 bg-stone-900/80 px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.16em] text-stone-300", children: countLabel })
+        ] }),
+        timeMeta,
+        toggleAriaLabel: `${expanded ? "Collapse" : "Expand"} ${countLabel}`,
+        children: items.map((item, index) => {
+          const summary = summarizeInlinePreviewText(item.text);
+          return /* @__PURE__ */ jsx40(
+            "button",
+            {
+              type: "button",
+              "aria-label": `Open ${label} ${index + 1}`,
+              onClick: () => onOpen(item, `${label} ${index + 1}`),
+              className: "thread-graph-history-detail-row block w-full rounded-md border px-3 py-2 text-left transition",
+              children: /* @__PURE__ */ jsxs32("div", { className: "flex min-w-0 items-center gap-2 text-sm leading-6", children: [
+                /* @__PURE__ */ jsx40("p", { className: "thread-graph-history-detail-text min-w-0 flex-1 overflow-hidden whitespace-nowrap text-clip", children: summary.firstLine }),
+                item.status ? /* @__PURE__ */ jsx40("span", { className: "thread-graph-history-detail-meta shrink-0 text-xs", children: item.status }) : null
+              ] })
+            },
+            item.id
+          );
+        })
+      }
+    );
+  }
+);
+var GraphChatAgentActivityGroupItem = memo4(
+  function GraphChatAgentActivityGroupItem2({
+    itemCount,
+    expanded,
+    onToggleExpanded,
+    timeMeta,
+    children
+  }) {
+    const countLabel = itemCount === 1 ? "1 operation" : `${itemCount} operations`;
+    return /* @__PURE__ */ jsx40(
+      GraphChatHistoryGroupFrame,
+      {
+        className: "thread-graph-history-group-activity",
+        count: itemCount,
+        countBadgeClassName: "border-slate-200/35 text-slate-100",
+        desktopIconClassName: "border-slate-300/30 bg-slate-300/[0.14] text-slate-100",
+        expanded,
+        expandedListClassName: "border-slate-300/12",
+        icon: /* @__PURE__ */ jsx40(Bot, { className: "h-3.5 w-3.5" }),
+        onToggleExpanded,
+        summary: /* @__PURE__ */ jsxs32(Fragment9, { children: [
+          /* @__PURE__ */ jsx40("span", { className: "text-sm font-medium text-stone-100", children: "Agent activity" }),
+          /* @__PURE__ */ jsx40("span", { className: "rounded-full border border-stone-700/90 bg-stone-900/80 px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.16em] text-stone-300", children: countLabel })
+        ] }),
+        timeMeta,
+        toggleAriaLabel: `${expanded ? "Collapse" : "Expand"} ${countLabel}`,
+        children
       }
     );
   }
@@ -15850,6 +16024,9 @@ function firstHistoryEntryTimestamp(entry) {
   if (entry.kind === "item") {
     return entry.item.createdAt ?? null;
   }
+  if (entry.kind === "agentActivityGroup") {
+    return entry.entries[0] ? firstHistoryEntryTimestamp(entry.entries[0]) : null;
+  }
   return entry.items.find((item) => item.createdAt)?.createdAt ?? null;
 }
 function collapsedSummaryMessages(entries) {
@@ -16185,6 +16362,49 @@ function TimelineHistoryEntries({
           onToggleExpanded,
           onOpen: onOpenExpandedText,
           timeMeta: relativeTimeMeta(firstHistoryEntryTimestamp(entry))
+        },
+        entry.key
+      ),
+      renderToolCallGroup: (entry, expanded, onToggleExpanded) => /* @__PURE__ */ jsx45(
+        GraphChatToolCallGroupItem,
+        {
+          items: entry.items,
+          expanded,
+          onToggleExpanded,
+          onOpen: onOpenToolCallDetail,
+          timeMeta: relativeTimeMeta(firstHistoryEntryTimestamp(entry))
+        },
+        entry.key
+      ),
+      renderAgentActivityGroup: (entry, expanded, onToggleExpanded) => /* @__PURE__ */ jsx45(
+        GraphChatAgentActivityGroupItem,
+        {
+          itemCount: entry.itemCount,
+          expanded,
+          onToggleExpanded,
+          timeMeta: relativeTimeMeta(firstHistoryEntryTimestamp(entry.entries[0])),
+          children: /* @__PURE__ */ jsx45(
+            TimelineHistoryEntries,
+            {
+              entries: entry.entries,
+              expandedGroups,
+              onToggleGroupedItem,
+              threadId,
+              scrollRootRef,
+              onOpenExpandedText,
+              onOpenCommandDetail,
+              onOpenToolCallDetail,
+              onOpenDeferredHistoryItemDetail,
+              ...onBeforeMessageResize ? { onBeforeMessageResize } : {},
+              fallbackTimestamp,
+              fallbackTimeLabel,
+              fallbackTimeTitle,
+              turnStartedAt,
+              autoOpenLatestToolDetails: false,
+              ...onSelectArtifact ? { onSelectArtifact } : {},
+              ...adapter ? { adapter } : {}
+            }
+          )
         },
         entry.key
       ),

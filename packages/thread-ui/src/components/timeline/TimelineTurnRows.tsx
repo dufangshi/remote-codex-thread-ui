@@ -19,6 +19,7 @@ import {
 import { GraphChatHistoryEntries } from '../graph-chat/GraphChatHistoryEntries';
 import {
   GraphChatAgentToolCallItem as AgentToolCallItem,
+  GraphChatAgentActivityGroupItem as AgentActivityGroupItem,
   GraphChatArtifactHistoryItem as ArtifactHistoryItem,
   GraphChatCommandGroupItem as CommandGroupItem,
   GraphChatCommandItem as CommandItem,
@@ -34,6 +35,7 @@ import {
   GraphChatSearchGroupItem as SearchGroupItem,
   GraphChatSkillToolCallItem as SkillToolCallItem,
   GraphChatToolCallItem as ToolCallItem,
+  GraphChatToolCallGroupItem as ToolCallGroupItem,
   GraphChatWebSearchItem as WebSearchItem,
 } from '../graph-chat/GraphChatHistoryItems';
 import { GraphChatCompactMessageItem as CompactMessageItem } from '../graph-chat/GraphChatCompactMessageItem';
@@ -502,9 +504,14 @@ function TimelineTimeToggle({
   );
 }
 
-function firstHistoryEntryTimestamp(entry: TimelineHistoryEntry) {
+function firstHistoryEntryTimestamp(entry: TimelineHistoryEntry): string | null {
   if (entry.kind === 'item') {
     return entry.item.createdAt ?? null;
+  }
+  if (entry.kind === 'agentActivityGroup') {
+    return entry.entries[0]
+      ? firstHistoryEntryTimestamp(entry.entries[0])
+      : null;
   }
   return entry.items.find((item) => item.createdAt)?.createdAt ?? null;
 }
@@ -903,6 +910,45 @@ function TimelineHistoryEntries({
           onOpen={onOpenExpandedText}
           timeMeta={relativeTimeMeta(firstHistoryEntryTimestamp(entry))}
         />
+      )}
+      renderToolCallGroup={(entry, expanded, onToggleExpanded) => (
+        <ToolCallGroupItem
+          key={entry.key}
+          items={entry.items}
+          expanded={expanded}
+          onToggleExpanded={onToggleExpanded}
+          onOpen={onOpenToolCallDetail}
+          timeMeta={relativeTimeMeta(firstHistoryEntryTimestamp(entry))}
+        />
+      )}
+      renderAgentActivityGroup={(entry, expanded, onToggleExpanded) => (
+        <AgentActivityGroupItem
+          key={entry.key}
+          itemCount={entry.itemCount}
+          expanded={expanded}
+          onToggleExpanded={onToggleExpanded}
+          timeMeta={relativeTimeMeta(firstHistoryEntryTimestamp(entry.entries[0]!))}
+        >
+          <TimelineHistoryEntries
+            entries={entry.entries}
+            expandedGroups={expandedGroups}
+            onToggleGroupedItem={onToggleGroupedItem}
+            threadId={threadId}
+            scrollRootRef={scrollRootRef}
+            onOpenExpandedText={onOpenExpandedText}
+            onOpenCommandDetail={onOpenCommandDetail}
+            onOpenToolCallDetail={onOpenToolCallDetail}
+            onOpenDeferredHistoryItemDetail={onOpenDeferredHistoryItemDetail}
+            {...(onBeforeMessageResize ? { onBeforeMessageResize } : {})}
+            fallbackTimestamp={fallbackTimestamp}
+            fallbackTimeLabel={fallbackTimeLabel}
+            fallbackTimeTitle={fallbackTimeTitle}
+            turnStartedAt={turnStartedAt}
+            autoOpenLatestToolDetails={false}
+            {...(onSelectArtifact ? { onSelectArtifact } : {})}
+            {...(adapter ? { adapter } : {})}
+          />
+        </AgentActivityGroupItem>
       )}
       renderItem={(entry) => {
         const timestamp = timestampForHistoryItem(entry.item, fallbackTimestamp ?? null);

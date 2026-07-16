@@ -25,6 +25,17 @@ export type GraphChatHistoryEntry =
       kind: 'fileReadGroup';
       key: string;
       items: unknown[];
+    }
+  | {
+      kind: 'toolCallGroup' | 'agentToolCallGroup' | 'skillToolCallGroup';
+      key: string;
+      items: unknown[];
+    }
+  | {
+      kind: 'agentActivityGroup';
+      key: string;
+      entries: GraphChatHistoryEntry[];
+      itemCount: number;
     };
 
 export interface GraphChatHistoryEntriesProps<
@@ -54,6 +65,19 @@ export interface GraphChatHistoryEntriesProps<
     expanded: boolean,
     onToggleExpanded: () => void,
   ) => ReactNode;
+  renderToolCallGroup: (
+    entry: Extract<
+      TEntry,
+      { kind: 'toolCallGroup' | 'agentToolCallGroup' | 'skillToolCallGroup' }
+    >,
+    expanded: boolean,
+    onToggleExpanded: () => void,
+  ) => ReactNode;
+  renderAgentActivityGroup: (
+    entry: Extract<TEntry, { kind: 'agentActivityGroup' }>,
+    expanded: boolean,
+    onToggleExpanded: () => void,
+  ) => ReactNode;
 }
 
 export function GraphChatHistoryEntries<
@@ -67,6 +91,8 @@ export function GraphChatHistoryEntries<
   renderFileReadGroup,
   renderItem,
   renderSearchGroup,
+  renderToolCallGroup,
+  renderAgentActivityGroup,
 }: GraphChatHistoryEntriesProps<TEntry>) {
   return (
     <>
@@ -101,6 +127,29 @@ export function GraphChatHistoryEntries<
         if (entry.kind === 'fileReadGroup') {
           return renderFileReadGroup(
             entry as Extract<TEntry, { kind: 'fileReadGroup' }>,
+            expanded,
+            onToggleExpanded,
+          );
+        }
+
+        if (
+          entry.kind === 'toolCallGroup' ||
+          entry.kind === 'agentToolCallGroup' ||
+          entry.kind === 'skillToolCallGroup'
+        ) {
+          return renderToolCallGroup(
+            entry as Extract<
+              TEntry,
+              { kind: 'toolCallGroup' | 'agentToolCallGroup' | 'skillToolCallGroup' }
+            >,
+            expanded,
+            onToggleExpanded,
+          );
+        }
+
+        if (entry.kind === 'agentActivityGroup') {
+          return renderAgentActivityGroup(
+            entry as Extract<TEntry, { kind: 'agentActivityGroup' }>,
             expanded,
             onToggleExpanded,
           );

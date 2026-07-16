@@ -158,6 +158,58 @@ describe('timeline item utilities', () => {
     }
   });
 
+  it('batches Claude tool calls and folds a completed operation run before agent prose', () => {
+    const entries = groupTimelineHistoryItems([
+      item('tool-1', 'toolCall'),
+      item('agent-1', 'agentToolCall'),
+      item('agent-2', 'agentToolCall'),
+      item('read-1', 'fileRead'),
+      item('write-1', 'fileChange'),
+      item('tool-2', 'toolCall'),
+      item('narrative', 'agentMessage', {
+        text: 'I found the issue and updated the file.',
+        status: 'Completed',
+      }),
+    ]);
+
+    expect(entries.map((entry) => entry.kind)).toEqual([
+      'agentActivityGroup',
+      'item',
+    ]);
+    const activity = entries[0];
+    expect(activity?.kind).toBe('agentActivityGroup');
+    if (activity?.kind === 'agentActivityGroup') {
+      expect(activity.itemCount).toBe(6);
+      expect(activity.entries.map((entry) => entry.kind)).toEqual([
+        'item',
+        'agentToolCallGroup',
+        'item',
+        'item',
+        'item',
+      ]);
+      expect(activity.entries[1]).toMatchObject({
+        kind: 'agentToolCallGroup',
+        items: [{ id: 'agent-1' }, { id: 'agent-2' }],
+      });
+    }
+  });
+
+  it('keeps in-progress activity visible until a completed agent narrative arrives', () => {
+    const entries = groupTimelineHistoryItems([
+      item('tool-1', 'toolCall'),
+      item('tool-2', 'toolCall'),
+      item('streaming-narrative', 'agentMessage', {
+        text: 'I am still checking.',
+        status: 'Running',
+      }),
+    ]);
+
+    expect(entries.map((entry) => entry.kind)).toEqual([
+      'toolCallGroup',
+      'item',
+    ]);
+  });
+
   it('extracts live output tails after materialized agent text', () => {
     const persisted = [
       item('agent-1', 'agentMessage', { text: 'Hello' }),
