@@ -612,9 +612,9 @@ function isAgentActivityEntry(entry: TimelineHistoryEntry) {
   );
 }
 
-function isCompletedAgentNarrative(entry: TimelineHistoryEntry) {
+function isCompletedAgentNarrative(entry: TimelineHistoryEntry | undefined) {
   return (
-    entry.kind === "item" &&
+    entry?.kind === "item" &&
     entry.item.kind === "agentMessage" &&
     entry.item.text.trim().length > 0 &&
     !isRunningHistoryStatus(entry.item.status)
@@ -652,7 +652,7 @@ function groupAgentActivitySequences(entries: TimelineHistoryEntry[]) {
       0,
     );
 
-    if (itemCount > 1 && isCompletedAgentNarrative(entries[index]!)) {
+    if (itemCount > 1 && isCompletedAgentNarrative(entries[index])) {
       grouped.push({
         kind: "agentActivityGroup",
         key: `agent-activity:${activityEntries.map((entry) => entry.key).join(":")}`,

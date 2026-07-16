@@ -13028,7 +13028,7 @@ function isAgentActivityEntry(entry) {
   return entry.item.kind === "commandExecution" || entry.item.kind === "fileChange" || entry.item.kind === "webSearch" || entry.item.kind === "fileRead" || entry.item.kind === "toolCall" || entry.item.kind === "agentToolCall" || entry.item.kind === "skillToolCall";
 }
 function isCompletedAgentNarrative(entry) {
-  return entry.kind === "item" && entry.item.kind === "agentMessage" && entry.item.text.trim().length > 0 && !isRunningHistoryStatus(entry.item.status);
+  return entry?.kind === "item" && entry.item.kind === "agentMessage" && entry.item.text.trim().length > 0 && !isRunningHistoryStatus(entry.item.status);
 }
 function entryItemCount(entry) {
   if (entry.kind === "item") {

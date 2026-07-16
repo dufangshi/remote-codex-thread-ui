@@ -210,6 +210,15 @@ describe("timeline item utilities", () => {
     ]);
   });
 
+  it("keeps a final activity sequence visible when no following narrative exists", () => {
+    const entries = groupTimelineHistoryItems([
+      item("tool-1", "toolCall"),
+      item("tool-2", "toolCall"),
+    ]);
+
+    expect(entries.map((entry) => entry.kind)).toEqual(["toolCallGroup"]);
+  });
+
   it("ignores incomplete history entries instead of crashing transcript grouping", () => {
     const invalidHistory = undefined as unknown as ThreadHistoryItemDto;
     const entries = groupTimelineHistoryItems([
