@@ -12670,6 +12670,12 @@ var GraphChatCompactMessageItem = memo3(
 );
 
 // src/components/timeline/timelineItems.ts
+function isRenderableHistoryItem(item) {
+  return Boolean(item && typeof item.id === "string" && typeof item.kind === "string");
+}
+function renderableHistoryItems(items) {
+  return items.filter(isRenderableHistoryItem);
+}
 function decodeXmlEntities(value) {
   return value.replace(/&quot;/g, '"').replace(/&apos;/g, "'").replace(/&gt;/g, ">").replace(/&lt;/g, "<").replace(/&amp;/g, "&");
 }
@@ -12710,10 +12716,11 @@ function isSteerConsumptionHistoryItem(kind) {
   return kind === "agentMessage" || kind === "reasoning" || kind === "agentToolCall" || kind === "skillToolCall" || kind === "toolCall" || kind === "plan";
 }
 function prepareTurnItemsForRendering(items, active) {
+  const renderableItems = renderableHistoryItems(items);
   if (!active) {
-    return items;
+    return renderableItems;
   }
-  const prepared = [...items];
+  const prepared = [...renderableItems];
   const firstUserIndex = prepared.findIndex((item) => item.kind === "userMessage");
   if (firstUserIndex < 0) {
     return prepared;
@@ -12760,15 +12767,16 @@ function historyItemSequence(item) {
   return hasHistoryItemSequence(item) ? item.sequence : Number.POSITIVE_INFINITY;
 }
 function sortTurnItemsByRecordedSequence(items) {
+  const renderableItems = renderableHistoryItems(items);
   const leadingItems = [];
   let index = 0;
-  while (index < items.length && items[index]?.kind === "userMessage" && !hasHistoryItemSequence(items[index])) {
-    leadingItems.push(items[index]);
+  while (index < renderableItems.length && renderableItems[index]?.kind === "userMessage" && !hasHistoryItemSequence(renderableItems[index])) {
+    leadingItems.push(renderableItems[index]);
     index += 1;
   }
-  const trailingItems = items.slice(index);
+  const trailingItems = renderableItems.slice(index);
   if (!trailingItems.some(hasHistoryItemSequence)) {
-    return items;
+    return renderableItems;
   }
   const sequenceValues = trailingItems.map((item) => historyItemSequence(item)).filter(Number.isFinite);
   const maxSequence = sequenceValues.length > 0 ? Math.max(...sequenceValues) : 0;
@@ -12814,11 +12822,13 @@ function sortTurnItemsByRecordedSequence(items) {
   return [...leadingItems, ...sortedTrailingItems];
 }
 function mergeLiveTurnItems(items, liveItems) {
-  if (!liveItems || liveItems.length === 0) {
-    return sortTurnItemsByRecordedSequence(items);
+  const persistedItems = renderableHistoryItems(items);
+  const renderableLiveItems = renderableHistoryItems(liveItems ?? []);
+  if (renderableLiveItems.length === 0) {
+    return sortTurnItemsByRecordedSequence(persistedItems);
   }
-  const liveItemsById = new Map(liveItems.map((item) => [item.id, item]));
-  const mergedItems = items.map((item) => {
+  const liveItemsById = new Map(renderableLiveItems.map((item) => [item.id, item]));
+  const mergedItems = persistedItems.map((item) => {
     const liveItem = liveItemsById.get(item.id);
     if (!liveItem) {
       return item;
@@ -12863,7 +12873,7 @@ function getLiveOutputTailForTurn(liveOutput, items) {
   if (!liveOutput) {
     return "";
   }
-  const materializedAgentTexts = items.filter(
+  const materializedAgentTexts = renderableHistoryItems(items).filter(
     (item) => item.kind === "agentMessage"
   ).map((item) => item.text).filter((text) => text.length > 0);
   const lastMaterializedAgentText = materializedAgentTexts.at(-1) ?? "";
@@ -12908,7 +12918,9 @@ function isActiveTurnStatus(status) {
   return status === "inProgress" || status === "sending";
 }
 function groupTimelineHistoryItems(items) {
-  return groupAgentActivitySequences(groupConsecutiveTimelineHistoryItems(items));
+  return groupAgentActivitySequences(
+    groupConsecutiveTimelineHistoryItems(renderableHistoryItems(items))
+  );
 }
 function groupConsecutiveTimelineHistoryItems(items) {
   const entries = [];

@@ -1,149 +1,170 @@
-import type { ThreadHistoryItemDto, ThreadTurnDto } from '@remote-codex/shared';
+import type { ThreadHistoryItemDto, ThreadTurnDto } from "@remote-codex/shared";
 
 export interface CommandHistoryItem extends ThreadHistoryItemDto {
-  kind: 'commandExecution';
+  kind: "commandExecution";
 }
 
 export interface FileChangeHistoryItem extends ThreadHistoryItemDto {
-  kind: 'fileChange';
+  kind: "fileChange";
 }
 
 export interface SearchHistoryItem extends ThreadHistoryItemDto {
-  kind: 'webSearch';
+  kind: "webSearch";
 }
 
 export interface FileReadHistoryItem extends ThreadHistoryItemDto {
-  kind: 'fileRead';
+  kind: "fileRead";
 }
 
 export interface ToolCallHistoryItem extends ThreadHistoryItemDto {
-  kind: 'toolCall';
+  kind: "toolCall";
 }
 
 export interface AgentToolCallHistoryItem extends ThreadHistoryItemDto {
-  kind: 'agentToolCall';
+  kind: "agentToolCall";
 }
 
 export interface SkillToolCallHistoryItem extends ThreadHistoryItemDto {
-  kind: 'skillToolCall';
+  kind: "skillToolCall";
 }
 
 export type TimelineHistoryEntry =
   | {
-      kind: 'item';
+      kind: "item";
       key: string;
       item: ThreadHistoryItemDto;
     }
   | {
-      kind: 'commandGroup';
+      kind: "commandGroup";
       key: string;
       items: CommandHistoryItem[];
     }
   | {
-      kind: 'fileChangeGroup';
+      kind: "fileChangeGroup";
       key: string;
       items: FileChangeHistoryItem[];
     }
   | {
-      kind: 'searchGroup';
+      kind: "searchGroup";
       key: string;
       items: SearchHistoryItem[];
     }
   | {
-      kind: 'fileReadGroup';
+      kind: "fileReadGroup";
       key: string;
       items: FileReadHistoryItem[];
     }
   | {
-      kind: 'toolCallGroup';
+      kind: "toolCallGroup";
       key: string;
       items: ToolCallHistoryItem[];
     }
   | {
-      kind: 'agentToolCallGroup';
+      kind: "agentToolCallGroup";
       key: string;
       items: AgentToolCallHistoryItem[];
     }
   | {
-      kind: 'skillToolCallGroup';
+      kind: "skillToolCallGroup";
       key: string;
       items: SkillToolCallHistoryItem[];
     }
   | {
-      kind: 'agentActivityGroup';
+      kind: "agentActivityGroup";
       key: string;
       entries: TimelineHistoryEntry[];
       itemCount: number;
     };
 
-export type TimelineTurn = Omit<ThreadTurnDto, 'status'> & {
-  status: ThreadTurnDto['status'] | 'sending';
+export type TimelineTurn = Omit<ThreadTurnDto, "status"> & {
+  status: ThreadTurnDto["status"] | "sending";
 };
+
+/**
+ * Thread history is streamed from several supervisor versions.  A partially
+ * written or legacy event must not take down the whole transcript just
+ * because it is present as `undefined` (or lacks its discriminant).
+ */
+function isRenderableHistoryItem(
+  item: ThreadHistoryItemDto | null | undefined,
+): item is ThreadHistoryItemDto {
+  return Boolean(
+    item && typeof item.id === "string" && typeof item.kind === "string",
+  );
+}
+
+function renderableHistoryItems(
+  items: readonly (ThreadHistoryItemDto | null | undefined)[],
+): ThreadHistoryItemDto[] {
+  return items.filter(isRenderableHistoryItem);
+}
 
 function decodeXmlEntities(value: string) {
   return value
     .replace(/&quot;/g, '"')
     .replace(/&apos;/g, "'")
-    .replace(/&gt;/g, '>')
-    .replace(/&lt;/g, '<')
-    .replace(/&amp;/g, '&');
+    .replace(/&gt;/g, ">")
+    .replace(/&lt;/g, "<")
+    .replace(/&amp;/g, "&");
 }
 
 export function parseHookPromptText(text: string): ThreadHistoryItemDto | null {
   const match = text
     .trim()
-    .match(/^<hook_prompt(?:\s+hook_run_id="([^"]+)")?>([\s\S]*)<\/hook_prompt>$/);
+    .match(
+      /^<hook_prompt(?:\s+hook_run_id="([^"]+)")?>([\s\S]*)<\/hook_prompt>$/,
+    );
   if (!match) {
     return null;
   }
 
   const hookRunId = match[1] ? decodeXmlEntities(match[1]) : null;
-  const output = decodeXmlEntities(match[2] ?? '').trim();
-  const eventName = hookRunId?.split(':')[0] ?? 'hook';
-  const eventLabel = eventName === 'stop' ? 'Stop' : eventName;
-  const sourcePath = hookRunId?.split(':').slice(2).join(':') || null;
+  const output = decodeXmlEntities(match[2] ?? "").trim();
+  const eventName = hookRunId?.split(":")[0] ?? "hook";
+  const eventLabel = eventName === "stop" ? "Stop" : eventName;
+  const sourcePath = hookRunId?.split(":").slice(2).join(":") || null;
 
   return {
-    id: `live-hook-prompt:${hookRunId ?? 'unknown'}`,
-    kind: 'hook',
+    id: `live-hook-prompt:${hookRunId ?? "unknown"}`,
+    kind: "hook",
     text: `${eventLabel} hook`,
     previewText: output || `${eventLabel} hook`,
     detailText: output || null,
-    status: 'Completed',
+    status: "Completed",
     hookEventName: eventName,
     hookEventLabel: eventLabel,
-    hookHandlerType: 'command',
-    hookScope: 'turn',
-    hookSource: sourcePath ? 'project' : null,
+    hookHandlerType: "command",
+    hookScope: "turn",
+    hookSource: sourcePath ? "project" : null,
     hookSourcePath: sourcePath,
     hookStatusMessage: null,
-    hookOutputEntries: output ? [{ kind: 'warning', text: output }] : [],
+    hookOutputEntries: output ? [{ kind: "warning", text: output }] : [],
   };
 }
 
-export function isCompactChatItem(kind: ThreadHistoryItemDto['kind']) {
-  return kind === 'userMessage' || kind === 'agentMessage';
+export function isCompactChatItem(kind: ThreadHistoryItemDto["kind"]) {
+  return kind === "userMessage" || kind === "agentMessage";
 }
 
-function isSteerTailHistoryItem(kind: ThreadHistoryItemDto['kind']) {
+function isSteerTailHistoryItem(kind: ThreadHistoryItemDto["kind"]) {
   return (
-    kind === 'commandExecution' ||
-    kind === 'webSearch' ||
-    kind === 'fileRead' ||
-    kind === 'fileChange' ||
-    kind === 'image' ||
-    kind === 'contextCompaction'
+    kind === "commandExecution" ||
+    kind === "webSearch" ||
+    kind === "fileRead" ||
+    kind === "fileChange" ||
+    kind === "image" ||
+    kind === "contextCompaction"
   );
 }
 
-function isSteerConsumptionHistoryItem(kind: ThreadHistoryItemDto['kind']) {
+function isSteerConsumptionHistoryItem(kind: ThreadHistoryItemDto["kind"]) {
   return (
-    kind === 'agentMessage' ||
-    kind === 'reasoning' ||
-    kind === 'agentToolCall' ||
-    kind === 'skillToolCall' ||
-    kind === 'toolCall' ||
-    kind === 'plan'
+    kind === "agentMessage" ||
+    kind === "reasoning" ||
+    kind === "agentToolCall" ||
+    kind === "skillToolCall" ||
+    kind === "toolCall" ||
+    kind === "plan"
   );
 }
 
@@ -151,19 +172,22 @@ export function prepareTurnItemsForRendering(
   items: ThreadHistoryItemDto[],
   active: boolean,
 ) {
+  const renderableItems = renderableHistoryItems(items);
   if (!active) {
-    return items;
+    return renderableItems;
   }
 
-  const prepared = [...items];
-  const firstUserIndex = prepared.findIndex((item) => item.kind === 'userMessage');
+  const prepared = [...renderableItems];
+  const firstUserIndex = prepared.findIndex(
+    (item) => item.kind === "userMessage",
+  );
   if (firstUserIndex < 0) {
     return prepared;
   }
 
   for (let index = firstUserIndex + 1; index < prepared.length; index += 1) {
     const item = prepared[index];
-    if (!item || item.kind !== 'userMessage') {
+    if (!item || item.kind !== "userMessage") {
       continue;
     }
 
@@ -186,7 +210,7 @@ export function prepareTurnItemsForRendering(
 
   let seenPrimaryUserMessage = false;
   return prepared.map((item, index) => {
-    if (item.kind !== 'userMessage') {
+    if (item.kind !== "userMessage") {
       return item;
     }
 
@@ -205,41 +229,45 @@ export function prepareTurnItemsForRendering(
 
     return {
       ...item,
-      status: 'Awaiting response',
+      status: "Awaiting response",
     };
   });
 }
 
 export function hasHistoryItemSequence(item: ThreadHistoryItemDto) {
-  return typeof item.sequence === 'number' && Number.isFinite(item.sequence);
+  return typeof item.sequence === "number" && Number.isFinite(item.sequence);
 }
 
 function historyItemSequence(item: ThreadHistoryItemDto) {
-  return hasHistoryItemSequence(item) ? item.sequence! : Number.POSITIVE_INFINITY;
+  return hasHistoryItemSequence(item)
+    ? item.sequence!
+    : Number.POSITIVE_INFINITY;
 }
 
 export function sortTurnItemsByRecordedSequence(items: ThreadHistoryItemDto[]) {
+  const renderableItems = renderableHistoryItems(items);
   const leadingItems: ThreadHistoryItemDto[] = [];
   let index = 0;
 
   while (
-    index < items.length &&
-    items[index]?.kind === 'userMessage' &&
-    !hasHistoryItemSequence(items[index]!)
+    index < renderableItems.length &&
+    renderableItems[index]?.kind === "userMessage" &&
+    !hasHistoryItemSequence(renderableItems[index]!)
   ) {
-    leadingItems.push(items[index]!);
+    leadingItems.push(renderableItems[index]!);
     index += 1;
   }
 
-  const trailingItems = items.slice(index);
+  const trailingItems = renderableItems.slice(index);
   if (!trailingItems.some(hasHistoryItemSequence)) {
-    return items;
+    return renderableItems;
   }
 
   const sequenceValues = trailingItems
     .map((item) => historyItemSequence(item))
     .filter(Number.isFinite);
-  const maxSequence = sequenceValues.length > 0 ? Math.max(...sequenceValues) : 0;
+  const maxSequence =
+    sequenceValues.length > 0 ? Math.max(...sequenceValues) : 0;
   const orderedItems: Array<{
     item: ThreadHistoryItemDto;
     index: number;
@@ -250,7 +278,11 @@ export function sortTurnItemsByRecordedSequence(items: ThreadHistoryItemDto[]) {
   while (cursor < trailingItems.length) {
     const item = trailingItems[cursor]!;
     if (hasHistoryItemSequence(item)) {
-      orderedItems.push({ item, index: cursor, order: historyItemSequence(item) });
+      orderedItems.push({
+        item,
+        index: cursor,
+        order: historyItemSequence(item),
+      });
       cursor += 1;
       continue;
     }
@@ -267,11 +299,15 @@ export function sortTurnItemsByRecordedSequence(items: ThreadHistoryItemDto[]) {
     const previousSequenced = [...trailingItems.slice(0, blockStart)]
       .reverse()
       .find(hasHistoryItemSequence);
-    const nextSequenced = trailingItems.slice(cursor).find(hasHistoryItemSequence);
+    const nextSequenced = trailingItems
+      .slice(cursor)
+      .find(hasHistoryItemSequence);
     const previousSequence = previousSequenced
       ? historyItemSequence(previousSequenced)
       : null;
-    const nextSequence = nextSequenced ? historyItemSequence(nextSequenced) : null;
+    const nextSequence = nextSequenced
+      ? historyItemSequence(nextSequenced)
+      : null;
 
     block.forEach((blockItem, blockIndex) => {
       let order: number;
@@ -283,7 +319,8 @@ export function sortTurnItemsByRecordedSequence(items: ThreadHistoryItemDto[]) {
         nextSequence > previousSequence
       ) {
         const span = nextSequence - previousSequence;
-        order = previousSequence + ((blockIndex + 1) / (block.length + 1)) * span;
+        order =
+          previousSequence + ((blockIndex + 1) / (block.length + 1)) * span;
       } else {
         order = maxSequence + 1 + blockIndex / (block.length + 1);
       }
@@ -309,12 +346,16 @@ export function mergeLiveTurnItems(
   items: ThreadHistoryItemDto[],
   liveItems: ThreadHistoryItemDto[] | null | undefined,
 ) {
-  if (!liveItems || liveItems.length === 0) {
-    return sortTurnItemsByRecordedSequence(items);
+  const persistedItems = renderableHistoryItems(items);
+  const renderableLiveItems = renderableHistoryItems(liveItems ?? []);
+  if (renderableLiveItems.length === 0) {
+    return sortTurnItemsByRecordedSequence(persistedItems);
   }
 
-  const liveItemsById = new Map(liveItems.map((item) => [item.id, item]));
-  const mergedItems: ThreadHistoryItemDto[] = items.map((item) => {
+  const liveItemsById = new Map(
+    renderableLiveItems.map((item) => [item.id, item]),
+  );
+  const mergedItems: ThreadHistoryItemDto[] = persistedItems.map((item) => {
     const liveItem = liveItemsById.get(item.id);
     if (!liveItem) {
       return item;
@@ -345,14 +386,18 @@ export function mergeLiveTurnItems(
     return mergedItem;
   });
   const uniqueLiveItems = [...liveItemsById.values()];
-  if (uniqueLiveItems.length === 0 && !mergedItems.some(hasHistoryItemSequence)) {
+  if (
+    uniqueLiveItems.length === 0 &&
+    !mergedItems.some(hasHistoryItemSequence)
+  ) {
     return mergedItems;
   }
 
   mergedItems.push(...uniqueLiveItems);
   if (
     !mergedItems.some(
-      (item) => typeof item.sequence === 'number' && Number.isFinite(item.sequence),
+      (item) =>
+        typeof item.sequence === "number" && Number.isFinite(item.sequence),
     )
   ) {
     return mergedItems;
@@ -366,21 +411,21 @@ export function getLiveOutputTailForTurn(
   items: ThreadHistoryItemDto[],
 ) {
   if (!liveOutput) {
-    return '';
+    return "";
   }
 
-  const materializedAgentTexts = items
+  const materializedAgentTexts = renderableHistoryItems(items)
     .filter(
       (
         item,
       ): item is ThreadHistoryItemDto & {
-        kind: 'agentMessage';
-      } => item.kind === 'agentMessage',
+        kind: "agentMessage";
+      } => item.kind === "agentMessage",
     )
     .map((item) => item.text)
     .filter((text) => text.length > 0);
 
-  const lastMaterializedAgentText = materializedAgentTexts.at(-1) ?? '';
+  const lastMaterializedAgentText = materializedAgentTexts.at(-1) ?? "";
   if (lastMaterializedAgentText) {
     const anchorIndex = liveOutput.lastIndexOf(lastMaterializedAgentText);
     if (anchorIndex >= 0) {
@@ -388,13 +433,13 @@ export function getLiveOutputTailForTurn(
         anchorIndex + lastMaterializedAgentText.length,
       );
       if (!anchoredTail.trim()) {
-        return '';
+        return "";
       }
       return anchoredTail;
     }
   }
 
-  const materializedAgentText = materializedAgentTexts.join('');
+  const materializedAgentText = materializedAgentTexts.join("");
   if (!materializedAgentText) {
     return liveOutput;
   }
@@ -416,7 +461,7 @@ export function getLiveOutputTailForTurn(
   }
 
   const remainingOutput = liveOutput.slice(consumedLength);
-  return remainingOutput.trim() ? remainingOutput : '';
+  return remainingOutput.trim() ? remainingOutput : "";
 }
 
 export function isRunningHistoryStatus(status?: string | null) {
@@ -426,18 +471,20 @@ export function isRunningHistoryStatus(status?: string | null) {
 
   const normalized = status.toLowerCase();
   return (
-    normalized.includes('running') ||
-    normalized.includes('inprogress') ||
-    normalized.includes('in_progress')
+    normalized.includes("running") ||
+    normalized.includes("inprogress") ||
+    normalized.includes("in_progress")
   );
 }
 
-export function isActiveTurnStatus(status: TimelineTurn['status']) {
-  return status === 'inProgress' || status === 'sending';
+export function isActiveTurnStatus(status: TimelineTurn["status"]) {
+  return status === "inProgress" || status === "sending";
 }
 
 export function groupTimelineHistoryItems(items: ThreadHistoryItemDto[]) {
-  return groupAgentActivitySequences(groupConsecutiveTimelineHistoryItems(items));
+  return groupAgentActivitySequences(
+    groupConsecutiveTimelineHistoryItems(renderableHistoryItems(items)),
+  );
 }
 
 function groupConsecutiveTimelineHistoryItems(items: ThreadHistoryItemDto[]) {
@@ -451,16 +498,16 @@ function groupConsecutiveTimelineHistoryItems(items: ThreadHistoryItemDto[]) {
     }
 
     if (
-      current.kind !== 'commandExecution' &&
-      current.kind !== 'fileChange' &&
-      current.kind !== 'webSearch' &&
-      current.kind !== 'fileRead' &&
-      current.kind !== 'toolCall' &&
-      current.kind !== 'agentToolCall' &&
-      current.kind !== 'skillToolCall'
+      current.kind !== "commandExecution" &&
+      current.kind !== "fileChange" &&
+      current.kind !== "webSearch" &&
+      current.kind !== "fileRead" &&
+      current.kind !== "toolCall" &&
+      current.kind !== "agentToolCall" &&
+      current.kind !== "skillToolCall"
     ) {
       entries.push({
-        kind: 'item',
+        kind: "item",
         key: current.id,
         item: current,
       });
@@ -476,63 +523,63 @@ function groupConsecutiveTimelineHistoryItems(items: ThreadHistoryItemDto[]) {
 
     if (groupedItems.length === 1) {
       entries.push({
-        kind: 'item',
+        kind: "item",
         key: groupedItems[0]!.id,
         item: groupedItems[0]!,
       });
       continue;
     }
 
-    const groupKey = groupedItems.map((item) => item.id).join(':');
+    const groupKey = groupedItems.map((item) => item.id).join(":");
 
-    if (current.kind === 'commandExecution') {
+    if (current.kind === "commandExecution") {
       entries.push({
-        kind: 'commandGroup',
+        kind: "commandGroup",
         key: groupKey,
         items: groupedItems as CommandHistoryItem[],
       });
       continue;
     }
 
-    if (current.kind === 'fileChange') {
+    if (current.kind === "fileChange") {
       entries.push({
-        kind: 'fileChangeGroup',
+        kind: "fileChangeGroup",
         key: groupKey,
         items: groupedItems as FileChangeHistoryItem[],
       });
       continue;
     }
 
-    if (current.kind === 'fileRead') {
+    if (current.kind === "fileRead") {
       entries.push({
-        kind: 'fileReadGroup',
+        kind: "fileReadGroup",
         key: groupKey,
         items: groupedItems as FileReadHistoryItem[],
       });
       continue;
     }
 
-    if (current.kind === 'toolCall') {
+    if (current.kind === "toolCall") {
       entries.push({
-        kind: 'toolCallGroup',
+        kind: "toolCallGroup",
         key: groupKey,
         items: groupedItems as ToolCallHistoryItem[],
       });
       continue;
     }
 
-    if (current.kind === 'agentToolCall') {
+    if (current.kind === "agentToolCall") {
       entries.push({
-        kind: 'agentToolCallGroup',
+        kind: "agentToolCallGroup",
         key: groupKey,
         items: groupedItems as AgentToolCallHistoryItem[],
       });
       continue;
     }
 
-    if (current.kind === 'skillToolCall') {
+    if (current.kind === "skillToolCall") {
       entries.push({
-        kind: 'skillToolCallGroup',
+        kind: "skillToolCallGroup",
         key: groupKey,
         items: groupedItems as SkillToolCallHistoryItem[],
       });
@@ -540,7 +587,7 @@ function groupConsecutiveTimelineHistoryItems(items: ThreadHistoryItemDto[]) {
     }
 
     entries.push({
-      kind: 'searchGroup',
+      kind: "searchGroup",
       key: groupKey,
       items: groupedItems as SearchHistoryItem[],
     });
@@ -550,35 +597,35 @@ function groupConsecutiveTimelineHistoryItems(items: ThreadHistoryItemDto[]) {
 }
 
 function isAgentActivityEntry(entry: TimelineHistoryEntry) {
-  if (entry.kind !== 'item') {
-    return entry.kind !== 'agentActivityGroup';
+  if (entry.kind !== "item") {
+    return entry.kind !== "agentActivityGroup";
   }
 
   return (
-    entry.item.kind === 'commandExecution' ||
-    entry.item.kind === 'fileChange' ||
-    entry.item.kind === 'webSearch' ||
-    entry.item.kind === 'fileRead' ||
-    entry.item.kind === 'toolCall' ||
-    entry.item.kind === 'agentToolCall' ||
-    entry.item.kind === 'skillToolCall'
+    entry.item.kind === "commandExecution" ||
+    entry.item.kind === "fileChange" ||
+    entry.item.kind === "webSearch" ||
+    entry.item.kind === "fileRead" ||
+    entry.item.kind === "toolCall" ||
+    entry.item.kind === "agentToolCall" ||
+    entry.item.kind === "skillToolCall"
   );
 }
 
 function isCompletedAgentNarrative(entry: TimelineHistoryEntry) {
   return (
-    entry.kind === 'item' &&
-    entry.item.kind === 'agentMessage' &&
+    entry.kind === "item" &&
+    entry.item.kind === "agentMessage" &&
     entry.item.text.trim().length > 0 &&
     !isRunningHistoryStatus(entry.item.status)
   );
 }
 
 function entryItemCount(entry: TimelineHistoryEntry): number {
-  if (entry.kind === 'item') {
+  if (entry.kind === "item") {
     return 1;
   }
-  if (entry.kind === 'agentActivityGroup') {
+  if (entry.kind === "agentActivityGroup") {
     return entry.itemCount;
   }
   return entry.items.length;
@@ -607,8 +654,8 @@ function groupAgentActivitySequences(entries: TimelineHistoryEntry[]) {
 
     if (itemCount > 1 && isCompletedAgentNarrative(entries[index]!)) {
       grouped.push({
-        kind: 'agentActivityGroup',
-        key: `agent-activity:${activityEntries.map((entry) => entry.key).join(':')}`,
+        kind: "agentActivityGroup",
+        key: `agent-activity:${activityEntries.map((entry) => entry.key).join(":")}`,
         entries: activityEntries,
         itemCount,
       });
