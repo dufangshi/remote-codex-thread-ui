@@ -31,6 +31,17 @@ interface ComposerPromptEditorProps {
   onDrop: (event: DragEvent<HTMLDivElement>) => void;
 }
 
+function hasIOSNativeBridge() {
+  const nativeWindow = window as Window & {
+    webkit?: {
+      messageHandlers?: {
+        remoteCodex?: unknown;
+      };
+    };
+  };
+  return Boolean(nativeWindow.webkit?.messageHandlers?.remoteCodex);
+}
+
 export function ComposerPromptEditor({
   promptRef,
   prompt,
@@ -77,7 +88,11 @@ export function ComposerPromptEditor({
           inputMode="text"
           suppressContentEditableWarning
           onPointerDown={(event) => {
-            if (!disabled && document.activeElement !== event.currentTarget) {
+            if (
+              !disabled &&
+              document.activeElement !== event.currentTarget &&
+              hasIOSNativeBridge()
+            ) {
               // WKWebView only opens the software keyboard reliably when focus
               // is requested synchronously from the user's touch gesture.
               event.currentTarget.focus({ preventScroll: true });

@@ -1216,9 +1216,6 @@ export const GraphChatCommandGroupItem = memo(
         runningIndicator={runningCount > 0 ? <RunningDots /> : null}
         summary={
           <>
-            <span className="rounded-full border border-amber-300/28 bg-amber-300/12 px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.24em] text-amber-100">
-              Batch
-            </span>
             <span className="rounded-full border border-stone-700/90 bg-stone-900/80 px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.16em] text-stone-300">
               {countLabel}
             </span>

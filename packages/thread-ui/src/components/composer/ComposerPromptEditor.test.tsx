@@ -8,6 +8,7 @@ import { ComposerPromptEditor } from './ComposerPromptEditor';
 
 afterEach(() => {
   document.body.innerHTML = '';
+  delete (window as Window & { webkit?: unknown }).webkit;
 });
 
 function renderEditor(disabled = false) {
@@ -40,13 +41,26 @@ function renderEditor(disabled = false) {
 }
 
 describe('ComposerPromptEditor', () => {
-  it('focuses synchronously on pointer down for mobile WebViews', async () => {
+  it('leaves pointer focus to mobile browsers outside the iOS native bridge', async () => {
+    const { promptRef } = renderEditor();
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    promptRef.current?.dispatchEvent(new Event('pointerdown', { bubbles: true }));
+
+    expect(document.activeElement).not.toBe(promptRef.current);
+    expect(promptRef.current?.getAttribute('inputmode')).toBe('text');
+  });
+
+  it('focuses synchronously on pointer down inside the iOS native bridge', async () => {
+    (
+      window as Window & {
+        webkit?: { messageHandlers: { remoteCodex: object } };
+      }
+    ).webkit = { messageHandlers: { remoteCodex: {} } };
     const { promptRef } = renderEditor();
     await new Promise((resolve) => setTimeout(resolve, 0));
     promptRef.current?.dispatchEvent(new Event('pointerdown', { bubbles: true }));
 
     expect(document.activeElement).toBe(promptRef.current);
-    expect(promptRef.current?.getAttribute('inputmode')).toBe('text');
   });
 
   it('does not focus a disabled editor', async () => {

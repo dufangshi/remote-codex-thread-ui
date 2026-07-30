@@ -227,6 +227,39 @@ describe('ThreadTimeline', () => {
     expect(element.textContent).toContain(formatShortTimestamp(agentAt));
   });
 
+  it('renders a command batch without redundant activity or batch labels', () => {
+    const element = render(
+      <ThreadTimeline
+        autoCollapseCompletedTurns={false}
+        liveOutput=""
+        turns={[
+          completedTurn([
+            ...['pwd', 'pnpm test', 'git status'].map((text, index) => ({
+              id: `command-${index + 1}`,
+              kind: 'commandExecution' as const,
+              text,
+              createdAt: new Date(
+                Date.UTC(2026, 6, 3, 20, 10, index + 1),
+              ).toISOString(),
+              status: 'completed',
+            })),
+            {
+              id: 'agent-1',
+              kind: 'agentMessage',
+              text: 'All commands completed.',
+              createdAt: new Date(Date.UTC(2026, 6, 3, 20, 10, 5)).toISOString(),
+            },
+          ]),
+        ]}
+      />,
+    );
+
+    expect(element.textContent).toContain('3 commands');
+    expect(element.textContent).not.toContain('Agent activity');
+    expect(element.textContent).not.toContain('Batch');
+    expect(element.textContent).toContain('All commands completed.');
+  });
+
   it('auto-collapses a single tool item after newer live history arrives', () => {
     const startedAt = new Date(Date.UTC(2026, 6, 3, 20, 10, 0)).toISOString();
     const fileReadAt = new Date(Date.UTC(2026, 6, 3, 20, 10, 5)).toISOString();

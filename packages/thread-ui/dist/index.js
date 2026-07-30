@@ -8338,6 +8338,10 @@ function ComposerGoalComposeCard({
 
 // src/components/composer/ComposerPromptEditor.tsx
 import { jsx as jsx20, jsxs as jsxs18 } from "react/jsx-runtime";
+function hasIOSNativeBridge() {
+  const nativeWindow = window;
+  return Boolean(nativeWindow.webkit?.messageHandlers?.remoteCodex);
+}
 function ComposerPromptEditor({
   promptRef,
   prompt,
@@ -8385,7 +8389,7 @@ function ComposerPromptEditor({
               inputMode: "text",
               suppressContentEditableWarning: true,
               onPointerDown: (event) => {
-                if (!disabled && document.activeElement !== event.currentTarget) {
+                if (!disabled && document.activeElement !== event.currentTarget && hasIOSNativeBridge()) {
                   event.currentTarget.focus({ preventScroll: true });
                 }
                 onPointerDown?.(event);
@@ -13057,7 +13061,7 @@ function groupAgentActivitySequences(entries) {
       (total, entry) => total + entryItemCount(entry),
       0
     );
-    if (itemCount > 1 && isCompletedAgentNarrative(entries[index])) {
+    if (activityEntries.length > 1 && isCompletedAgentNarrative(entries[index])) {
       grouped.push({
         kind: "agentActivityGroup",
         key: `agent-activity:${activityEntries.map((entry) => entry.key).join(":")}`,
@@ -14665,7 +14669,6 @@ var GraphChatCommandGroupItem = memo4(
         onToggleExpanded,
         runningIndicator: runningCount > 0 ? /* @__PURE__ */ jsx40(RunningDots, {}) : null,
         summary: /* @__PURE__ */ jsxs32(Fragment9, { children: [
-          /* @__PURE__ */ jsx40("span", { className: "rounded-full border border-amber-300/28 bg-amber-300/12 px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.24em] text-amber-100", children: "Batch" }),
           /* @__PURE__ */ jsx40("span", { className: "rounded-full border border-stone-700/90 bg-stone-900/80 px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.16em] text-stone-300", children: countLabel }),
           runningCount > 0 ? /* @__PURE__ */ jsx40("span", { className: "inline-flex items-center text-xs text-amber-100/90", children: /* @__PURE__ */ jsx40(RunningDots, {}) }) : null
         ] }),

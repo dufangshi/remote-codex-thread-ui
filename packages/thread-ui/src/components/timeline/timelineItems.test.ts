@@ -194,6 +194,27 @@ describe("timeline item utilities", () => {
     }
   });
 
+  it("does not wrap a single command batch in agent activity", () => {
+    const entries = groupTimelineHistoryItems([
+      item("cmd-1", "commandExecution"),
+      item("cmd-2", "commandExecution"),
+      item("cmd-3", "commandExecution"),
+      item("narrative", "agentMessage", {
+        text: "All commands completed.",
+        status: "Completed",
+      }),
+    ]);
+
+    expect(entries.map((entry) => entry.kind)).toEqual([
+      "commandGroup",
+      "item",
+    ]);
+    expect(entries[0]).toMatchObject({
+      kind: "commandGroup",
+      items: [{ id: "cmd-1" }, { id: "cmd-2" }, { id: "cmd-3" }],
+    });
+  });
+
   it("keeps in-progress activity visible until a completed agent narrative arrives", () => {
     const entries = groupTimelineHistoryItems([
       item("tool-1", "toolCall"),

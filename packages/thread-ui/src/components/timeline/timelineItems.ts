@@ -652,7 +652,10 @@ function groupAgentActivitySequences(entries: TimelineHistoryEntry[]) {
       0,
     );
 
-    if (itemCount > 1 && isCompletedAgentNarrative(entries[index])) {
+    if (
+      activityEntries.length > 1 &&
+      isCompletedAgentNarrative(entries[index])
+    ) {
       grouped.push({
         kind: "agentActivityGroup",
         key: `agent-activity:${activityEntries.map((entry) => entry.key).join(":")}`,
