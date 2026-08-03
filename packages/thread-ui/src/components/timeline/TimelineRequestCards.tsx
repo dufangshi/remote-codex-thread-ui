@@ -364,6 +364,8 @@ export function ActivityNoteCard({
       ? 'Fork'
       : note.kind === 'forkSource'
         ? 'Fork source'
+        : note.kind === 'goal'
+          ? 'Goal'
         : 'System';
   const body =
     note.kind === 'forkCreated'

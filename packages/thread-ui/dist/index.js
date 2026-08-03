@@ -13443,7 +13443,7 @@ function ActivityNoteCard({
   onOpenThread,
   onOpenLinkedThread
 }) {
-  const title = note.kind === "forkCreated" ? "Fork" : note.kind === "forkSource" ? "Fork source" : "System";
+  const title = note.kind === "forkCreated" ? "Fork" : note.kind === "forkSource" ? "Fork source" : note.kind === "goal" ? "Goal" : "System";
   const body = note.kind === "forkCreated" ? `Thread forked from Turn ${note.turnIndex ?? "?"}` : note.kind === "forkSource" ? `Forked from ${note.linkedThreadTitle ?? "source thread"} at Turn ${note.turnIndex ?? "?"}` : note.text ?? "";
   return /* @__PURE__ */ jsxs30("div", { className: "timeline-activity-card w-full rounded-2xl border px-3 py-2.5", children: [
     /* @__PURE__ */ jsxs30("div", { className: "flex items-center justify-between gap-3", children: [
