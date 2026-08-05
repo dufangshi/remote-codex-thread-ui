@@ -1,5 +1,7 @@
 node_modules/
 dist/
+!packages/thread-ui/dist/
+!packages/thread-ui/dist/**
 .DS_Store
 .turbo/
 .vite/
