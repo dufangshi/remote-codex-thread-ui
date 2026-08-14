@@ -74,6 +74,8 @@ function renderToolbar({
   effortControlsDisabled = false,
   effortControlTitle = 'Select reasoning effort',
   onUpdateSettings = vi.fn(),
+  model = 'gpt-5',
+  availableModels = modelOptions,
 }: {
   initialOpenMenu?: SettingsMenu;
   displayedCollaborationMode?: CollaborationModeDto;
@@ -88,6 +90,8 @@ function renderToolbar({
   effortControlsDisabled?: boolean;
   effortControlTitle?: string;
   onUpdateSettings?: (input: UpdateThreadSettingsInput) => void;
+  model?: string;
+  availableModels?: ModelOptionDto[];
 } = {}) {
   function Harness() {
     const [openMenu, setOpenMenu] = useState<SettingsMenu>(initialOpenMenu);
@@ -100,8 +104,8 @@ function renderToolbar({
       >
         <ComposerSettingsToolbar
           openMenu={openMenu}
-          model="gpt-5"
-          modelOptions={modelOptions}
+          model={model}
+          modelOptions={availableModels}
           modelContextTitle="1k / 8k tokens"
           contextUsage={null}
           reasoningEffort={reasoningEffort}
@@ -141,6 +145,13 @@ function buttonByText(view: HTMLElement, text: string) {
   );
 }
 
+function menuButtonByText(view: HTMLElement, text: string) {
+  const menu = view.querySelector('[data-composer-menu-surface="true"]');
+  return Array.from(menu?.querySelectorAll<HTMLButtonElement>('button') ?? []).find(
+    (button) => button.textContent?.includes(text),
+  );
+}
+
 describe('ComposerSettingsToolbar', () => {
   beforeEach(() => {
     (
@@ -169,11 +180,42 @@ describe('ComposerSettingsToolbar', () => {
       view.querySelector<HTMLButtonElement>('[aria-label="gpt-5"]')?.click();
     });
     expect(view.querySelector('[data-composer-menu-surface="true"]')).not.toBeNull();
-    buttonByText(view, 'gpt-5-mini')?.click();
+    menuButtonByText(view, 'GPT-5 mini')?.click();
 
     expect(onUpdateSettings).toHaveBeenCalledWith({
       model: 'gpt-5-mini',
       reasoningEffort: 'minimal',
+    });
+  });
+
+  it('shows versioned model display names while preserving the CLI model value', () => {
+    const onUpdateSettings = vi.fn();
+    const view = renderToolbar({
+      model: 'opus[1m]',
+      availableModels: [
+        {
+          ...modelOptions[0]!,
+          id: 'opus[1m]',
+          model: 'opus[1m]',
+          displayName: 'Opus · 5 (1M context)',
+        },
+      ],
+      onUpdateSettings,
+    });
+
+    expect(
+      view.querySelector<HTMLButtonElement>('[aria-label="opus[1m]"]')?.textContent,
+    ).toContain('Opus · 5');
+    expect(view.textContent).not.toContain('(1M context)');
+    flushSync(() => {
+      view.querySelector<HTMLButtonElement>('[aria-label="opus[1m]"]')?.click();
+    });
+    expect(view.textContent).toContain('Opus · 5 (1M context)');
+    menuButtonByText(view, 'Opus · 5')?.click();
+
+    expect(onUpdateSettings).toHaveBeenCalledWith({
+      model: 'opus[1m]',
+      reasoningEffort: 'medium',
     });
   });
 

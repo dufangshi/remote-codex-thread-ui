@@ -88,6 +88,12 @@ export function ComposerSettingsToolbar({
   onSetOpenMenu: (updater: (current: SettingsMenu) => SettingsMenu) => void;
   onUpdateSettings: (input: UpdateThreadSettingsInput) => void;
 }) {
+  const selectedModelLabel = (
+    modelOptions.find((entry) => entry.model === model)?.displayName ||
+    model ||
+    'Select model'
+  ).replace(/\s+\([^)]+\)\s*$/, '');
+
   return (
     <>
       <div className="relative min-w-0">
@@ -113,7 +119,7 @@ export function ComposerSettingsToolbar({
           className={`${inlineToggleClassName} relative min-w-0 max-w-[8.75rem] overflow-hidden rounded-full px-2.5 text-left text-stone-300 disabled:cursor-not-allowed disabled:text-stone-600 sm:max-w-[11rem]`}
         >
           <span className="relative z-[1] block min-w-0 truncate whitespace-nowrap [direction:rtl]">
-            {model ?? 'Select model'}
+            {selectedModelLabel}
           </span>
         </InputGroupButton>
         {model ? <ContextProgressBar contextUsage={contextUsage} /> : null}
@@ -139,7 +145,7 @@ export function ComposerSettingsToolbar({
                       : `${menuItemClassName} text-stone-300`
                   }`}
                 >
-                  <p className="text-sm font-medium">{entry.model}</p>
+                  <p className="text-sm font-medium">{entry.displayName || entry.model}</p>
                 </button>
               ))}
             </div>

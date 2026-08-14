@@ -5921,6 +5921,7 @@ function ComposerSettingsToolbar({
   onSetOpenMenu,
   onUpdateSettings
 }) {
+  const selectedModelLabel = (modelOptions.find((entry) => entry.model === model)?.displayName || model || "Select model").replace(/\s+\([^)]+\)\s*$/, "");
   return /* @__PURE__ */ jsxs8(Fragment3, { children: [
     /* @__PURE__ */ jsxs8("div", { className: "relative min-w-0", children: [
       /* @__PURE__ */ jsx10(
@@ -5939,7 +5940,7 @@ function ComposerSettingsToolbar({
           ),
           title: fastMode ? `Fast mode is on. Turn it off from the slash toolbox to edit model. ${modelContextTitle}` : modelContextTitle,
           className: `${inlineToggleClassName} relative min-w-0 max-w-[8.75rem] overflow-hidden rounded-full px-2.5 text-left text-stone-300 disabled:cursor-not-allowed disabled:text-stone-600 sm:max-w-[11rem]`,
-          children: /* @__PURE__ */ jsx10("span", { className: "relative z-[1] block min-w-0 truncate whitespace-nowrap [direction:rtl]", children: model ?? "Select model" })
+          children: /* @__PURE__ */ jsx10("span", { className: "relative z-[1] block min-w-0 truncate whitespace-nowrap [direction:rtl]", children: selectedModelLabel })
         }
       ),
       model ? /* @__PURE__ */ jsx10(ContextProgressBar, { contextUsage }) : null,
@@ -5957,7 +5958,7 @@ function ComposerSettingsToolbar({
                 reasoningEffort: entry.defaultReasoningEffort
               }),
               className: `block w-full rounded-xl px-3 py-2 text-left transition ${entry.model === model ? "ui-status-warning" : `${menuItemClassName2} text-stone-300`}`,
-              children: /* @__PURE__ */ jsx10("p", { className: "text-sm font-medium", children: entry.model })
+              children: /* @__PURE__ */ jsx10("p", { className: "text-sm font-medium", children: entry.displayName || entry.model })
             },
             entry.id
           )) })
