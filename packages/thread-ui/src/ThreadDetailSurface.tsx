@@ -505,6 +505,9 @@ export function ThreadDetailSurface({
       workspaceContent={resolvedWorkspaceContent}
       workspaceTitle={workspaceTitle ?? "Workspace"}
       workspaceActions={workspaceActions}
+      {...(workspaceFocusPathRequest
+        ? { workspaceRevealRequestKey: workspaceFocusPathRequest.requestId }
+        : {})}
       {...(onNewThreadTitle ? { onNewThreadTitle } : {})}
       {...(onCloseAppNavigation ? { onCloseAppNavigation } : {})}
       {...(onShellThemeModeChange

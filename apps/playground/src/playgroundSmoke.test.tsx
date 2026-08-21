@@ -296,7 +296,7 @@ describe('playground smoke', () => {
 
     await vi.waitFor(() => {
       expect(
-        jumpButton?.querySelector('.thread-jump-latest-badge')?.className,
+        jumpButton?.closest('.thread-jump-latest-badge')?.className,
       ).toContain('is-active');
     });
 
@@ -319,7 +319,7 @@ describe('playground smoke', () => {
 
     await vi.waitFor(() => {
       expect(
-        jumpButton?.querySelector('.thread-jump-latest-badge')?.className,
+        jumpButton?.closest('.thread-jump-latest-badge')?.className,
       ).not.toContain('is-active');
     });
 
@@ -329,7 +329,7 @@ describe('playground smoke', () => {
 
     await vi.waitFor(() => {
       expect(
-        jumpButton?.querySelector('.thread-jump-latest-badge')?.className,
+        jumpButton?.closest('.thread-jump-latest-badge')?.className,
       ).toContain('is-active');
     });
   });

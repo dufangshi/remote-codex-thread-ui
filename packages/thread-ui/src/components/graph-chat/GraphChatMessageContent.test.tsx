@@ -32,7 +32,7 @@ afterEach(() => {
 });
 
 describe('GraphChatMessageContent', () => {
-  it('opens same-origin absolute file links through the workspace callback', () => {
+  it('opens root-relative file links through the workspace callback', () => {
     const onOpenWorkspaceFile = vi.fn();
     const element = render(
       <GraphChatMessageContent
@@ -45,12 +45,37 @@ describe('GraphChatMessageContent', () => {
     expect(link).not.toBeNull();
 
     act(() => {
-      link?.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+      link?.dispatchEvent(
+        new MouseEvent('click', { bubbles: true, cancelable: true }),
+      );
     });
 
     expect(onOpenWorkspaceFile).toHaveBeenCalledWith({
       path: '/home/u/dev/gemma4/third_party/SillyTavern/public/scripts/tool-calling.js',
       line: 400,
+    });
+  });
+
+  it('opens complete same-origin file URLs through the workspace callback', () => {
+    const onOpenWorkspaceFile = vi.fn();
+    const href = `${window.location.origin}/home/u/treer/docs/architecture.md:44`;
+    const element = render(
+      <GraphChatMessageContent
+        content={`[${href}](${href})`}
+        onOpenWorkspaceFile={onOpenWorkspaceFile}
+      />,
+    );
+
+    const link = element.querySelector('a');
+    act(() => {
+      link?.dispatchEvent(
+        new MouseEvent('click', { bubbles: true, cancelable: true }),
+      );
+    });
+
+    expect(onOpenWorkspaceFile).toHaveBeenCalledWith({
+      path: '/home/u/treer/docs/architecture.md',
+      line: 44,
     });
   });
 
@@ -67,7 +92,9 @@ describe('GraphChatMessageContent', () => {
     expect(link?.getAttribute('href')).toBe('https://example.com/docs');
 
     act(() => {
-      link?.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+      link?.dispatchEvent(
+        new MouseEvent('click', { bubbles: true, cancelable: true }),
+      );
     });
 
     expect(onOpenWorkspaceFile).not.toHaveBeenCalled();

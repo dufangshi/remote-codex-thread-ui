@@ -190,6 +190,17 @@ export function normalizeWorkspacePath(path: string) {
     .replace(/^\/+/, '');
 }
 
+export function workspaceRelativeFocusPath(path: string, workspaceRootPath: string) {
+  const normalizedPath = normalizeWorkspacePath(path);
+  const normalizedRoot = normalizeWorkspacePath(workspaceRootPath).replace(/\/+$/, '');
+  if (!normalizedRoot || normalizedPath === normalizedRoot) {
+    return normalizedPath === normalizedRoot ? '' : normalizedPath;
+  }
+  return normalizedPath.startsWith(`${normalizedRoot}/`)
+    ? normalizedPath.slice(normalizedRoot.length + 1)
+    : normalizedPath;
+}
+
 export function ancestorDirectoryPaths(path: string) {
   const normalized = normalizeWorkspacePath(path);
   const segments = normalized.split('/').filter(Boolean);

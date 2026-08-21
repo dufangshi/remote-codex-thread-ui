@@ -191,9 +191,9 @@ export const GraphChatCompactMessageItem = memo(
           <Accordion
             type="single"
             collapsible
+            value={reasoningOpen ? 'thoughts' : ''}
             className="thread-graph-thinking-accordion w-full border-none"
             onValueChange={(value) => setReasoningOpen(Boolean(value))}
-            {...(reasoningOpen ? { value: 'thoughts' } : {})}
           >
             <AccordionItem value="thoughts" className="border-b-0">
               <AccordionContent className="thread-graph-thinking-content pb-0">

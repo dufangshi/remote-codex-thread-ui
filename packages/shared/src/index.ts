@@ -581,7 +581,7 @@ export interface ThreadAnsweredRequestNoteDto {
 
 export interface ThreadActivityNoteDto {
   id: string;
-  kind: 'fastMode' | 'forkCreated' | 'forkSource';
+  kind: 'fastMode' | 'goal' | 'forkCreated' | 'forkSource';
   createdAt: string;
   text?: string;
   anchorTurnId?: string | null;

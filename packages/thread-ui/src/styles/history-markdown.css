@@ -1,5 +1,3 @@
-}
-
 .thread-ui-shell .thread-graph-panel-expand-fab.left-3 {
   left: 0.75rem;
 }
@@ -41,27 +39,47 @@
 }
 
 .thread-ui-shell .thread-graph-tree-row {
+  --thread-graph-tree-row-background: transparent;
   color: var(--theme-fg-soft);
 }
 
 .thread-ui-shell .thread-graph-tree-row:hover {
+  --thread-graph-tree-row-background: var(--theme-hover);
+  background: var(--theme-hover);
+  color: var(--theme-fg);
+}
+
+.thread-ui-shell .thread-graph-tree-row:focus-within {
+  --thread-graph-tree-row-background: var(--theme-hover);
   background: var(--theme-hover);
   color: var(--theme-fg);
 }
 
 .thread-ui-shell .thread-graph-tree-row.is-selected {
-  background: color-mix(in oklch, var(--theme-accent-solid) 13%, var(--theme-panel));
+  --thread-graph-tree-row-background: color-mix(
+    in oklch,
+    var(--theme-accent-solid) 13%,
+    var(--theme-panel)
+  );
+  background: var(--thread-graph-tree-row-background);
   color: var(--theme-fg);
-  box-shadow: inset 3px 0 0 color-mix(in oklch, var(--theme-accent-solid) 72%, transparent);
+  box-shadow: inset 3px 0 0
+    color-mix(in oklch, var(--theme-accent-solid) 72%, transparent);
 }
 
 .thread-ui-shell.thread-ui-theme-dark .thread-graph-tree-row.is-selected,
 .thread-ui-shell[data-theme-effective="dark"]
   .thread-graph-tree-row.is-selected,
 .thread-ui-shell.dark .thread-graph-tree-row.is-selected {
-  background: color-mix(in oklch, var(--theme-accent-solid) 18%, var(--theme-panel));
+  --thread-graph-tree-row-background: color-mix(
+    in oklch,
+    var(--theme-accent-solid) 18%,
+    var(--theme-panel)
+  );
+  background: var(--thread-graph-tree-row-background);
   color: var(--theme-fg);
-  box-shadow: inset 3px 0 0 color-mix(in oklch, var(--theme-accent-solid) 72%, transparent);
+  box-shadow: inset 3px 0 0
+    color-mix(in oklch, var(--theme-accent-solid) 72%, transparent);
 }
 
 .thread-ui-shell .thread-graph-tree-row.is-selected svg {
@@ -73,7 +91,9 @@
   color: var(--theme-fg-muted);
 }
 
-.thread-ui-shell .thread-graph-tree-row.is-selected .thread-graph-tree-action:hover,
+.thread-ui-shell
+  .thread-graph-tree-row.is-selected
+  .thread-graph-tree-action:hover,
 .thread-ui-shell .thread-graph-tree-action.is-selected:hover {
   background: color-mix(in oklch, var(--theme-accent-solid) 12%, transparent);
   color: var(--theme-fg);
@@ -81,6 +101,22 @@
 
 .thread-ui-shell .thread-graph-tree-action {
   color: var(--theme-fg-muted);
+}
+
+.thread-ui-shell .thread-graph-tree-actions {
+  z-index: 1;
+  background: var(--thread-graph-tree-row-background);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 160ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.thread-ui-shell .thread-graph-tree-row:hover .thread-graph-tree-actions,
+.thread-ui-shell
+  .thread-graph-tree-row:focus-within
+  .thread-graph-tree-actions {
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .thread-ui-shell .thread-graph-tree-action:hover {
@@ -400,7 +436,11 @@
 
 .thread-ui-shell .thread-graph-load-more-button {
   border: 1px solid var(--theme-border);
-  background: color-mix(in oklch, var(--theme-accent-solid) 8%, var(--theme-panel));
+  background: color-mix(
+    in oklch,
+    var(--theme-accent-solid) 8%,
+    var(--theme-panel)
+  );
   color: var(--theme-fg-soft);
   transition:
     background-color 140ms ease,
@@ -409,8 +449,16 @@
 }
 
 .thread-ui-shell .thread-graph-load-more-button:hover:not(:disabled) {
-  border-color: color-mix(in oklch, var(--theme-accent-solid) 28%, var(--theme-border));
-  background: color-mix(in oklch, var(--theme-accent-solid) 14%, var(--theme-panel));
+  border-color: color-mix(
+    in oklch,
+    var(--theme-accent-solid) 28%,
+    var(--theme-border)
+  );
+  background: color-mix(
+    in oklch,
+    var(--theme-accent-solid) 14%,
+    var(--theme-panel)
+  );
   color: var(--theme-fg);
 }
 
@@ -428,6 +476,38 @@
   line-height: 1.55;
 }
 
+.thread-ui-shell .thread-graph-highlighted-code-preview pre {
+  min-height: 100%;
+  margin: 0;
+  padding: 1rem 0;
+  background: transparent !important;
+}
+
+.thread-ui-shell .thread-graph-highlighted-code-preview code {
+  display: block;
+  min-width: max-content;
+  counter-reset: workspace-code-line;
+}
+
+.thread-ui-shell .thread-graph-highlighted-code-preview .line {
+  display: block;
+  min-width: max-content;
+  padding-right: 1rem;
+  counter-increment: workspace-code-line;
+}
+
+.thread-ui-shell .thread-graph-highlighted-code-preview .line::before {
+  content: counter(workspace-code-line);
+  display: inline-block;
+  width: 3.5rem;
+  margin-right: 1rem;
+  border-right: 1px solid var(--theme-border);
+  padding-right: 0.75rem;
+  color: var(--theme-fg-muted);
+  text-align: right;
+  user-select: none;
+}
+
 .thread-ui-shell .thread-graph-plain-code-preview {
   min-height: 100%;
   margin: 0;
@@ -435,6 +515,137 @@
   background: transparent;
   color: var(--theme-fg);
   white-space: pre;
+}
+
+.thread-ui-shell .thread-graph-code-line {
+  display: block;
+  min-width: max-content;
+}
+
+.thread-ui-shell .thread-graph-code-line-number {
+  display: inline-block;
+  width: 2.5rem;
+  margin-right: 1rem;
+  border-right: 1px solid var(--theme-border);
+  padding-right: 0.75rem;
+  color: var(--theme-fg-muted);
+  text-align: right;
+  user-select: none;
+}
+
+.thread-ui-shell .thread-graph-markdown-preview {
+  background: var(--theme-bg);
+  color: var(--theme-fg);
+}
+
+.thread-ui-shell .thread-graph-markdown-preview > * {
+  max-width: 74ch;
+  margin-inline: auto;
+}
+
+.thread-ui-shell .thread-graph-markdown-preview :where(h1, h2, h3, h4) {
+  margin: 1.4em 0 0.55em;
+  color: var(--theme-fg);
+  font-weight: 650;
+  line-height: 1.25;
+}
+
+.thread-ui-shell
+  .thread-graph-markdown-preview
+  :where(h1:first-child, h2:first-child, h3:first-child) {
+  margin-top: 0;
+}
+
+.thread-ui-shell .thread-graph-markdown-preview h1 {
+  font-size: 1.5rem;
+}
+
+.thread-ui-shell .thread-graph-markdown-preview h2 {
+  font-size: 1.2rem;
+}
+
+.thread-ui-shell .thread-graph-markdown-preview h3 {
+  font-size: 1rem;
+}
+
+.thread-ui-shell
+  .thread-graph-markdown-preview
+  :where(p, ul, ol, pre, blockquote, table) {
+  margin-bottom: 0.9rem;
+}
+
+.thread-ui-shell .thread-graph-markdown-preview :where(ul, ol) {
+  padding-left: 1.35rem;
+}
+
+.thread-ui-shell .thread-graph-markdown-preview :where(img) {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 1rem auto;
+  border: 1px solid var(--theme-border);
+  border-radius: 0.375rem;
+  background: var(--theme-surface);
+}
+
+.thread-ui-shell .thread-graph-markdown-preview :where(pre) {
+  overflow-x: auto;
+  border: 1px solid var(--theme-border);
+  border-radius: 0.375rem;
+  background: var(--theme-surface-strong);
+  padding: 0.85rem;
+}
+
+.thread-ui-shell .thread-graph-markdown-preview :where(code) {
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    monospace;
+  font-size: 0.84em;
+}
+
+.thread-ui-shell .thread-graph-markdown-preview :where(:not(pre) > code) {
+  border-radius: 0.25rem;
+  background: var(--theme-surface-strong);
+  padding: 0.12rem 0.3rem;
+}
+
+.thread-ui-shell .thread-graph-markdown-preview :where(blockquote) {
+  border-left: 1px solid var(--theme-border-strong);
+  padding-left: 0.85rem;
+  color: var(--theme-fg-soft);
+}
+
+.thread-ui-shell .thread-graph-markdown-preview :where(table) {
+  display: block;
+  width: 100%;
+  overflow-x: auto;
+  border-collapse: collapse;
+}
+
+.thread-ui-shell .thread-graph-markdown-preview :where(th, td) {
+  border: 1px solid var(--theme-border);
+  padding: 0.45rem 0.6rem;
+  text-align: left;
+}
+
+.thread-ui-shell .thread-graph-markdown-view-switch {
+  border-color: var(--theme-border);
+  background: var(--theme-surface-strong);
+}
+
+.thread-ui-shell .thread-graph-markdown-view-switch button {
+  color: var(--theme-fg-muted);
+}
+
+.thread-ui-shell .thread-graph-markdown-view-switch button:hover,
+.thread-ui-shell .thread-graph-markdown-view-switch button:focus-visible {
+  color: var(--theme-fg);
+}
+
+.thread-ui-shell .thread-graph-markdown-view-switch button.is-active {
+  background: var(--theme-panel);
+  color: var(--theme-fg);
+  box-shadow: 0 1px 2px color-mix(in oklch, var(--theme-bg) 22%, transparent);
 }
 
 .thread-ui-shell .thread-tool-call {
@@ -1258,7 +1469,11 @@
 }
 
 .thread-ui-shell
-  :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface="true"])
+  :where(
+    .thread-composer-menu,
+    .thread-graph-composer-menu,
+    [data-composer-menu-surface="true"]
+  )
   :where(
     .border-stone-700,
     .border-stone-700\/90,
@@ -1269,7 +1484,11 @@
 }
 
 .thread-ui-shell
-  :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface="true"])
+  :where(
+    .thread-composer-menu,
+    .thread-graph-composer-menu,
+    [data-composer-menu-surface="true"]
+  )
   :where(
     .bg-stone-800,
     .bg-stone-900,
@@ -1288,7 +1507,11 @@
 }
 
 .thread-ui-shell
-  :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface="true"])
+  :where(
+    .thread-composer-menu,
+    .thread-graph-composer-menu,
+    [data-composer-menu-surface="true"]
+  )
   :where(
     .text-stone-100,
     .text-stone-200,
@@ -1303,7 +1526,11 @@
 }
 
 .thread-ui-shell
-  :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface="true"])
+  :where(
+    .thread-composer-menu,
+    .thread-graph-composer-menu,
+    [data-composer-menu-surface="true"]
+  )
   :where(.text-stone-400, .text-stone-500) {
   color: var(--theme-fg-muted) !important;
 }
@@ -1780,7 +2007,8 @@
     border: 0;
   }
 
-  .thread-ui-shell :where(.thread-graph-message-status, .thread-graph-tool-badge) {
+  .thread-ui-shell
+    :where(.thread-graph-message-status, .thread-graph-tool-badge) {
     min-width: 1.45rem;
     justify-content: center;
     padding-left: 0.25rem !important;

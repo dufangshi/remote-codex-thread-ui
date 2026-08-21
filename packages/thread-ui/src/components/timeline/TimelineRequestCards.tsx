@@ -366,7 +366,7 @@ export function ActivityNoteCard({
         ? 'Fork source'
         : note.kind === 'goal'
           ? 'Goal'
-        : 'System';
+          : 'System';
   const body =
     note.kind === 'forkCreated'
       ? `Thread forked from Turn ${note.turnIndex ?? '?'}`

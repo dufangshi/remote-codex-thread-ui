@@ -186,6 +186,7 @@ interface ThreadWorkspaceLayoutProps {
     workspaceContent?: ReactNode;
     workspaceTitle?: string;
     workspaceActions?: ReactNode;
+    workspaceRevealRequestKey?: number;
     children: ReactNode;
 }
 interface ThreadCardsProps {
@@ -205,7 +206,7 @@ interface ThreadCardsProps {
     collapsed?: boolean;
 }
 declare function ThreadCards({ threads, currentThreadId, currentWorkspaceId, workspaceLabels, onOpenThread, getThreadHref, renderThreadLink, onBeginRenameThread, onDeleteThread, scrollable, maxHeightClassName, showDeleteButton, showSessionCopyButton, collapsed, }: ThreadCardsProps): react.JSX.Element;
-declare function ThreadWorkspaceLayout({ threads, status, loading, error, viewportConstrained, layoutMode, effectiveTheme: effectiveThemeProp, themeMode: themeModeProp, onThemeModeChange, showMobileNewThreadShortcut, settingsDialogOpen, onSettingsDialogOpenChange, mobileHeaderAction, currentThreadId, currentThreadLabel, currentWorkspaceId, currentWorkspaceLabel, sessionLabel, usageLabel, threadActionsButton, topbarActions, metaContent, settingsContent, globalSettingsContent, workspaceLabels, workspaceReturnHref, onWorkspaceReturn, getThreadHref, onOpenThread, getNewThreadHref, newThreadHref: explicitNewThreadHref, newThreadLabel, onNewThread, onNewThreadTitle, renderNewThreadDialogContent, renderThreadLink, onCloseAppNavigation, onRenameThread, onDeleteThread, workspaceContent, workspaceTitle, workspaceActions, children, }: ThreadWorkspaceLayoutProps): react.JSX.Element;
+declare function ThreadWorkspaceLayout({ threads, status, loading, error, viewportConstrained, layoutMode, effectiveTheme: effectiveThemeProp, themeMode: themeModeProp, onThemeModeChange, showMobileNewThreadShortcut, settingsDialogOpen, onSettingsDialogOpenChange, mobileHeaderAction, currentThreadId, currentThreadLabel, currentWorkspaceId, currentWorkspaceLabel, sessionLabel, usageLabel, threadActionsButton, topbarActions, metaContent, settingsContent, globalSettingsContent, workspaceLabels, workspaceReturnHref, onWorkspaceReturn, getThreadHref, onOpenThread, getNewThreadHref, newThreadHref: explicitNewThreadHref, newThreadLabel, onNewThread, onNewThreadTitle, renderNewThreadDialogContent, renderThreadLink, onCloseAppNavigation, onRenameThread, onDeleteThread, workspaceContent, workspaceTitle, workspaceActions, workspaceRevealRequestKey, children, }: ThreadWorkspaceLayoutProps): react.JSX.Element;
 
 type TimelineTurn = Omit<ThreadTurnDto, "status"> & {
     status: ThreadTurnDto["status"] | "sending";

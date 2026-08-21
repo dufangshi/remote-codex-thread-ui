@@ -453,7 +453,7 @@ interface ThreadAnsweredRequestNoteDto {
 }
 interface ThreadActivityNoteDto {
     id: string;
-    kind: 'fastMode' | 'forkCreated' | 'forkSource';
+    kind: 'fastMode' | 'goal' | 'forkCreated' | 'forkSource';
     createdAt: string;
     text?: string;
     anchorTurnId?: string | null;
@@ -593,7 +593,7 @@ interface ThreadPendingSteerDto {
     clientRequestId: string | null;
     turnId: string;
     prompt: string;
-    delivery: 'steer' | 'continuation';
+    delivery: "steer" | "continuation";
     createdAt: string;
 }
 interface ThreadLiveItemsDto {

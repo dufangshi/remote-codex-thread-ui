@@ -20,6 +20,48 @@ afterEach(() => {
 });
 
 describe("GraphChatCompactMessageItem", () => {
+  it("does not mount chain-of-thought content until its toggle is opened", async () => {
+    const container = document.createElement("div");
+    document.body.appendChild(container);
+    const root = createRoot(container);
+    cleanup = () => {
+      root.unmount();
+      container.remove();
+    };
+
+    await act(async () => {
+      root.render(
+        <GraphChatCompactMessageItem
+          item={{
+            id: "agent-1",
+            kind: "agentMessage",
+            text: "Done",
+            reasoningItems: [
+              {
+                id: "reasoning-1",
+                kind: "reasoning",
+                text: "Inspect the failing command first.",
+              },
+            ],
+          }}
+          scrollRootRef={{ current: null }}
+        />,
+      );
+    });
+
+    expect(container.textContent).not.toContain("Inspect the failing command first.");
+    const toggle = container.querySelector<HTMLButtonElement>(
+      '[aria-label="Show chain of thought"]',
+    );
+    expect(toggle).toBeTruthy();
+
+    await act(async () => {
+      toggle?.click();
+    });
+
+    expect(container.textContent).toContain("Inspect the failing command first.");
+  });
+
   it("replaces the copy icon with a check after copying an agent reply", async () => {
     Object.defineProperty(navigator, "clipboard", {
       configurable: true,

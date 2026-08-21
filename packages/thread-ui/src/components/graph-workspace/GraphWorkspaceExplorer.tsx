@@ -46,7 +46,7 @@ import {
   findWorkspaceNodeByPath,
   flattenWorkspaceNodes,
   hasWorkspacePath,
-  normalizeWorkspacePath,
+  workspaceRelativeFocusPath,
   replaceWorkspaceNode,
   replaceWorkspaceNodeChildren,
   workspaceTreeNodeToGraphNode,
@@ -64,7 +64,9 @@ import {
 } from './GraphResizablePanels';
 
 const PREVIEW_CHUNK_BYTES = 24_000;
-const EXPANDED_PATHS_STORAGE_PREFIX = 'remote-codex:graphchat:workspace:expanded:';
+const EXPANDED_PATHS_STORAGE_PREFIX =
+  'remote-codex:graphchat:workspace:expanded:';
+const TREE_LEVEL_INDENT_REM = 0.5;
 
 const explorerPanelClassName =
   'thread-graph-explorer h-full min-h-0 overflow-hidden rounded-[12px]';
@@ -138,7 +140,9 @@ function mergeRefreshedWorkspaceTree(
     return refreshed;
   }
 
-  const previousByPath = new Map(previous.children.map((child) => [child.path, child]));
+  const previousByPath = new Map(
+    previous.children.map((child) => [child.path, child]),
+  );
   const children = refreshed.children.map((child) =>
     mergeRefreshedWorkspaceTree(child, previousByPath.get(child.path) ?? null),
   );
@@ -177,9 +181,21 @@ function iconForWorkspaceNode(node: WorkspaceTreeNode, expanded: boolean) {
   }
   if (
     node.kind === 'artifact' ||
-    ['xyz', 'extxyz', 'cif', 'pdf', 'json', 'ts', 'tsx', 'js', 'jsx', 'md', 'yaml', 'yml', 'py'].includes(
-      extension,
-    )
+    [
+      'xyz',
+      'extxyz',
+      'cif',
+      'pdf',
+      'json',
+      'ts',
+      'tsx',
+      'js',
+      'jsx',
+      'md',
+      'yaml',
+      'yml',
+      'py',
+    ].includes(extension)
   ) {
     return <FileCode2 className="h-4 w-4 text-emerald-600" />;
   }
@@ -214,12 +230,12 @@ function WorkspaceTreeRow({
     isDirectory && (node.path === '' || expandedPaths.has(node.path));
   const loadingChildren = isDirectory && loadingPaths.has(node.path);
   const selected = selectedNodeId === node.id;
-  const paddingLeft = `${depth * 0.75 + 0.5}rem`;
+  const paddingLeft = `${depth * TREE_LEVEL_INDENT_REM + 0.5}rem`;
 
   if (isDirectory) {
     return (
       <div>
-        <div className="thread-graph-tree-row group flex items-center text-sm text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-[#222733] dark:hover:text-slate-100">
+        <div className="thread-graph-tree-row group relative flex items-center text-sm text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-[#222733] dark:hover:text-slate-100">
           <button
             type="button"
             onClick={() => onToggle(node.path)}
@@ -239,29 +255,35 @@ function WorkspaceTreeRow({
               </span>
             ) : null}
           </button>
-          {onDownload ? (
-            <button
-              type="button"
-              onClick={() => onDownload(node)}
-              className="thread-graph-tree-action mr-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-md text-slate-400 transition hover:bg-white hover:text-slate-900 sm:h-7 sm:w-7 sm:opacity-0 sm:group-hover:opacity-100 sm:focus:opacity-100 dark:text-slate-500 dark:hover:bg-[#1d222c] dark:hover:text-slate-100"
-              title={node.path ? `Download ${node.name}` : 'Download workspace'}
-              aria-label={
-                node.path ? `Download ${node.name}` : 'Download workspace'
-              }
-            >
-              <Download className="h-3.5 w-3.5" />
-            </button>
-          ) : null}
-          {onCopyPath && node.path ? (
-            <button
-              type="button"
-              onClick={() => onCopyPath(node)}
-              className="thread-graph-tree-action mr-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-md text-slate-400 transition hover:bg-white hover:text-slate-900 sm:h-7 sm:w-7 sm:opacity-0 sm:group-hover:opacity-100 sm:focus:opacity-100 dark:text-slate-500 dark:hover:bg-[#1d222c] dark:hover:text-slate-100"
-              title={`Copy path for ${node.name}`}
-              aria-label={`Copy path for ${node.name}`}
-            >
-              <Copy className="h-3.5 w-3.5" />
-            </button>
+          {onDownload || (onCopyPath && node.path) ? (
+            <div className="thread-graph-tree-actions absolute inset-y-0 right-1 flex items-center gap-0.5 pl-1">
+              {onDownload ? (
+                <button
+                  type="button"
+                  onClick={() => onDownload(node)}
+                  className="thread-graph-tree-action flex h-9 w-9 shrink-0 items-center justify-center rounded-md text-slate-400 transition hover:bg-white hover:text-slate-900 sm:h-7 sm:w-7 dark:text-slate-500 dark:hover:bg-[#1d222c] dark:hover:text-slate-100"
+                  title={
+                    node.path ? `Download ${node.name}` : 'Download workspace'
+                  }
+                  aria-label={
+                    node.path ? `Download ${node.name}` : 'Download workspace'
+                  }
+                >
+                  <Download className="h-3.5 w-3.5" />
+                </button>
+              ) : null}
+              {onCopyPath && node.path ? (
+                <button
+                  type="button"
+                  onClick={() => onCopyPath(node)}
+                  className="thread-graph-tree-action flex h-9 w-9 shrink-0 items-center justify-center rounded-md text-slate-400 transition hover:bg-white hover:text-slate-900 sm:h-7 sm:w-7 dark:text-slate-500 dark:hover:bg-[#1d222c] dark:hover:text-slate-100"
+                  title={`Copy path for ${node.name}`}
+                  aria-label={`Copy path for ${node.name}`}
+                >
+                  <Copy className="h-3.5 w-3.5" />
+                </button>
+              ) : null}
+            </div>
           ) : null}
         </div>
         {expanded ? (
@@ -284,7 +306,9 @@ function WorkspaceTreeRow({
             {node.truncated ? (
               <div
                 className="px-2 py-1 text-xs text-slate-400 dark:text-slate-500"
-                style={{ paddingLeft: `${(depth + 1) * 0.75 + 0.5}rem` }}
+                style={{
+                  paddingLeft: `${(depth + 1) * TREE_LEVEL_INDENT_REM + 0.5}rem`,
+                }}
               >
                 More items not shown
               </div>
@@ -297,7 +321,7 @@ function WorkspaceTreeRow({
 
   return (
     <div
-      className={`thread-graph-tree-row group flex items-center text-sm transition ${
+      className={`thread-graph-tree-row group relative flex items-center text-sm transition ${
         selected
           ? 'is-selected'
           : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-[#222733] dark:hover:text-slate-100'
@@ -307,18 +331,18 @@ function WorkspaceTreeRow({
         type="button"
         onClick={() => onSelect(node.id)}
         className="flex min-h-9 min-w-0 flex-1 items-center gap-2 px-2 py-2 text-left sm:min-h-0 sm:py-1.5"
-        style={{ paddingLeft: `${depth * 0.75 + 2.2}rem` }}
+        style={{ paddingLeft: `${depth * TREE_LEVEL_INDENT_REM + 1.9}rem` }}
       >
         {iconForWorkspaceNode(node, false)}
         <span className="truncate">{node.name}</span>
       </button>
       {node.kind === 'file' && (onPreview || onDownload || onCopyPath) ? (
-        <div className="mr-1 flex shrink-0 items-center gap-0.5">
+        <div className="thread-graph-tree-actions absolute inset-y-0 right-1 flex items-center gap-0.5 pl-1">
           {onPreview ? (
             <button
               type="button"
               onClick={() => onPreview(node)}
-              className={`thread-graph-tree-action flex h-9 w-9 shrink-0 items-center justify-center rounded-md transition sm:h-7 sm:w-7 sm:opacity-0 sm:group-hover:opacity-100 sm:focus:opacity-100 ${
+              className={`thread-graph-tree-action flex h-9 w-9 shrink-0 items-center justify-center rounded-md transition sm:h-7 sm:w-7 ${
                 selected
                   ? 'is-selected'
                   : 'text-slate-400 hover:bg-white hover:text-slate-900 dark:text-slate-500 dark:hover:bg-[#1d222c] dark:hover:text-slate-100'
@@ -333,7 +357,7 @@ function WorkspaceTreeRow({
             <button
               type="button"
               onClick={() => onDownload(node)}
-              className={`thread-graph-tree-action flex h-9 w-9 shrink-0 items-center justify-center rounded-md transition sm:h-7 sm:w-7 sm:opacity-0 sm:group-hover:opacity-100 sm:focus:opacity-100 ${
+              className={`thread-graph-tree-action flex h-9 w-9 shrink-0 items-center justify-center rounded-md transition sm:h-7 sm:w-7 ${
                 selected
                   ? 'is-selected'
                   : 'text-slate-400 hover:bg-white hover:text-slate-900 dark:text-slate-500 dark:hover:bg-[#1d222c] dark:hover:text-slate-100'
@@ -348,7 +372,7 @@ function WorkspaceTreeRow({
             <button
               type="button"
               onClick={() => onCopyPath(node)}
-              className={`thread-graph-tree-action flex h-9 w-9 shrink-0 items-center justify-center rounded-md transition sm:h-7 sm:w-7 sm:opacity-0 sm:group-hover:opacity-100 sm:focus:opacity-100 ${
+              className={`thread-graph-tree-action flex h-9 w-9 shrink-0 items-center justify-center rounded-md transition sm:h-7 sm:w-7 ${
                 selected
                   ? 'is-selected'
                   : 'text-slate-400 hover:bg-white hover:text-slate-900 dark:text-slate-500 dark:hover:bg-[#1d222c] dark:hover:text-slate-100'
@@ -585,7 +609,9 @@ export function GraphWorkspaceExplorer({
   focusPathRequest?: { path: string; line?: number; requestId: number } | null;
   workspaceAdapter?: ThreadWorkspaceAdapter | null;
 }) {
-  const [adapterTree, setAdapterTree] = useState<WorkspaceTreeNode | null>(null);
+  const [adapterTree, setAdapterTree] = useState<WorkspaceTreeNode | null>(
+    null,
+  );
   const fallbackTree = useMemo(
     () =>
       workspaceAdapter && adapterTree
@@ -627,9 +653,9 @@ export function GraphWorkspaceExplorer({
   );
   const [workspaceError, setWorkspaceError] = useState<string | null>(null);
   const [loadingTree, setLoadingTree] = useState(false);
-  const [loadingDirectoryPaths, setLoadingDirectoryPaths] = useState<Set<string>>(
-    () => new Set(),
-  );
+  const [loadingDirectoryPaths, setLoadingDirectoryPaths] = useState<
+    Set<string>
+  >(() => new Set());
   const [previewLoading, setPreviewLoading] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
   const [showGarbageDialog, setShowGarbageDialog] = useState(false);
@@ -717,7 +743,10 @@ export function GraphWorkspaceExplorer({
   }, [collapsedPanel, tree]);
 
   useEffect(() => {
-    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') {
+    if (
+      typeof window === 'undefined' ||
+      typeof window.matchMedia !== 'function'
+    ) {
       return;
     }
     const mediaQuery = window.matchMedia('(max-width: 639px)');
@@ -748,10 +777,15 @@ export function GraphWorkspaceExplorer({
       if (adapterTree) {
         const expandedDirectories = [...expandedPaths]
           .filter((path) => path)
-          .sort((left, right) => left.split('/').length - right.split('/').length);
+          .sort(
+            (left, right) => left.split('/').length - right.split('/').length,
+          );
         for (const path of expandedDirectories) {
           const previousNode = findWorkspaceNodeByPath(adapterTree, path);
-          if (previousNode?.kind !== 'directory' || !previousNode.childrenLoaded) {
+          if (
+            previousNode?.kind !== 'directory' ||
+            !previousNode.childrenLoaded
+          ) {
             continue;
           }
           const refreshedNode = workspaceTreeNodeToGraphNode(
@@ -827,7 +861,7 @@ export function GraphWorkspaceExplorer({
   }
 
   async function focusWorkspacePath(path: string) {
-    const targetPath = normalizeWorkspacePath(path);
+    const targetPath = workspaceRelativeFocusPath(path, detail.workspace.absPath);
     if (!targetPath) {
       return;
     }
@@ -866,7 +900,10 @@ export function GraphWorkspaceExplorer({
           continue;
         }
         const loadedNode = workspaceTreeNodeToGraphNode(
-          await workspaceAdapter.listTree({ ...workspaceIdentity, path: ancestor }),
+          await workspaceAdapter.listTree({
+            ...workspaceIdentity,
+            path: ancestor,
+          }),
         );
         nextTree = replaceWorkspaceNode(nextTree, ancestor, loadedNode);
       }
@@ -938,7 +975,11 @@ export function GraphWorkspaceExplorer({
     // the lazy tree resets expanded nodes and scroll position, so the explorer now
     // leaves refresh under explicit user control.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [workspaceAdapter, workspaceIdentity.threadId, workspaceIdentity.workspaceId]);
+  }, [
+    workspaceAdapter,
+    workspaceIdentity.threadId,
+    workspaceIdentity.workspaceId,
+  ]);
 
   useEffect(() => {
     const selectedPathCandidate =
@@ -1067,7 +1108,9 @@ export function GraphWorkspaceExplorer({
         file,
       });
       const preferredPath =
-        result.kind === 'archive' ? result.paths[0] ?? null : result.file.path;
+        result.kind === 'archive'
+          ? (result.paths[0] ?? null)
+          : result.file.path;
       await refreshWorkspaceTree(preferredPath);
     } catch (error) {
       setWorkspaceError(
@@ -1111,7 +1154,11 @@ export function GraphWorkspaceExplorer({
   }
 
   function handleCopyPath(node: WorkspaceTreeNode) {
-    if (!node.path || typeof navigator === 'undefined' || !navigator.clipboard) {
+    if (
+      !node.path ||
+      typeof navigator === 'undefined' ||
+      !navigator.clipboard
+    ) {
       return;
     }
     const workspaceRoot = detail.workspace.absPath.replace(/\/+$/, '');
@@ -1177,9 +1224,7 @@ export function GraphWorkspaceExplorer({
 
   const explorerActions = {
     onCopyPath: handleCopyPath,
-    ...(workspaceAdapter?.downloadNode
-      ? { onDownload: handleDownload }
-      : {}),
+    ...(workspaceAdapter?.downloadNode ? { onDownload: handleDownload } : {}),
     ...(workspaceAdapter?.emptyGarbage
       ? { onEmptyGarbage: handleOpenGarbage }
       : {}),
@@ -1244,10 +1289,11 @@ export function GraphWorkspaceExplorer({
       error={workspaceError}
       imageUrl={imageUrl}
       loadingMore={loadingMore}
+      onOpenWorkspaceFile={(path) => {
+        void focusWorkspacePath(path);
+      }}
       onLoadMore={handleLoadMore}
-      {...(workspaceAdapter?.writeFile
-        ? { onSaveFile: handleSaveFile }
-        : {})}
+      {...(workspaceAdapter?.writeFile ? { onSaveFile: handleSaveFile } : {})}
       onCollapse={() => {
         rememberExplorerScroll();
         setCollapsedPanel('viewer');
@@ -1256,7 +1302,17 @@ export function GraphWorkspaceExplorer({
       previewFile={previewFile}
       previewLoading={previewLoading}
       plugins={plugins}
+      {...(workspaceAdapter?.getRawFileUrl
+        ? {
+            resolveWorkspaceFileUrl: (path: string) =>
+              workspaceAdapter.getRawFileUrl?.({
+                ...workspaceIdentity,
+                path,
+              }) ?? null,
+          }
+        : {})}
       selectedTarget={graphWorkspacePreviewTargetFromNode(activeNode)}
+      workspaceRootPath={detail.workspace.absPath}
     />
   );
 
@@ -1301,13 +1357,13 @@ export function GraphWorkspaceExplorer({
         >
           <ResizablePanel defaultSize={42} minSize={18}>
             <div className="thread-graph-workspace-mobile-explorer h-full min-h-0 overflow-hidden">
-            {explorerPanel}
+              {explorerPanel}
             </div>
           </ResizablePanel>
           <ResizableHandle className="thread-graph-workspace-resize-handle h-2 bg-transparent after:h-px after:bg-slate-200/80 after:transition-colors hover:after:bg-slate-300 dark:after:bg-[#303642] dark:hover:after:bg-[#475063]" />
           <ResizablePanel defaultSize={58} minSize={18}>
             <div className="thread-graph-workspace-mobile-viewer h-full min-h-0 overflow-hidden">
-            {viewerPanel}
+              {viewerPanel}
             </div>
           </ResizablePanel>
         </ResizablePanelGroup>
@@ -1318,13 +1374,13 @@ export function GraphWorkspaceExplorer({
         >
           <ResizablePanel defaultSize={33} minSize={20}>
             <div className="thread-graph-workspace-explorer-pane h-full min-h-0 overflow-hidden">
-            {explorerPanel}
+              {explorerPanel}
             </div>
           </ResizablePanel>
           <ResizableHandle className="thread-graph-workspace-resize-handle w-2 bg-transparent after:w-px after:bg-slate-200/80 after:transition-colors hover:after:bg-slate-300 dark:after:bg-[#303642] dark:hover:after:bg-[#475063]" />
           <ResizablePanel defaultSize={67} minSize={30}>
             <div className="thread-graph-workspace-viewer-pane h-full min-h-0 overflow-hidden">
-            {viewerPanel}
+              {viewerPanel}
             </div>
           </ResizablePanel>
         </ResizablePanelGroup>

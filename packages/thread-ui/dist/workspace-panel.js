@@ -1,8 +1,8 @@
 // src/components/ThreadGraphWorkspacePanel.tsx
-import { memo as memo2, useEffect as useEffect6, useMemo as useMemo5, useState as useState5 } from "react";
+import { memo as memo2, useEffect as useEffect6, useMemo as useMemo6, useState as useState5 } from "react";
 import {
   BarChart2 as BarChart22,
-  BookOpen,
+  BookOpen as BookOpen2,
   GitBranch,
   Paperclip,
   Terminal,
@@ -14,8 +14,8 @@ import {
 import {
   useEffect as useEffect3,
   useLayoutEffect,
-  useMemo as useMemo3,
-  useRef as useRef2,
+  useMemo as useMemo4,
+  useRef as useRef3,
   useState as useState3
 } from "react";
 import {
@@ -145,6 +145,14 @@ function findWorkspaceNodeByPath(node, targetPath) {
 }
 function normalizeWorkspacePath(path) {
   return path.trim().replace(/\\/g, "/").replace(/^\.\/+/, "").replace(/^\/+/, "");
+}
+function workspaceRelativeFocusPath(path, workspaceRootPath) {
+  const normalizedPath = normalizeWorkspacePath(path);
+  const normalizedRoot = normalizeWorkspacePath(workspaceRootPath).replace(/\/+$/, "");
+  if (!normalizedRoot || normalizedPath === normalizedRoot) {
+    return normalizedPath === normalizedRoot ? "" : normalizedPath;
+  }
+  return normalizedPath.startsWith(`${normalizedRoot}/`) ? normalizedPath.slice(normalizedRoot.length + 1) : normalizedPath;
 }
 function ancestorDirectoryPaths(path) {
   const normalized = normalizeWorkspacePath(path);
@@ -384,17 +392,103 @@ function collectAncestorPaths(path) {
 }
 
 // src/components/graph-workspace/GraphWorkspacePreviewPane.tsx
-import {
-  memo,
-  useEffect as useEffect2,
-  useState as useState2
-} from "react";
-import {
-  ChevronsRight,
-  Pencil,
-  Save,
-  X
-} from "lucide-react";
+import { memo, useEffect as useEffect2, useMemo as useMemo3, useRef as useRef2, useState as useState2 } from "react";
+import { BookOpen, ChevronsRight, Code2, Pencil, Save, X } from "lucide-react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+
+// src/components/graph-chat/graphChatShiki.ts
+var graphChatHighlighterPromise = null;
+function getGraphChatHighlighter() {
+  graphChatHighlighterPromise ??= Promise.all([
+    import("shiki/core"),
+    import("shiki/engine/javascript"),
+    import("shiki/themes/ayu-light.mjs"),
+    import("shiki/themes/ayu-dark.mjs"),
+    import("shiki/langs/javascript.mjs"),
+    import("shiki/langs/typescript.mjs"),
+    import("shiki/langs/tsx.mjs"),
+    import("shiki/langs/jsx.mjs"),
+    import("shiki/langs/python.mjs"),
+    import("shiki/langs/json.mjs"),
+    import("shiki/langs/bash.mjs"),
+    import("shiki/langs/shellscript.mjs"),
+    import("shiki/langs/yaml.mjs"),
+    import("shiki/langs/toml.mjs"),
+    import("shiki/langs/markdown.mjs"),
+    import("shiki/langs/html.mjs"),
+    import("shiki/langs/css.mjs"),
+    import("shiki/langs/sql.mjs"),
+    import("shiki/langs/csv.mjs"),
+    import("shiki/langs/ruby.mjs"),
+    import("shiki/langs/rust.mjs"),
+    import("shiki/langs/go.mjs"),
+    import("shiki/langs/java.mjs"),
+    import("shiki/langs/c.mjs"),
+    import("shiki/langs/cpp.mjs"),
+    import("shiki/langs/csharp.mjs"),
+    import("shiki/langs/xml.mjs")
+  ]).then(
+    ([
+      { createHighlighterCore },
+      { createJavaScriptRegexEngine },
+      ayuLight,
+      ayuDark,
+      javascript,
+      typescript,
+      tsx,
+      jsx23,
+      python,
+      json,
+      bash,
+      shellscript,
+      yaml,
+      toml,
+      markdown,
+      html,
+      css,
+      sql,
+      csv,
+      ruby,
+      rust,
+      go,
+      java,
+      c,
+      cpp,
+      csharp,
+      xml
+    ]) => createHighlighterCore({
+      engine: createJavaScriptRegexEngine(),
+      themes: [ayuLight.default, ayuDark.default],
+      langs: [
+        javascript.default,
+        typescript.default,
+        tsx.default,
+        jsx23.default,
+        python.default,
+        json.default,
+        bash.default,
+        shellscript.default,
+        yaml.default,
+        toml.default,
+        markdown.default,
+        html.default,
+        css.default,
+        sql.default,
+        csv.default,
+        ruby.default,
+        rust.default,
+        go.default,
+        java.default,
+        c.default,
+        cpp.default,
+        csharp.default,
+        xml.default
+      ]
+    })
+  );
+  return graphChatHighlighterPromise;
+}
 
 // src/components/graph-workspace/GraphWorkspaceCards.tsx
 import { jsx, jsxs } from "react/jsx-runtime";
@@ -1560,6 +1654,93 @@ function GraphMoleculeViewer({
 import { Fragment as Fragment2, jsx as jsx11, jsxs as jsxs8 } from "react/jsx-runtime";
 var SMALL_TEXT_FILE_MAX_BYTES = 50 * 1024;
 var SMALL_TEXT_FILE_MAX_LINES = 1e3;
+var MARKDOWN_EXTENSIONS = /* @__PURE__ */ new Set(["md", "markdown"]);
+var CODE_LANGUAGE_ALIASES = {
+  cs: "csharp",
+  jsonl: "json",
+  md: "markdown",
+  rb: "ruby",
+  rs: "rust",
+  sh: "bash",
+  yml: "yaml"
+};
+function transparentHighlightBackground(html) {
+  return html.replace(/background-color:[^;"]+;?/g, "background-color: transparent;").replace(/background:[^;"]+;?/g, "background: transparent;");
+}
+function decodeWorkspaceResourcePath(value) {
+  try {
+    return decodeURIComponent(value);
+  } catch {
+    return value;
+  }
+}
+function normalizeWorkspaceResourceSegments(value) {
+  const segments = [];
+  for (const segment of value.replace(/\\/g, "/").split("/")) {
+    if (!segment || segment === ".") {
+      continue;
+    }
+    if (segment === "..") {
+      if (segments.length === 0) {
+        return null;
+      }
+      segments.pop();
+      continue;
+    }
+    segments.push(segment);
+  }
+  return segments.join("/");
+}
+function resolveWorkspaceMarkdownPath({
+  markdownPath,
+  resourceUrl,
+  workspaceRootPath = ""
+}) {
+  const trimmed = resourceUrl.trim();
+  const windowsAbsolutePath = /^[a-zA-Z]:[\\/]/.test(trimmed);
+  if (!trimmed || trimmed.startsWith("#") || trimmed.startsWith("//") || !windowsAbsolutePath && /^[a-zA-Z][a-zA-Z\d+.-]*:/.test(trimmed)) {
+    if (!/^https?:/i.test(trimmed) || typeof window === "undefined") {
+      return null;
+    }
+    try {
+      const parsed = new URL(trimmed);
+      if (parsed.origin !== window.location.origin) {
+        return null;
+      }
+      resourceUrl = parsed.pathname;
+    } catch {
+      return null;
+    }
+  }
+  const rawPath = decodeWorkspaceResourcePath(
+    resourceUrl.trim().split(/[?#]/, 1)[0] ?? ""
+  );
+  if (!rawPath) {
+    return null;
+  }
+  const normalizedRoot = workspaceRootPath.trim().replace(/\\/g, "/").replace(/\/+$/, "");
+  const normalizedRawPath = rawPath.replace(/\\/g, "/");
+  const absolutePath = normalizedRawPath.startsWith("/") || /^[a-zA-Z]:\//.test(normalizedRawPath);
+  if (absolutePath) {
+    if (normalizedRoot && normalizedRawPath !== normalizedRoot && !normalizedRawPath.startsWith(`${normalizedRoot}/`)) {
+      return null;
+    }
+    const rootMatches = normalizedRoot && (normalizedRawPath === normalizedRoot || normalizedRawPath.startsWith(`${normalizedRoot}/`));
+    const rootRelativePath = rootMatches ? normalizedRawPath.slice(normalizedRoot.length) : normalizedRawPath;
+    return normalizeWorkspaceResourceSegments(rootRelativePath);
+  }
+  const normalizedMarkdownPath = markdownPath.replace(/\\/g, "/");
+  const markdownPathIsAbsolute = normalizedMarkdownPath.startsWith("/") || /^[a-zA-Z]:\//.test(normalizedMarkdownPath);
+  if (markdownPathIsAbsolute && normalizedRoot && normalizedMarkdownPath !== normalizedRoot && !normalizedMarkdownPath.startsWith(`${normalizedRoot}/`)) {
+    return null;
+  }
+  const workspaceRelativeMarkdownPath = markdownPathIsAbsolute && normalizedRoot ? normalizedMarkdownPath.slice(normalizedRoot.length).replace(/^\/+/, "") : normalizedMarkdownPath.replace(/^\/+/, "");
+  const lastSlash = workspaceRelativeMarkdownPath.lastIndexOf("/");
+  const directory = lastSlash >= 0 ? workspaceRelativeMarkdownPath.slice(0, lastSlash) : "";
+  return normalizeWorkspaceResourceSegments(
+    directory ? `${directory}/${rawPath}` : rawPath
+  );
+}
 function isSmallEditableTextFile(file) {
   return !file.truncated && file.size <= SMALL_TEXT_FILE_MAX_BYTES && file.content.split("\n").length <= SMALL_TEXT_FILE_MAX_LINES;
 }
@@ -1589,27 +1770,166 @@ function graphWorkspacePreviewTargetFromNode(node) {
   }
 }
 var GraphWorkspaceCodePreview = memo(function GraphWorkspaceCodePreview2({
-  content
+  content,
+  language = "text"
 }) {
-  return /* @__PURE__ */ jsx11("div", { className: "thread-graph-code-preview min-h-0 flex-1 overflow-auto", children: /* @__PURE__ */ jsx11("pre", { className: "thread-graph-plain-code-preview", children: /* @__PURE__ */ jsx11("code", { children: content }) }) });
+  const rootRef = useRef2(null);
+  const [highlighter, setHighlighter] = useState2(null);
+  const [dark, setDark] = useState2(false);
+  useEffect2(() => {
+    let alive = true;
+    getGraphChatHighlighter().then((loadedHighlighter) => {
+      if (alive) {
+        setHighlighter(loadedHighlighter);
+      }
+    }).catch(() => void 0);
+    return () => {
+      alive = false;
+    };
+  }, []);
+  useEffect2(() => {
+    const shell = rootRef.current?.closest(".thread-ui-shell");
+    const readDark = () => shell ? shell.getAttribute("data-theme-effective") === "dark" || shell.classList.contains("dark") || shell.classList.contains("thread-ui-theme-dark") : document.documentElement.classList.contains("dark");
+    setDark(readDark());
+    if (!shell) {
+      return;
+    }
+    const observer = new MutationObserver(() => setDark(readDark()));
+    observer.observe(shell, {
+      attributes: true,
+      attributeFilter: ["class", "data-theme-effective"]
+    });
+    return () => observer.disconnect();
+  }, []);
+  const highlightedHtml = useMemo3(() => {
+    if (!highlighter) {
+      return "";
+    }
+    const loadedLanguages = highlighter.getLoadedLanguages?.() ?? [];
+    const normalizedLanguage = CODE_LANGUAGE_ALIASES[language] ?? language;
+    const resolvedLanguage = loadedLanguages.includes(normalizedLanguage) ? normalizedLanguage : "text";
+    try {
+      return transparentHighlightBackground(
+        highlighter.codeToHtml(content, {
+          lang: resolvedLanguage,
+          theme: dark ? "ayu-dark" : "ayu-light"
+        })
+      );
+    } catch {
+      return transparentHighlightBackground(
+        highlighter.codeToHtml(content, {
+          lang: "text",
+          theme: dark ? "ayu-dark" : "ayu-light"
+        })
+      );
+    }
+  }, [content, dark, highlighter, language]);
+  const lines = content.split("\n");
+  return /* @__PURE__ */ jsx11(
+    "div",
+    {
+      ref: rootRef,
+      className: "thread-graph-code-preview min-h-0 flex-1 overflow-auto",
+      role: "region",
+      "aria-label": "Source code",
+      children: highlightedHtml ? /* @__PURE__ */ jsx11(
+        "div",
+        {
+          className: "thread-graph-highlighted-code-preview",
+          dangerouslySetInnerHTML: { __html: highlightedHtml }
+        }
+      ) : /* @__PURE__ */ jsx11("pre", { className: "thread-graph-plain-code-preview", children: /* @__PURE__ */ jsx11("code", { children: lines.map((line, index) => /* @__PURE__ */ jsxs8("span", { className: "thread-graph-code-line", children: [
+        /* @__PURE__ */ jsx11(
+          "span",
+          {
+            className: "thread-graph-code-line-number",
+            "aria-hidden": "true",
+            children: index + 1
+          }
+        ),
+        /* @__PURE__ */ jsx11("span", { children: line || " " })
+      ] }, index)) }) })
+    }
+  );
 });
+var GraphWorkspaceMarkdownPreview = memo(
+  function GraphWorkspaceMarkdownPreview2({
+    content,
+    markdownPath,
+    onOpenWorkspaceFile,
+    resolveWorkspaceFileUrl,
+    workspaceRootPath
+  }) {
+    const resolvePath = (resourceUrl) => resourceUrl ? resolveWorkspaceMarkdownPath({
+      markdownPath,
+      resourceUrl,
+      workspaceRootPath: workspaceRootPath ?? ""
+    }) : null;
+    return /* @__PURE__ */ jsx11("div", { className: "thread-graph-markdown thread-graph-markdown-preview min-h-0 flex-1 overflow-auto px-5 py-4 sm:px-7 sm:py-6", children: /* @__PURE__ */ jsx11(
+      ReactMarkdown,
+      {
+        remarkPlugins: [remarkGfm],
+        components: {
+          a({ href, children, ...props }) {
+            const workspacePath = resolvePath(href);
+            if (workspacePath && onOpenWorkspaceFile) {
+              return /* @__PURE__ */ jsx11(
+                "a",
+                {
+                  ...props,
+                  href: resolveWorkspaceFileUrl?.(workspacePath) ?? href,
+                  onClick: (event) => {
+                    event.preventDefault();
+                    onOpenWorkspaceFile(workspacePath);
+                  },
+                  children
+                }
+              );
+            }
+            return /* @__PURE__ */ jsx11("a", { ...props, href, children });
+          },
+          img({ src, alt, ...props }) {
+            const workspacePath = resolvePath(src);
+            const resolvedSrc = workspacePath ? resolveWorkspaceFileUrl?.(workspacePath) ?? src : src;
+            return /* @__PURE__ */ jsx11(
+              "img",
+              {
+                ...props,
+                src: resolvedSrc,
+                alt: alt ?? "",
+                loading: "lazy"
+              }
+            );
+          }
+        },
+        children: content
+      }
+    ) });
+  }
+);
 function GraphWorkspacePreviewPane({
   error,
   imageUrl,
   loadingMore,
   onSaveFile,
+  onOpenWorkspaceFile,
   onLoadMore,
   onCollapse,
   pdfUrl,
   previewFile,
   previewLoading,
   plugins,
-  selectedTarget
+  resolveWorkspaceFileUrl,
+  selectedTarget,
+  workspaceRootPath
 }) {
   const [editing, setEditing] = useState2(false);
   const [draftContent, setDraftContent] = useState2("");
   const [saveError, setSaveError] = useState2(null);
   const [saving, setSaving] = useState2(false);
+  const [markdownView, setMarkdownView] = useState2(
+    "preview"
+  );
   const activeNode = selectedTarget?.node ?? null;
   const renderedArtifact = activeNode?.artifact ? plugins.renderArtifact({
     artifact: activeNode.artifact,
@@ -1619,6 +1939,7 @@ function GraphWorkspacePreviewPane({
   const moleculeSnapshot = buildMoleculePreviewSnapshot(previewFile ?? null);
   const fileLanguage = previewFile?.language || languageForPath(previewFile?.path ?? "");
   const extension = previewFile ? extensionOf(previewFile.path) : "";
+  const isMarkdownFile = MARKDOWN_EXTENSIONS.has(extension);
   const title = previewTargetTitle(selectedTarget);
   const selectedFileIsMolecule = previewFile !== null && MOLECULAR_EXTENSIONS.has(extension);
   const canEditFile = Boolean(previewFile && onSaveFile) && !selectedFileIsMolecule && isSmallEditableTextFile(previewFile);
@@ -1629,6 +1950,7 @@ function GraphWorkspacePreviewPane({
     setEditing(false);
     setDraftContent(previewFile?.content ?? "");
     setSaveError(null);
+    setMarkdownView("preview");
   }, [previewFile?.path, previewFile?.content]);
   async function handleSaveFile() {
     if (!previewFile || !onSaveFile) {
@@ -1643,7 +1965,9 @@ function GraphWorkspacePreviewPane({
       });
       setEditing(false);
     } catch (error2) {
-      setSaveError(error2 instanceof Error ? error2.message : "Failed to save file.");
+      setSaveError(
+        error2 instanceof Error ? error2.message : "Failed to save file."
+      );
     } finally {
       setSaving(false);
     }
@@ -1696,11 +2020,11 @@ function GraphWorkspacePreviewPane({
               className: "h-full w-full border-0"
             }
           ) }) : selectedTarget.kind === "workspace-file" && previewFile ? /* @__PURE__ */ jsxs8("div", { className: "flex min-h-0 flex-1 flex-col", children: [
-            /* @__PURE__ */ jsxs8("div", { className: "thread-graph-file-preview-header flex min-h-12 items-center justify-between gap-3 border-b px-4 py-2", children: [
+            /* @__PURE__ */ jsxs8("div", { className: "thread-graph-file-preview-header flex min-h-12 flex-wrap items-center justify-between gap-2 border-b px-4 py-2", children: [
               /* @__PURE__ */ jsxs8("div", { className: "min-w-0 text-xs uppercase tracking-[0.12em]", children: [
                 selectedFileIsMolecule ? "molecule" : fileLanguage || extension || "text",
-                " |",
                 " ",
+                "| ",
                 previewFile.size.toLocaleString(),
                 " bytes",
                 previewFile.truncated ? /* @__PURE__ */ jsxs8("span", { className: "ml-2 text-amber-500", children: [
@@ -1709,50 +2033,89 @@ function GraphWorkspacePreviewPane({
                   " bytes"
                 ] }) : null
               ] }),
-              canEditFile ? /* @__PURE__ */ jsx11("div", { className: "flex shrink-0 items-center gap-1", children: editing ? /* @__PURE__ */ jsxs8(Fragment2, { children: [
-                /* @__PURE__ */ jsx11(
+              isMarkdownFile || canEditFile ? /* @__PURE__ */ jsxs8("div", { className: "flex shrink-0 items-center gap-1.5", children: [
+                isMarkdownFile && !editing ? /* @__PURE__ */ jsxs8(
+                  "div",
+                  {
+                    className: "thread-graph-markdown-view-switch inline-flex items-center rounded-md border p-0.5",
+                    role: "group",
+                    "aria-label": "Markdown view",
+                    children: [
+                      /* @__PURE__ */ jsxs8(
+                        "button",
+                        {
+                          type: "button",
+                          onClick: () => setMarkdownView("preview"),
+                          className: `inline-flex h-7 items-center gap-1 rounded px-2 text-xs transition ${markdownView === "preview" ? "is-active" : ""}`,
+                          "aria-pressed": markdownView === "preview",
+                          children: [
+                            /* @__PURE__ */ jsx11(BookOpen, { className: "h-3.5 w-3.5" }),
+                            /* @__PURE__ */ jsx11("span", { children: "Preview" })
+                          ]
+                        }
+                      ),
+                      /* @__PURE__ */ jsxs8(
+                        "button",
+                        {
+                          type: "button",
+                          onClick: () => setMarkdownView("source"),
+                          className: `inline-flex h-7 items-center gap-1 rounded px-2 text-xs transition ${markdownView === "source" ? "is-active" : ""}`,
+                          "aria-pressed": markdownView === "source",
+                          children: [
+                            /* @__PURE__ */ jsx11(Code2, { className: "h-3.5 w-3.5" }),
+                            /* @__PURE__ */ jsx11("span", { children: "Source" })
+                          ]
+                        }
+                      )
+                    ]
+                  }
+                ) : null,
+                canEditFile ? /* @__PURE__ */ jsx11("div", { className: "flex shrink-0 items-center gap-1", children: editing ? /* @__PURE__ */ jsxs8(Fragment2, { children: [
+                  /* @__PURE__ */ jsx11(
+                    "button",
+                    {
+                      type: "button",
+                      onClick: () => {
+                        setDraftContent(previewFile.content);
+                        setEditing(false);
+                        setSaveError(null);
+                      },
+                      disabled: saving,
+                      className: "thread-graph-explorer-icon-button flex h-8 w-8 items-center justify-center rounded-lg border shadow-none transition disabled:cursor-not-allowed disabled:opacity-50",
+                      title: "Cancel edits",
+                      "aria-label": "Cancel edits",
+                      children: /* @__PURE__ */ jsx11(X, { className: "h-4 w-4" })
+                    }
+                  ),
+                  /* @__PURE__ */ jsx11(
+                    "button",
+                    {
+                      type: "button",
+                      onClick: () => void handleSaveFile(),
+                      disabled: saving || draftContent === previewFile.content,
+                      className: "thread-graph-explorer-icon-button flex h-8 w-8 items-center justify-center rounded-lg border shadow-none transition disabled:cursor-not-allowed disabled:opacity-50",
+                      title: "Save file",
+                      "aria-label": "Save file",
+                      children: /* @__PURE__ */ jsx11(Save, { className: "h-4 w-4" })
+                    }
+                  )
+                ] }) : /* @__PURE__ */ jsx11(
                   "button",
                   {
                     type: "button",
                     onClick: () => {
                       setDraftContent(previewFile.content);
-                      setEditing(false);
+                      setMarkdownView("source");
+                      setEditing(true);
                       setSaveError(null);
                     },
-                    disabled: saving,
-                    className: "thread-graph-explorer-icon-button flex h-8 w-8 items-center justify-center rounded-lg border shadow-none transition disabled:cursor-not-allowed disabled:opacity-50",
-                    title: "Cancel edits",
-                    "aria-label": "Cancel edits",
-                    children: /* @__PURE__ */ jsx11(X, { className: "h-4 w-4" })
+                    className: "thread-graph-explorer-icon-button flex h-8 w-8 items-center justify-center rounded-lg border shadow-none transition",
+                    title: "Edit file",
+                    "aria-label": "Edit file",
+                    children: /* @__PURE__ */ jsx11(Pencil, { className: "h-4 w-4" })
                   }
-                ),
-                /* @__PURE__ */ jsx11(
-                  "button",
-                  {
-                    type: "button",
-                    onClick: () => void handleSaveFile(),
-                    disabled: saving || draftContent === previewFile.content,
-                    className: "thread-graph-explorer-icon-button flex h-8 w-8 items-center justify-center rounded-lg border shadow-none transition disabled:cursor-not-allowed disabled:opacity-50",
-                    title: "Save file",
-                    "aria-label": "Save file",
-                    children: /* @__PURE__ */ jsx11(Save, { className: "h-4 w-4" })
-                  }
-                )
-              ] }) : /* @__PURE__ */ jsx11(
-                "button",
-                {
-                  type: "button",
-                  onClick: () => {
-                    setDraftContent(previewFile.content);
-                    setEditing(true);
-                    setSaveError(null);
-                  },
-                  className: "thread-graph-explorer-icon-button flex h-8 w-8 items-center justify-center rounded-lg border shadow-none transition",
-                  title: "Edit file",
-                  "aria-label": "Edit file",
-                  children: /* @__PURE__ */ jsx11(Pencil, { className: "h-4 w-4" })
-                }
-              ) }) : null
+                ) }) : null
+              ] }) : null
             ] }),
             saveError ? /* @__PURE__ */ jsx11("div", { className: "border-b border-rose-200 bg-rose-50 px-4 py-2 text-sm text-rose-700 dark:border-rose-400/25 dark:bg-rose-400/10 dark:text-rose-200", children: saveError }) : null,
             editing ? /* @__PURE__ */ jsx11(
@@ -1764,10 +2127,20 @@ function GraphWorkspacePreviewPane({
                 "aria-label": "Workspace file editor",
                 className: "thread-graph-file-editor min-h-0 flex-1 resize-none border-0 bg-transparent p-4 font-mono text-[12px] leading-5 text-slate-900 outline-none dark:text-slate-100"
               }
+            ) : isMarkdownFile && markdownView === "preview" ? /* @__PURE__ */ jsx11(
+              GraphWorkspaceMarkdownPreview,
+              {
+                content: previewFile.content,
+                markdownPath: previewFile.path,
+                ...onOpenWorkspaceFile ? { onOpenWorkspaceFile } : {},
+                ...resolveWorkspaceFileUrl ? { resolveWorkspaceFileUrl } : {},
+                ...workspaceRootPath ? { workspaceRootPath } : {}
+              }
             ) : /* @__PURE__ */ jsx11(
               GraphWorkspaceCodePreview,
               {
-                content: previewFile.content
+                content: previewFile.content,
+                language: fileLanguage
               }
             ),
             previewFile.truncated && onLoadMore ? /* @__PURE__ */ jsx11("div", { className: "thread-graph-file-preview-footer flex justify-center border-t px-4 py-3", children: /* @__PURE__ */ jsx11(
@@ -1899,6 +2272,7 @@ function ResizableHandle({
 import { jsx as jsx14, jsxs as jsxs10 } from "react/jsx-runtime";
 var PREVIEW_CHUNK_BYTES = 24e3;
 var EXPANDED_PATHS_STORAGE_PREFIX = "remote-codex:graphchat:workspace:expanded:";
+var TREE_LEVEL_INDENT_REM = 0.5;
 var explorerPanelClassName = "thread-graph-explorer h-full min-h-0 overflow-hidden rounded-[12px]";
 var explorerHeaderClassName = "thread-graph-explorer-header flex h-[60px] shrink-0 items-center justify-between border-b px-4";
 var explorerHeadingClassName = "text-[18px] font-semibold text-slate-900 dark:text-slate-100";
@@ -1943,7 +2317,9 @@ function mergeRefreshedWorkspaceTree(refreshed, previous) {
   if (refreshed.kind !== "directory") {
     return refreshed;
   }
-  const previousByPath = new Map(previous.children.map((child) => [child.path, child]));
+  const previousByPath = new Map(
+    previous.children.map((child) => [child.path, child])
+  );
   const children = refreshed.children.map(
     (child) => mergeRefreshedWorkspaceTree(child, previousByPath.get(child.path) ?? null)
   );
@@ -1966,9 +2342,21 @@ function iconForWorkspaceNode(node, expanded) {
   if (node.kind === "file" && ["png", "jpg", "jpeg", "gif", "webp", "svg"].includes(extension)) {
     return /* @__PURE__ */ jsx14(FileImage, { className: "h-4 w-4 text-sky-500" });
   }
-  if (node.kind === "artifact" || ["xyz", "extxyz", "cif", "pdf", "json", "ts", "tsx", "js", "jsx", "md", "yaml", "yml", "py"].includes(
-    extension
-  )) {
+  if (node.kind === "artifact" || [
+    "xyz",
+    "extxyz",
+    "cif",
+    "pdf",
+    "json",
+    "ts",
+    "tsx",
+    "js",
+    "jsx",
+    "md",
+    "yaml",
+    "yml",
+    "py"
+  ].includes(extension)) {
     return /* @__PURE__ */ jsx14(FileCode2, { className: "h-4 w-4 text-emerald-600" });
   }
   return /* @__PURE__ */ jsx14(File, { className: "h-4 w-4 text-slate-400 dark:text-slate-500" });
@@ -1989,10 +2377,10 @@ function WorkspaceTreeRow({
   const expanded = isDirectory && (node.path === "" || expandedPaths.has(node.path));
   const loadingChildren = isDirectory && loadingPaths.has(node.path);
   const selected = selectedNodeId === node.id;
-  const paddingLeft = `${depth * 0.75 + 0.5}rem`;
+  const paddingLeft = `${depth * TREE_LEVEL_INDENT_REM + 0.5}rem`;
   if (isDirectory) {
     return /* @__PURE__ */ jsxs10("div", { children: [
-      /* @__PURE__ */ jsxs10("div", { className: "thread-graph-tree-row group flex items-center text-sm text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-[#222733] dark:hover:text-slate-100", children: [
+      /* @__PURE__ */ jsxs10("div", { className: "thread-graph-tree-row group relative flex items-center text-sm text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-[#222733] dark:hover:text-slate-100", children: [
         /* @__PURE__ */ jsxs10(
           "button",
           {
@@ -2008,28 +2396,30 @@ function WorkspaceTreeRow({
             ]
           }
         ),
-        onDownload ? /* @__PURE__ */ jsx14(
-          "button",
-          {
-            type: "button",
-            onClick: () => onDownload(node),
-            className: "thread-graph-tree-action mr-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-md text-slate-400 transition hover:bg-white hover:text-slate-900 sm:h-7 sm:w-7 sm:opacity-0 sm:group-hover:opacity-100 sm:focus:opacity-100 dark:text-slate-500 dark:hover:bg-[#1d222c] dark:hover:text-slate-100",
-            title: node.path ? `Download ${node.name}` : "Download workspace",
-            "aria-label": node.path ? `Download ${node.name}` : "Download workspace",
-            children: /* @__PURE__ */ jsx14(Download2, { className: "h-3.5 w-3.5" })
-          }
-        ) : null,
-        onCopyPath && node.path ? /* @__PURE__ */ jsx14(
-          "button",
-          {
-            type: "button",
-            onClick: () => onCopyPath(node),
-            className: "thread-graph-tree-action mr-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-md text-slate-400 transition hover:bg-white hover:text-slate-900 sm:h-7 sm:w-7 sm:opacity-0 sm:group-hover:opacity-100 sm:focus:opacity-100 dark:text-slate-500 dark:hover:bg-[#1d222c] dark:hover:text-slate-100",
-            title: `Copy path for ${node.name}`,
-            "aria-label": `Copy path for ${node.name}`,
-            children: /* @__PURE__ */ jsx14(Copy2, { className: "h-3.5 w-3.5" })
-          }
-        ) : null
+        onDownload || onCopyPath && node.path ? /* @__PURE__ */ jsxs10("div", { className: "thread-graph-tree-actions absolute inset-y-0 right-1 flex items-center gap-0.5 pl-1", children: [
+          onDownload ? /* @__PURE__ */ jsx14(
+            "button",
+            {
+              type: "button",
+              onClick: () => onDownload(node),
+              className: "thread-graph-tree-action flex h-9 w-9 shrink-0 items-center justify-center rounded-md text-slate-400 transition hover:bg-white hover:text-slate-900 sm:h-7 sm:w-7 dark:text-slate-500 dark:hover:bg-[#1d222c] dark:hover:text-slate-100",
+              title: node.path ? `Download ${node.name}` : "Download workspace",
+              "aria-label": node.path ? `Download ${node.name}` : "Download workspace",
+              children: /* @__PURE__ */ jsx14(Download2, { className: "h-3.5 w-3.5" })
+            }
+          ) : null,
+          onCopyPath && node.path ? /* @__PURE__ */ jsx14(
+            "button",
+            {
+              type: "button",
+              onClick: () => onCopyPath(node),
+              className: "thread-graph-tree-action flex h-9 w-9 shrink-0 items-center justify-center rounded-md text-slate-400 transition hover:bg-white hover:text-slate-900 sm:h-7 sm:w-7 dark:text-slate-500 dark:hover:bg-[#1d222c] dark:hover:text-slate-100",
+              title: `Copy path for ${node.name}`,
+              "aria-label": `Copy path for ${node.name}`,
+              children: /* @__PURE__ */ jsx14(Copy2, { className: "h-3.5 w-3.5" })
+            }
+          ) : null
+        ] }) : null
       ] }),
       expanded ? /* @__PURE__ */ jsxs10("div", { children: [
         node.children.map((child) => /* @__PURE__ */ jsx14(
@@ -2052,7 +2442,9 @@ function WorkspaceTreeRow({
           "div",
           {
             className: "px-2 py-1 text-xs text-slate-400 dark:text-slate-500",
-            style: { paddingLeft: `${(depth + 1) * 0.75 + 0.5}rem` },
+            style: {
+              paddingLeft: `${(depth + 1) * TREE_LEVEL_INDENT_REM + 0.5}rem`
+            },
             children: "More items not shown"
           }
         ) : null
@@ -2062,7 +2454,7 @@ function WorkspaceTreeRow({
   return /* @__PURE__ */ jsxs10(
     "div",
     {
-      className: `thread-graph-tree-row group flex items-center text-sm transition ${selected ? "is-selected" : "text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-[#222733] dark:hover:text-slate-100"}`,
+      className: `thread-graph-tree-row group relative flex items-center text-sm transition ${selected ? "is-selected" : "text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-[#222733] dark:hover:text-slate-100"}`,
       children: [
         /* @__PURE__ */ jsxs10(
           "button",
@@ -2070,20 +2462,20 @@ function WorkspaceTreeRow({
             type: "button",
             onClick: () => onSelect(node.id),
             className: "flex min-h-9 min-w-0 flex-1 items-center gap-2 px-2 py-2 text-left sm:min-h-0 sm:py-1.5",
-            style: { paddingLeft: `${depth * 0.75 + 2.2}rem` },
+            style: { paddingLeft: `${depth * TREE_LEVEL_INDENT_REM + 1.9}rem` },
             children: [
               iconForWorkspaceNode(node, false),
               /* @__PURE__ */ jsx14("span", { className: "truncate", children: node.name })
             ]
           }
         ),
-        node.kind === "file" && (onPreview || onDownload || onCopyPath) ? /* @__PURE__ */ jsxs10("div", { className: "mr-1 flex shrink-0 items-center gap-0.5", children: [
+        node.kind === "file" && (onPreview || onDownload || onCopyPath) ? /* @__PURE__ */ jsxs10("div", { className: "thread-graph-tree-actions absolute inset-y-0 right-1 flex items-center gap-0.5 pl-1", children: [
           onPreview ? /* @__PURE__ */ jsx14(
             "button",
             {
               type: "button",
               onClick: () => onPreview(node),
-              className: `thread-graph-tree-action flex h-9 w-9 shrink-0 items-center justify-center rounded-md transition sm:h-7 sm:w-7 sm:opacity-0 sm:group-hover:opacity-100 sm:focus:opacity-100 ${selected ? "is-selected" : "text-slate-400 hover:bg-white hover:text-slate-900 dark:text-slate-500 dark:hover:bg-[#1d222c] dark:hover:text-slate-100"}`,
+              className: `thread-graph-tree-action flex h-9 w-9 shrink-0 items-center justify-center rounded-md transition sm:h-7 sm:w-7 ${selected ? "is-selected" : "text-slate-400 hover:bg-white hover:text-slate-900 dark:text-slate-500 dark:hover:bg-[#1d222c] dark:hover:text-slate-100"}`,
               title: `Preview ${node.name}`,
               "aria-label": `Preview ${node.name}`,
               children: /* @__PURE__ */ jsx14(Eye, { className: "h-3.5 w-3.5" })
@@ -2094,7 +2486,7 @@ function WorkspaceTreeRow({
             {
               type: "button",
               onClick: () => onDownload(node),
-              className: `thread-graph-tree-action flex h-9 w-9 shrink-0 items-center justify-center rounded-md transition sm:h-7 sm:w-7 sm:opacity-0 sm:group-hover:opacity-100 sm:focus:opacity-100 ${selected ? "is-selected" : "text-slate-400 hover:bg-white hover:text-slate-900 dark:text-slate-500 dark:hover:bg-[#1d222c] dark:hover:text-slate-100"}`,
+              className: `thread-graph-tree-action flex h-9 w-9 shrink-0 items-center justify-center rounded-md transition sm:h-7 sm:w-7 ${selected ? "is-selected" : "text-slate-400 hover:bg-white hover:text-slate-900 dark:text-slate-500 dark:hover:bg-[#1d222c] dark:hover:text-slate-100"}`,
               title: `Download ${node.name}`,
               "aria-label": `Download ${node.name}`,
               children: /* @__PURE__ */ jsx14(Download2, { className: "h-3.5 w-3.5" })
@@ -2105,7 +2497,7 @@ function WorkspaceTreeRow({
             {
               type: "button",
               onClick: () => onCopyPath(node),
-              className: `thread-graph-tree-action flex h-9 w-9 shrink-0 items-center justify-center rounded-md transition sm:h-7 sm:w-7 sm:opacity-0 sm:group-hover:opacity-100 sm:focus:opacity-100 ${selected ? "is-selected" : "text-slate-400 hover:bg-white hover:text-slate-900 dark:text-slate-500 dark:hover:bg-[#1d222c] dark:hover:text-slate-100"}`,
+              className: `thread-graph-tree-action flex h-9 w-9 shrink-0 items-center justify-center rounded-md transition sm:h-7 sm:w-7 ${selected ? "is-selected" : "text-slate-400 hover:bg-white hover:text-slate-900 dark:text-slate-500 dark:hover:bg-[#1d222c] dark:hover:text-slate-100"}`,
               title: `Copy path for ${node.name}`,
               "aria-label": `Copy path for ${node.name}`,
               children: /* @__PURE__ */ jsx14(Copy2, { className: "h-3.5 w-3.5" })
@@ -2172,7 +2564,7 @@ function WorkspaceExplorerPanel({
   tree,
   liveNodes
 }) {
-  const visibleTree = useMemo3(
+  const visibleTree = useMemo4(
     () => ({
       ...tree,
       children: tree.children.filter((node) => node.path !== "live")
@@ -2290,14 +2682,16 @@ function GraphWorkspaceExplorer({
   focusPathRequest,
   workspaceAdapter
 }) {
-  const [adapterTree, setAdapterTree] = useState3(null);
-  const fallbackTree = useMemo3(
+  const [adapterTree, setAdapterTree] = useState3(
+    null
+  );
+  const fallbackTree = useMemo4(
     () => workspaceAdapter && adapterTree ? null : collectWorkspaceItems(detail, artifacts, status, activeView),
     [activeView, adapterTree, artifacts, detail, status, workspaceAdapter]
   );
   const tree = adapterTree ?? fallbackTree ?? collectWorkspaceItems(detail, artifacts, status, activeView);
-  const nodeMap = useMemo3(() => flattenWorkspaceNodes(tree), [tree]);
-  const liveNodes = useMemo3(
+  const nodeMap = useMemo4(() => flattenWorkspaceNodes(tree), [tree]);
+  const liveNodes = useMemo4(
     () => tree.children.find((node) => node.path === "live")?.children ?? [],
     [tree]
   );
@@ -2319,9 +2713,7 @@ function GraphWorkspaceExplorer({
   );
   const [workspaceError, setWorkspaceError] = useState3(null);
   const [loadingTree, setLoadingTree] = useState3(false);
-  const [loadingDirectoryPaths, setLoadingDirectoryPaths] = useState3(
-    () => /* @__PURE__ */ new Set()
-  );
+  const [loadingDirectoryPaths, setLoadingDirectoryPaths] = useState3(() => /* @__PURE__ */ new Set());
   const [previewLoading, setPreviewLoading] = useState3(false);
   const [loadingMore, setLoadingMore] = useState3(false);
   const [showGarbageDialog, setShowGarbageDialog] = useState3(false);
@@ -2330,10 +2722,10 @@ function GraphWorkspaceExplorer({
   const [imageUrl, setImageUrl] = useState3(null);
   const [pdfUrl, setPdfUrl] = useState3(null);
   const [isMobileViewport, setIsMobileViewport] = useState3(false);
-  const fileInputRef = useRef2(null);
-  const explorerScrollerRef = useRef2(null);
-  const explorerScrollTopRef = useRef2(0);
-  const pendingExplorerScrollRestoreRef = useRef2(null);
+  const fileInputRef = useRef3(null);
+  const explorerScrollerRef = useRef3(null);
+  const explorerScrollTopRef = useRef3(0);
+  const pendingExplorerScrollRestoreRef = useRef3(null);
   const workspaceAdapterAvailable = Boolean(workspaceAdapter);
   const activeNode = (selectedNodeId ? nodeMap.get(selectedNodeId) : null) ?? firstSelectableNode ?? null;
   const workspaceIdentity = {
@@ -2418,7 +2810,9 @@ function GraphWorkspaceExplorer({
       );
       let nextTree = adapterTree ? mergeRefreshedWorkspaceTree(refreshedTree, adapterTree) : refreshedTree;
       if (adapterTree) {
-        const expandedDirectories = [...expandedPaths].filter((path) => path).sort((left, right) => left.split("/").length - right.split("/").length);
+        const expandedDirectories = [...expandedPaths].filter((path) => path).sort(
+          (left, right) => left.split("/").length - right.split("/").length
+        );
         for (const path of expandedDirectories) {
           const previousNode = findWorkspaceNodeByPath(adapterTree, path);
           if (previousNode?.kind !== "directory" || !previousNode.childrenLoaded) {
@@ -2490,7 +2884,7 @@ function GraphWorkspaceExplorer({
     }
   }
   async function focusWorkspacePath(path) {
-    const targetPath = normalizeWorkspacePath(path);
+    const targetPath = workspaceRelativeFocusPath(path, detail.workspace.absPath);
     if (!targetPath) {
       return;
     }
@@ -2523,7 +2917,10 @@ function GraphWorkspaceExplorer({
           continue;
         }
         const loadedNode = workspaceTreeNodeToGraphNode(
-          await workspaceAdapter.listTree({ ...workspaceIdentity, path: ancestor })
+          await workspaceAdapter.listTree({
+            ...workspaceIdentity,
+            path: ancestor
+          })
         );
         nextTree = replaceWorkspaceNode(nextTree, ancestor, loadedNode);
       }
@@ -2571,7 +2968,11 @@ function GraphWorkspaceExplorer({
     if (!workspaceAdapter?.subscribeWorkspaceChanged) {
       return;
     }
-  }, [workspaceAdapter, workspaceIdentity.threadId, workspaceIdentity.workspaceId]);
+  }, [
+    workspaceAdapter,
+    workspaceIdentity.threadId,
+    workspaceIdentity.workspaceId
+  ]);
   useEffect3(() => {
     const selectedPathCandidate = workspaceAdapter && activeNode?.kind === "file" ? activeNode.path : null;
     if (!selectedPathCandidate) {
@@ -2843,6 +3244,9 @@ function GraphWorkspaceExplorer({
       error: workspaceError,
       imageUrl,
       loadingMore,
+      onOpenWorkspaceFile: (path) => {
+        void focusWorkspacePath(path);
+      },
       onLoadMore: handleLoadMore,
       ...workspaceAdapter?.writeFile ? { onSaveFile: handleSaveFile } : {},
       onCollapse: () => {
@@ -2853,7 +3257,14 @@ function GraphWorkspaceExplorer({
       previewFile,
       previewLoading,
       plugins,
-      selectedTarget: graphWorkspacePreviewTargetFromNode(activeNode)
+      ...workspaceAdapter?.getRawFileUrl ? {
+        resolveWorkspaceFileUrl: (path) => workspaceAdapter.getRawFileUrl?.({
+          ...workspaceIdentity,
+          path
+        }) ?? null
+      } : {},
+      selectedTarget: graphWorkspacePreviewTargetFromNode(activeNode),
+      workspaceRootPath: detail.workspace.absPath
     }
   );
   if (collapsedPanel === "explorer") {
@@ -2932,7 +3343,7 @@ function GraphWorkspaceExplorer({
 // src/components/graph-workspace/GraphGuidePanel.tsx
 import {
   BarChart2,
-  Code2,
+  Code2 as Code22,
   FileImage as FileImage2,
   FolderOpen as FolderOpen2,
   MessageSquare,
@@ -3212,7 +3623,7 @@ function GraphGuidePanel() {
             {
               value: "remote-codex",
               title: "Remote Codex Extras",
-              icon: /* @__PURE__ */ jsx16(Code2, { className: "h-3 w-3" }),
+              icon: /* @__PURE__ */ jsx16(Code22, { className: "h-3 w-3" }),
               children: /* @__PURE__ */ jsx16(
                 GuideBullets,
                 {
@@ -3233,7 +3644,7 @@ function GraphGuidePanel() {
 }
 
 // src/components/graph-workspace/GraphToolUsagePanel.tsx
-import { useEffect as useEffect4, useRef as useRef3, useState as useState4 } from "react";
+import { useEffect as useEffect4, useRef as useRef4, useState as useState4 } from "react";
 import { RefreshCw as RefreshCw3 } from "lucide-react";
 import { jsx as jsx17, jsxs as jsxs13 } from "react/jsx-runtime";
 function formatValue(value) {
@@ -3288,7 +3699,7 @@ function GraphToolUsagePanel({
   const [expandedEventId, setExpandedEventId] = useState4(
     () => toolEvents.at(-1)?.id ?? null
   );
-  const bottomRef = useRef3(null);
+  const bottomRef = useRef4(null);
   useEffect4(() => {
     setExpandedEventId((current) => current ?? toolEvents.at(-1)?.id ?? null);
   }, [toolEvents]);
@@ -3362,7 +3773,7 @@ function GraphToolUsagePanel({
 }
 
 // src/components/graph-chat/GraphVisualization.tsx
-import { useCallback as useCallback2, useEffect as useEffect5, useMemo as useMemo4 } from "react";
+import { useCallback as useCallback2, useEffect as useEffect5, useMemo as useMemo5 } from "react";
 import {
   addEdge,
   Background,
@@ -3656,9 +4067,9 @@ import { jsx as jsx21, jsxs as jsxs16 } from "react/jsx-runtime";
 function GraphVisualization({ nodes: inputNodes }) {
   const [flowNodes, setFlowNodes, onNodesChange] = useNodesState([]);
   const [flowEdges, setFlowEdges, onEdgesChange] = useEdgesState([]);
-  const graph = useMemo4(() => buildGraph(inputNodes), [inputNodes]);
-  const edgeTypes = useMemo4(() => ({ floating: FloatingEdge }), []);
-  const nodeTypes = useMemo4(
+  const graph = useMemo5(() => buildGraph(inputNodes), [inputNodes]);
+  const edgeTypes = useMemo5(() => ({ floating: FloatingEdge }), []);
+  const nodeTypes = useMemo5(
     () => ({
       styledNode: ({ data, isConnectable }) => /* @__PURE__ */ jsxs16("div", { className: "thread-graph-flow-node", children: [
         data.label,
@@ -3937,15 +4348,15 @@ function ThreadGraphWorkspacePanel({
   features: featureConfig,
   focusPathRequest = null
 }) {
-  const features = useMemo5(
+  const features = useMemo6(
     () => resolveWorkspaceFeatures(featureConfig),
     [featureConfig]
   );
   const initialTab = firstEnabledWorkspaceTab(features, featureConfig?.defaultTab);
   const [activeTab, setActiveTab] = useState5(initialTab);
-  const artifacts = useMemo5(() => collectArtifacts(detail), [detail]);
-  const toolEvents = useMemo5(() => collectToolEvents(detail), [detail]);
-  const toolCounts = useMemo5(() => {
+  const artifacts = useMemo6(() => collectArtifacts(detail), [detail]);
+  const toolEvents = useMemo6(() => collectToolEvents(detail), [detail]);
+  const toolCounts = useMemo6(() => {
     const counts = /* @__PURE__ */ new Map();
     for (const event of toolEvents) {
       counts.set(event.kind, (counts.get(event.kind) ?? 0) + 1);
@@ -3954,11 +4365,11 @@ function ThreadGraphWorkspacePanel({
   }, [toolEvents]);
   const threadPanels = plugins.getThreadPanels();
   const maxToolCount = Math.max(...toolCounts.map(([, count]) => count), 1);
-  const graphNodes = useMemo5(
+  const graphNodes = useMemo6(
     () => collectGraphNodes(detail, toolEvents),
     [detail, toolEvents]
   );
-  const primaryTabs = useMemo5(() => {
+  const primaryTabs = useMemo6(() => {
     const tabs = [];
     if (features.workspace) {
       tabs.push({ id: "workspace", label: "Workspace", icon: null });
@@ -3967,11 +4378,11 @@ function ThreadGraphWorkspacePanel({
       tabs.push({ id: "tools", label: "Tool Usage", icon: BarChart22 });
     }
     if (features.guide) {
-      tabs.push({ id: "guide", label: "Guide", icon: BookOpen });
+      tabs.push({ id: "guide", label: "Guide", icon: BookOpen2 });
     }
     return tabs;
   }, [features.guide, features.toolUsage, features.workspace]);
-  const secondaryTabs = useMemo5(() => {
+  const secondaryTabs = useMemo6(() => {
     const tabs = [];
     if (features.threadGraph) {
       tabs.push({ id: "graph", label: "Thread graph", icon: GitBranch });

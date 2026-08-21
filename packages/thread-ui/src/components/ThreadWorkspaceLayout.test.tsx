@@ -1,7 +1,7 @@
 /**
  * @vitest-environment jsdom
  */
-import type { ReactNode } from 'react';
+import { act, type ReactNode } from 'react';
 import { flushSync } from 'react-dom';
 import { createRoot, type Root } from 'react-dom/client';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -66,7 +66,11 @@ function renderLayoutWithActions() {
         lastError: null,
         restartCount: 0,
       }}
-      threadActionsButton={<button type="button" aria-label="Thread actions">Actions</button>}
+      threadActionsButton={
+        <button type="button" aria-label="Thread actions">
+          Actions
+        </button>
+      }
       workspaceContent={<div data-testid="workspace-content">Workspace</div>}
     >
       <div data-testid="chat-content">Chat</div>
@@ -95,8 +99,48 @@ describe('ThreadWorkspaceLayout', () => {
     const element = renderLayout();
 
     expect(element.querySelector('[data-testid="chat-content"]')).toBeTruthy();
-    expect(element.querySelector('[data-testid="workspace-content"]')).toBeNull();
-    expect(element.querySelector('[aria-label="Expand workspace"]')).toBeTruthy();
+    expect(
+      element.querySelector('[data-testid="workspace-content"]'),
+    ).toBeNull();
+    expect(
+      element.querySelector('[aria-label="Expand workspace"]'),
+    ).toBeTruthy();
+  });
+
+  it('reveals the desktop workspace when a file focus request arrives', async () => {
+    const status = {
+      state: 'ready' as const,
+      transport: 'sdk' as const,
+      lastStartedAt: null,
+      lastError: null,
+      restartCount: 0,
+    };
+    const layout = (workspaceRevealRequestKey?: number) => (
+      <ThreadWorkspaceLayout
+        threads={[]}
+        status={status}
+        workspaceContent={<div data-testid="workspace-content">Workspace</div>}
+        {...(workspaceRevealRequestKey !== undefined
+          ? { workspaceRevealRequestKey }
+          : {})}
+      >
+        <div data-testid="chat-content">Chat</div>
+      </ThreadWorkspaceLayout>
+    );
+    const element = render(layout());
+
+    expect(
+      element.querySelector('[data-testid="workspace-content"]'),
+    ).toBeNull();
+
+    await act(async () => {
+      root?.render(layout(1));
+    });
+
+    expect(
+      element.querySelector('[data-testid="workspace-content"]'),
+    ).toBeTruthy();
+    expect(element.querySelector('[aria-label="Expand workspace"]')).toBeNull();
   });
 
   it('defaults mobile thread entry to chat while keeping workspace switchable', () => {
@@ -104,9 +148,13 @@ describe('ThreadWorkspaceLayout', () => {
     const element = renderLayout();
 
     expect(element.querySelector('[data-testid="chat-content"]')).toBeTruthy();
-    expect(element.querySelector('[data-testid="workspace-content"]')).toBeTruthy();
+    expect(
+      element.querySelector('[data-testid="workspace-content"]'),
+    ).toBeTruthy();
     expect(element.querySelector('.thread-mobile-chat-hidden')).toBeNull();
-    expect(element.querySelector('.thread-mobile-workspace-hidden')).toBeTruthy();
+    expect(
+      element.querySelector('.thread-mobile-workspace-hidden'),
+    ).toBeTruthy();
     expect(element.querySelector('[aria-label="Show workspace"]')).toBeTruthy();
   });
 
@@ -118,7 +166,8 @@ describe('ThreadWorkspaceLayout', () => {
   });
 
   it('shows the complete usage summary without truncating it', () => {
-    const usage = 'in 143k / out 27 / cache read 119k / cache write 23.9k / cost $0.072';
+    const usage =
+      'in 143k / out 27 / cache read 119k / cache write 23.9k / cost $0.072';
     const element = render(
       <ThreadWorkspaceLayout
         threads={[]}
@@ -138,7 +187,9 @@ describe('ThreadWorkspaceLayout', () => {
     );
 
     flushSync(() => {
-      element.querySelector<HTMLButtonElement>('[title="Session and usage"]')?.click();
+      element
+        .querySelector<HTMLButtonElement>('[title="Session and usage"]')
+        ?.click();
     });
     const usageValue = element.querySelector(
       '[title="Session token usage and estimated cost"] span:last-child',
@@ -177,8 +228,10 @@ describe('ThreadWorkspaceLayout', () => {
       button?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     });
 
-    expect(document.querySelector('[data-testid="host-new-thread-form"]')?.textContent)
-      .toContain('workspace-1');
+    expect(
+      document.querySelector('[data-testid="host-new-thread-form"]')
+        ?.textContent,
+    ).toContain('workspace-1');
     expect(document.querySelector('[aria-label="Chat name"]')).toBeNull();
   });
 });

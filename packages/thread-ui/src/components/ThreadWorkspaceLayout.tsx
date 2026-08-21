@@ -121,6 +121,7 @@ interface ThreadWorkspaceLayoutProps {
   workspaceContent?: ReactNode;
   workspaceTitle?: string;
   workspaceActions?: ReactNode;
+  workspaceRevealRequestKey?: number;
   children: ReactNode;
 }
 
@@ -173,7 +174,8 @@ function ThreadCard({
   );
   const resetTimerRef = useRef<number | null>(null);
   const workspaceLabel = workspaceLabels[thread.workspaceId];
-  const roomMetaLabel = workspaceLabel && !currentWorkspaceId ? workspaceLabel : null;
+  const roomMetaLabel =
+    workspaceLabel && !currentWorkspaceId ? workspaceLabel : null;
   const isCurrentThread = currentThreadId === thread.id;
 
   useEffect(() => {
@@ -457,6 +459,7 @@ export function ThreadWorkspaceLayout({
   workspaceContent,
   workspaceTitle = "Workspace",
   workspaceActions,
+  workspaceRevealRequestKey,
   children,
 }: ThreadWorkspaceLayoutProps) {
   const shellNav = useAppShellNav();
@@ -499,6 +502,14 @@ export function ThreadWorkspaceLayout({
   const [settingsTab, setSettingsTab] = useState<"session" | "global">(
     "session",
   );
+
+  useEffect(() => {
+    if (workspaceRevealRequestKey === undefined) {
+      return;
+    }
+    setWorkspaceCollapsed(false);
+    setMobileWorkspace("workspace");
+  }, [workspaceRevealRequestKey]);
 
   useEffect(() => {
     if (typeof window === "undefined") {
@@ -713,7 +724,9 @@ export function ThreadWorkspaceLayout({
                   id="thread-graph-create-thread-title"
                   name="thread-title"
                   value={newThreadTitleDraft}
-                  onChange={(event) => setNewThreadTitleDraft(event.target.value)}
+                  onChange={(event) =>
+                    setNewThreadTitleDraft(event.target.value)
+                  }
                   onKeyDown={(event) => {
                     if (event.key === "Enter") {
                       event.preventDefault();
@@ -1023,7 +1036,9 @@ export function ThreadWorkspaceLayout({
   const renderMobileTopbarControls = renderMobileWorkspaceSplit;
   const shouldShowMobileRoomsButton =
     renderMobileTopbarControls && !mobileRoomsOpen;
-  const canReturnToWorkspace = Boolean(workspaceReturnHref || onWorkspaceReturn);
+  const canReturnToWorkspace = Boolean(
+    workspaceReturnHref || onWorkspaceReturn,
+  );
   const workspaceReturnControl = canReturnToWorkspace ? (
     <a
       href={workspaceReturnHref ?? "#"}
