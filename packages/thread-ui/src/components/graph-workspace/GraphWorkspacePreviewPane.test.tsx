@@ -37,6 +37,7 @@ afterEach(() => {
   root = null;
   container?.remove();
   container = null;
+  document.body.style.overflow = '';
 });
 
 describe('resolveWorkspaceMarkdownPath', () => {
@@ -146,12 +147,81 @@ describe('GraphWorkspacePreviewPane', () => {
 
     act(() => {
       element
+        .querySelector<HTMLButtonElement>(
+          '[aria-label="Open image preview: Diagram"]',
+        )
+        ?.click();
+    });
+    const dialog = document.body.querySelector<HTMLElement>('[role="dialog"]');
+    expect(dialog?.getAttribute('aria-label')).toBe('Image preview: Diagram');
+    expect(dialog?.querySelector('img')?.getAttribute('src')).toBe(
+      '/relay/files/raw?path=assets%2Fsystem.png',
+    );
+
+    act(() => {
+      dialog
+        ?.querySelector<HTMLElement>('.thread-graph-image-lightbox-viewport')
+        ?.dispatchEvent(
+          new WheelEvent('wheel', {
+            bubbles: true,
+            cancelable: true,
+            clientX: 320,
+            clientY: 240,
+            deltaY: -100,
+          }),
+        );
+    });
+    expect(document.body.textContent).toContain('125%');
+    expect(dialog?.querySelector('img')?.style.transform).toContain(
+      'translate3d(-80px, -60px, 0) scale(1.25)',
+    );
+
+    act(() => {
+      window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+    });
+    expect(document.body.querySelector('[role="dialog"]')).toBeNull();
+
+    act(() => {
+      element
         .querySelector<HTMLAnchorElement>('a')
         ?.dispatchEvent(
           new MouseEvent('click', { bubbles: true, cancelable: true }),
         );
     });
     expect(onOpenWorkspaceFile).toHaveBeenCalledWith('docs/details.md');
+  });
+
+  it('opens direct image files in the same lightbox and closes from the toolbar', () => {
+    const imageNode: WorkspaceTreeNode = {
+      id: 'workspace:images/diagram.png',
+      name: 'diagram.png',
+      path: '/home/u/treer/images/diagram.png',
+      kind: 'file',
+      children: [],
+    };
+    const element = render(
+      <GraphWorkspacePreviewPane
+        plugins={createDefaultPluginContextValue()}
+        selectedTarget={{ kind: 'workspace-file', node: imageNode }}
+        imageUrl="/relay/files/raw?path=images%2Fdiagram.png"
+      />,
+    );
+
+    act(() => {
+      element
+        .querySelector<HTMLButtonElement>(
+          '[aria-label="Open image preview: /home/u/treer/images/diagram.png"]',
+        )
+        ?.click();
+    });
+    expect(document.body.querySelector('[role="dialog"]')).toBeTruthy();
+
+    act(() => {
+      document.body
+        .querySelector<HTMLButtonElement>('[aria-label="Close image preview"]')
+        ?.click();
+    });
+    expect(document.body.querySelector('[role="dialog"]')).toBeNull();
   });
 
   it('switches Markdown to highlighted source with line numbers', () => {

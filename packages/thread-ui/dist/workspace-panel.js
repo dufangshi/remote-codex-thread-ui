@@ -392,8 +392,25 @@ function collectAncestorPaths(path) {
 }
 
 // src/components/graph-workspace/GraphWorkspacePreviewPane.tsx
-import { memo, useEffect as useEffect2, useMemo as useMemo3, useRef as useRef2, useState as useState2 } from "react";
-import { BookOpen, ChevronsRight, Code2, Pencil, Save, X } from "lucide-react";
+import {
+  memo,
+  useEffect as useEffect2,
+  useMemo as useMemo3,
+  useRef as useRef2,
+  useState as useState2
+} from "react";
+import { createPortal } from "react-dom";
+import {
+  BookOpen,
+  ChevronsRight,
+  Code2,
+  Minus,
+  Pencil,
+  Plus,
+  RotateCcw as RotateCcw2,
+  Save,
+  X
+} from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
@@ -1655,6 +1672,9 @@ import { Fragment as Fragment2, jsx as jsx11, jsxs as jsxs8 } from "react/jsx-ru
 var SMALL_TEXT_FILE_MAX_BYTES = 50 * 1024;
 var SMALL_TEXT_FILE_MAX_LINES = 1e3;
 var MARKDOWN_EXTENSIONS = /* @__PURE__ */ new Set(["md", "markdown"]);
+var IMAGE_LIGHTBOX_MIN_SCALE = 0.5;
+var IMAGE_LIGHTBOX_MAX_SCALE = 5;
+var IMAGE_LIGHTBOX_SCALE_STEP = 0.25;
 var CODE_LANGUAGE_ALIASES = {
   cs: "csharp",
   jsonl: "json",
@@ -1749,6 +1769,245 @@ function previewTargetTitle(target) {
     return null;
   }
   return target.node.path || target.node.name || null;
+}
+function clampImageLightboxScale(scale) {
+  return Math.min(
+    IMAGE_LIGHTBOX_MAX_SCALE,
+    Math.max(IMAGE_LIGHTBOX_MIN_SCALE, scale)
+  );
+}
+function GraphWorkspaceImageLightbox({
+  alt,
+  onClose,
+  src
+}) {
+  const viewportRef = useRef2(null);
+  const closeButtonRef = useRef2(null);
+  const dragRef = useRef2(null);
+  const [scale, setScale] = useState2(1);
+  const [offset, setOffset] = useState2({ x: 0, y: 0 });
+  const [dragging, setDragging] = useState2(false);
+  useEffect2(() => {
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    closeButtonRef.current?.focus();
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") {
+        onClose();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [onClose]);
+  function resetView() {
+    setScale(1);
+    setOffset({ x: 0, y: 0 });
+  }
+  function updateScale(nextScale, clientX, clientY) {
+    const clampedScale = clampImageLightboxScale(nextScale);
+    if (clampedScale === scale) {
+      return;
+    }
+    if (typeof clientX === "number" && typeof clientY === "number" && viewportRef.current) {
+      const rect = viewportRef.current.getBoundingClientRect();
+      const anchorX = clientX - (rect.left + rect.width / 2);
+      const anchorY = clientY - (rect.top + rect.height / 2);
+      const ratio = clampedScale / scale;
+      setOffset((current) => ({
+        x: anchorX - (anchorX - current.x) * ratio,
+        y: anchorY - (anchorY - current.y) * ratio
+      }));
+    }
+    setScale(clampedScale);
+  }
+  function handleWheel(event) {
+    event.preventDefault();
+    const direction = event.deltaY < 0 ? 1 : -1;
+    updateScale(
+      scale + direction * IMAGE_LIGHTBOX_SCALE_STEP,
+      event.clientX,
+      event.clientY
+    );
+  }
+  function handlePointerDown(event) {
+    if (scale <= 1 || event.button !== 0) {
+      return;
+    }
+    event.currentTarget.setPointerCapture(event.pointerId);
+    dragRef.current = {
+      pointerId: event.pointerId,
+      startClientX: event.clientX,
+      startClientY: event.clientY,
+      startOffsetX: offset.x,
+      startOffsetY: offset.y
+    };
+    setDragging(true);
+  }
+  function handlePointerMove(event) {
+    const drag = dragRef.current;
+    if (!drag || drag.pointerId !== event.pointerId) {
+      return;
+    }
+    setOffset({
+      x: drag.startOffsetX + event.clientX - drag.startClientX,
+      y: drag.startOffsetY + event.clientY - drag.startClientY
+    });
+  }
+  function handlePointerEnd(event) {
+    if (dragRef.current?.pointerId !== event.pointerId) {
+      return;
+    }
+    dragRef.current = null;
+    setDragging(false);
+  }
+  return createPortal(
+    /* @__PURE__ */ jsxs8(
+      "div",
+      {
+        className: "thread-graph-image-lightbox",
+        role: "dialog",
+        "aria-modal": "true",
+        "aria-label": `Image preview: ${alt || "workspace image"}`,
+        children: [
+          /* @__PURE__ */ jsxs8(
+            "div",
+            {
+              className: "thread-graph-image-lightbox-toolbar",
+              role: "toolbar",
+              "aria-label": "Image zoom controls",
+              children: [
+                /* @__PURE__ */ jsx11(
+                  "button",
+                  {
+                    type: "button",
+                    onClick: () => updateScale(scale - IMAGE_LIGHTBOX_SCALE_STEP),
+                    disabled: scale <= IMAGE_LIGHTBOX_MIN_SCALE,
+                    title: "Zoom out",
+                    "aria-label": "Zoom out",
+                    children: /* @__PURE__ */ jsx11(Minus, { className: "h-4 w-4" })
+                  }
+                ),
+                /* @__PURE__ */ jsxs8(
+                  "button",
+                  {
+                    type: "button",
+                    onClick: resetView,
+                    className: "thread-graph-image-lightbox-scale",
+                    title: "Reset zoom",
+                    "aria-label": `Reset zoom, currently ${Math.round(scale * 100)}%`,
+                    children: [
+                      /* @__PURE__ */ jsx11(RotateCcw2, { className: "h-3.5 w-3.5" }),
+                      /* @__PURE__ */ jsxs8("span", { children: [
+                        Math.round(scale * 100),
+                        "%"
+                      ] })
+                    ]
+                  }
+                ),
+                /* @__PURE__ */ jsx11(
+                  "button",
+                  {
+                    type: "button",
+                    onClick: () => updateScale(scale + IMAGE_LIGHTBOX_SCALE_STEP),
+                    disabled: scale >= IMAGE_LIGHTBOX_MAX_SCALE,
+                    title: "Zoom in",
+                    "aria-label": "Zoom in",
+                    children: /* @__PURE__ */ jsx11(Plus, { className: "h-4 w-4" })
+                  }
+                ),
+                /* @__PURE__ */ jsx11(
+                  "span",
+                  {
+                    className: "thread-graph-image-lightbox-divider",
+                    "aria-hidden": "true"
+                  }
+                ),
+                /* @__PURE__ */ jsx11(
+                  "button",
+                  {
+                    ref: closeButtonRef,
+                    type: "button",
+                    onClick: onClose,
+                    title: "Close image preview",
+                    "aria-label": "Close image preview",
+                    children: /* @__PURE__ */ jsx11(X, { className: "h-4 w-4" })
+                  }
+                )
+              ]
+            }
+          ),
+          /* @__PURE__ */ jsx11(
+            "div",
+            {
+              ref: viewportRef,
+              className: "thread-graph-image-lightbox-viewport",
+              onClick: (event) => {
+                if (event.target === event.currentTarget) {
+                  onClose();
+                }
+              },
+              onWheel: handleWheel,
+              children: /* @__PURE__ */ jsx11(
+                "img",
+                {
+                  src,
+                  alt,
+                  draggable: false,
+                  className: dragging ? "is-dragging" : "",
+                  onPointerDown: handlePointerDown,
+                  onPointerMove: handlePointerMove,
+                  onPointerUp: handlePointerEnd,
+                  onPointerCancel: handlePointerEnd,
+                  style: {
+                    transform: `translate3d(${offset.x}px, ${offset.y}px, 0) scale(${scale})`
+                  }
+                }
+              )
+            }
+          )
+        ]
+      }
+    ),
+    document.body
+  );
+}
+function GraphWorkspaceZoomableImage({
+  alt,
+  className,
+  loading,
+  src
+}) {
+  const triggerRef = useRef2(null);
+  const [open, setOpen] = useState2(false);
+  function closeLightbox() {
+    setOpen(false);
+    window.requestAnimationFrame(() => triggerRef.current?.focus());
+  }
+  return /* @__PURE__ */ jsxs8(Fragment2, { children: [
+    /* @__PURE__ */ jsx11(
+      "button",
+      {
+        ref: triggerRef,
+        type: "button",
+        className: "thread-graph-zoomable-image-trigger",
+        onClick: () => setOpen(true),
+        title: "Open image preview",
+        "aria-label": `Open image preview: ${alt || "workspace image"}`,
+        children: /* @__PURE__ */ jsx11("img", { src, alt, className, loading })
+      }
+    ),
+    open ? /* @__PURE__ */ jsx11(
+      GraphWorkspaceImageLightbox,
+      {
+        src,
+        alt,
+        onClose: closeLightbox
+      }
+    ) : null
+  ] });
 }
 function graphWorkspacePreviewTargetFromNode(node) {
   if (!node) {
@@ -1891,13 +2150,16 @@ var GraphWorkspaceMarkdownPreview = memo(
           img({ src, alt, ...props }) {
             const workspacePath = resolvePath(src);
             const resolvedSrc = workspacePath ? resolveWorkspaceFileUrl?.(workspacePath) ?? src : src;
+            if (!resolvedSrc) {
+              return null;
+            }
             return /* @__PURE__ */ jsx11(
-              "img",
+              GraphWorkspaceZoomableImage,
               {
-                ...props,
                 src: resolvedSrc,
                 alt: alt ?? "",
-                loading: "lazy"
+                loading: "lazy",
+                className: props.className
               }
             );
           }
@@ -2006,7 +2268,7 @@ function GraphWorkspacePreviewPane({
               title: "PyMOL-style (PDB/CIF)"
             }
           ) }) : selectedTarget.kind === "workspace-file" && imageUrl ? /* @__PURE__ */ jsx11("div", { className: "flex min-h-0 flex-1 items-center justify-center overflow-auto p-5", children: /* @__PURE__ */ jsx11(
-            "img",
+            GraphWorkspaceZoomableImage,
             {
               src: imageUrl,
               alt: selectedTarget.node.path || selectedTarget.node.name,
@@ -3348,7 +3610,7 @@ import {
   FolderOpen as FolderOpen2,
   MessageSquare,
   MoveRight,
-  Plus,
+  Plus as Plus2,
   RefreshCw as RefreshCw2,
   Trash2 as Trash23,
   Upload as Upload2,
@@ -3502,7 +3764,7 @@ function GraphGuidePanel() {
                   ] })
                 ] }),
                 /* @__PURE__ */ jsxs12("div", { className: "flex items-start gap-2", children: [
-                  /* @__PURE__ */ jsx16(Plus, { className: "mt-0.5 h-3.5 w-3.5 shrink-0 text-[var(--theme-fg-muted)]" }),
+                  /* @__PURE__ */ jsx16(Plus2, { className: "mt-0.5 h-3.5 w-3.5 shrink-0 text-[var(--theme-fg-muted)]" }),
                   /* @__PURE__ */ jsxs12("div", { children: [
                     /* @__PURE__ */ jsx16("p", { className: "text-[11px] font-medium text-[var(--theme-fg)]", children: "New files and folders" }),
                     /* @__PURE__ */ jsx16("p", { className: "text-[11px] leading-5 text-[var(--theme-fg-muted)]", children: "Remote Codex normally creates files through tools and shell commands. They appear in Explorer after workspace refreshes." })
