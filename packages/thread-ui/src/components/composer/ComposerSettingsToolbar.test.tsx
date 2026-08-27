@@ -76,6 +76,7 @@ function renderToolbar({
   onUpdateSettings = vi.fn(),
   model = 'gpt-5',
   availableModels = modelOptions,
+  agentLabel = null,
 }: {
   initialOpenMenu?: SettingsMenu;
   displayedCollaborationMode?: CollaborationModeDto;
@@ -92,6 +93,7 @@ function renderToolbar({
   onUpdateSettings?: (input: UpdateThreadSettingsInput) => void;
   model?: string;
   availableModels?: ModelOptionDto[];
+  agentLabel?: string | null;
 } = {}) {
   function Harness() {
     const [openMenu, setOpenMenu] = useState<SettingsMenu>(initialOpenMenu);
@@ -105,6 +107,7 @@ function renderToolbar({
         <ComposerSettingsToolbar
           openMenu={openMenu}
           model={model}
+          agentLabel={agentLabel}
           modelOptions={availableModels}
           modelContextTitle="1k / 8k tokens"
           contextUsage={null}
@@ -177,9 +180,12 @@ describe('ComposerSettingsToolbar', () => {
     const view = renderToolbar({ onUpdateSettings });
 
     flushSync(() => {
-      view.querySelector<HTMLButtonElement>('[aria-label="gpt-5"]')?.click();
+      view.querySelector<HTMLButtonElement>('[aria-label^="Model and effort:"]')?.click();
     });
     expect(view.querySelector('[data-composer-menu-surface="true"]')).not.toBeNull();
+    flushSync(() => {
+      menuButtonByText(view, 'Model')?.click();
+    });
     menuButtonByText(view, 'GPT-5 mini')?.click();
 
     expect(onUpdateSettings).toHaveBeenCalledWith({
@@ -204,14 +210,19 @@ describe('ComposerSettingsToolbar', () => {
     });
 
     expect(
-      view.querySelector<HTMLButtonElement>('[aria-label="opus[1m]"]')?.textContent,
+      view.querySelector<HTMLButtonElement>('[aria-label^="Model and effort:"]')?.textContent,
     ).toContain('Opus · 5');
     expect(view.textContent).not.toContain('(1M context)');
     flushSync(() => {
-      view.querySelector<HTMLButtonElement>('[aria-label="opus[1m]"]')?.click();
+      view.querySelector<HTMLButtonElement>('[aria-label^="Model and effort:"]')?.click();
+    });
+    flushSync(() => {
+      menuButtonByText(view, 'Model')?.click();
     });
     expect(view.textContent).toContain('Opus · 5 (1M context)');
-    menuButtonByText(view, 'Opus · 5')?.click();
+    Array.from(view.querySelectorAll<HTMLButtonElement>('button')).find(
+      (button) => button.textContent?.trim() === 'Opus · 5 (1M context)',
+    )?.click();
 
     expect(onUpdateSettings).toHaveBeenCalledWith({
       model: 'opus[1m]',
@@ -222,10 +233,13 @@ describe('ComposerSettingsToolbar', () => {
   it('selects reasoning effort from the effort menu', () => {
     const onUpdateSettings = vi.fn();
     const view = renderToolbar({
-      initialOpenMenu: 'effort',
+      initialOpenMenu: 'model',
       onUpdateSettings,
     });
 
+    flushSync(() => {
+      menuButtonByText(view, 'Effort')?.click();
+    });
     buttonByText(view, 'low')?.click();
 
     expect(onUpdateSettings).toHaveBeenCalledWith({
@@ -235,6 +249,7 @@ describe('ComposerSettingsToolbar', () => {
 
   it('disables the reasoning effort menu when the selected model has no adjustable efforts', () => {
     const view = renderToolbar({
+      initialOpenMenu: 'model',
       supportedEfforts: [],
       effortControlsDisabled: true,
       effortControlTitle:
@@ -249,6 +264,14 @@ describe('ComposerSettingsToolbar', () => {
     expect(effortButton?.getAttribute('title')).toBe(
       'The selected model does not expose adjustable reasoning effort.',
     );
+  });
+
+  it('renders the selected agent as a fixed disabled control', () => {
+    const view = renderToolbar({ agentLabel: 'Grok Build' });
+    const agent = view.querySelector<HTMLButtonElement>('[aria-label="Agent: Grok Build"]');
+
+    expect(agent?.disabled).toBe(true);
+    expect(agent?.textContent).toContain('Grok Build');
   });
 
   it('toggles plan mode through settings updates', () => {
@@ -289,6 +312,31 @@ describe('ComposerSettingsToolbar', () => {
     expect(onUpdateSettings).toHaveBeenCalledWith({
       sandboxMode: 'danger-full-access',
     });
+  });
+
+  it('shows the selected sandbox mode as a compact toolbar label', () => {
+    const readOnly = renderToolbar({ sandboxMode: 'read-only' });
+    expect(buttonByText(readOnly, 'RO')?.getAttribute('aria-label')).toBe(
+      'Sandbox: Read only',
+    );
+    flushSync(() => root?.unmount());
+    readOnly.remove();
+    root = null;
+    container = null;
+
+    const workspaceWrite = renderToolbar({ sandboxMode: 'workspace-write' });
+    expect(buttonByText(workspaceWrite, 'WW')?.getAttribute('aria-label')).toBe(
+      'Sandbox: Workspace write',
+    );
+    flushSync(() => root?.unmount());
+    workspaceWrite.remove();
+    root = null;
+    container = null;
+
+    const fullAccess = renderToolbar({ sandboxMode: 'danger-full-access' });
+    expect(buttonByText(fullAccess, 'Full')?.getAttribute('aria-label')).toBe(
+      'Sandbox: Danger',
+    );
   });
 
   it('hides sandbox controls when unavailable', () => {

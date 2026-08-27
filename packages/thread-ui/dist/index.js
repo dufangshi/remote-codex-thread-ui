@@ -1340,7 +1340,7 @@ var init_GraphMoleculeViewerData = __esm({
 
 // src/components/graph-workspace/GraphMoleculeViewer.tsx
 import { Pause, Play } from "lucide-react";
-import { useCallback as useCallback17, useEffect as useEffect20, useMemo as useMemo12, useRef as useRef15, useState as useState26 } from "react";
+import { useCallback as useCallback17, useEffect as useEffect20, useMemo as useMemo12, useRef as useRef15, useState as useState27 } from "react";
 import { jsx as jsx58, jsxs as jsxs48 } from "react/jsx-runtime";
 function GraphMoleculeViewer({
   className = "",
@@ -1355,18 +1355,18 @@ function GraphMoleculeViewer({
   const modelRef = useRef15(null);
   const zoomedRef = useRef15(false);
   const unitCellPreferenceRef = useRef15(true);
-  const [cameraInfo, setCameraInfo] = useState26(
+  const [cameraInfo, setCameraInfo] = useState27(
     null
   );
-  const [currentIndex, setCurrentIndex] = useState26(0);
-  const [hoveredAtom, setHoveredAtom] = useState26(null);
-  const [isPlaying, setIsPlaying] = useState26(false);
-  const [selectedAtomLabels, setSelectedAtomLabels] = useState26({});
-  const [selectedSerials, setSelectedSerials] = useState26([]);
-  const [stagedSelections, setStagedSelections] = useState26({});
-  const [unitCellAvailable, setUnitCellAvailable] = useState26(false);
-  const [unitCellVisible, setUnitCellVisible] = useState26(false);
-  const [viewerInitError, setViewerInitError] = useState26(null);
+  const [currentIndex, setCurrentIndex] = useState27(0);
+  const [hoveredAtom, setHoveredAtom] = useState27(null);
+  const [isPlaying, setIsPlaying] = useState27(false);
+  const [selectedAtomLabels, setSelectedAtomLabels] = useState27({});
+  const [selectedSerials, setSelectedSerials] = useState27([]);
+  const [stagedSelections, setStagedSelections] = useState27({});
+  const [unitCellAvailable, setUnitCellAvailable] = useState27(false);
+  const [unitCellVisible, setUnitCellVisible] = useState27(false);
+  const [viewerInitError, setViewerInitError] = useState27(null);
   const viewerData = useMemo12(() => readGraphMoleculeViewerData(source), [source]);
   const xyzArray = viewerData.frames;
   const xyzFormat = viewerData.format;
@@ -1831,7 +1831,7 @@ import {
   useEffect as useEffect21,
   useMemo as useMemo13,
   useRef as useRef16,
-  useState as useState27
+  useState as useState28
 } from "react";
 import { createPortal as createPortal3 } from "react-dom";
 import {
@@ -1948,9 +1948,9 @@ function GraphWorkspaceImageLightbox({
   const viewportRef = useRef16(null);
   const closeButtonRef = useRef16(null);
   const dragRef = useRef16(null);
-  const [scale, setScale] = useState27(1);
-  const [offset, setOffset] = useState27({ x: 0, y: 0 });
-  const [dragging, setDragging] = useState27(false);
+  const [scale, setScale] = useState28(1);
+  const [offset, setOffset] = useState28({ x: 0, y: 0 });
+  const [dragging, setDragging] = useState28(false);
   useEffect21(() => {
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
@@ -2145,7 +2145,7 @@ function GraphWorkspaceZoomableImage({
   src
 }) {
   const triggerRef = useRef16(null);
-  const [open, setOpen] = useState27(false);
+  const [open, setOpen] = useState28(false);
   function closeLightbox() {
     setOpen(false);
     window.requestAnimationFrame(() => triggerRef.current?.focus());
@@ -2208,11 +2208,11 @@ function GraphWorkspacePreviewPane({
   selectedTarget,
   workspaceRootPath
 }) {
-  const [editing, setEditing] = useState27(false);
-  const [draftContent, setDraftContent] = useState27("");
-  const [saveError, setSaveError] = useState27(null);
-  const [saving, setSaving] = useState27(false);
-  const [markdownView, setMarkdownView] = useState27(
+  const [editing, setEditing] = useState28(false);
+  const [draftContent, setDraftContent] = useState28("");
+  const [saveError, setSaveError] = useState28(null);
+  const [saving, setSaving] = useState28(false);
+  const [markdownView, setMarkdownView] = useState28(
     "preview"
   );
   const activeNode = selectedTarget?.node ?? null;
@@ -2493,8 +2493,8 @@ var init_GraphWorkspacePreviewPane = __esm({
       language = "text"
     }) {
       const rootRef = useRef16(null);
-      const [highlighter, setHighlighter] = useState27(null);
-      const [dark, setDark] = useState27(false);
+      const [highlighter, setHighlighter] = useState28(null);
+      const [dark, setDark] = useState28(false);
       useEffect21(() => {
         let alive = true;
         getGraphChatHighlighter().then((loadedHighlighter) => {
@@ -2683,11 +2683,11 @@ import {
   useLayoutEffect as useLayoutEffect7,
   useMemo as useMemo14,
   useRef as useRef17,
-  useState as useState28
+  useState as useState29
 } from "react";
 import {
   ChevronDown as ChevronDown2,
-  ChevronRight as ChevronRight2,
+  ChevronRight as ChevronRight3,
   ChevronsLeft as ChevronsLeft2,
   Copy as Copy5,
   Download as Download2,
@@ -2812,7 +2812,7 @@ function WorkspaceTreeRow({
             className: "flex min-h-9 min-w-0 flex-1 items-center gap-2 px-2 py-2 text-left sm:min-h-0 sm:py-1.5",
             style: { paddingLeft },
             children: [
-              expanded ? /* @__PURE__ */ jsx61(ChevronDown2, { className: "h-3.5 w-3.5 shrink-0 text-slate-400 dark:text-slate-500" }) : /* @__PURE__ */ jsx61(ChevronRight2, { className: "h-3.5 w-3.5 shrink-0 text-slate-400 dark:text-slate-500" }),
+              expanded ? /* @__PURE__ */ jsx61(ChevronDown2, { className: "h-3.5 w-3.5 shrink-0 text-slate-400 dark:text-slate-500" }) : /* @__PURE__ */ jsx61(ChevronRight3, { className: "h-3.5 w-3.5 shrink-0 text-slate-400 dark:text-slate-500" }),
               iconForWorkspaceNode(node, expanded),
               /* @__PURE__ */ jsx61("span", { className: "truncate", children: node.name }),
               loadingChildren ? /* @__PURE__ */ jsx61("span", { className: "ml-auto shrink-0 text-xs text-slate-400 dark:text-slate-500", children: "Loading" }) : null
@@ -3105,7 +3105,7 @@ function GraphWorkspaceExplorer({
   focusPathRequest,
   workspaceAdapter
 }) {
-  const [adapterTree, setAdapterTree] = useState28(
+  const [adapterTree, setAdapterTree] = useState29(
     null
   );
   const fallbackTree = useMemo14(
@@ -3119,10 +3119,10 @@ function GraphWorkspaceExplorer({
     [tree]
   );
   const firstSelectableNode = findFirstPreviewNode(tree);
-  const [selectedNodeId, setSelectedNodeId] = useState28(
+  const [selectedNodeId, setSelectedNodeId] = useState29(
     () => firstSelectableNode?.id ?? null
   );
-  const [expandedPaths, setExpandedPaths] = useState28(
+  const [expandedPaths, setExpandedPaths] = useState29(
     () => /* @__PURE__ */ new Set([
       "",
       "artifacts",
@@ -3131,20 +3131,20 @@ function GraphWorkspaceExplorer({
       ...collectAncestorPaths(firstSelectableNode?.path ?? "")
     ])
   );
-  const [collapsedPanel, setCollapsedPanel] = useState28(
+  const [collapsedPanel, setCollapsedPanel] = useState29(
     () => typeof window !== "undefined" && typeof window.matchMedia === "function" && window.matchMedia("(max-width: 639px)").matches ? "viewer" : null
   );
-  const [workspaceError, setWorkspaceError] = useState28(null);
-  const [loadingTree, setLoadingTree] = useState28(false);
-  const [loadingDirectoryPaths, setLoadingDirectoryPaths] = useState28(() => /* @__PURE__ */ new Set());
-  const [previewLoading, setPreviewLoading] = useState28(false);
-  const [loadingMore, setLoadingMore] = useState28(false);
-  const [showGarbageDialog, setShowGarbageDialog] = useState28(false);
-  const [garbageFiles, setGarbageFiles] = useState28([]);
-  const [previewFile, setPreviewFile] = useState28(null);
-  const [imageUrl, setImageUrl] = useState28(null);
-  const [pdfUrl, setPdfUrl] = useState28(null);
-  const [isMobileViewport, setIsMobileViewport] = useState28(false);
+  const [workspaceError, setWorkspaceError] = useState29(null);
+  const [loadingTree, setLoadingTree] = useState29(false);
+  const [loadingDirectoryPaths, setLoadingDirectoryPaths] = useState29(() => /* @__PURE__ */ new Set());
+  const [previewLoading, setPreviewLoading] = useState29(false);
+  const [loadingMore, setLoadingMore] = useState29(false);
+  const [showGarbageDialog, setShowGarbageDialog] = useState29(false);
+  const [garbageFiles, setGarbageFiles] = useState29([]);
+  const [previewFile, setPreviewFile] = useState29(null);
+  const [imageUrl, setImageUrl] = useState29(null);
+  const [pdfUrl, setPdfUrl] = useState29(null);
+  const [isMobileViewport, setIsMobileViewport] = useState29(false);
   const fileInputRef = useRef17(null);
   const explorerScrollerRef = useRef17(null);
   const explorerScrollTopRef = useRef17(0);
@@ -4029,7 +4029,7 @@ var init_GraphGuidePanel = __esm({
 });
 
 // src/components/graph-workspace/GraphToolUsagePanel.tsx
-import { useEffect as useEffect23, useRef as useRef18, useState as useState29 } from "react";
+import { useEffect as useEffect23, useRef as useRef18, useState as useState30 } from "react";
 import { RefreshCw as RefreshCw3 } from "lucide-react";
 import { jsx as jsx63, jsxs as jsxs53 } from "react/jsx-runtime";
 function formatValue(value) {
@@ -4081,7 +4081,7 @@ function GraphToolUsagePanel({
   toolEvents,
   maxToolCount
 }) {
-  const [expandedEventId, setExpandedEventId] = useState29(
+  const [expandedEventId, setExpandedEventId] = useState30(
     () => toolEvents.at(-1)?.id ?? null
   );
   const bottomRef = useRef18(null);
@@ -4547,7 +4547,7 @@ var init_GraphVisualization = __esm({
 });
 
 // src/components/ThreadGraphWorkspacePanel.tsx
-import { memo as memo8, useEffect as useEffect25, useMemo as useMemo16, useState as useState30 } from "react";
+import { memo as memo8, useEffect as useEffect25, useMemo as useMemo16, useState as useState31 } from "react";
 import {
   BarChart2 as BarChart22,
   BookOpen as BookOpen2,
@@ -4768,7 +4768,7 @@ function ThreadGraphWorkspacePanel({
     [featureConfig]
   );
   const initialTab = firstEnabledWorkspaceTab(features, featureConfig?.defaultTab);
-  const [activeTab, setActiveTab] = useState30(initialTab);
+  const [activeTab, setActiveTab] = useState31(initialTab);
   const artifacts = useMemo16(() => collectArtifacts(detail), [detail]);
   const toolEvents = useMemo16(() => collectToolEvents(detail), [detail]);
   const toolCounts = useMemo16(() => {
@@ -5003,7 +5003,7 @@ import {
   useCallback as useCallback9,
   useMemo as useMemo2,
   useRef as useRef3,
-  useState as useState11
+  useState as useState12
 } from "react";
 
 // src/components/composer/composerUtils.ts
@@ -6562,6 +6562,8 @@ function ComposerAttachmentMenu({
 }
 
 // src/components/composer/ComposerSettingsToolbar.tsx
+import { Check, ChevronRight } from "lucide-react";
+import { useState as useState3 } from "react";
 import { Fragment as Fragment3, jsx as jsx10, jsxs as jsxs8 } from "react/jsx-runtime";
 var sandboxOptions = [
   { mode: "read-only", label: "Read only" },
@@ -6571,9 +6573,22 @@ var sandboxOptions = [
 function formatSandboxModeLabel(mode) {
   return sandboxOptions.find((entry) => entry.mode === mode)?.label ?? "Default";
 }
+function formatSandboxModeCompactLabel(mode) {
+  switch (mode) {
+    case "read-only":
+      return "RO";
+    case "workspace-write":
+      return "WW";
+    case "danger-full-access":
+      return "Full";
+    default:
+      return "Sandbox";
+  }
+}
 function ComposerSettingsToolbar({
   openMenu,
   model,
+  agentLabel,
   modelOptions,
   modelContextTitle,
   contextUsage,
@@ -6601,8 +6616,22 @@ function ComposerSettingsToolbar({
   onSetOpenMenu,
   onUpdateSettings
 }) {
+  const [settingsSection, setSettingsSection] = useState3(null);
   const selectedModelLabel = (modelOptions.find((entry) => entry.model === model)?.displayName || model || "Select model").replace(/\s+\([^)]+\)\s*$/, "");
   return /* @__PURE__ */ jsxs8(Fragment3, { children: [
+    agentLabel ? /* @__PURE__ */ jsx10(
+      InputGroupButton,
+      {
+        type: "button",
+        variant: "ghost",
+        size: "xs",
+        disabled: true,
+        "aria-label": `Agent: ${agentLabel}`,
+        title: `${agentLabel} is fixed for this thread`,
+        className: `${inlineToggleClassName} max-w-[7.5rem] cursor-default rounded-full px-2.5 text-stone-500 disabled:opacity-100 sm:max-w-[9rem]`,
+        children: /* @__PURE__ */ jsx10("span", { className: "block min-w-0 truncate whitespace-nowrap", children: agentLabel })
+      }
+    ) : null,
     /* @__PURE__ */ jsxs8("div", { className: "relative min-w-0", children: [
       /* @__PURE__ */ jsx10(
         InputGroupButton,
@@ -6613,74 +6642,114 @@ function ComposerSettingsToolbar({
           "data-composer-menu-trigger": "true",
           "aria-haspopup": "menu",
           "aria-expanded": openMenu === "model",
-          "aria-label": model ?? "Select model",
+          "aria-label": `Model and effort: ${selectedModelLabel}, ${formatReasoningEffortLabel(reasoningEffort)}`,
           disabled: modelControlsDisabled || modelOptions.length === 0,
-          onClick: () => onSetOpenMenu(
-            (current) => current === "model" ? null : "model"
-          ),
+          onClick: () => {
+            setSettingsSection(null);
+            onSetOpenMenu(
+              (current) => current === "model" ? null : "model"
+            );
+          },
           title: fastMode ? `Fast mode is on. Turn it off from the slash toolbox to edit model. ${modelContextTitle}` : modelContextTitle,
-          className: `${inlineToggleClassName} relative min-w-0 max-w-[8.75rem] overflow-hidden rounded-full px-2.5 text-left text-stone-300 disabled:cursor-not-allowed disabled:text-stone-600 sm:max-w-[11rem]`,
-          children: /* @__PURE__ */ jsx10("span", { className: "relative z-[1] block min-w-0 truncate whitespace-nowrap [direction:rtl]", children: selectedModelLabel })
+          className: `${inlineToggleClassName} relative min-w-0 max-w-[10rem] overflow-hidden rounded-full px-2.5 text-left text-stone-300 disabled:cursor-not-allowed disabled:text-stone-600 sm:max-w-[14rem]`,
+          children: /* @__PURE__ */ jsxs8("span", { className: "relative z-[1] block min-w-0 truncate whitespace-nowrap", children: [
+            selectedModelLabel,
+            " \xB7 ",
+            formatReasoningEffortLabel(reasoningEffort)
+          ] })
         }
       ),
       model ? /* @__PURE__ */ jsx10(ContextProgressBar, { contextUsage }) : null,
-      openMenu === "model" && /* @__PURE__ */ jsx10(
+      openMenu === "model" && /* @__PURE__ */ jsxs8(
         "div",
         {
           "data-composer-menu-surface": "true",
-          className: "absolute bottom-full left-0 mb-2 w-max min-w-[9rem] max-w-[14rem] overflow-hidden rounded-2xl border border-stone-700 bg-stone-900 shadow-2xl shadow-stone-950/40",
-          children: /* @__PURE__ */ jsx10("div", { className: "max-h-72 overflow-auto p-2", children: modelOptions.map((entry) => /* @__PURE__ */ jsx10(
-            "button",
-            {
-              type: "button",
-              onClick: () => onUpdateSettings({
-                model: entry.model,
-                reasoningEffort: entry.defaultReasoningEffort
+          className: "absolute bottom-full right-0 mb-2 w-[13.5rem] rounded-xl border border-stone-700 bg-stone-900 p-1.5 shadow-2xl shadow-stone-950/40",
+          children: [
+            /* @__PURE__ */ jsxs8(
+              "button",
+              {
+                type: "button",
+                onClick: () => setSettingsSection("model"),
+                className: `${menuItemClassName2} flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-stone-300`,
+                children: [
+                  /* @__PURE__ */ jsx10("span", { children: "Model" }),
+                  /* @__PURE__ */ jsxs8("span", { className: "flex min-w-0 items-center gap-1 text-stone-500", children: [
+                    /* @__PURE__ */ jsx10("span", { className: "max-w-[7rem] truncate", children: selectedModelLabel }),
+                    /* @__PURE__ */ jsx10(ChevronRight, { className: "h-3.5 w-3.5 shrink-0" })
+                  ] })
+                ]
+              }
+            ),
+            /* @__PURE__ */ jsxs8(
+              "button",
+              {
+                type: "button",
+                disabled: effortControlsDisabled,
+                title: effortControlTitle,
+                onClick: () => setSettingsSection("effort"),
+                className: `${menuItemClassName2} flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-stone-300 disabled:cursor-not-allowed disabled:text-stone-600`,
+                children: [
+                  /* @__PURE__ */ jsx10("span", { children: "Effort" }),
+                  /* @__PURE__ */ jsxs8("span", { className: "flex items-center gap-1 text-stone-500", children: [
+                    formatReasoningEffortLabel(reasoningEffort),
+                    /* @__PURE__ */ jsx10(ChevronRight, { className: "h-3.5 w-3.5" })
+                  ] })
+                ]
+              }
+            ),
+            settingsSection === "model" ? /* @__PURE__ */ jsxs8("div", { className: "mt-1 w-full overflow-hidden border-t border-stone-700 bg-stone-900 p-1.5 sm:absolute sm:bottom-0 sm:left-[calc(100%+0.5rem)] sm:mt-0 sm:w-[13rem] sm:rounded-xl sm:border sm:shadow-2xl sm:shadow-stone-950/40", children: [
+              /* @__PURE__ */ jsx10("p", { className: "px-3 py-1.5 text-xs text-stone-500", children: "Model" }),
+              /* @__PURE__ */ jsx10("div", { className: "max-h-72 overflow-auto", children: modelOptions.map((entry) => {
+                const selected = entry.model === model;
+                return /* @__PURE__ */ jsxs8(
+                  "button",
+                  {
+                    type: "button",
+                    onClick: () => {
+                      const nextEffort = reasoningEffort && entry.supportedReasoningEfforts.some(
+                        (effort) => effort.reasoningEffort === reasoningEffort
+                      ) ? reasoningEffort : entry.defaultReasoningEffort;
+                      onUpdateSettings({
+                        model: entry.model,
+                        reasoningEffort: nextEffort
+                      });
+                      onSetOpenMenu(() => null);
+                    },
+                    className: `${menuItemClassName2} flex w-full items-center justify-between rounded-lg px-3 py-2 text-left ${selected ? "ui-status-warning" : "text-stone-300"}`,
+                    children: [
+                      /* @__PURE__ */ jsx10("span", { className: "truncate text-sm font-medium", children: entry.displayName || entry.model }),
+                      selected ? /* @__PURE__ */ jsx10(Check, { className: "h-3.5 w-3.5 shrink-0" }) : null
+                    ]
+                  },
+                  entry.id
+                );
+              }) })
+            ] }) : null,
+            settingsSection === "effort" ? /* @__PURE__ */ jsxs8("div", { className: "mt-1 w-full overflow-hidden border-t border-stone-700 bg-stone-900 p-1.5 sm:absolute sm:bottom-0 sm:left-[calc(100%+0.5rem)] sm:mt-0 sm:w-[11rem] sm:rounded-xl sm:border sm:shadow-2xl sm:shadow-stone-950/40", children: [
+              /* @__PURE__ */ jsx10("p", { className: "px-3 py-1.5 text-xs text-stone-500", children: "Effort" }),
+              supportedEfforts.map((entry) => {
+                const selected = entry.reasoningEffort === reasoningEffort;
+                return /* @__PURE__ */ jsxs8(
+                  "button",
+                  {
+                    type: "button",
+                    onClick: () => {
+                      onUpdateSettings({ reasoningEffort: entry.reasoningEffort });
+                      onSetOpenMenu(() => null);
+                    },
+                    className: `${menuItemClassName2} flex w-full items-center justify-between rounded-lg px-3 py-2 text-left ${selected ? "ui-status-warning" : "text-stone-300"}`,
+                    children: [
+                      /* @__PURE__ */ jsx10("span", { className: "text-sm font-medium", children: formatReasoningEffortLabel(entry.reasoningEffort) }),
+                      selected ? /* @__PURE__ */ jsx10(Check, { className: "h-3.5 w-3.5" }) : null
+                    ]
+                  },
+                  entry.reasoningEffort
+                );
               }),
-              className: `block w-full rounded-xl px-3 py-2 text-left transition ${entry.model === model ? "ui-status-warning" : `${menuItemClassName2} text-stone-300`}`,
-              children: /* @__PURE__ */ jsx10("p", { className: "text-sm font-medium", children: entry.displayName || entry.model })
-            },
-            entry.id
-          )) })
-        }
-      )
-    ] }),
-    /* @__PURE__ */ jsxs8("div", { className: "relative", children: [
-      /* @__PURE__ */ jsx10(
-        InputGroupButton,
-        {
-          type: "button",
-          variant: "ghost",
-          size: "xs",
-          "data-composer-menu-trigger": "true",
-          "aria-haspopup": "menu",
-          "aria-expanded": openMenu === "effort",
-          disabled: effortControlsDisabled,
-          onClick: () => onSetOpenMenu(
-            (current) => current === "effort" ? null : "effort"
-          ),
-          title: effortControlTitle,
-          className: `${inlineToggleClassName} rounded-full px-2 disabled:cursor-not-allowed disabled:text-stone-700 ${effortControlsDisabled ? "text-stone-500" : "text-stone-300 hover:text-stone-100"}`,
-          children: formatReasoningEffortLabel(reasoningEffort)
-        }
-      ),
-      openMenu === "effort" && /* @__PURE__ */ jsx10(
-        "div",
-        {
-          "data-composer-menu-surface": "true",
-          className: "absolute bottom-full left-0 mb-2 w-max min-w-[8rem] max-w-[12rem] overflow-hidden rounded-2xl border border-stone-700 bg-stone-900 shadow-2xl shadow-stone-950/40",
-          children: /* @__PURE__ */ jsx10("div", { className: "max-h-72 overflow-auto p-2", children: supportedEfforts.map((entry) => /* @__PURE__ */ jsx10(
-            "button",
-            {
-              type: "button",
-              onClick: () => onUpdateSettings({
-                reasoningEffort: entry.reasoningEffort
-              }),
-              className: `block w-full rounded-xl px-3 py-2 text-left transition ${entry.reasoningEffort === reasoningEffort ? "ui-status-warning" : `${menuItemClassName2} text-stone-300`}`,
-              children: /* @__PURE__ */ jsx10("p", { className: "text-sm font-medium", children: formatReasoningEffortLabel(entry.reasoningEffort) })
-            },
-            entry.reasoningEffort
-          )) })
+              supportedEfforts.some((entry) => entry.reasoningEffort === "ultra") ? /* @__PURE__ */ jsx10("p", { className: "px-3 pb-1 pt-2 text-xs leading-4 text-stone-500", children: "Higher effort can consume usage limits faster." }) : null
+            ] }) : null
+          ]
         }
       )
     ] }),
@@ -6701,7 +6770,7 @@ function ComposerSettingsToolbar({
           ),
           title: `Sandbox: ${formatSandboxModeLabel(sandboxMode)}`,
           className: `${inlineToggleClassName} rounded-full px-2.5 text-stone-300 disabled:cursor-not-allowed disabled:text-stone-700`,
-          children: "Sandbox"
+          children: formatSandboxModeCompactLabel(sandboxMode)
         }
       ),
       openMenu === "sandbox" && /* @__PURE__ */ jsx10(
@@ -7908,7 +7977,7 @@ function ComposerToolbar({
             }
           )
         ] }),
-        /* @__PURE__ */ jsxs16("div", { className: "flex min-w-0 flex-1 items-center justify-end gap-1.5", children: [
+        /* @__PURE__ */ jsxs16("div", { className: "flex min-w-0 flex-1 flex-wrap items-center justify-end gap-1.5", children: [
           !isShellView && settingsToolbarProps ? /* @__PURE__ */ jsx18(ComposerSettingsToolbar, { ...settingsToolbarProps }) : null,
           isShellView && shellPromptLabel ? /* @__PURE__ */ jsx18(
             InputGroupText,
@@ -8023,7 +8092,7 @@ function useComposerAttachments({
 }
 
 // src/components/composer/useAttachmentPreviewUrls.ts
-import { useEffect, useRef, useState as useState3 } from "react";
+import { useEffect, useRef, useState as useState4 } from "react";
 function revokeCachedPreviewUrls(previewUrlCache) {
   for (const previewUrl of previewUrlCache.values()) {
     URL.revokeObjectURL(previewUrl);
@@ -8035,7 +8104,7 @@ function useAttachmentPreviewUrls({
   isShellView
 }) {
   const previewUrlCacheRef = useRef(/* @__PURE__ */ new Map());
-  const [attachmentPreviewUrls, setAttachmentPreviewUrls] = useState3({});
+  const [attachmentPreviewUrls, setAttachmentPreviewUrls] = useState4({});
   useEffect(() => {
     const previewUrlCache = previewUrlCacheRef.current;
     if (isShellView) {
@@ -8081,7 +8150,7 @@ import {
   useEffect as useEffect2,
   useLayoutEffect,
   useRef as useRef2,
-  useState as useState4
+  useState as useState5
 } from "react";
 var DRAFT_SYNC_DELAY_MS = 180;
 function toComposerDraft(prompt, attachments) {
@@ -8096,11 +8165,11 @@ function useComposerDraft({
   draftAttachments,
   onDraftChange
 }) {
-  const [internalDraft, setInternalDraft] = useState4({
+  const [internalDraft, setInternalDraft] = useState5({
     prompt: "",
     attachments: []
   });
-  const [localControlledDraft, setLocalControlledDraft] = useState4(() => toComposerDraft(draftPrompt, draftAttachments));
+  const [localControlledDraft, setLocalControlledDraft] = useState5(() => toComposerDraft(draftPrompt, draftAttachments));
   const draftSyncTimerRef = useRef2(null);
   const latestLocalDraftRef = useRef2(localControlledDraft);
   const lastSentDraftSignatureRef = useRef2(draftSignature(localControlledDraft));
@@ -8194,14 +8263,14 @@ function useComposerDraft({
 }
 
 // src/components/composer/useComposerForkActions.ts
-import { useCallback as useCallback3, useEffect as useEffect3, useState as useState5 } from "react";
+import { useCallback as useCallback3, useEffect as useEffect3, useState as useState6 } from "react";
 function useComposerForkActions({
   slashPanelView,
   onForkLatest,
   onForkTurn,
   closeMenu
 }) {
-  const [forkBusy, setForkBusy] = useState5(false);
+  const [forkBusy, setForkBusy] = useState6(false);
   useEffect3(() => {
     if (slashPanelView !== "forkTurns") {
       setForkBusy(false);
@@ -8244,7 +8313,7 @@ function useComposerForkActions({
 // src/components/composer/useComposerGoal.ts
 import {
   useCallback as useCallback4,
-  useState as useState6
+  useState as useState7
 } from "react";
 function useComposerGoal({
   prompt,
@@ -8257,10 +8326,10 @@ function useComposerGoal({
   closeMenu,
   resetSlashPanel
 }) {
-  const [goalComposeMode, setGoalComposeMode] = useState6(false);
-  const [goalTokenBudget, setGoalTokenBudget] = useState6("");
-  const [goalBusy, setGoalBusy] = useState6(false);
-  const [goalLocalError, setGoalLocalError] = useState6(null);
+  const [goalComposeMode, setGoalComposeMode] = useState7(false);
+  const [goalTokenBudget, setGoalTokenBudget] = useState7("");
+  const [goalBusy, setGoalBusy] = useState7(false);
+  const [goalLocalError, setGoalLocalError] = useState7(null);
   const submitGoal = useCallback4(async () => {
     const objective = prompt.trim();
     if (!objective) {
@@ -8350,7 +8419,7 @@ import {
   useCallback as useCallback5,
   useEffect as useEffect4,
   useMemo,
-  useState as useState7
+  useState as useState8
 } from "react";
 var FALLBACK_HOOK_COMMAND = `node -e "process.stdin.resume(); process.stdin.on('end', () => console.error('hook ran'))"`;
 function buildHookCommandTemplateMap(hookCommandTemplates) {
@@ -8368,17 +8437,17 @@ function useComposerHookConfig({
   onTrustHook,
   onUntrustHook
 }) {
-  const [hooksPanelMode, setHooksPanelMode] = useState7("list");
-  const [hookScope, setHookScope] = useState7("project");
-  const [hookEventName, setHookEventName] = useState7("preToolUse");
-  const [hookMatcher, setHookMatcher] = useState7("Bash");
-  const [hookCommand, setHookCommand] = useState7(FALLBACK_HOOK_COMMAND);
-  const [hookTimeoutSec, setHookTimeoutSec] = useState7("30");
-  const [hookStatusMessage, setHookStatusMessage] = useState7("Running hook");
-  const [editingHookTarget, setEditingHookTarget] = useState7(null);
-  const [hookConfigBusy, setHookConfigBusy] = useState7(false);
-  const [hookConfigError, setHookConfigError] = useState7(null);
-  const [hookConfigSuccess, setHookConfigSuccess] = useState7(
+  const [hooksPanelMode, setHooksPanelMode] = useState8("list");
+  const [hookScope, setHookScope] = useState8("project");
+  const [hookEventName, setHookEventName] = useState8("preToolUse");
+  const [hookMatcher, setHookMatcher] = useState8("Bash");
+  const [hookCommand, setHookCommand] = useState8(FALLBACK_HOOK_COMMAND);
+  const [hookTimeoutSec, setHookTimeoutSec] = useState8("30");
+  const [hookStatusMessage, setHookStatusMessage] = useState8("Running hook");
+  const [editingHookTarget, setEditingHookTarget] = useState8(null);
+  const [hookConfigBusy, setHookConfigBusy] = useState8(false);
+  const [hookConfigError, setHookConfigError] = useState8(null);
+  const [hookConfigSuccess, setHookConfigSuccess] = useState8(
     null
   );
   const hookCommandTemplateByEvent = useMemo(
@@ -8596,7 +8665,7 @@ function useComposerHookConfig({
 }
 
 // src/components/composer/useComposerMcpConfig.ts
-import { useCallback as useCallback6, useState as useState8 } from "react";
+import { useCallback as useCallback6, useState as useState9 } from "react";
 var DEFAULT_RAW_MCP_BLOCK = '[mcp_servers.example_stdio]\ncommand = "npx"\nargs = ["-y", "your-mcp-server"]\n';
 var MCP_CONFIG_SUCCESS_MESSAGE = "MCP entry written to provider config. Restart the backend if it does not appear immediately.";
 function useComposerMcpConfig({
@@ -8606,13 +8675,13 @@ function useComposerMcpConfig({
   setMcpPanelMode,
   onOpenMcp
 }) {
-  const [mcpHttpName, setMcpHttpName] = useState8("");
-  const [mcpHttpUrl, setMcpHttpUrl] = useState8("");
-  const [mcpRawBlock, setMcpRawBlock] = useState8("");
-  const [mcpConfigPath, setMcpConfigPath] = useState8(null);
-  const [mcpConfigBusy, setMcpConfigBusy] = useState8(false);
-  const [mcpConfigError, setMcpConfigError] = useState8(null);
-  const [mcpConfigSuccess, setMcpConfigSuccess] = useState8(null);
+  const [mcpHttpName, setMcpHttpName] = useState9("");
+  const [mcpHttpUrl, setMcpHttpUrl] = useState9("");
+  const [mcpRawBlock, setMcpRawBlock] = useState9("");
+  const [mcpConfigPath, setMcpConfigPath] = useState9(null);
+  const [mcpConfigBusy, setMcpConfigBusy] = useState9(false);
+  const [mcpConfigError, setMcpConfigError] = useState9(null);
+  const [mcpConfigSuccess, setMcpConfigSuccess] = useState9(null);
   const clearMcpConfigStatus = useCallback6(() => {
     setMcpConfigError(null);
     setMcpConfigSuccess(null);
@@ -8758,7 +8827,7 @@ function useComposerMcpConfig({
 import {
   useCallback as useCallback7,
   useEffect as useEffect5,
-  useState as useState9
+  useState as useState10
 } from "react";
 function useComposerMenuLifecycle({
   openMenu,
@@ -8769,7 +8838,7 @@ function useComposerMenuLifecycle({
   clearMcpConfigStatus,
   clearHookConfigStatus
 }) {
-  const [copiedSkillName, setCopiedSkillName] = useState9(null);
+  const [copiedSkillName, setCopiedSkillName] = useState10(null);
   useEffect5(() => {
     if (openMenu !== "slash") {
       setSlashPanelView("root");
@@ -9276,13 +9345,13 @@ function useComposerPromptSlots({
 }
 
 // src/components/composer/useComposerSettingsActions.ts
-import { useCallback as useCallback8, useEffect as useEffect6, useState as useState10 } from "react";
+import { useCallback as useCallback8, useEffect as useEffect6, useState as useState11 } from "react";
 function useComposerSettingsActions({
   collaborationMode,
   onUpdateSettings,
   closeMenu
 }) {
-  const [optimisticCollaborationMode, setOptimisticCollaborationMode] = useState10(null);
+  const [optimisticCollaborationMode, setOptimisticCollaborationMode] = useState11(null);
   const displayedCollaborationMode = optimisticCollaborationMode ?? collaborationMode;
   useEffect6(() => {
     setOptimisticCollaborationMode(null);
@@ -9345,6 +9414,7 @@ function useComposerToolbarProps({
   activeView,
   disabled,
   model,
+  agentLabel,
   modelOptions,
   modelContextTitle,
   contextUsage,
@@ -9534,6 +9604,7 @@ function useComposerToolbarProps({
   const settingsToolbarProps = isShellView ? null : {
     openMenu,
     model,
+    agentLabel,
     modelOptions,
     modelContextTitle,
     contextUsage,
@@ -9598,6 +9669,7 @@ function ThreadComposer({
   compactBusy = false,
   error,
   model = null,
+  agentLabel = null,
   reasoningEffort = null,
   fastMode = false,
   collaborationMode = "default",
@@ -9678,10 +9750,10 @@ function ThreadComposer({
   onSteerPendingPrompt,
   onCancelPendingPrompt
 }) {
-  const [openMenu, setOpenMenu] = useState11(null);
-  const [slashPanelView, setSlashPanelView] = useState11("root");
+  const [openMenu, setOpenMenu] = useState12(null);
+  const [slashPanelView, setSlashPanelView] = useState12("root");
   const submitInFlightRef = useRef3(false);
-  const [mcpPanelMode, setMcpPanelMode] = useState11("list");
+  const [mcpPanelMode, setMcpPanelMode] = useState12("list");
   const slashCapabilities = useMemo2(
     () => ({
       fast: capabilities?.controls.performanceMode ?? false,
@@ -9727,8 +9799,8 @@ function ThreadComposer({
     isShellView && shellControlState?.isMobileShell
   );
   const shellPromptLabel = shellControlState?.promptLabel ?? null;
-  const [isDragTargetActive, setIsDragTargetActive] = useState11(false);
-  const [editorSanitizeNonce, setEditorSanitizeNonce] = useState11(0);
+  const [isDragTargetActive, setIsDragTargetActive] = useState12(false);
+  const [editorSanitizeNonce, setEditorSanitizeNonce] = useState12(0);
   const {
     prompt,
     attachments,
@@ -10232,6 +10304,7 @@ function ThreadComposer({
     activeView,
     disabled,
     model,
+    agentLabel,
     modelOptions,
     modelContextTitle,
     contextUsage,
@@ -10416,12 +10489,12 @@ function ThreadComposer({
 }
 
 // src/components/ThreadWorkspaceLayout.tsx
-import { useEffect as useEffect8, useMemo as useMemo3, useRef as useRef4, useState as useState12 } from "react";
+import { useEffect as useEffect8, useMemo as useMemo3, useRef as useRef4, useState as useState13 } from "react";
 import {
   ArrowLeft,
   ChevronsLeft,
   ChevronsRight,
-  Check,
+  Check as Check2,
   Copy,
   Folder,
   Menu,
@@ -10905,7 +10978,7 @@ function ThreadCard({
   showSessionCopyButton = false,
   collapsed = false
 }) {
-  const [copyState, setCopyState] = useState12(
+  const [copyState, setCopyState] = useState13(
     "idle"
   );
   const resetTimerRef = useRef4(null);
@@ -10996,7 +11069,7 @@ function ThreadCard({
                   void handleCopySessionId();
                 },
                 className: "thread-card-quiet-button thread-card-session-copy-button inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full transition",
-                children: copyState === "copied" ? /* @__PURE__ */ jsx28(Check, { className: "h-3.5 w-3.5" }) : /* @__PURE__ */ jsx28(Copy, { className: "h-3.5 w-3.5" })
+                children: copyState === "copied" ? /* @__PURE__ */ jsx28(Check2, { className: "h-3.5 w-3.5" }) : /* @__PURE__ */ jsx28(Copy, { className: "h-3.5 w-3.5" })
               }
             ) : null
           ] }),
@@ -11170,30 +11243,30 @@ function ThreadWorkspaceLayout({
 }) {
   const shellNav = useAppShellNav();
   const initialShellMobileViewport = typeof window !== "undefined" ? window.matchMedia("(max-width: 639px)").matches : layoutMode === "mobile";
-  const [systemPrefersDark, setSystemPrefersDark] = useState12(
+  const [systemPrefersDark, setSystemPrefersDark] = useState13(
     () => typeof window !== "undefined" ? window.matchMedia("(prefers-color-scheme: dark)").matches : false
   );
   const themeMode = themeModeProp ?? shellNav?.themeMode ?? "system";
   const effectiveTheme = effectiveThemeProp ?? shellNav?.effectiveTheme ?? (themeMode === "system" ? systemPrefersDark ? "dark" : "light" : themeMode);
-  const [mobileRoomsOpen, setMobileRoomsOpen] = useState12(false);
-  const [roomsRailCollapsed, setRoomsRailCollapsed] = useState12(false);
-  const [workspaceCollapsed, setWorkspaceCollapsed] = useState12(
+  const [mobileRoomsOpen, setMobileRoomsOpen] = useState13(false);
+  const [roomsRailCollapsed, setRoomsRailCollapsed] = useState13(false);
+  const [workspaceCollapsed, setWorkspaceCollapsed] = useState13(
     !initialShellMobileViewport
   );
-  const [isShellMobileViewport, setIsShellMobileViewport] = useState12(
+  const [isShellMobileViewport, setIsShellMobileViewport] = useState13(
     initialShellMobileViewport
   );
-  const [mobileWorkspace, setMobileWorkspace] = useState12(
+  const [mobileWorkspace, setMobileWorkspace] = useState13(
     "chat"
   );
-  const [editingThreadId, setEditingThreadId] = useState12(null);
-  const [draftTitle, setDraftTitle] = useState12("");
-  const [renamingThreadId, setRenamingThreadId] = useState12(null);
-  const [createThreadDialogOpen, setCreateThreadDialogOpen] = useState12(false);
-  const [newThreadTitleDraft, setNewThreadTitleDraft] = useState12("");
-  const [creatingThread, setCreatingThread] = useState12(false);
-  const [topbarDetailsOpen, setTopbarDetailsOpen] = useState12(false);
-  const [settingsTab, setSettingsTab] = useState12(
+  const [editingThreadId, setEditingThreadId] = useState13(null);
+  const [draftTitle, setDraftTitle] = useState13("");
+  const [renamingThreadId, setRenamingThreadId] = useState13(null);
+  const [createThreadDialogOpen, setCreateThreadDialogOpen] = useState13(false);
+  const [newThreadTitleDraft, setNewThreadTitleDraft] = useState13("");
+  const [creatingThread, setCreatingThread] = useState13(false);
+  const [topbarDetailsOpen, setTopbarDetailsOpen] = useState13(false);
+  const [settingsTab, setSettingsTab] = useState13(
     "session"
   );
   useEffect8(() => {
@@ -11924,7 +11997,7 @@ function ThreadWorkspaceLayout({
 }
 
 // src/components/ThreadTimeline.tsx
-import { memo as memo6, useCallback as useCallback14, useEffect as useEffect16, useMemo as useMemo8, useRef as useRef12, useState as useState23 } from "react";
+import { memo as memo6, useCallback as useCallback14, useEffect as useEffect16, useMemo as useMemo8, useRef as useRef12, useState as useState24 } from "react";
 
 // src/components/LongTextDialog.tsx
 import { useEffect as useEffect9 } from "react";
@@ -12003,8 +12076,8 @@ function LongTextDialog({
 }
 
 // src/components/graph-chat/GraphChatCompactMessageItem.tsx
-import { memo as memo3, useEffect as useEffect13, useRef as useRef7, useState as useState16 } from "react";
-import { Brain, Check as Check3, Copy as Copy3 } from "lucide-react";
+import { memo as memo3, useEffect as useEffect13, useRef as useRef7, useState as useState17 } from "react";
+import { Brain, Check as Check4, Copy as Copy3 } from "lucide-react";
 
 // src/components/graph-chat/GraphChatMessageBody.tsx
 import {
@@ -12014,7 +12087,7 @@ import {
   useLayoutEffect as useLayoutEffect3,
   useMemo as useMemo6,
   useRef as useRef6,
-  useState as useState15
+  useState as useState16
 } from "react";
 
 // src/components/markdownHeuristics.ts
@@ -12053,9 +12126,9 @@ import {
   isValidElement,
   useMemo as useMemo5,
   useRef as useRef5,
-  useState as useState14
+  useState as useState15
 } from "react";
-import { Check as Check2, Copy as Copy2 } from "lucide-react";
+import { Check as Check3, Copy as Copy2 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import rehypeKatex from "rehype-katex";
 import remarkGfm from "remark-gfm";
@@ -12137,7 +12210,7 @@ function usePlugins() {
 
 // src/components/graph-chat/GraphChatToolCall.tsx
 init_GraphAccordion();
-import { useEffect as useEffect10, useMemo as useMemo4, useState as useState13 } from "react";
+import { useEffect as useEffect10, useMemo as useMemo4, useState as useState14 } from "react";
 import {
   CheckCircle2,
   Loader2 as Loader22,
@@ -12235,7 +12308,7 @@ function GraphChatToolCall({
     });
   }, [result]);
   const shouldAutoOpen = status === "pending" || hasTextualOutput;
-  const [openItem, setOpenItem] = useState13(
+  const [openItem, setOpenItem] = useState14(
     shouldAutoOpen ? "item-1" : void 0
   );
   useEffect10(() => {
@@ -12558,9 +12631,9 @@ var GraphChatMessageContent = memo(function GraphChatMessageContent2({
 }) {
   const rootRef = useRef5(null);
   const plugins = usePlugins();
-  const [highlighter, setHighlighter] = useState14(null);
-  const [copyState, setCopyState] = useState14({});
-  const [dark, setDark] = useState14(false);
+  const [highlighter, setHighlighter] = useState15(null);
+  const [copyState, setCopyState] = useState15({});
+  const [dark, setDark] = useState15(false);
   const { processedContent, resultMap } = useMemo5(
     () => preprocessGraphChatToolBlocks(content),
     [content]
@@ -12719,7 +12792,7 @@ var GraphChatMessageContent = memo(function GraphChatMessageContent2({
             className: "thread-graph-code-copy absolute right-2 top-2 z-10 rounded-md p-1.5",
             title: copyState[id] === "copied" ? "Copied" : copyState[id] === "failed" ? "Copy failed" : "Copy",
             "aria-label": "Copy code",
-            children: copyState[id] === "copied" ? /* @__PURE__ */ jsx32(Check2, { className: "h-3.5 w-3.5" }) : /* @__PURE__ */ jsx32(Copy2, { className: "h-3.5 w-3.5" })
+            children: copyState[id] === "copied" ? /* @__PURE__ */ jsx32(Check3, { className: "h-3.5 w-3.5" }) : /* @__PURE__ */ jsx32(Copy2, { className: "h-3.5 w-3.5" })
           }
         ),
         html ? /* @__PURE__ */ jsx32("div", { dangerouslySetInnerHTML: { __html: html } }) : /* @__PURE__ */ jsx32("pre", { children: /* @__PURE__ */ jsx32("code", { className: "whitespace-pre", children: textContent }) })
@@ -12877,13 +12950,13 @@ var GraphChatMarkdownAwareBody = memo2(
   }) {
     const messageRef = useRef6(null);
     const scrollAnchorRef = useRef6(null);
-    const [expanded, setExpanded] = useState15(false);
+    const [expanded, setExpanded] = useState16(false);
     const shouldRenderMarkdown = hasLikelyMarkdownSyntax(text);
     const isLargeText = !streaming && text.length > LARGE_MESSAGE_PREVIEW_CHARS;
     const displayText = isLargeText && !expanded ? `${text.slice(0, LARGE_MESSAGE_PREVIEW_CHARS).trimEnd()}
 
 ...` : text;
-    const [isActivated, setIsActivated] = useState15(
+    const [isActivated, setIsActivated] = useState16(
       streaming || typeof IntersectionObserver === "undefined"
     );
     const toggleExpanded = useCallback10(() => {
@@ -13178,10 +13251,10 @@ var GraphChatCompactMessageItem = memo3(
     timeTitle,
     onBeforeMessageResize
   }) {
-    const [copyState, setCopyState] = useState16(
+    const [copyState, setCopyState] = useState17(
       "idle"
     );
-    const [reasoningOpen, setReasoningOpen] = useState16(false);
+    const [reasoningOpen, setReasoningOpen] = useState17(false);
     const resetTimerRef = useRef7(null);
     const reasoningItems = item.kind === "agentMessage" ? item.reasoningItems ?? [] : [];
     const reasoningText = reasoningItems.map((entry) => entry.text.trim()).filter(Boolean).join("\n\n");
@@ -13227,7 +13300,7 @@ var GraphChatCompactMessageItem = memo3(
         title: copyState === "copied" ? "Copied" : copyState === "failed" ? "Copy failed" : "Copy agent reply",
         onClick: () => void handleCopy(),
         className: `thread-graph-message-copy inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md border transition ${copyState === "copied" ? "ui-status-info" : copyState === "failed" ? "ui-status-danger" : ""}`,
-        children: copyState === "copied" ? /* @__PURE__ */ jsx35(Check3, { className: "h-3.5 w-3.5" }) : /* @__PURE__ */ jsx35(Copy3, { className: "h-3.5 w-3.5" })
+        children: copyState === "copied" ? /* @__PURE__ */ jsx35(Check4, { className: "h-3.5 w-3.5" }) : /* @__PURE__ */ jsx35(Copy3, { className: "h-3.5 w-3.5" })
       }
     ) : null;
     const hasRunningReasoning = reasoningItems.some(
@@ -13830,16 +13903,16 @@ function buildActivityNoteAnchors({
 }
 
 // src/components/timeline/TimelineRequestCards.tsx
-import { useState as useState17 } from "react";
+import { useState as useState18 } from "react";
 import { Fragment as Fragment7, jsx as jsx36, jsxs as jsxs30 } from "react/jsx-runtime";
 function PendingRequestCard({
   request,
   busy = false,
   onRespond
 }) {
-  const [answers, setAnswers] = useState17({});
-  const [customAnswers, setCustomAnswers] = useState17({});
-  const [selectedPlanDecision, setSelectedPlanDecision] = useState17(null);
+  const [answers, setAnswers] = useState18({});
+  const [customAnswers, setCustomAnswers] = useState18({});
+  const [selectedPlanDecision, setSelectedPlanDecision] = useState18(null);
   const primaryQuestion = request.questions[0] ?? null;
   const OTHER_SENTINEL = "__other__";
   const cardTitle = request.kind === "planDecision" ? "Plan" : request.kind === "requestUserInput" ? "Answer Required" : request.title;
@@ -14205,9 +14278,9 @@ import {
   memo as memo5,
   useCallback as useCallback11,
   useMemo as useMemo7,
-  useState as useState20
+  useState as useState21
 } from "react";
-import { ChevronDown, ChevronRight } from "lucide-react";
+import { ChevronDown, ChevronRight as ChevronRight2 } from "lucide-react";
 
 // src/components/graph-chat/GraphChatHistoryEntries.tsx
 import { Fragment as Fragment8, jsx as jsx37 } from "react/jsx-runtime";
@@ -14277,7 +14350,7 @@ import {
   memo as memo4,
   useLayoutEffect as useLayoutEffect4,
   useRef as useRef8,
-  useState as useState18
+  useState as useState19
 } from "react";
 import {
   Archive,
@@ -14750,7 +14823,7 @@ function GraphChatHistoryToolFrame({
   tone
 }) {
   const statusConfig = graphHistoryStatusConfig(item.status);
-  const [openItem, setOpenItem] = useState18(
+  const [openItem, setOpenItem] = useState19(
     autoOpen ? "item-1" : void 0
   );
   const previousAutoOpenRef = useRef8(autoOpen);
@@ -15181,7 +15254,7 @@ var GraphChatArtifactHistoryItem = memo4(
     timeMeta
   }) {
     const plugins = usePlugins();
-    const [expanded, setExpanded] = useState18(false);
+    const [expanded, setExpanded] = useState19(false);
     const artifact = item.artifact;
     const rendered = artifact ? plugins.renderArtifact({
       artifact,
@@ -15746,7 +15819,7 @@ import {
   useEffect as useEffect14,
   useLayoutEffect as useLayoutEffect5,
   useRef as useRef9,
-  useState as useState19
+  useState as useState20
 } from "react";
 import { Fragment as Fragment11, jsx as jsx43, jsxs as jsxs35 } from "react/jsx-runtime";
 function TokenInIcon() {
@@ -15986,9 +16059,9 @@ var TURN_HEADER_BADGE_CLASS_NAME = "inline-flex shrink-0 items-center gap-1 roun
 function TurnTokenSummary({ turn }) {
   const details = buildTurnTokenDetails(turn);
   const priceBadge = buildTurnPriceBadge(turn);
-  const [isMobileOpen, setIsMobileOpen] = useState19(false);
-  const [isDesktopOpen, setIsDesktopOpen] = useState19(false);
-  const [mobilePopoverShift, setMobilePopoverShift] = useState19(0);
+  const [isMobileOpen, setIsMobileOpen] = useState20(false);
+  const [isDesktopOpen, setIsDesktopOpen] = useState20(false);
+  const [mobilePopoverShift, setMobilePopoverShift] = useState20(0);
   const containerRef = useRef9(null);
   const desktopPriceRef = useRef9(null);
   const mobilePopoverRef = useRef9(null);
@@ -16641,7 +16714,7 @@ function TimelineTimeToggle({
   timestamp,
   turnStartedAt
 }) {
-  const [showAbsolute, setShowAbsolute] = useState20(false);
+  const [showAbsolute, setShowAbsolute] = useState21(false);
   if (!timestamp) {
     return null;
   }
@@ -16754,7 +16827,7 @@ var ThreadTurnRow = memo5(function ThreadTurnRow2({
     () => parseHookPromptText(visibleLiveOutput),
     [visibleLiveOutput]
   );
-  const [expandedGroups, setExpandedGroups] = useState20(
+  const [expandedGroups, setExpandedGroups] = useState21(
     {}
   );
   const toggleGroupedItem = useCallback11((groupKey) => {
@@ -16880,7 +16953,7 @@ var ThreadTurnRow = memo5(function ThreadTurnRow2({
         "aria-label": `${workedLabel}. Expand turn ${absoluteIndex}`,
         children: [
           /* @__PURE__ */ jsx45("span", { className: "thread-graph-worked-label shrink-0", children: workedLabel }),
-          /* @__PURE__ */ jsx45(ChevronRight, { className: "h-4 w-4 shrink-0 transition group-hover:translate-x-0.5" }),
+          /* @__PURE__ */ jsx45(ChevronRight2, { className: "h-4 w-4 shrink-0 transition group-hover:translate-x-0.5" }),
           /* @__PURE__ */ jsx45("span", { className: "thread-graph-worked-rule h-px min-w-0 flex-1", "aria-hidden": "true" })
         ]
       }
@@ -17135,7 +17208,7 @@ function buildSyntheticLiveTurn(turnId, items) {
 }
 
 // src/components/timeline/useDeferredHistoryDetail.ts
-import { useCallback as useCallback12, useRef as useRef10, useState as useState21 } from "react";
+import { useCallback as useCallback12, useRef as useRef10, useState as useState22 } from "react";
 function inlineDetail(item, title, text) {
   return {
     id: item.id,
@@ -17152,7 +17225,7 @@ function useDeferredHistoryDetail({
   const detailCacheRef = useRef10(
     /* @__PURE__ */ new Map()
   );
-  const [expandedText, setExpandedText] = useState21(
+  const [expandedText, setExpandedText] = useState22(
     null
   );
   const openExpandedText = useCallback12((title, text) => {
@@ -17282,7 +17355,7 @@ import {
   useEffect as useEffect15,
   useLayoutEffect as useLayoutEffect6,
   useRef as useRef11,
-  useState as useState22
+  useState as useState23
 } from "react";
 function useChangeRevision(inputs) {
   const previousInputsRef = useRef11(null);
@@ -17324,9 +17397,9 @@ function useTimelineScroll({
   const topLoadArmedRef = useRef11(false);
   const lastTouchYRef = useRef11(null);
   const touchPullDistanceRef = useRef11(0);
-  const [visibleCount, setVisibleCount] = useState22(INITIAL_VISIBLE_TURNS);
-  const [loadMoreClicks, setLoadMoreClicks] = useState22(0);
-  const [isTailVisible, setIsTailVisible] = useState22(true);
+  const [visibleCount, setVisibleCount] = useState23(INITIAL_VISIBLE_TURNS);
+  const [loadMoreClicks, setLoadMoreClicks] = useState23(0);
+  const [isTailVisible, setIsTailVisible] = useState23(true);
   const contentRevision = useChangeRevision(contentRevisionInputs);
   const serverManagedHistory = typeof onLoadEarlier === "function" || totalTurnCount !== void 0;
   const effectiveTotalTurnCount = totalTurnCount ?? turnsLength;
@@ -17695,10 +17768,10 @@ function ThreadTimelineComponent({
 }) {
   const shellNav = useAppShellNav();
   const effectiveAutoCollapseCompletedTurns = autoCollapseCompletedTurns ?? shellNav?.autoCollapseCompletedTurns ?? false;
-  const [collapsedTurnOverrides, setCollapsedTurnOverrides] = useState23(
+  const [collapsedTurnOverrides, setCollapsedTurnOverrides] = useState24(
     {}
   );
-  const [cancelingSteerIds, setCancelingSteerIds] = useState23(
+  const [cancelingSteerIds, setCancelingSteerIds] = useState24(
     () => /* @__PURE__ */ new Set()
   );
   const lastPreviousTurnTargetIdRef = useRef12(null);
@@ -18228,7 +18301,7 @@ import {
   useImperativeHandle as useImperativeHandle2,
   useMemo as useMemo10,
   useRef as useRef14,
-  useState as useState25
+  useState as useState26
 } from "react";
 
 // src/components/shell/ShellPane.tsx
@@ -18239,7 +18312,7 @@ import {
   useImperativeHandle,
   useMemo as useMemo9,
   useRef as useRef13,
-  useState as useState24
+  useState as useState25
 } from "react";
 import "xterm/css/xterm.css";
 
@@ -19611,16 +19684,16 @@ var ShellPane = forwardRef(
         clearTimeout: window.clearTimeout
       })
     );
-    const [terminalHostNode, setTerminalHostNode] = useState24(null);
-    const [terminalReady, setTerminalReady] = useState24(false);
-    const [viewerId, setViewerIdState] = useState24(null);
-    const [isConnecting, setIsConnecting] = useState24(false);
-    const [connectionError, setConnectionError] = useState24(null);
-    const [runtimePromptLabel, setRuntimePromptLabel] = useState24(
+    const [terminalHostNode, setTerminalHostNode] = useState25(null);
+    const [terminalReady, setTerminalReady] = useState25(false);
+    const [viewerId, setViewerIdState] = useState25(null);
+    const [isConnecting, setIsConnecting] = useState25(false);
+    const [connectionError, setConnectionError] = useState25(null);
+    const [runtimePromptLabel, setRuntimePromptLabel] = useState25(
       null
     );
-    const [isCommandRunning, setIsCommandRunning] = useState24(false);
-    const [reconnectKey, setReconnectKey] = useState24(0);
+    const [isCommandRunning, setIsCommandRunning] = useState25(false);
+    const [reconnectKey, setReconnectKey] = useState25(0);
     const shellStatus = shell?.status ?? "not_created";
     const canAttachShell = shellCanAttach({ shell, workspacePathMissing });
     const fallbackPromptLabel = useMemo9(
@@ -20130,25 +20203,25 @@ var ThreadShellPanel = forwardRef2(function ThreadShellPanel2({
   const terminalSplitHostRef = useRef14(null);
   const dragFrameRef = useRef14(null);
   const createShellInFlightRef = useRef14(false);
-  const [shellState, setShellState] = useState25(null);
-  const [loading, setLoading] = useState25(true);
-  const [busy, setBusy] = useState25(false);
-  const [error, setError] = useState25(null);
-  const [activePaneId, setActivePaneId] = useState25("primary");
-  const [primaryShellId, setPrimaryShellId] = useState25(null);
-  const [secondaryShellId, setSecondaryShellId] = useState25(null);
-  const [splitMode, setSplitMode] = useState25("single");
-  const [splitRatio, setSplitRatio] = useState25(50);
-  const [renamingShellId, setRenamingShellId] = useState25(null);
-  const [renameDraft, setRenameDraft] = useState25("");
-  const [isMobileShell, setIsMobileShell] = useState25(false);
-  const [mobileProcessListOpen, setMobileProcessListOpen] = useState25(false);
-  const [toolboxOpen, setToolboxOpen] = useState25(false);
-  const [paneRuntime, setPaneRuntime] = useState25({
+  const [shellState, setShellState] = useState26(null);
+  const [loading, setLoading] = useState26(true);
+  const [busy, setBusy] = useState26(false);
+  const [error, setError] = useState26(null);
+  const [activePaneId, setActivePaneId] = useState26("primary");
+  const [primaryShellId, setPrimaryShellId] = useState26(null);
+  const [secondaryShellId, setSecondaryShellId] = useState26(null);
+  const [splitMode, setSplitMode] = useState26("single");
+  const [splitRatio, setSplitRatio] = useState26(50);
+  const [renamingShellId, setRenamingShellId] = useState26(null);
+  const [renameDraft, setRenameDraft] = useState26("");
+  const [isMobileShell, setIsMobileShell] = useState26(false);
+  const [mobileProcessListOpen, setMobileProcessListOpen] = useState26(false);
+  const [toolboxOpen, setToolboxOpen] = useState26(false);
+  const [paneRuntime, setPaneRuntime] = useState26({
     primary: EMPTY_SHELL_PANE_RUNTIME_STATE,
     secondary: EMPTY_SHELL_PANE_RUNTIME_STATE
   });
-  const [toolboxFeedback, setToolboxFeedback] = useState25(null);
+  const [toolboxFeedback, setToolboxFeedback] = useState26(null);
   const status = shellState?.state ?? "not_created";
   const shells = useMemo10(() => shellState?.shells ?? [], [shellState?.shells]);
   const liveShells = useMemo10(
@@ -21182,7 +21255,7 @@ function ConfirmDialog({
 }
 
 // src/components/ExportTranscriptDialog.tsx
-import { useEffect as useEffect27, useMemo as useMemo17, useState as useState31 } from "react";
+import { useEffect as useEffect27, useMemo as useMemo17, useState as useState32 } from "react";
 import { createPortal as createPortal5 } from "react-dom";
 import { Fragment as Fragment18, jsx as jsx71, jsxs as jsxs59 } from "react/jsx-runtime";
 function formatTurnTime(value) {
@@ -21266,17 +21339,17 @@ function ThreadActionsDialog({
   onOpenDeviceSharing
 }) {
   const turns = useMemo17(() => turnsState.data?.turns ?? [], [turnsState.data?.turns]);
-  const [actionMode, setActionMode] = useState31(initialMode);
-  const [turnSelection, setTurnSelection] = useState31("latest-10");
-  const [selectedTurnIds, setSelectedTurnIds] = useState31(
+  const [actionMode, setActionMode] = useState32(initialMode);
+  const [turnSelection, setTurnSelection] = useState32("latest-10");
+  const [selectedTurnIds, setSelectedTurnIds] = useState32(
     () => /* @__PURE__ */ new Set()
   );
-  const [includeTokenAndPrice, setIncludeTokenAndPrice] = useState31(true);
-  const [targetIdentifier, setTargetIdentifier] = useState31("");
-  const [threadAccess, setThreadAccess] = useState31("read");
-  const [workspaceAccess, setWorkspaceAccess] = useState31("none");
-  const [shareLabel, setShareLabel] = useState31("");
-  const [effectiveTheme, setEffectiveTheme] = useState31(
+  const [includeTokenAndPrice, setIncludeTokenAndPrice] = useState32(true);
+  const [targetIdentifier, setTargetIdentifier] = useState32("");
+  const [threadAccess, setThreadAccess] = useState32("read");
+  const [workspaceAccess, setWorkspaceAccess] = useState32("none");
+  const [shareLabel, setShareLabel] = useState32("");
+  const [effectiveTheme, setEffectiveTheme] = useState32(
     () => typeof document !== "undefined" && !document.documentElement.classList.contains("dark") ? "light" : "dark"
   );
   useEffect27(() => {
@@ -21683,7 +21756,7 @@ import {
   useLayoutEffect as useLayoutEffect8,
   useMemo as useMemo18,
   useRef as useRef19,
-  useState as useState32
+  useState as useState33
 } from "react";
 import { jsx as jsx72, jsxs as jsxs60 } from "react/jsx-runtime";
 function GraphChatThreadChatPanel({
@@ -21700,11 +21773,11 @@ function GraphChatThreadChatPanel({
   floatingMobileComposerBottomOffset = 0,
   composerHostRef
 }) {
-  const [isMobileViewport, setIsMobileViewport] = useState32(false);
-  const [mobileComposerHeight, setMobileComposerHeight] = useState32(0);
-  const [mobileComposerOverlap, setMobileComposerOverlap] = useState32(0);
-  const [mobileKeyboardInset, setMobileKeyboardInset] = useState32(0);
-  const [mobilePromptFocused, setMobilePromptFocused] = useState32(false);
+  const [isMobileViewport, setIsMobileViewport] = useState33(false);
+  const [mobileComposerHeight, setMobileComposerHeight] = useState33(0);
+  const [mobileComposerOverlap, setMobileComposerOverlap] = useState33(0);
+  const [mobileKeyboardInset, setMobileKeyboardInset] = useState33(0);
+  const [mobilePromptFocused, setMobilePromptFocused] = useState33(false);
   const internalComposerHostRef = useRef19(null);
   const timelineTailVisibilityChange = timelineProps?.onTailVisibilityChange;
   const hasPendingRequests = detail.pendingRequests.length > 0;
@@ -22312,7 +22385,7 @@ import {
   useCallback as useCallback20,
   useEffect as useEffect29,
   useMemo as useMemo20,
-  useState as useState33
+  useState as useState34
 } from "react";
 import { jsx as jsx74 } from "react/jsx-runtime";
 var DEFAULT_PLUGIN_PROVIDER_ADAPTER = {};
@@ -22322,11 +22395,11 @@ function PluginProvider({
   builtinPlugins = DEFAULT_BUILTIN_PLUGINS,
   children
 }) {
-  const [plugins, setPlugins] = useState33(
+  const [plugins, setPlugins] = useState34(
     () => mergePluginState(builtinPlugins, [])
   );
-  const [loading, setLoading] = useState33(false);
-  const [error, setError] = useState33(null);
+  const [loading, setLoading] = useState34(false);
+  const [error, setError] = useState34(null);
   const refresh = useCallback20(async () => {
     setLoading(true);
     setError(null);
@@ -22464,7 +22537,7 @@ function PluginProvider({
 }
 
 // src/app-shell/AppShellNavigation.tsx
-import { useEffect as useEffect30, useRef as useRef20, useState as useState34 } from "react";
+import { useEffect as useEffect30, useRef as useRef20, useState as useState35 } from "react";
 import { jsx as jsx75, jsxs as jsxs62 } from "react/jsx-runtime";
 function MenuIcon() {
   return /* @__PURE__ */ jsx75("svg", { "aria-hidden": "true", viewBox: "0 0 16 16", className: "h-4 w-4 fill-current", children: /* @__PURE__ */ jsx75("path", { d: "M2 3.25h12v1.5H2Zm0 4h12v1.5H2Zm0 4h12v1.5H2Z" }) });
@@ -22609,8 +22682,8 @@ function AppShellSettingsDialog({
 } = {}) {
   const shellNav = useAppShellNav();
   const plugins = usePlugins();
-  const [pluginImportDraft, setPluginImportDraft] = useState34("");
-  const [pluginImportState, setPluginImportState] = useState34({
+  const [pluginImportDraft, setPluginImportDraft] = useState35("");
+  const [pluginImportState, setPluginImportState] = useState35({
     busy: false,
     message: null,
     error: null
