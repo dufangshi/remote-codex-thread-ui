@@ -93,7 +93,7 @@ export function ComposerToolbar({
         )}
       </div>
 
-      <div className="flex min-w-0 flex-1 items-center justify-end gap-1.5">
+      <div className="flex min-w-0 flex-1 flex-wrap items-center justify-end gap-1.5">
         {!isShellView && settingsToolbarProps ? (
           <ComposerSettingsToolbar {...settingsToolbarProps} />
         ) : null}

@@ -6,6 +6,8 @@ import type {
   ThreadContextUsageDto,
   UpdateThreadSettingsInput,
 } from '@remote-codex/shared';
+import { Check, ChevronRight } from 'lucide-react';
+import { useState } from 'react';
 
 import { InputGroupButton } from '../graph-ui/InputGroup';
 import type { SettingsMenu } from './types';
@@ -29,9 +31,23 @@ function formatSandboxModeLabel(mode: SandboxModeDto | null | undefined) {
   return sandboxOptions.find((entry) => entry.mode === mode)?.label ?? 'Default';
 }
 
+function formatSandboxModeCompactLabel(mode: SandboxModeDto | null | undefined) {
+  switch (mode) {
+    case 'read-only':
+      return 'RO';
+    case 'workspace-write':
+      return 'WW';
+    case 'danger-full-access':
+      return 'Full';
+    default:
+      return 'Sandbox';
+  }
+}
+
 export function ComposerSettingsToolbar({
   openMenu,
   model,
+  agentLabel,
   modelOptions,
   modelContextTitle,
   contextUsage,
@@ -61,6 +77,7 @@ export function ComposerSettingsToolbar({
 }: {
   openMenu: SettingsMenu;
   model: string | null | undefined;
+  agentLabel?: string | null | undefined;
   modelOptions: ModelOptionDto[];
   modelContextTitle: string;
   contextUsage: ThreadContextUsageDto | null | undefined;
@@ -88,6 +105,7 @@ export function ComposerSettingsToolbar({
   onSetOpenMenu: (updater: (current: SettingsMenu) => SettingsMenu) => void;
   onUpdateSettings: (input: UpdateThreadSettingsInput) => void;
 }) {
+  const [settingsSection, setSettingsSection] = useState<'model' | 'effort' | null>(null);
   const selectedModelLabel = (
     modelOptions.find((entry) => entry.model === model)?.displayName ||
     model ||
@@ -96,6 +114,19 @@ export function ComposerSettingsToolbar({
 
   return (
     <>
+      {agentLabel ? (
+        <InputGroupButton
+          type="button"
+          variant="ghost"
+          size="xs"
+          disabled
+          aria-label={`Agent: ${agentLabel}`}
+          title={`${agentLabel} is fixed for this thread`}
+          className={`${inlineToggleClassName} max-w-[7.5rem] cursor-default rounded-full px-2.5 text-stone-500 disabled:opacity-100 sm:max-w-[9rem]`}
+        >
+          <span className="block min-w-0 truncate whitespace-nowrap">{agentLabel}</span>
+        </InputGroupButton>
+      ) : null}
       <div className="relative min-w-0">
         <InputGroupButton
           type="button"
@@ -104,105 +135,125 @@ export function ComposerSettingsToolbar({
           data-composer-menu-trigger="true"
           aria-haspopup="menu"
           aria-expanded={openMenu === 'model'}
-          aria-label={model ?? 'Select model'}
+          aria-label={`Model and effort: ${selectedModelLabel}, ${formatReasoningEffortLabel(reasoningEffort)}`}
           disabled={modelControlsDisabled || modelOptions.length === 0}
-          onClick={() =>
+          onClick={() => {
+            setSettingsSection(null);
             onSetOpenMenu((current) =>
               current === 'model' ? null : 'model',
             )
-          }
+          }}
           title={
             fastMode
               ? `Fast mode is on. Turn it off from the slash toolbox to edit model. ${modelContextTitle}`
               : modelContextTitle
           }
-          className={`${inlineToggleClassName} relative min-w-0 max-w-[8.75rem] overflow-hidden rounded-full px-2.5 text-left text-stone-300 disabled:cursor-not-allowed disabled:text-stone-600 sm:max-w-[11rem]`}
+          className={`${inlineToggleClassName} relative min-w-0 max-w-[10rem] overflow-hidden rounded-full px-2.5 text-left text-stone-300 disabled:cursor-not-allowed disabled:text-stone-600 sm:max-w-[14rem]`}
         >
-          <span className="relative z-[1] block min-w-0 truncate whitespace-nowrap [direction:rtl]">
-            {selectedModelLabel}
+          <span className="relative z-[1] block min-w-0 truncate whitespace-nowrap">
+            {selectedModelLabel} · {formatReasoningEffortLabel(reasoningEffort)}
           </span>
         </InputGroupButton>
         {model ? <ContextProgressBar contextUsage={contextUsage} /> : null}
         {openMenu === 'model' && (
           <div
             data-composer-menu-surface="true"
-            className="absolute bottom-full left-0 mb-2 w-max min-w-[9rem] max-w-[14rem] overflow-hidden rounded-2xl border border-stone-700 bg-stone-900 shadow-2xl shadow-stone-950/40"
+            className="absolute bottom-full right-0 mb-2 w-[13.5rem] rounded-xl border border-stone-700 bg-stone-900 p-1.5 shadow-2xl shadow-stone-950/40"
           >
-            <div className="max-h-72 overflow-auto p-2">
-              {modelOptions.map((entry) => (
-                <button
-                  key={entry.id}
-                  type="button"
-                  onClick={() =>
-                    onUpdateSettings({
-                      model: entry.model,
-                      reasoningEffort: entry.defaultReasoningEffort,
-                    })
-                  }
-                  className={`block w-full rounded-xl px-3 py-2 text-left transition ${
-                    entry.model === model
-                      ? 'ui-status-warning'
-                      : `${menuItemClassName} text-stone-300`
-                  }`}
-                >
-                  <p className="text-sm font-medium">{entry.displayName || entry.model}</p>
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
+            <button
+              type="button"
+              onClick={() => setSettingsSection('model')}
+              className={`${menuItemClassName} flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-stone-300`}
+            >
+              <span>Model</span>
+              <span className="flex min-w-0 items-center gap-1 text-stone-500">
+                <span className="max-w-[7rem] truncate">{selectedModelLabel}</span>
+                <ChevronRight className="h-3.5 w-3.5 shrink-0" />
+              </span>
+            </button>
+            <button
+              type="button"
+              disabled={effortControlsDisabled}
+              title={effortControlTitle}
+              onClick={() => setSettingsSection('effort')}
+              className={`${menuItemClassName} flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-stone-300 disabled:cursor-not-allowed disabled:text-stone-600`}
+            >
+              <span>Effort</span>
+              <span className="flex items-center gap-1 text-stone-500">
+                {formatReasoningEffortLabel(reasoningEffort)}
+                <ChevronRight className="h-3.5 w-3.5" />
+              </span>
+            </button>
 
-      <div className="relative">
-        <InputGroupButton
-          type="button"
-          variant="ghost"
-          size="xs"
-          data-composer-menu-trigger="true"
-          aria-haspopup="menu"
-          aria-expanded={openMenu === 'effort'}
-          disabled={effortControlsDisabled}
-          onClick={() =>
-            onSetOpenMenu((current) =>
-              current === 'effort' ? null : 'effort',
-            )
-          }
-          title={effortControlTitle}
-          className={`${inlineToggleClassName} rounded-full px-2 disabled:cursor-not-allowed disabled:text-stone-700 ${
-            effortControlsDisabled
-              ? 'text-stone-500'
-              : 'text-stone-300 hover:text-stone-100'
-          }`}
-        >
-          {formatReasoningEffortLabel(reasoningEffort)}
-        </InputGroupButton>
-        {openMenu === 'effort' && (
-          <div
-            data-composer-menu-surface="true"
-            className="absolute bottom-full left-0 mb-2 w-max min-w-[8rem] max-w-[12rem] overflow-hidden rounded-2xl border border-stone-700 bg-stone-900 shadow-2xl shadow-stone-950/40"
-          >
-            <div className="max-h-72 overflow-auto p-2">
-              {supportedEfforts.map((entry) => (
-                <button
-                  key={entry.reasoningEffort}
-                  type="button"
-                  onClick={() =>
-                    onUpdateSettings({
-                      reasoningEffort: entry.reasoningEffort,
-                    })
-                  }
-                  className={`block w-full rounded-xl px-3 py-2 text-left transition ${
-                    entry.reasoningEffort === reasoningEffort
-                      ? 'ui-status-warning'
-                      : `${menuItemClassName} text-stone-300`
-                  }`}
-                >
-                  <p className="text-sm font-medium">
-                    {formatReasoningEffortLabel(entry.reasoningEffort)}
+            {settingsSection === 'model' ? (
+              <div className="mt-1 w-full overflow-hidden border-t border-stone-700 bg-stone-900 p-1.5 sm:absolute sm:bottom-0 sm:left-[calc(100%+0.5rem)] sm:mt-0 sm:w-[13rem] sm:rounded-xl sm:border sm:shadow-2xl sm:shadow-stone-950/40">
+                <p className="px-3 py-1.5 text-xs text-stone-500">Model</p>
+                <div className="max-h-72 overflow-auto">
+                  {modelOptions.map((entry) => {
+                    const selected = entry.model === model;
+                    return (
+                      <button
+                        key={entry.id}
+                        type="button"
+                        onClick={() => {
+                          const nextEffort = reasoningEffort &&
+                            entry.supportedReasoningEfforts.some(
+                              (effort) => effort.reasoningEffort === reasoningEffort,
+                            )
+                            ? reasoningEffort
+                            : entry.defaultReasoningEffort;
+                          onUpdateSettings({
+                            model: entry.model,
+                            reasoningEffort: nextEffort,
+                          });
+                          onSetOpenMenu(() => null);
+                        }}
+                        className={`${menuItemClassName} flex w-full items-center justify-between rounded-lg px-3 py-2 text-left ${
+                          selected ? 'ui-status-warning' : 'text-stone-300'
+                        }`}
+                      >
+                        <span className="truncate text-sm font-medium">
+                          {entry.displayName || entry.model}
+                        </span>
+                        {selected ? <Check className="h-3.5 w-3.5 shrink-0" /> : null}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            ) : null}
+
+            {settingsSection === 'effort' ? (
+              <div className="mt-1 w-full overflow-hidden border-t border-stone-700 bg-stone-900 p-1.5 sm:absolute sm:bottom-0 sm:left-[calc(100%+0.5rem)] sm:mt-0 sm:w-[11rem] sm:rounded-xl sm:border sm:shadow-2xl sm:shadow-stone-950/40">
+                <p className="px-3 py-1.5 text-xs text-stone-500">Effort</p>
+                {supportedEfforts.map((entry) => {
+                  const selected = entry.reasoningEffort === reasoningEffort;
+                  return (
+                    <button
+                      key={entry.reasoningEffort}
+                      type="button"
+                      onClick={() => {
+                        onUpdateSettings({ reasoningEffort: entry.reasoningEffort });
+                        onSetOpenMenu(() => null);
+                      }}
+                      className={`${menuItemClassName} flex w-full items-center justify-between rounded-lg px-3 py-2 text-left ${
+                        selected ? 'ui-status-warning' : 'text-stone-300'
+                      }`}
+                    >
+                      <span className="text-sm font-medium">
+                        {formatReasoningEffortLabel(entry.reasoningEffort)}
+                      </span>
+                      {selected ? <Check className="h-3.5 w-3.5" /> : null}
+                    </button>
+                  );
+                })}
+                {supportedEfforts.some((entry) => entry.reasoningEffort === 'ultra') ? (
+                  <p className="px-3 pb-1 pt-2 text-xs leading-4 text-stone-500">
+                    Higher effort can consume usage limits faster.
                   </p>
-                </button>
-              ))}
-            </div>
+                ) : null}
+              </div>
+            ) : null}
           </div>
         )}
       </div>
@@ -226,7 +277,7 @@ export function ComposerSettingsToolbar({
             title={`Sandbox: ${formatSandboxModeLabel(sandboxMode)}`}
             className={`${inlineToggleClassName} rounded-full px-2.5 text-stone-300 disabled:cursor-not-allowed disabled:text-stone-700`}
           >
-            Sandbox
+            {formatSandboxModeCompactLabel(sandboxMode)}
           </InputGroupButton>
           {openMenu === 'sandbox' && (
             <div

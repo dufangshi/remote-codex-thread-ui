@@ -25,6 +25,7 @@ interface ThreadComposerProps {
     compactBusy?: boolean;
     error?: string | null;
     model?: string | null;
+    agentLabel?: string | null;
     reasoningEffort?: ReasoningEffortDto | null;
     fastMode?: boolean;
     collaborationMode?: CollaborationModeDto;
@@ -107,7 +108,7 @@ interface ThreadComposerProps {
     onSteerPendingPrompt?: (pendingPromptId: string) => Promise<void> | void;
     onCancelPendingPrompt?: (pendingPromptId: string) => Promise<void> | void;
 }
-declare function ThreadComposer({ activeView, edgeToEdgeMobile, busy, settingsBusy, compactBusy, error, model, reasoningEffort, fastMode, collaborationMode, sandboxMode, hideSandboxModeControl, modelOptions, contextUsage, capabilities, toolboxItems, hookCommandTemplates, mcpConfigFormat, followTail, threadConnected, shellAvailable, disabled, disabledPlaceholder, shellControlState, draftPrompt, draftAttachments, onPickAttachment, skillsState, mcpState, hooksState, goalState, goalHistory, forkTurnOptionsState, onDraftChange, onSubmit, onInterrupt, onCompact, onOpenSkills, onOpenMcp, onOpenHooks, onCreateHook, onUpdateHook, onTrustHook, onUntrustHook, onOpenGoal, onPrepareGoalSubmit, onUpdateGoal, onOpenForkTurns, onForkLatest, onForkTurn, onReadProviderConfig, onWriteProviderConfig, onToggleFollow, canJumpToPreviousTurn, onJumpToPreviousTurn, canJumpToNextTurn, onJumpToNextTurn, subscriptionUsage, onUpdateSettings, onToggleView, onShellCopy, onShellControl, canInterrupt, pendingPrompts, onSteerPendingPrompt, onCancelPendingPrompt, }: ThreadComposerProps): react.JSX.Element;
+declare function ThreadComposer({ activeView, edgeToEdgeMobile, busy, settingsBusy, compactBusy, error, model, agentLabel, reasoningEffort, fastMode, collaborationMode, sandboxMode, hideSandboxModeControl, modelOptions, contextUsage, capabilities, toolboxItems, hookCommandTemplates, mcpConfigFormat, followTail, threadConnected, shellAvailable, disabled, disabledPlaceholder, shellControlState, draftPrompt, draftAttachments, onPickAttachment, skillsState, mcpState, hooksState, goalState, goalHistory, forkTurnOptionsState, onDraftChange, onSubmit, onInterrupt, onCompact, onOpenSkills, onOpenMcp, onOpenHooks, onCreateHook, onUpdateHook, onTrustHook, onUntrustHook, onOpenGoal, onPrepareGoalSubmit, onUpdateGoal, onOpenForkTurns, onForkLatest, onForkTurn, onReadProviderConfig, onWriteProviderConfig, onToggleFollow, canJumpToPreviousTurn, onJumpToPreviousTurn, canJumpToNextTurn, onJumpToNextTurn, subscriptionUsage, onUpdateSettings, onToggleView, onShellCopy, onShellControl, canInterrupt, pendingPrompts, onSteerPendingPrompt, onCancelPendingPrompt, }: ThreadComposerProps): react.JSX.Element;
 
 type ThemeMode = 'system' | 'light' | 'dark';
 type AgentBackendId = AgentBackendIdDto;

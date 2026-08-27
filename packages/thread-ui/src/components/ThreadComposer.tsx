@@ -103,6 +103,7 @@ export interface ThreadComposerProps {
   compactBusy?: boolean;
   error?: string | null;
   model?: string | null;
+  agentLabel?: string | null;
   reasoningEffort?: ReasoningEffortDto | null;
   fastMode?: boolean;
   collaborationMode?: CollaborationModeDto;
@@ -208,6 +209,7 @@ export function ThreadComposer({
   compactBusy = false,
   error,
   model = null,
+  agentLabel = null,
   reasoningEffort = null,
   fastMode = false,
   collaborationMode = 'default',
@@ -924,6 +926,7 @@ export function ThreadComposer({
     activeView,
     disabled,
     model,
+    agentLabel,
     modelOptions,
     modelContextTitle,
     contextUsage,
