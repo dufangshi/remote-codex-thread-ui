@@ -6,6 +6,7 @@ interface ConfirmDialogProps {
   title: string;
   description: string;
   confirmLabel?: string;
+  busyLabel?: string;
   busy?: boolean;
   onCancel: () => void;
   onConfirm: () => void | Promise<void>;
@@ -16,6 +17,7 @@ export function ConfirmDialog({
   title,
   description,
   confirmLabel = 'Delete',
+  busyLabel = 'Deleting...',
   busy = false,
   onCancel,
   onConfirm,
@@ -89,7 +91,7 @@ export function ConfirmDialog({
             disabled={busy}
             className="ui-action-danger rounded-full px-4 py-2 text-sm font-medium transition disabled:cursor-not-allowed"
           >
-            {busy ? 'Deleting...' : confirmLabel}
+            {busy ? busyLabel : confirmLabel}
           </button>
         </div>
       </div>

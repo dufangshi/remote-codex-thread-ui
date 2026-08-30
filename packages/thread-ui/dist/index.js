@@ -21166,6 +21166,7 @@ function ConfirmDialog({
   title,
   description,
   confirmLabel = "Delete",
+  busyLabel = "Deleting...",
   busy = false,
   onCancel,
   onConfirm
@@ -21242,7 +21243,7 @@ function ConfirmDialog({
                   onClick: () => void onConfirm(),
                   disabled: busy,
                   className: "ui-action-danger rounded-full px-4 py-2 text-sm font-medium transition disabled:cursor-not-allowed",
-                  children: busy ? "Deleting..." : confirmLabel
+                  children: busy ? busyLabel : confirmLabel
                 }
               )
             ] })

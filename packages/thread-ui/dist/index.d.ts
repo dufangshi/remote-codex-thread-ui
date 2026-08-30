@@ -325,11 +325,12 @@ interface ConfirmDialogProps {
     title: string;
     description: string;
     confirmLabel?: string;
+    busyLabel?: string;
     busy?: boolean;
     onCancel: () => void;
     onConfirm: () => void | Promise<void>;
 }
-declare function ConfirmDialog({ open, title, description, confirmLabel, busy, onCancel, onConfirm, }: ConfirmDialogProps): react.ReactPortal | null;
+declare function ConfirmDialog({ open, title, description, confirmLabel, busyLabel, busy, onCancel, onConfirm, }: ConfirmDialogProps): react.ReactPortal | null;
 
 type ThreadActionMode = ThreadExportFormatDto | 'share';
 type RelayThreadAccess = 'read' | 'control';
