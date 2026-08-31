@@ -233,6 +233,7 @@ export const GraphChatCompactMessageItem = memo(
             {...(adapter?.onOpenWorkspaceFile
               ? { onOpenWorkspaceFile: adapter.onOpenWorkspaceFile }
               : {})}
+            {...(adapter?.resolveHref ? { resolveHref: adapter.resolveHref } : {})}
           />
         ) : (
           <GraphChatUserMessageBody

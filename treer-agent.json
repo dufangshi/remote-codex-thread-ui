@@ -1,0 +1,17 @@
+{
+  "name": "Remote Codex Agent UI",
+  "description": "Generic Treer iframe UI over Agent Client Protocol. One recipe for Codex, Grok, Cursor, Claude, and other ACP agents. Installs an ACP adapter when the harness is not native ACP.",
+  "source": {
+    "git": "https://github.com/dufangshi/remote-codex-thread-ui.git",
+    "ref": "main"
+  },
+  "requires": ["git", "node", "npm", "treer", "curl"],
+  "install": ["npm --prefix apps/agent-ui-server install"],
+  "run": {
+    "command": "./scripts/treer-agent.sh",
+    "args": ["--agent", "codex", "--port", "4176"]
+  },
+  "ui": true,
+  "port": 4176,
+  "health": "/api/health"
+}

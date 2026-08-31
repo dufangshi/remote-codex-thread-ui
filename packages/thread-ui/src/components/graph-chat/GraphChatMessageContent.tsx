@@ -169,10 +169,12 @@ export const GraphChatMessageContent = memo(function GraphChatMessageContent({
   className = 'thread-graph-markdown',
   content,
   onOpenWorkspaceFile,
+  resolveHref,
 }: {
   className?: string;
   content: string;
   onOpenWorkspaceFile?: OpenWorkspaceFileHandler | undefined;
+  resolveHref?: ((href: string) => string) | undefined;
 }) {
   const rootRef = useRef<HTMLDivElement | null>(null);
   const plugins = usePlugins();
@@ -434,7 +436,11 @@ export const GraphChatMessageContent = memo(function GraphChatMessageContent({
               );
             }
             return (
-              <a {...props} href={href} className="thread-inline-link">
+              <a
+                {...props}
+                href={href ? resolveHref?.(href) ?? href : href}
+                className="thread-inline-link"
+              >
                 {children}
               </a>
             );

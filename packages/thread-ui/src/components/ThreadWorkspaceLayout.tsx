@@ -76,6 +76,7 @@ interface ThreadWorkspaceLayoutProps {
   showMobileAppMenu?: boolean;
   showMobileThreadNavToggle?: boolean;
   showMobileNewThreadShortcut?: boolean;
+  hideRoomsRail?: boolean;
   settingsDialogOpen?: boolean;
   onSettingsDialogOpenChange?: (open: boolean) => void;
   mobileHeaderAction?: ReactNode;
@@ -427,6 +428,7 @@ export function ThreadWorkspaceLayout({
   themeMode: themeModeProp,
   onThemeModeChange,
   showMobileNewThreadShortcut = true,
+  hideRoomsRail = false,
   settingsDialogOpen,
   onSettingsDialogOpenChange,
   mobileHeaderAction,
@@ -1064,16 +1066,22 @@ export function ThreadWorkspaceLayout({
         themeMode={themeMode}
         viewportConstrained={viewportConstrained}
       >
-        <GraphChatShellFrame roomsRailCollapsed={roomsRailCollapsed}>
-          <GraphChatMobileScrim
-            open={mobileRoomsOpen}
-            onClose={() => setMobileRoomsOpen(false)}
-          />
+        <GraphChatShellFrame
+          roomsRailCollapsed={roomsRailCollapsed}
+          hideRoomsRail={hideRoomsRail}
+        >
+          {!hideRoomsRail ? (
+            <GraphChatMobileScrim
+              open={mobileRoomsOpen}
+              onClose={() => setMobileRoomsOpen(false)}
+            />
+          ) : null}
 
-          <GraphChatRoomsRailShell
-            collapsed={roomsRailCollapsed}
-            mobileOpen={mobileRoomsOpen}
-          >
+          {!hideRoomsRail ? (
+            <GraphChatRoomsRailShell
+              collapsed={roomsRailCollapsed}
+              mobileOpen={mobileRoomsOpen}
+            >
             <div
               className={`thread-rooms-rail-header flex h-[calc(3rem+env(safe-area-inset-top))] shrink-0 items-end border-b border-[var(--theme-border)] px-4 pb-2 sm:h-16 sm:items-center sm:pb-0 ${
                 roomsRailCollapsed ? "sm:w-full sm:justify-center sm:px-2" : ""
@@ -1170,14 +1178,15 @@ export function ThreadWorkspaceLayout({
             >
               {renderRoomsRailContent(roomsRailCollapsed)}
             </div>
-          </GraphChatRoomsRailShell>
+            </GraphChatRoomsRailShell>
+          ) : null}
 
           <GraphChatMainShell>
             <GraphChatTopbarShell>
               <div className="thread-topbar-row flex min-h-12 items-center px-3 py-1.5 sm:min-h-12 sm:px-4">
                 <div className="flex w-full items-center justify-between gap-3 sm:gap-4">
                   <div className="flex min-w-0 flex-1 items-center gap-2 sm:gap-3">
-                    {shouldShowMobileRoomsButton ? (
+                    {shouldShowMobileRoomsButton && !hideRoomsRail ? (
                       <button
                         type="button"
                         onClick={() => setMobileRoomsOpen(true)}
@@ -1290,7 +1299,9 @@ export function ThreadWorkspaceLayout({
                       </button>
                     ) : null}
                     {renderMobileTopbarControls ? mobileHeaderAction : null}
-                    {renderMobileTopbarControls && showMobileNewThreadShortcut
+                    {renderMobileTopbarControls &&
+                    showMobileNewThreadShortcut &&
+                    !hideRoomsRail
                       ? renderNewThreadDialogButton(
                           "thread-secondary-action inline-flex h-10 items-center justify-center gap-2 rounded-lg border px-3 text-sm font-medium sm:h-9",
                         )

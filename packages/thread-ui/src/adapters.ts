@@ -12,6 +12,7 @@ import type { SendPromptInput } from './types';
 
 export interface ThreadTimelineAdapter {
   getImageAssetUrl?: (input: { threadId: string; path: string }) => string;
+  resolveHref?: (href: string) => string;
   onOpenLinkedThread?: (threadId: string) => void;
   onOpenWorkspaceFile?: (input: { path: string; line?: number }) => void;
   cancelPendingSteer?: (

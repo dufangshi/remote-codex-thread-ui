@@ -31,6 +31,7 @@ interface ThreadTimelineAdapter {
         threadId: string;
         path: string;
     }) => string;
+    resolveHref?: (href: string) => string;
     onOpenLinkedThread?: (threadId: string) => void;
     onOpenWorkspaceFile?: (input: {
         path: string;

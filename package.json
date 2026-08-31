@@ -13,7 +13,10 @@
     "lint": "pnpm -r --if-present lint",
     "test": "pnpm -r --if-present test",
     "dev": "pnpm --filter @remote-codex/thread-ui-playground dev",
-    "preview": "pnpm --filter @remote-codex/thread-ui-playground preview"
+    "preview": "pnpm --filter @remote-codex/thread-ui-playground preview",
+    "agent-ui:build": "pnpm --filter @remote-codex/agent-ui-web build",
+    "agent-ui:test": "pnpm --filter @remote-codex/agent-ui-server test",
+    "agent-ui:start": "pnpm --filter @remote-codex/agent-ui-server start"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
@@ -42,4 +45,3 @@
     "vitest": "^3.1.1"
   }
 }
-

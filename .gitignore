@@ -2,6 +2,8 @@ node_modules/
 dist/
 !packages/thread-ui/dist/
 !packages/thread-ui/dist/**
+!apps/agent-ui-web/dist/
+!apps/agent-ui-web/dist/**
 .DS_Store
 .turbo/
 .vite/
@@ -16,4 +18,5 @@ output/
 *.tsbuildinfo
 pnpm-debug.log*
 package-lock.json
+!apps/agent-ui-server/package-lock.json
 yarn.lock

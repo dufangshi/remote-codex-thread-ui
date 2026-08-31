@@ -189,6 +189,7 @@ export interface ThreadDetailSurfaceProps {
   currentWorkspaceId?: string | null;
   currentWorkspaceLabel?: string | null;
   onCloseAppNavigation?: () => void;
+  presentation?: "workspace" | "embedded-single-thread";
   className?: string;
   activeView?: "chat" | "shell";
   liveOutput?: string;
@@ -259,6 +260,7 @@ export function ThreadDetailSurface({
   currentWorkspaceId,
   currentWorkspaceLabel,
   onCloseAppNavigation,
+  presentation = "workspace",
   className = "thread-detail-surface relative flex h-full min-h-0 flex-1 flex-col overflow-hidden",
   activeView = "chat",
   liveOutput = "",
@@ -499,8 +501,9 @@ export function ThreadDetailSurface({
       workspaceReturnHref={workspaceReturnHref}
       {...(onWorkspaceReturn ? { onWorkspaceReturn } : {})}
       showMobileAppMenu={Boolean(appMenuButton)}
-      showMobileThreadNavToggle
+      showMobileThreadNavToggle={presentation !== "embedded-single-thread"}
       showMobileNewThreadShortcut={false}
+      hideRoomsRail={presentation === "embedded-single-thread"}
       onOpenThread={adapter.openThread}
       workspaceContent={resolvedWorkspaceContent}
       workspaceTitle={workspaceTitle ?? "Workspace"}

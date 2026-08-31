@@ -99,4 +99,19 @@ describe('GraphChatMessageContent', () => {
 
     expect(onOpenWorkspaceFile).not.toHaveBeenCalled();
   });
+
+  it('lets embedded hosts resolve links against their proxy base', () => {
+    const resolveHref = vi.fn((href: string) => `https://treer.test/proxy${href}`);
+    const element = render(
+      <GraphChatMessageContent
+        content="[agent docs](/docs)"
+        resolveHref={resolveHref}
+      />,
+    );
+
+    expect(resolveHref).toHaveBeenCalledWith('/docs');
+    expect(element.querySelector('a')?.getAttribute('href')).toBe(
+      'https://treer.test/proxy/docs',
+    );
+  });
 });

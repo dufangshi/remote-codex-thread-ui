@@ -234,4 +234,31 @@ describe('ThreadWorkspaceLayout', () => {
     ).toContain('workspace-1');
     expect(document.querySelector('[aria-label="Chat name"]')).toBeNull();
   });
+
+  it('hides multi-thread navigation in embedded single-thread layouts', () => {
+    mockViewport(true);
+    const element = render(
+      <ThreadWorkspaceLayout
+        threads={[]}
+        status={{
+          state: 'ready',
+          transport: 'sdk',
+          lastStartedAt: null,
+          lastError: null,
+          restartCount: 0,
+        }}
+        hideRoomsRail
+        workspaceContent={<div data-testid="workspace-content">Workspace</div>}
+      >
+        <div data-testid="chat-content">Chat</div>
+      </ThreadWorkspaceLayout>,
+    );
+
+    expect(element.querySelector('.thread-rooms-rail')).toBeNull();
+    expect(element.querySelector('[aria-label="Open rooms"]')).toBeNull();
+    expect(element.querySelector('[title="New Chat"]')).toBeNull();
+    expect(element.querySelector('.thread-shell-frame')?.className).toContain(
+      'is-rail-hidden',
+    );
+  });
 });

@@ -11,6 +11,12 @@ worktree at extraction time.
 - Built-in terminal and XYZ viewer plugin packages are included.
 - The playground uses mock thread data, mock adapter callbacks, app shell navigation,
   plugin settings context, and an expandable molecule artifact.
+- `apps/agent-ui-web` uses the same `ThreadDetailSurface` in the
+  `embedded-single-thread` presentation mode.
+- `apps/agent-ui-server` maps ACP sessions into the shared thread DTOs and exposes
+  a `treer.agent-interface/v1` server plus the embedded web bundle.
+- The root `treer-agent.json` and `scripts/apply.sh` make this repository a
+  clone-and-run Treer recipe without another sibling checkout.
 
 ## Intentional Temporary Compromise
 
@@ -35,26 +41,28 @@ That package should contain only the DTOs required by:
 - shell panel status
 - app shell settings
 
-## Integration Plan
+## Integration
 
-1. Redesign `packages/thread-ui` in this workspace against `apps/playground`.
-2. Keep runtime-specific adapters outside this package.
-3. Build and smoke-test:
+Build and verify both the reusable UI packages and Treer Agent UI:
 
 ```bash
+pnpm install
 pnpm build
-pnpm dev
+pnpm typecheck
+pnpm test
+./scripts/apply.sh --list
 ```
 
-4. Publish packages or consume them from a git/tagged dependency.
-5. Update `/home/u/dev/remoteCodex` on `sandbox-worker-control-plane` to consume the
-   released `@remote-codex/thread-ui` package instead of patching source in-place.
+Treer installs the recipe from the repository URL. `scripts/apply.sh` installs
+only the selected harnesses, creates their command Agents and launch profiles,
+and waits for the verified AIS descriptor.
 
 ## Boundary Rules
 
-- Do not add control-plane auth, router, sandbox worker, database, or Railway deploy
-  code to this repository.
+- Do not add control-plane auth, Proxy routing, sandbox workers, databases, or
+  deployment infrastructure to the shared packages.
 - Keep GraphChat, Pydantic AI, Codex, Claude Code, and OpenCode support as adapter
   concerns that produce the thread UI DTOs.
 - Keep plugin enablement and settings state explicit through props/context adapters.
-
+- Keep ACP process ownership, authentication, and AIS routes in
+  `apps/agent-ui-server`, outside React and `packages/thread-ui`.

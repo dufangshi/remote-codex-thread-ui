@@ -1,0 +1,21 @@
+{
+  "name": "@remote-codex/agent-ui-server",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "tsx src/index.ts",
+    "test": "tsx --test src/path.test.ts src/agent-id.test.ts src/acp-catalog.test.ts src/acp-environment.test.ts src/acp-login.test.ts src/acp-config.test.ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@agentclientprotocol/sdk": "^1.4.0",
+    "tsx": "^4.19.3",
+    "ws": "^8.18.3"
+  },
+  "devDependencies": {
+    "@types/node": "^22.14.0",
+    "@types/ws": "^8.18.1",
+    "typescript": "^5.8.3"
+  }
+}

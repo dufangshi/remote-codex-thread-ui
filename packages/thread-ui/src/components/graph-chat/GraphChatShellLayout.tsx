@@ -34,16 +34,20 @@ export function GraphChatShellRoot({
 export function GraphChatShellFrame({
   children,
   roomsRailCollapsed,
+  hideRoomsRail = false,
 }: {
   children: ReactNode;
   roomsRailCollapsed: boolean;
+  hideRoomsRail?: boolean;
 }) {
   return (
     <div
       className={`thread-shell-frame relative h-full min-h-0 ${
-        roomsRailCollapsed
-          ? 'is-rail-collapsed sm:grid-cols-[56px_minmax(0,1fr)]'
-          : 'sm:grid-cols-[264px_minmax(0,1fr)]'
+        hideRoomsRail
+          ? 'is-rail-hidden sm:grid-cols-[minmax(0,1fr)]'
+          : roomsRailCollapsed
+            ? 'is-rail-collapsed sm:grid-cols-[56px_minmax(0,1fr)]'
+            : 'sm:grid-cols-[264px_minmax(0,1fr)]'
       }`}
     >
       {children}
