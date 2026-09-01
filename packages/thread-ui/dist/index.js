@@ -1340,7 +1340,7 @@ var init_GraphMoleculeViewerData = __esm({
 
 // src/components/graph-workspace/GraphMoleculeViewer.tsx
 import { Pause, Play } from "lucide-react";
-import { useCallback as useCallback17, useEffect as useEffect20, useMemo as useMemo12, useRef as useRef15, useState as useState27 } from "react";
+import { useCallback as useCallback17, useEffect as useEffect21, useMemo as useMemo12, useRef as useRef15, useState as useState28 } from "react";
 import { jsx as jsx58, jsxs as jsxs48 } from "react/jsx-runtime";
 function GraphMoleculeViewer({
   className = "",
@@ -1355,18 +1355,18 @@ function GraphMoleculeViewer({
   const modelRef = useRef15(null);
   const zoomedRef = useRef15(false);
   const unitCellPreferenceRef = useRef15(true);
-  const [cameraInfo, setCameraInfo] = useState27(
+  const [cameraInfo, setCameraInfo] = useState28(
     null
   );
-  const [currentIndex, setCurrentIndex] = useState27(0);
-  const [hoveredAtom, setHoveredAtom] = useState27(null);
-  const [isPlaying, setIsPlaying] = useState27(false);
-  const [selectedAtomLabels, setSelectedAtomLabels] = useState27({});
-  const [selectedSerials, setSelectedSerials] = useState27([]);
-  const [stagedSelections, setStagedSelections] = useState27({});
-  const [unitCellAvailable, setUnitCellAvailable] = useState27(false);
-  const [unitCellVisible, setUnitCellVisible] = useState27(false);
-  const [viewerInitError, setViewerInitError] = useState27(null);
+  const [currentIndex, setCurrentIndex] = useState28(0);
+  const [hoveredAtom, setHoveredAtom] = useState28(null);
+  const [isPlaying, setIsPlaying] = useState28(false);
+  const [selectedAtomLabels, setSelectedAtomLabels] = useState28({});
+  const [selectedSerials, setSelectedSerials] = useState28([]);
+  const [stagedSelections, setStagedSelections] = useState28({});
+  const [unitCellAvailable, setUnitCellAvailable] = useState28(false);
+  const [unitCellVisible, setUnitCellVisible] = useState28(false);
+  const [viewerInitError, setViewerInitError] = useState28(null);
   const viewerData = useMemo12(() => readGraphMoleculeViewerData(source), [source]);
   const xyzArray = viewerData.frames;
   const xyzFormat = viewerData.format;
@@ -1378,14 +1378,14 @@ function GraphMoleculeViewer({
     0
   );
   const stagedMolecules = Object.keys(stagedSelections).length;
-  useEffect20(() => {
+  useEffect21(() => {
     if (xyzArray.length === 0) {
       setCurrentIndex(0);
       return;
     }
     setCurrentIndex(xyzArray.length - 1);
   }, [xyzArray.length]);
-  useEffect20(() => {
+  useEffect21(() => {
     if (!isPlaying || xyzArray.length <= 1) {
       return;
     }
@@ -1401,7 +1401,7 @@ function GraphMoleculeViewer({
     }, 200);
     return () => window.clearInterval(interval);
   }, [isPlaying, xyzArray.length]);
-  useEffect20(() => {
+  useEffect21(() => {
     const host = viewerHostRef.current;
     if (!host || viewerRef.current) {
       return;
@@ -1455,7 +1455,7 @@ function GraphMoleculeViewer({
       modelRef.current = null;
     };
   }, []);
-  useEffect20(() => {
+  useEffect21(() => {
     const viewer = viewerRef.current;
     if (!viewer || !xyzContent) {
       return;
@@ -1534,7 +1534,7 @@ function GraphMoleculeViewer({
       setViewerInitError("Unable to render this molecular structure.");
     }
   }, [xyzContent, xyzFormat]);
-  useEffect20(() => {
+  useEffect21(() => {
     const viewer = viewerRef.current;
     const model = modelRef.current;
     if (!viewer || !model) {
@@ -1562,7 +1562,7 @@ function GraphMoleculeViewer({
     }
     viewer.render();
   }, [unitCellAvailable, unitCellVisible, xyzContent, xyzFormat]);
-  useEffect20(() => {
+  useEffect21(() => {
     const viewer = viewerRef.current;
     const model = modelRef.current;
     if (!viewer || !model || !xyzContent) {
@@ -1581,7 +1581,7 @@ function GraphMoleculeViewer({
     viewer.render();
     onSelectionChange?.({ moleculeId, atoms: selectedSerials });
   }, [moleculeId, onSelectionChange, selectedSerials, xyzContent]);
-  useEffect20(() => {
+  useEffect21(() => {
     if (!xyzContent) {
       return;
     }
@@ -1828,10 +1828,10 @@ var init_GraphMoleculeViewer = __esm({
 // src/components/graph-workspace/GraphWorkspacePreviewPane.tsx
 import {
   memo as memo7,
-  useEffect as useEffect21,
+  useEffect as useEffect22,
   useMemo as useMemo13,
   useRef as useRef16,
-  useState as useState28
+  useState as useState29
 } from "react";
 import { createPortal as createPortal3 } from "react-dom";
 import {
@@ -1948,10 +1948,10 @@ function GraphWorkspaceImageLightbox({
   const viewportRef = useRef16(null);
   const closeButtonRef = useRef16(null);
   const dragRef = useRef16(null);
-  const [scale, setScale] = useState28(1);
-  const [offset, setOffset] = useState28({ x: 0, y: 0 });
-  const [dragging, setDragging] = useState28(false);
-  useEffect21(() => {
+  const [scale, setScale] = useState29(1);
+  const [offset, setOffset] = useState29({ x: 0, y: 0 });
+  const [dragging, setDragging] = useState29(false);
+  useEffect22(() => {
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     closeButtonRef.current?.focus();
@@ -2145,7 +2145,7 @@ function GraphWorkspaceZoomableImage({
   src
 }) {
   const triggerRef = useRef16(null);
-  const [open, setOpen] = useState28(false);
+  const [open, setOpen] = useState29(false);
   function closeLightbox() {
     setOpen(false);
     window.requestAnimationFrame(() => triggerRef.current?.focus());
@@ -2208,11 +2208,11 @@ function GraphWorkspacePreviewPane({
   selectedTarget,
   workspaceRootPath
 }) {
-  const [editing, setEditing] = useState28(false);
-  const [draftContent, setDraftContent] = useState28("");
-  const [saveError, setSaveError] = useState28(null);
-  const [saving, setSaving] = useState28(false);
-  const [markdownView, setMarkdownView] = useState28(
+  const [editing, setEditing] = useState29(false);
+  const [draftContent, setDraftContent] = useState29("");
+  const [saveError, setSaveError] = useState29(null);
+  const [saving, setSaving] = useState29(false);
+  const [markdownView, setMarkdownView] = useState29(
     "preview"
   );
   const activeNode = selectedTarget?.node ?? null;
@@ -2231,7 +2231,7 @@ function GraphWorkspacePreviewPane({
   const isLiveArtifactPreview = selectedTarget?.kind === "live-molecule";
   const isArtifactPreview = Boolean(activeNode?.artifact && renderedArtifact);
   const isMoleculePreview = Boolean(moleculeSnapshot) || isArtifactPreview;
-  useEffect21(() => {
+  useEffect22(() => {
     setEditing(false);
     setDraftContent(previewFile?.content ?? "");
     setSaveError(null);
@@ -2493,9 +2493,9 @@ var init_GraphWorkspacePreviewPane = __esm({
       language = "text"
     }) {
       const rootRef = useRef16(null);
-      const [highlighter, setHighlighter] = useState28(null);
-      const [dark, setDark] = useState28(false);
-      useEffect21(() => {
+      const [highlighter, setHighlighter] = useState29(null);
+      const [dark, setDark] = useState29(false);
+      useEffect22(() => {
         let alive = true;
         getGraphChatHighlighter().then((loadedHighlighter) => {
           if (alive) {
@@ -2506,7 +2506,7 @@ var init_GraphWorkspacePreviewPane = __esm({
           alive = false;
         };
       }, []);
-      useEffect21(() => {
+      useEffect22(() => {
         const shell = rootRef.current?.closest(".thread-ui-shell");
         const readDark = () => shell ? shell.getAttribute("data-theme-effective") === "dark" || shell.classList.contains("dark") || shell.classList.contains("thread-ui-theme-dark") : document.documentElement.classList.contains("dark");
         setDark(readDark());
@@ -2679,11 +2679,11 @@ var init_GraphEmptyGarbageDialog = __esm({
 
 // src/components/graph-workspace/GraphWorkspaceExplorer.tsx
 import {
-  useEffect as useEffect22,
+  useEffect as useEffect23,
   useLayoutEffect as useLayoutEffect7,
   useMemo as useMemo14,
   useRef as useRef17,
-  useState as useState29
+  useState as useState30
 } from "react";
 import {
   ChevronDown as ChevronDown2,
@@ -3105,7 +3105,7 @@ function GraphWorkspaceExplorer({
   focusPathRequest,
   workspaceAdapter
 }) {
-  const [adapterTree, setAdapterTree] = useState29(
+  const [adapterTree, setAdapterTree] = useState30(
     null
   );
   const fallbackTree = useMemo14(
@@ -3119,10 +3119,10 @@ function GraphWorkspaceExplorer({
     [tree]
   );
   const firstSelectableNode = findFirstPreviewNode(tree);
-  const [selectedNodeId, setSelectedNodeId] = useState29(
+  const [selectedNodeId, setSelectedNodeId] = useState30(
     () => firstSelectableNode?.id ?? null
   );
-  const [expandedPaths, setExpandedPaths] = useState29(
+  const [expandedPaths, setExpandedPaths] = useState30(
     () => /* @__PURE__ */ new Set([
       "",
       "artifacts",
@@ -3131,20 +3131,20 @@ function GraphWorkspaceExplorer({
       ...collectAncestorPaths(firstSelectableNode?.path ?? "")
     ])
   );
-  const [collapsedPanel, setCollapsedPanel] = useState29(
+  const [collapsedPanel, setCollapsedPanel] = useState30(
     () => typeof window !== "undefined" && typeof window.matchMedia === "function" && window.matchMedia("(max-width: 639px)").matches ? "viewer" : null
   );
-  const [workspaceError, setWorkspaceError] = useState29(null);
-  const [loadingTree, setLoadingTree] = useState29(false);
-  const [loadingDirectoryPaths, setLoadingDirectoryPaths] = useState29(() => /* @__PURE__ */ new Set());
-  const [previewLoading, setPreviewLoading] = useState29(false);
-  const [loadingMore, setLoadingMore] = useState29(false);
-  const [showGarbageDialog, setShowGarbageDialog] = useState29(false);
-  const [garbageFiles, setGarbageFiles] = useState29([]);
-  const [previewFile, setPreviewFile] = useState29(null);
-  const [imageUrl, setImageUrl] = useState29(null);
-  const [pdfUrl, setPdfUrl] = useState29(null);
-  const [isMobileViewport, setIsMobileViewport] = useState29(false);
+  const [workspaceError, setWorkspaceError] = useState30(null);
+  const [loadingTree, setLoadingTree] = useState30(false);
+  const [loadingDirectoryPaths, setLoadingDirectoryPaths] = useState30(() => /* @__PURE__ */ new Set());
+  const [previewLoading, setPreviewLoading] = useState30(false);
+  const [loadingMore, setLoadingMore] = useState30(false);
+  const [showGarbageDialog, setShowGarbageDialog] = useState30(false);
+  const [garbageFiles, setGarbageFiles] = useState30([]);
+  const [previewFile, setPreviewFile] = useState30(null);
+  const [imageUrl, setImageUrl] = useState30(null);
+  const [pdfUrl, setPdfUrl] = useState30(null);
+  const [isMobileViewport, setIsMobileViewport] = useState30(false);
   const fileInputRef = useRef17(null);
   const explorerScrollerRef = useRef17(null);
   const explorerScrollTopRef = useRef17(0);
@@ -3155,7 +3155,7 @@ function GraphWorkspaceExplorer({
     threadId: detail.thread.id,
     workspaceId: detail.workspace.id ?? detail.thread.workspaceId ?? null
   };
-  useEffect22(() => {
+  useEffect23(() => {
     explorerScrollTopRef.current = 0;
     pendingExplorerScrollRestoreRef.current = null;
     setExpandedPaths(
@@ -3206,7 +3206,7 @@ function GraphWorkspaceExplorer({
     }
     restoreExplorerScroll();
   }, [collapsedPanel, tree]);
-  useEffect22(() => {
+  useEffect23(() => {
     if (typeof window === "undefined" || typeof window.matchMedia !== "function") {
       return;
     }
@@ -3357,7 +3357,7 @@ function GraphWorkspaceExplorer({
       setLoadingTree(false);
     }
   }
-  useEffect22(() => {
+  useEffect23(() => {
     if (!workspaceAdapter || !adapterTree) {
       return;
     }
@@ -3367,7 +3367,7 @@ function GraphWorkspaceExplorer({
       }
     }
   }, [adapterTree, expandedPaths, nodeMap, workspaceAdapter]);
-  useEffect22(() => {
+  useEffect23(() => {
     setAdapterTree(null);
     setLoadingDirectoryPaths(/* @__PURE__ */ new Set());
     setPreviewFile(null);
@@ -3381,13 +3381,13 @@ function GraphWorkspaceExplorer({
     detail.workspace.id,
     detail.thread.workspaceId
   ]);
-  useEffect22(() => {
+  useEffect23(() => {
     if (!focusPathRequest) {
       return;
     }
     void focusWorkspacePath(focusPathRequest.path);
   }, [focusPathRequest?.requestId]);
-  useEffect22(() => {
+  useEffect23(() => {
     if (!workspaceAdapter?.subscribeWorkspaceChanged) {
       return;
     }
@@ -3396,7 +3396,7 @@ function GraphWorkspaceExplorer({
     workspaceIdentity.threadId,
     workspaceIdentity.workspaceId
   ]);
-  useEffect22(() => {
+  useEffect23(() => {
     const selectedPathCandidate = workspaceAdapter && activeNode?.kind === "file" ? activeNode.path : null;
     if (!selectedPathCandidate) {
       setPreviewFile(null);
@@ -4029,7 +4029,7 @@ var init_GraphGuidePanel = __esm({
 });
 
 // src/components/graph-workspace/GraphToolUsagePanel.tsx
-import { useEffect as useEffect23, useRef as useRef18, useState as useState30 } from "react";
+import { useEffect as useEffect24, useRef as useRef18, useState as useState31 } from "react";
 import { RefreshCw as RefreshCw3 } from "lucide-react";
 import { jsx as jsx63, jsxs as jsxs53 } from "react/jsx-runtime";
 function formatValue(value) {
@@ -4081,14 +4081,14 @@ function GraphToolUsagePanel({
   toolEvents,
   maxToolCount
 }) {
-  const [expandedEventId, setExpandedEventId] = useState30(
+  const [expandedEventId, setExpandedEventId] = useState31(
     () => toolEvents.at(-1)?.id ?? null
   );
   const bottomRef = useRef18(null);
-  useEffect23(() => {
+  useEffect24(() => {
     setExpandedEventId((current) => current ?? toolEvents.at(-1)?.id ?? null);
   }, [toolEvents]);
-  useEffect23(() => {
+  useEffect24(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
   }, [toolEvents.length]);
   if (!toolCounts.length) {
@@ -4453,7 +4453,7 @@ var init_FloatingEdge = __esm({
 });
 
 // src/components/graph-chat/GraphVisualization.tsx
-import { useCallback as useCallback18, useEffect as useEffect24, useMemo as useMemo15 } from "react";
+import { useCallback as useCallback18, useEffect as useEffect25, useMemo as useMemo15 } from "react";
 import {
   addEdge,
   Background,
@@ -4499,7 +4499,7 @@ function GraphVisualization({ nodes: inputNodes }) {
     }),
     []
   );
-  useEffect24(() => {
+  useEffect25(() => {
     setFlowNodes(graph.nodes);
     setFlowEdges(graph.edges);
   }, [graph.edges, graph.nodes, setFlowEdges, setFlowNodes]);
@@ -4547,7 +4547,7 @@ var init_GraphVisualization = __esm({
 });
 
 // src/components/ThreadGraphWorkspacePanel.tsx
-import { memo as memo8, useEffect as useEffect25, useMemo as useMemo16, useState as useState31 } from "react";
+import { memo as memo8, useEffect as useEffect26, useMemo as useMemo16, useState as useState32 } from "react";
 import {
   BarChart2 as BarChart22,
   BookOpen as BookOpen2,
@@ -4768,7 +4768,7 @@ function ThreadGraphWorkspacePanel({
     [featureConfig]
   );
   const initialTab = firstEnabledWorkspaceTab(features, featureConfig?.defaultTab);
-  const [activeTab, setActiveTab] = useState31(initialTab);
+  const [activeTab, setActiveTab] = useState32(initialTab);
   const artifacts = useMemo16(() => collectArtifacts(detail), [detail]);
   const toolEvents = useMemo16(() => collectToolEvents(detail), [detail]);
   const toolCounts = useMemo16(() => {
@@ -4807,12 +4807,12 @@ function ThreadGraphWorkspacePanel({
     }
     return tabs;
   }, [features.extensions, features.threadGraph]);
-  useEffect25(() => {
+  useEffect26(() => {
     if (!activeTab || !isWorkspaceTabEnabled(features, activeTab)) {
       setActiveTab(firstEnabledWorkspaceTab(features, featureConfig?.defaultTab));
     }
   }, [activeTab, featureConfig?.defaultTab, features]);
-  useEffect25(() => {
+  useEffect26(() => {
     if (focusPathRequest && features.workspace) {
       setActiveTab("workspace");
     }
@@ -9118,7 +9118,7 @@ function ComposerPromptEditor({
     "div",
     {
       "data-slot": "input-group-control",
-      className: `${composerPromptRegionClassName} relative w-full`,
+      className: `${composerPromptRegionClassName} relative w-full ${canInterrupt ? "z-[90]" : ""}`,
       children: [
         /* @__PURE__ */ jsxs18("div", { className: graphChatInputClassName, children: [
           prompt.length === 0 && /* @__PURE__ */ jsx20(
@@ -9170,7 +9170,7 @@ function ComposerPromptEditor({
               event.preventDefault();
               void onInterrupt?.();
             },
-            className: "thread-graph-composer-stop-button ui-action-danger absolute right-2 top-2 z-30 h-8 w-8 rounded-full text-sm font-medium",
+            className: "thread-graph-composer-stop-button ui-action-danger absolute right-2 top-2 z-[90] h-8 w-8 rounded-full text-sm font-medium pointer-events-auto",
             children: /* @__PURE__ */ jsx20(
               "span",
               {
@@ -12006,7 +12006,7 @@ function ThreadWorkspaceLayout({
 }
 
 // src/components/ThreadTimeline.tsx
-import { memo as memo6, useCallback as useCallback14, useEffect as useEffect16, useMemo as useMemo8, useRef as useRef12, useState as useState24 } from "react";
+import { memo as memo6, useCallback as useCallback14, useEffect as useEffect17, useMemo as useMemo8, useRef as useRef12, useState as useState25 } from "react";
 
 // src/components/LongTextDialog.tsx
 import { useEffect as useEffect9 } from "react";
@@ -13396,9 +13396,10 @@ var GraphChatCompactMessageItem = memo3(
 
 // src/components/timeline/timelineItems.ts
 function isRenderableHistoryItem(item) {
-  return Boolean(
-    item && typeof item.id === "string" && typeof item.kind === "string"
-  );
+  if (!item || typeof item.id !== "string" || typeof item.kind !== "string") {
+    return false;
+  }
+  return !((item.kind === "agentMessage" || item.kind === "reasoning") && (typeof item.text !== "string" || item.text.trim().length === 0));
 }
 function renderableHistoryItems(items) {
   return items.filter(isRenderableHistoryItem);
@@ -13750,7 +13751,12 @@ function isAgentActivityEntry(entry) {
   if (entry.kind !== "item") {
     return entry.kind !== "agentActivityGroup";
   }
-  return entry.item.kind === "commandExecution" || entry.item.kind === "fileChange" || entry.item.kind === "webSearch" || entry.item.kind === "fileRead" || entry.item.kind === "toolCall" || entry.item.kind === "agentToolCall" || entry.item.kind === "skillToolCall";
+  return entry.item.kind === "commandExecution" || entry.item.kind === "fileChange" || entry.item.kind === "webSearch" || entry.item.kind === "fileRead" || entry.item.kind === "toolCall" || entry.item.kind === "agentToolCall" || entry.item.kind === "skillToolCall" || entry.item.kind === "reasoning";
+}
+function containsReasoningEntry(entries) {
+  return entries.some(
+    (entry) => entry.kind === "item" && entry.item.kind === "reasoning"
+  );
 }
 function isCompletedAgentNarrative(entry) {
   return entry?.kind === "item" && entry.item.kind === "agentMessage" && entry.item.text.trim().length > 0 && !isRunningHistoryStatus(entry.item.status);
@@ -13782,7 +13788,7 @@ function groupAgentActivitySequences(entries) {
       (total, entry) => total + entryItemCount(entry),
       0
     );
-    if (activityEntries.length > 1 && isCompletedAgentNarrative(entries[index])) {
+    if (containsReasoningEntry(activityEntries) || activityEntries.length > 1 && isCompletedAgentNarrative(entries[index])) {
       grouped.push({
         kind: "agentActivityGroup",
         key: `agent-activity:${activityEntries.map((entry) => entry.key).join(":")}`,
@@ -14301,7 +14307,7 @@ import {
   memo as memo5,
   useCallback as useCallback11,
   useMemo as useMemo7,
-  useState as useState21
+  useState as useState22
 } from "react";
 import { ChevronDown, ChevronRight as ChevronRight2 } from "lucide-react";
 
@@ -16228,6 +16234,7 @@ function TurnTokenSummary({ turn }) {
 }
 
 // src/components/timeline/turnStatus.tsx
+import { useEffect as useEffect15, useState as useState21 } from "react";
 import { jsx as jsx44, jsxs as jsxs36 } from "react/jsx-runtime";
 function RunningDots2({
   tone = "amber"
@@ -16320,6 +16327,35 @@ function formatTurnRuntimeSummary(turn) {
   }
   return [modelLabel, reasoningLabel].join(" \xB7 ");
 }
+function useSecondClock(enabled) {
+  const [now, setNow] = useState21(() => Date.now());
+  useEffect15(() => {
+    if (!enabled) {
+      return;
+    }
+    setNow(Date.now());
+    const interval = window.setInterval(() => setNow(Date.now()), 1e3);
+    return () => window.clearInterval(interval);
+  }, [enabled]);
+  return now;
+}
+function formatElapsedDuration(startedAt, now) {
+  const startedAtMillis = Date.parse(startedAt ?? "");
+  if (!Number.isFinite(startedAtMillis)) {
+    return null;
+  }
+  const totalSeconds = Math.max(0, Math.floor((now - startedAtMillis) / 1e3));
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor(totalSeconds % 3600 / 60);
+  const seconds = totalSeconds % 60;
+  if (hours > 0) {
+    return `${hours}h ${String(minutes).padStart(2, "0")}m ${String(seconds).padStart(2, "0")}s`;
+  }
+  if (minutes > 0) {
+    return `${minutes}m ${String(seconds).padStart(2, "0")}s`;
+  }
+  return `${seconds}s`;
+}
 function TurnStatusIndicator({
   status
 }) {
@@ -16402,13 +16438,17 @@ function TurnStatusIndicator({
 }
 function TurnStatusBar({
   turn,
-  variant = "header"
+  variant = "header",
+  lastActivityAt = null
 }) {
   const label = turnStatusLabel(turn.status);
   const runtimeSummary = formatTurnRuntimeSummary(turn);
   const tokenBadges = buildTurnTokenBadges(turn);
   const priceBadge = buildTurnPriceBadge(turn);
   const active = isActiveTurnStatus(turn.status);
+  const now = useSecondClock(active && variant === "footer");
+  const elapsedLabel2 = active ? formatElapsedDuration(turn.startedAt, now) : null;
+  const effectiveLastActivityAt = lastActivityAt ?? turn.startedAt;
   const toneClassName = turn.status === "failed" ? "border-rose-300/20 bg-rose-300/[0.06] text-rose-100" : active ? "border-sky-300/22 bg-sky-300/[0.08] text-sky-100" : "border-stone-700/90 bg-stone-900/70 text-stone-200";
   if (variant === "footer") {
     return /* @__PURE__ */ jsxs36(
@@ -16421,13 +16461,21 @@ function TurnStatusBar({
               /* @__PURE__ */ jsx44(TurnStatusIndicator, { status: turn.status }),
               /* @__PURE__ */ jsx44("span", { className: "timeline-soft-text min-w-0 truncate", children: runtimeSummary })
             ] }),
-            turn.startedAt && /* @__PURE__ */ jsx44(
-              "time",
+            effectiveLastActivityAt && /* @__PURE__ */ jsxs36(
+              "span",
               {
-                dateTime: turn.startedAt,
-                title: formatLongTimestamp(turn.startedAt),
-                className: "timeline-meta-text shrink-0 text-[11px]",
-                children: formatShortTimestamp(turn.startedAt)
+                className: "timeline-meta-text flex shrink-0 items-center gap-1 whitespace-nowrap text-[11px]",
+                title: [
+                  `Last activity ${formatLongTimestamp(effectiveLastActivityAt)}`,
+                  elapsedLabel2 ? `Running for ${elapsedLabel2}` : null
+                ].filter(Boolean).join(" \xB7 "),
+                children: [
+                  /* @__PURE__ */ jsx44("time", { dateTime: effectiveLastActivityAt, children: formatShortTimestamp(effectiveLastActivityAt) }),
+                  elapsedLabel2 ? /* @__PURE__ */ jsxs36("span", { "aria-label": `Running for ${elapsedLabel2}`, children: [
+                    "\xB7 ",
+                    elapsedLabel2
+                  ] }) : null
+                ]
               }
             )
           ] }),
@@ -16695,6 +16743,14 @@ function latestItemTimestamp(items) {
   }
   return latest;
 }
+function latestActivityTimestamp(startedAt, items, liveActivityAt) {
+  const candidates = [
+    Date.parse(startedAt ?? ""),
+    latestItemTimestamp(items) ?? Number.NaN,
+    Date.parse(liveActivityAt ?? "")
+  ].filter(Number.isFinite);
+  return candidates.length > 0 ? new Date(Math.max(...candidates)).toISOString() : null;
+}
 function formatWorkedDuration(startedAt, items) {
   const startMillis = Date.parse(startedAt ?? "");
   const endMillis = latestItemTimestamp(items);
@@ -16737,7 +16793,7 @@ function TimelineTimeToggle({
   timestamp,
   turnStartedAt
 }) {
-  const [showAbsolute, setShowAbsolute] = useState21(false);
+  const [showAbsolute, setShowAbsolute] = useState22(false);
   if (!timestamp) {
     return null;
   }
@@ -16807,6 +16863,7 @@ var ThreadTurnRow = memo5(function ThreadTurnRow2({
   isCollapsed,
   livePlan,
   liveItems,
+  liveActivityAt = null,
   liveOutput,
   forceActive = false,
   onToggleCollapse,
@@ -16830,6 +16887,10 @@ var ThreadTurnRow = memo5(function ThreadTurnRow2({
     () => mergeLiveTurnItems(turn.items, liveItems),
     [liveItems, turn.items]
   );
+  const lastActivityAt = useMemo7(
+    () => latestActivityTimestamp(turn.startedAt, mergedItems, liveActivityAt),
+    [liveActivityAt, mergedItems, turn.startedAt]
+  );
   const displayedLivePlan = useMemo7(
     () => deriveDisplayedLivePlan(livePlan, mergedItems, turn.status),
     [livePlan, mergedItems, turn.status]
@@ -16850,7 +16911,7 @@ var ThreadTurnRow = memo5(function ThreadTurnRow2({
     () => parseHookPromptText(visibleLiveOutput),
     [visibleLiveOutput]
   );
-  const [expandedGroups, setExpandedGroups] = useState21(
+  const [expandedGroups, setExpandedGroups] = useState22(
     {}
   );
   const toggleGroupedItem = useCallback11((groupKey) => {
@@ -16927,7 +16988,14 @@ var ThreadTurnRow = memo5(function ThreadTurnRow2({
       ...onBeforeMessageResize ? { onBeforeMessageResize } : {}
     }
   ) : null;
-  const footerNode = activeForRendering ? /* @__PURE__ */ jsx45(TurnStatusBar, { turn: activeFooterTurn, variant: "footer" }) : null;
+  const footerNode = activeForRendering ? /* @__PURE__ */ jsx45(
+    TurnStatusBar,
+    {
+      turn: activeFooterTurn,
+      variant: "footer",
+      lastActivityAt
+    }
+  ) : null;
   const collapsedSummary = useMemo7(
     () => collapsedSummaryMessages(groupedItems),
     [groupedItems]
@@ -17231,7 +17299,7 @@ function buildSyntheticLiveTurn(turnId, items) {
 }
 
 // src/components/timeline/useDeferredHistoryDetail.ts
-import { useCallback as useCallback12, useRef as useRef10, useState as useState22 } from "react";
+import { useCallback as useCallback12, useRef as useRef10, useState as useState23 } from "react";
 function inlineDetail(item, title, text) {
   return {
     id: item.id,
@@ -17248,7 +17316,7 @@ function useDeferredHistoryDetail({
   const detailCacheRef = useRef10(
     /* @__PURE__ */ new Map()
   );
-  const [expandedText, setExpandedText] = useState22(
+  const [expandedText, setExpandedText] = useState23(
     null
   );
   const openExpandedText = useCallback12((title, text) => {
@@ -17375,10 +17443,10 @@ function useDeferredHistoryDetail({
 // src/components/timeline/useTimelineScroll.ts
 import {
   useCallback as useCallback13,
-  useEffect as useEffect15,
+  useEffect as useEffect16,
   useLayoutEffect as useLayoutEffect6,
   useRef as useRef11,
-  useState as useState23
+  useState as useState24
 } from "react";
 function useChangeRevision(inputs) {
   const previousInputsRef = useRef11(null);
@@ -17420,9 +17488,9 @@ function useTimelineScroll({
   const topLoadArmedRef = useRef11(false);
   const lastTouchYRef = useRef11(null);
   const touchPullDistanceRef = useRef11(0);
-  const [visibleCount, setVisibleCount] = useState23(INITIAL_VISIBLE_TURNS);
-  const [loadMoreClicks, setLoadMoreClicks] = useState23(0);
-  const [isTailVisible, setIsTailVisible] = useState23(true);
+  const [visibleCount, setVisibleCount] = useState24(INITIAL_VISIBLE_TURNS);
+  const [loadMoreClicks, setLoadMoreClicks] = useState24(0);
+  const [isTailVisible, setIsTailVisible] = useState24(true);
   const contentRevision = useChangeRevision(contentRevisionInputs);
   const serverManagedHistory = typeof onLoadEarlier === "function" || totalTurnCount !== void 0;
   const effectiveTotalTurnCount = totalTurnCount ?? turnsLength;
@@ -17590,13 +17658,13 @@ function useTimelineScroll({
       window.cancelAnimationFrame(frame);
     };
   }, [threadId, scrollToBottom]);
-  useEffect15(() => {
+  useEffect16(() => {
     autoLoadedEarlierRef.current = false;
     userScrolledHistoryRef.current = false;
     topLoadArmedRef.current = false;
     pendingPrependScrollRef.current = null;
   }, [threadId]);
-  useEffect15(() => {
+  useEffect16(() => {
     if (!loadingEarlier) {
       autoLoadedEarlierRef.current = false;
     }
@@ -17622,7 +17690,7 @@ function useTimelineScroll({
     shouldStickToBottomRef.current = false;
     topLoadArmedRef.current = false;
   }, [loadingEarlier, turnsLength]);
-  useEffect15(() => {
+  useEffect16(() => {
     setVisibleCount((current) => {
       if (current >= turnsLength - 1) {
         return turnsLength;
@@ -17630,7 +17698,7 @@ function useTimelineScroll({
       return Math.max(current, INITIAL_VISIBLE_TURNS);
     });
   }, [turnsLength]);
-  useEffect15(() => {
+  useEffect16(() => {
     const container = scrollContainerRef.current;
     if (container) {
       lastObservedScrollHeightRef.current = container.scrollHeight;
@@ -17644,7 +17712,7 @@ function useTimelineScroll({
     }
     recomputeTailVisibility();
   }, [contentRevision, recomputeTailVisibility, visibleCount]);
-  useEffect15(() => {
+  useEffect16(() => {
     const shouldForceScroll = scrollRequestKey !== lastHandledScrollRequestKeyRef.current;
     const contentChanged = previousContentRevisionRef.current !== contentRevision;
     previousContentRevisionRef.current = contentRevision;
@@ -17662,7 +17730,7 @@ function useTimelineScroll({
       window.cancelAnimationFrame(frame);
     };
   }, [contentRevision, isTailVisible, scrollToBottom, scrollRequestKey]);
-  useEffect15(() => {
+  useEffect16(() => {
     const container = scrollContainerRef.current;
     const content = scrollContentRef.current;
     if (!container || !content || typeof ResizeObserver === "undefined") {
@@ -17689,7 +17757,7 @@ function useTimelineScroll({
       observer.disconnect();
     };
   }, [scrollToBottom]);
-  useEffect15(() => {
+  useEffect16(() => {
     if (!shouldStickToBottomRef.current || userScrolledAwayFromTailRef.current) {
       previousBottomSpacerRef.current = bottomSpacer;
       return;
@@ -17705,7 +17773,7 @@ function useTimelineScroll({
       window.cancelAnimationFrame(frame);
     };
   }, [bottomSpacer, scrollToBottom]);
-  useEffect15(() => {
+  useEffect16(() => {
     onTailVisibilityChange?.(isTailVisible);
   }, [isTailVisible, onTailVisibilityChange]);
   return {
@@ -17737,6 +17805,19 @@ function useTimelineScroll({
 import { Fragment as Fragment13, jsx as jsx46, jsxs as jsxs38 } from "react/jsx-runtime";
 function isTerminalTurnStatus2(status) {
   return status === "completed" || status === "failed" || status === "interrupted";
+}
+function latestTimestamp(...timestamps) {
+  let latest = null;
+  for (const timestamp of timestamps) {
+    if (!timestamp) {
+      continue;
+    }
+    const millis = Date.parse(timestamp);
+    if (Number.isFinite(millis) && (!latest || millis > latest.millis)) {
+      latest = { timestamp, millis };
+    }
+  }
+  return latest?.timestamp ?? null;
 }
 function mergeOptimisticTurnItems(turn, optimisticTurn) {
   if (!optimisticTurn || optimisticTurn.id !== turn.id || optimisticTurn.items.length === 0) {
@@ -17791,10 +17872,10 @@ function ThreadTimelineComponent({
 }) {
   const shellNav = useAppShellNav();
   const effectiveAutoCollapseCompletedTurns = autoCollapseCompletedTurns ?? shellNav?.autoCollapseCompletedTurns ?? false;
-  const [collapsedTurnOverrides, setCollapsedTurnOverrides] = useState24(
+  const [collapsedTurnOverrides, setCollapsedTurnOverrides] = useState25(
     {}
   );
-  const [cancelingSteerIds, setCancelingSteerIds] = useState24(
+  const [cancelingSteerIds, setCancelingSteerIds] = useState25(
     () => /* @__PURE__ */ new Set()
   );
   const lastPreviousTurnTargetIdRef = useRef12(null);
@@ -17893,6 +17974,10 @@ function ThreadTimelineComponent({
   const liveOutputAttachedToOptimisticTurn = !!liveOutput && !!optimisticTurn && optimisticTurn.status !== "failed" && !optimisticLiveItems;
   const liveOutputTargetTurnId = liveOutput && visibleTurns.length > 0 ? activeTurnId && visibleTurns.some((turn) => turn.id === activeTurnId) ? activeTurnId : visibleTurns.findLast((turn) => isRunningHistoryStatus(turn.status))?.id ?? (shouldForceLatestVisibleTurnActive ? latestVisibleTurnId : null) : null;
   const liveOutputAttachedToVisibleTurn = Boolean(liveOutputTargetTurnId);
+  const liveOutputActivityAt = useMemo8(
+    () => liveOutput ? (/* @__PURE__ */ new Date()).toISOString() : null,
+    [liveOutput]
+  );
   const unattachedLiveHookPromptItem = useMemo8(
     () => parseHookPromptText(liveOutput),
     [liveOutput]
@@ -17957,11 +18042,11 @@ function ThreadTimelineComponent({
     updatePreviousTurnAvailability();
     updateNextTurnAvailability();
   }, [handleScroll, updateNextTurnAvailability, updatePreviousTurnAvailability]);
-  useEffect16(() => {
+  useEffect17(() => {
     updatePreviousTurnAvailability();
     updateNextTurnAvailability();
   }, [updateNextTurnAvailability, updatePreviousTurnAvailability, visibleTurns]);
-  useEffect16(() => {
+  useEffect17(() => {
     if (previousTurnScrollRequestKey === 0) return;
     const container = scrollContainerRef.current;
     const firstCandidate = findPreviousTurn();
@@ -17976,7 +18061,7 @@ function ThreadTimelineComponent({
       onPreviousTurnAvailabilityChange?.(false);
     }
   }, [findPreviousTurn, onPreviousTurnAvailabilityChange, previousTurnScrollRequestKey, scrollContainerRef]);
-  useEffect16(() => {
+  useEffect17(() => {
     if (nextTurnScrollRequestKey === 0) return;
     const container = scrollContainerRef.current;
     const firstCandidate = findNextTurn();
@@ -18068,6 +18153,11 @@ function ThreadTimelineComponent({
                 const rowLivePlan = livePlan?.turnId === turn.id ? livePlan : null;
                 const rowLiveItems = liveItemsTargetTurnId === turn.id ? liveItems?.items ?? null : null;
                 const rowLiveOutput = liveOutputTargetTurnId === turn.id ? liveOutput : "";
+                const rowLiveActivityAt = latestTimestamp(
+                  rowLivePlan?.updatedAt,
+                  liveItemsTargetTurnId === turn.id ? liveItems?.updatedAt : null,
+                  rowLiveOutput ? liveOutputActivityAt : null
+                );
                 const rowForceActive = activeTurnId === turn.id || shouldForceLatestVisibleTurnActive && latestVisibleTurnId === turn.id;
                 const rowHasLiveActivity = Boolean(rowLivePlan) || Boolean(rowLiveOutput) || Boolean(rowLiveItems && rowLiveItems.length > 0);
                 const rowCollapsed = collapsedStateForTurn(displayTurn, {
@@ -18084,6 +18174,7 @@ function ThreadTimelineComponent({
                     isCollapsed: rowCollapsed,
                     livePlan: rowLivePlan,
                     liveItems: rowLiveItems,
+                    liveActivityAt: rowLiveActivityAt,
                     liveOutput: rowLiveOutput,
                     forceActive: rowForceActive,
                     onToggleCollapse: handleToggleCollapse,
@@ -18135,6 +18226,10 @@ function ThreadTimelineComponent({
               ) : null,
               (() => {
                 const rowLiveOutput = liveOutputAttachedToOptimisticTurn ? liveOutput : "";
+                const rowLiveActivityAt = latestTimestamp(
+                  liveItemsTargetTurnId === optimisticTurn.id ? liveItems?.updatedAt : null,
+                  rowLiveOutput ? liveOutputActivityAt : null
+                );
                 const rowForceActive = activeTurnId === optimisticTurn.id || shouldForceLatestVisibleTurnActive && latestVisibleTurnId === optimisticTurn.id;
                 const rowHasLiveActivity = Boolean(optimisticLiveItems && optimisticLiveItems.length > 0) || Boolean(rowLiveOutput);
                 const rowCollapsed = collapsedStateForTurn(optimisticTurn, {
@@ -18151,6 +18246,7 @@ function ThreadTimelineComponent({
                     isCollapsed: rowCollapsed,
                     livePlan: null,
                     liveItems: optimisticLiveItems,
+                    liveActivityAt: rowLiveActivityAt,
                     liveOutput: rowLiveOutput,
                     forceActive: rowForceActive,
                     onToggleCollapse: handleToggleCollapse,
@@ -18251,6 +18347,10 @@ function ThreadTimelineComponent({
               isCollapsed: collapsedTurnOverrides[unattachedLiveTurn.id] ?? false,
               livePlan: livePlan?.turnId === unattachedLiveTurn.id ? livePlan : null,
               liveItems: unattachedLiveItems,
+              liveActivityAt: latestTimestamp(
+                livePlan?.turnId === unattachedLiveTurn.id ? livePlan.updatedAt : null,
+                liveItems?.turnId === unattachedLiveTurn.id ? liveItems.updatedAt : null
+              ),
               liveOutput: "",
               forceActive: true,
               onToggleCollapse: handleToggleCollapse,
@@ -18320,22 +18420,22 @@ var ThreadTimeline = memo6(ThreadTimelineComponent);
 import {
   forwardRef as forwardRef2,
   useCallback as useCallback16,
-  useEffect as useEffect19,
+  useEffect as useEffect20,
   useImperativeHandle as useImperativeHandle2,
   useMemo as useMemo10,
   useRef as useRef14,
-  useState as useState26
+  useState as useState27
 } from "react";
 
 // src/components/shell/ShellPane.tsx
 import {
   forwardRef,
   useCallback as useCallback15,
-  useEffect as useEffect18,
+  useEffect as useEffect19,
   useImperativeHandle,
   useMemo as useMemo9,
   useRef as useRef13,
-  useState as useState25
+  useState as useState26
 } from "react";
 import "xterm/css/xterm.css";
 
@@ -19091,7 +19191,7 @@ function buildShellControlState({
 
 // src/components/shell/useShellSocketLifecycle.ts
 import {
-  useEffect as useEffect17
+  useEffect as useEffect18
 } from "react";
 
 // src/components/shell/shellSocketSideEffects.ts
@@ -19398,7 +19498,7 @@ function useShellSocketLifecycle({
 }) {
   const shellId = shell?.id;
   const shellCwd = shell?.cwd;
-  useEffect17(() => {
+  useEffect18(() => {
     const terminal = terminalRef.current;
     const baseAttachStartInput = {
       shellId: shellId ?? null,
@@ -19707,16 +19807,16 @@ var ShellPane = forwardRef(
         clearTimeout: window.clearTimeout
       })
     );
-    const [terminalHostNode, setTerminalHostNode] = useState25(null);
-    const [terminalReady, setTerminalReady] = useState25(false);
-    const [viewerId, setViewerIdState] = useState25(null);
-    const [isConnecting, setIsConnecting] = useState25(false);
-    const [connectionError, setConnectionError] = useState25(null);
-    const [runtimePromptLabel, setRuntimePromptLabel] = useState25(
+    const [terminalHostNode, setTerminalHostNode] = useState26(null);
+    const [terminalReady, setTerminalReady] = useState26(false);
+    const [viewerId, setViewerIdState] = useState26(null);
+    const [isConnecting, setIsConnecting] = useState26(false);
+    const [connectionError, setConnectionError] = useState26(null);
+    const [runtimePromptLabel, setRuntimePromptLabel] = useState26(
       null
     );
-    const [isCommandRunning, setIsCommandRunning] = useState25(false);
-    const [reconnectKey, setReconnectKey] = useState25(0);
+    const [isCommandRunning, setIsCommandRunning] = useState26(false);
+    const [reconnectKey, setReconnectKey] = useState26(0);
     const shellStatus = shell?.status ?? "not_created";
     const canAttachShell = shellCanAttach({ shell, workspacePathMissing });
     const fallbackPromptLabel = useMemo9(
@@ -19731,13 +19831,13 @@ var ShellPane = forwardRef(
     const settleAttachPromise = useCallback15((connected) => {
       attachPromiseControllerRef.current.settle(connected);
     }, []);
-    useEffect18(() => {
+    useEffect19(() => {
       isVisibleRef.current = isVisible;
     }, [isVisible]);
-    useEffect18(() => {
+    useEffect19(() => {
       isMobileShellRef.current = isMobileShell;
     }, [isMobileShell]);
-    useEffect18(() => {
+    useEffect19(() => {
       shellIdRef.current = shell?.id ?? null;
     }, [shell?.id]);
     const sendShellInput = useCallback15((data) => {
@@ -19755,7 +19855,7 @@ var ShellPane = forwardRef(
       });
       return true;
     }, []);
-    useEffect18(() => {
+    useEffect19(() => {
       sendShellInputRef.current = sendShellInput;
     }, [sendShellInput]);
     const sendShellClear = useCallback15(() => {
@@ -19812,7 +19912,7 @@ var ShellPane = forwardRef(
       },
       [isTerminalVisible]
     );
-    useEffect18(() => {
+    useEffect19(() => {
       syncTerminalSizeRef.current = syncTerminalSize;
     }, [syncTerminalSize]);
     const refreshTerminalLayout = useCallback15(
@@ -19841,10 +19941,10 @@ var ShellPane = forwardRef(
       },
       [isMobileShell, isTerminalVisible, syncTerminalSize, terminalHostNode]
     );
-    useEffect18(() => {
+    useEffect19(() => {
       refreshTerminalLayoutRef.current = () => refreshTerminalLayout();
     }, [refreshTerminalLayout]);
-    useEffect18(() => {
+    useEffect19(() => {
       onRuntimeStateChange({
         status: viewerId ? "attached" : shellStatus,
         shellInputEnabled: Boolean(viewerId && shell),
@@ -19864,7 +19964,7 @@ var ShellPane = forwardRef(
       shellStatus,
       viewerId
     ]);
-    useEffect18(() => {
+    useEffect19(() => {
       if (!terminalHostNode || terminalRef.current || terminalInitializingRef.current) {
         return;
       }
@@ -19937,7 +20037,7 @@ var ShellPane = forwardRef(
         lastSentSizeRef.current = null;
       };
     }, [effectiveTheme, terminalHostNode]);
-    useEffect18(() => {
+    useEffect19(() => {
       const resetAction = deriveShellMissingSessionResetAction({
         hasShell: Boolean(shell)
       });
@@ -19957,21 +20057,21 @@ var ShellPane = forwardRef(
         terminalRef.current?.reset();
       }
     }, [setViewerId, settleAttachPromise, shell]);
-    useEffect18(() => {
+    useEffect19(() => {
       const terminal = terminalRef.current;
       if (!terminal) {
         return;
       }
       terminal.options.theme = terminalThemeFor(effectiveTheme);
     }, [effectiveTheme]);
-    useEffect18(() => {
+    useEffect19(() => {
       const terminal = terminalRef.current;
       if (!terminal) {
         return;
       }
       terminal.options.disableStdin = isMobileShell;
     }, [isMobileShell]);
-    useEffect18(() => {
+    useEffect19(() => {
       if (!isVisible || !terminalReady) {
         return;
       }
@@ -20015,7 +20115,7 @@ var ShellPane = forwardRef(
       settleAttachPromise,
       onShellUpdate
     });
-    useEffect18(() => {
+    useEffect19(() => {
       return () => {
         const reconnectTimer = refValue2(reconnectTimerRef);
         const attachTimeout = refValue2(attachTimeoutRef);
@@ -20226,25 +20326,25 @@ var ThreadShellPanel = forwardRef2(function ThreadShellPanel2({
   const terminalSplitHostRef = useRef14(null);
   const dragFrameRef = useRef14(null);
   const createShellInFlightRef = useRef14(false);
-  const [shellState, setShellState] = useState26(null);
-  const [loading, setLoading] = useState26(true);
-  const [busy, setBusy] = useState26(false);
-  const [error, setError] = useState26(null);
-  const [activePaneId, setActivePaneId] = useState26("primary");
-  const [primaryShellId, setPrimaryShellId] = useState26(null);
-  const [secondaryShellId, setSecondaryShellId] = useState26(null);
-  const [splitMode, setSplitMode] = useState26("single");
-  const [splitRatio, setSplitRatio] = useState26(50);
-  const [renamingShellId, setRenamingShellId] = useState26(null);
-  const [renameDraft, setRenameDraft] = useState26("");
-  const [isMobileShell, setIsMobileShell] = useState26(false);
-  const [mobileProcessListOpen, setMobileProcessListOpen] = useState26(false);
-  const [toolboxOpen, setToolboxOpen] = useState26(false);
-  const [paneRuntime, setPaneRuntime] = useState26({
+  const [shellState, setShellState] = useState27(null);
+  const [loading, setLoading] = useState27(true);
+  const [busy, setBusy] = useState27(false);
+  const [error, setError] = useState27(null);
+  const [activePaneId, setActivePaneId] = useState27("primary");
+  const [primaryShellId, setPrimaryShellId] = useState27(null);
+  const [secondaryShellId, setSecondaryShellId] = useState27(null);
+  const [splitMode, setSplitMode] = useState27("single");
+  const [splitRatio, setSplitRatio] = useState27(50);
+  const [renamingShellId, setRenamingShellId] = useState27(null);
+  const [renameDraft, setRenameDraft] = useState27("");
+  const [isMobileShell, setIsMobileShell] = useState27(false);
+  const [mobileProcessListOpen, setMobileProcessListOpen] = useState27(false);
+  const [toolboxOpen, setToolboxOpen] = useState27(false);
+  const [paneRuntime, setPaneRuntime] = useState27({
     primary: EMPTY_SHELL_PANE_RUNTIME_STATE,
     secondary: EMPTY_SHELL_PANE_RUNTIME_STATE
   });
-  const [toolboxFeedback, setToolboxFeedback] = useState26(null);
+  const [toolboxFeedback, setToolboxFeedback] = useState27(null);
   const status = shellState?.state ?? "not_created";
   const shells = useMemo10(() => shellState?.shells ?? [], [shellState?.shells]);
   const liveShells = useMemo10(
@@ -20320,10 +20420,10 @@ var ThreadShellPanel = forwardRef2(function ThreadShellPanel2({
       setLoading(false);
     }
   }, [shellAdapter, threadId]);
-  useEffect19(() => {
+  useEffect20(() => {
     void loadShellState();
   }, [loadShellState]);
-  useEffect19(() => {
+  useEffect20(() => {
     const storedRatio = loadSplitRatio?.(threadId);
     if (storedRatio === null || storedRatio === void 0) {
       setSplitRatio(50);
@@ -20332,7 +20432,7 @@ var ThreadShellPanel = forwardRef2(function ThreadShellPanel2({
     const parsed = typeof storedRatio === "number" ? storedRatio : Number.parseFloat(String(storedRatio));
     setSplitRatio(Number.isFinite(parsed) ? clampPaneRatio(parsed) : 50);
   }, [loadSplitRatio, threadId]);
-  useEffect19(() => {
+  useEffect20(() => {
     if (!shellState) {
       setPrimaryShellId(null);
       setSecondaryShellId(null);
@@ -20358,14 +20458,14 @@ var ThreadShellPanel = forwardRef2(function ThreadShellPanel2({
       return fallback?.id ?? null;
     });
   }, [shellState, splitMode]);
-  useEffect19(() => {
+  useEffect20(() => {
     if (splitMode === "columns") {
       return;
     }
     setActivePaneId("primary");
     setSecondaryShellId(null);
   }, [splitMode]);
-  useEffect19(() => {
+  useEffect20(() => {
     if (splitMode !== "columns" || secondaryShellId || liveShells.length < 2) {
       return;
     }
@@ -20374,7 +20474,7 @@ var ThreadShellPanel = forwardRef2(function ThreadShellPanel2({
       setSecondaryShellId(nextSecondary.id);
     }
   }, [liveShells, primaryShell?.id, secondaryShellId, splitMode]);
-  useEffect19(() => {
+  useEffect20(() => {
     if (typeof window === "undefined" || typeof window.matchMedia !== "function") {
       return;
     }
@@ -20392,7 +20492,7 @@ var ThreadShellPanel = forwardRef2(function ThreadShellPanel2({
       mediaQuery.removeEventListener("change", update);
     };
   }, []);
-  useEffect19(() => {
+  useEffect20(() => {
     return () => {
       if (feedbackTimerRef.current !== null) {
         window.clearTimeout(feedbackTimerRef.current);
@@ -20540,7 +20640,7 @@ var ThreadShellPanel = forwardRef2(function ThreadShellPanel2({
     },
     [activePaneId, setPaneShell, shellAdapter, splitMode, threadId]
   );
-  useEffect19(() => {
+  useEffect20(() => {
     if (!isVisible || !shellState || loading || busy || workspacePathMissing || status === "creating" || liveShells.length > 0) {
       return;
     }
@@ -20669,7 +20769,7 @@ var ThreadShellPanel = forwardRef2(function ThreadShellPanel2({
     }
     return true;
   }, [activePaneRef, setTransientToolboxFeedback]);
-  useEffect19(() => {
+  useEffect20(() => {
     onStateChange?.(buildShellControlState({
       activeRuntime,
       activeShell,
@@ -21181,7 +21281,7 @@ var MemoizedThreadGraphWorkspacePanel2 = memo9(
 );
 
 // src/components/ConfirmDialog.tsx
-import { useEffect as useEffect26 } from "react";
+import { useEffect as useEffect27 } from "react";
 import { createPortal as createPortal4 } from "react-dom";
 import { jsx as jsx70, jsxs as jsxs58 } from "react/jsx-runtime";
 function ConfirmDialog({
@@ -21194,7 +21294,7 @@ function ConfirmDialog({
   onCancel,
   onConfirm
 }) {
-  useEffect26(() => {
+  useEffect27(() => {
     if (!open) {
       return;
     }
@@ -21279,7 +21379,7 @@ function ConfirmDialog({
 }
 
 // src/components/ExportTranscriptDialog.tsx
-import { useEffect as useEffect27, useMemo as useMemo17, useState as useState32 } from "react";
+import { useEffect as useEffect28, useMemo as useMemo17, useState as useState33 } from "react";
 import { createPortal as createPortal5 } from "react-dom";
 import { Fragment as Fragment18, jsx as jsx71, jsxs as jsxs59 } from "react/jsx-runtime";
 function formatTurnTime(value) {
@@ -21363,20 +21463,20 @@ function ThreadActionsDialog({
   onOpenDeviceSharing
 }) {
   const turns = useMemo17(() => turnsState.data?.turns ?? [], [turnsState.data?.turns]);
-  const [actionMode, setActionMode] = useState32(initialMode);
-  const [turnSelection, setTurnSelection] = useState32("latest-10");
-  const [selectedTurnIds, setSelectedTurnIds] = useState32(
+  const [actionMode, setActionMode] = useState33(initialMode);
+  const [turnSelection, setTurnSelection] = useState33("latest-10");
+  const [selectedTurnIds, setSelectedTurnIds] = useState33(
     () => /* @__PURE__ */ new Set()
   );
-  const [includeTokenAndPrice, setIncludeTokenAndPrice] = useState32(true);
-  const [targetIdentifier, setTargetIdentifier] = useState32("");
-  const [threadAccess, setThreadAccess] = useState32("read");
-  const [workspaceAccess, setWorkspaceAccess] = useState32("none");
-  const [shareLabel, setShareLabel] = useState32("");
-  const [effectiveTheme, setEffectiveTheme] = useState32(
+  const [includeTokenAndPrice, setIncludeTokenAndPrice] = useState33(true);
+  const [targetIdentifier, setTargetIdentifier] = useState33("");
+  const [threadAccess, setThreadAccess] = useState33("read");
+  const [workspaceAccess, setWorkspaceAccess] = useState33("none");
+  const [shareLabel, setShareLabel] = useState33("");
+  const [effectiveTheme, setEffectiveTheme] = useState33(
     () => typeof document !== "undefined" && !document.documentElement.classList.contains("dark") ? "light" : "dark"
   );
-  useEffect27(() => {
+  useEffect28(() => {
     if (!open) {
       return;
     }
@@ -21389,12 +21489,12 @@ function ThreadActionsDialog({
     setShareLabel("");
     void onLoadTurns();
   }, [initialMode, onLoadTurns, open]);
-  useEffect27(() => {
+  useEffect28(() => {
     if (open && turns.length > 0) {
       setSelectedTurnIds(new Set(turns.slice(0, 10).map((turn) => turn.turnId)));
     }
   }, [open, turns]);
-  useEffect27(() => {
+  useEffect28(() => {
     if (!open) {
       return;
     }
@@ -21406,7 +21506,7 @@ function ThreadActionsDialog({
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [busy, onCancel, open]);
-  useEffect27(() => {
+  useEffect28(() => {
     if (!open) {
       return;
     }
@@ -21776,11 +21876,11 @@ import {
 // src/components/graph-chat/GraphChatThreadChatPanel.tsx
 import {
   useCallback as useCallback19,
-  useEffect as useEffect28,
+  useEffect as useEffect29,
   useLayoutEffect as useLayoutEffect8,
   useMemo as useMemo18,
   useRef as useRef19,
-  useState as useState33
+  useState as useState34
 } from "react";
 import { jsx as jsx72, jsxs as jsxs60 } from "react/jsx-runtime";
 function GraphChatThreadChatPanel({
@@ -21797,11 +21897,11 @@ function GraphChatThreadChatPanel({
   floatingMobileComposerBottomOffset = 0,
   composerHostRef
 }) {
-  const [isMobileViewport, setIsMobileViewport] = useState33(false);
-  const [mobileComposerHeight, setMobileComposerHeight] = useState33(0);
-  const [mobileComposerOverlap, setMobileComposerOverlap] = useState33(0);
-  const [mobileKeyboardInset, setMobileKeyboardInset] = useState33(0);
-  const [mobilePromptFocused, setMobilePromptFocused] = useState33(false);
+  const [isMobileViewport, setIsMobileViewport] = useState34(false);
+  const [mobileComposerHeight, setMobileComposerHeight] = useState34(0);
+  const [mobileComposerOverlap, setMobileComposerOverlap] = useState34(0);
+  const [mobileKeyboardInset, setMobileKeyboardInset] = useState34(0);
+  const [mobilePromptFocused, setMobilePromptFocused] = useState34(false);
   const internalComposerHostRef = useRef19(null);
   const timelineTailVisibilityChange = timelineProps?.onTailVisibilityChange;
   const hasPendingRequests = detail.pendingRequests.length > 0;
@@ -21862,7 +21962,7 @@ function GraphChatThreadChatPanel({
     },
     [timelineTailVisibilityChange]
   );
-  useEffect28(() => {
+  useEffect29(() => {
     if (typeof window === "undefined" || typeof window.matchMedia !== "function") {
       return;
     }
@@ -21874,7 +21974,7 @@ function GraphChatThreadChatPanel({
       mediaQuery.removeEventListener("change", updateViewport);
     };
   }, []);
-  useEffect28(() => {
+  useEffect29(() => {
     if (typeof window === "undefined") {
       return;
     }
@@ -21952,7 +22052,7 @@ function GraphChatThreadChatPanel({
     composerProps,
     hasPendingRequests
   ]);
-  useEffect28(() => {
+  useEffect29(() => {
     if (!isMobileViewport) {
       setMobilePromptFocused(false);
       return;
@@ -22409,9 +22509,9 @@ function ThreadDetailSurface({
 // src/plugins/PluginProvider.tsx
 import {
   useCallback as useCallback20,
-  useEffect as useEffect29,
+  useEffect as useEffect30,
   useMemo as useMemo20,
-  useState as useState34
+  useState as useState35
 } from "react";
 import { jsx as jsx74 } from "react/jsx-runtime";
 var DEFAULT_PLUGIN_PROVIDER_ADAPTER = {};
@@ -22421,11 +22521,11 @@ function PluginProvider({
   builtinPlugins = DEFAULT_BUILTIN_PLUGINS,
   children
 }) {
-  const [plugins, setPlugins] = useState34(
+  const [plugins, setPlugins] = useState35(
     () => mergePluginState(builtinPlugins, [])
   );
-  const [loading, setLoading] = useState34(false);
-  const [error, setError] = useState34(null);
+  const [loading, setLoading] = useState35(false);
+  const [error, setError] = useState35(null);
   const refresh = useCallback20(async () => {
     setLoading(true);
     setError(null);
@@ -22438,7 +22538,7 @@ function PluginProvider({
       setLoading(false);
     }
   }, [adapter, builtinPlugins]);
-  useEffect29(() => {
+  useEffect30(() => {
     void refresh();
   }, [refresh]);
   const setPluginEnabled = useCallback20(
@@ -22563,7 +22663,7 @@ function PluginProvider({
 }
 
 // src/app-shell/AppShellNavigation.tsx
-import { useEffect as useEffect30, useRef as useRef20, useState as useState35 } from "react";
+import { useEffect as useEffect31, useRef as useRef20, useState as useState36 } from "react";
 import { jsx as jsx75, jsxs as jsxs62 } from "react/jsx-runtime";
 function MenuIcon() {
   return /* @__PURE__ */ jsx75("svg", { "aria-hidden": "true", viewBox: "0 0 16 16", className: "h-4 w-4 fill-current", children: /* @__PURE__ */ jsx75("path", { d: "M2 3.25h12v1.5H2Zm0 4h12v1.5H2Zm0 4h12v1.5H2Z" }) });
@@ -22617,7 +22717,7 @@ function AppShellNavigationMenu({
 }) {
   const shellNav = useAppShellNav();
   const menuRef = useRef20(null);
-  useEffect30(() => {
+  useEffect31(() => {
     if (!shellNav?.navOpen) {
       return;
     }
@@ -22708,8 +22808,8 @@ function AppShellSettingsDialog({
 } = {}) {
   const shellNav = useAppShellNav();
   const plugins = usePlugins();
-  const [pluginImportDraft, setPluginImportDraft] = useState35("");
-  const [pluginImportState, setPluginImportState] = useState35({
+  const [pluginImportDraft, setPluginImportDraft] = useState36("");
+  const [pluginImportState, setPluginImportState] = useState36({
     busy: false,
     message: null,
     error: null
@@ -22717,7 +22817,7 @@ function AppShellSettingsDialog({
   const selectedThemeMode = shellNav?.themeMode ?? "system";
   const effectiveTheme = shellNav?.effectiveTheme ?? "dark";
   const autoCollapseCompletedTurns = shellNav?.autoCollapseCompletedTurns ?? true;
-  useEffect30(() => {
+  useEffect31(() => {
     if (!shellNav?.settingsOpen) {
       return;
     }

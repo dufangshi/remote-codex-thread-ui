@@ -228,10 +228,12 @@ interface ThreadTimelineProps {
             step: string;
             status: string;
         }>;
+        updatedAt?: string | null;
     } | null;
     liveItems?: {
         turnId: string;
         items: ThreadHistoryItemDto[];
+        updatedAt?: string | null;
     } | null;
     respondingRequestId?: string | null;
     onRespondToRequest?: (requestId: string, input: RespondThreadActionRequestInput) => Promise<void> | void;

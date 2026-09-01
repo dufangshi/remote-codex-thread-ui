@@ -379,6 +379,7 @@ interface ThreadTurnRowProps {
   isCollapsed: boolean;
   livePlan: LivePlan | null;
   liveItems: ThreadHistoryItemDto[] | null;
+  liveActivityAt?: string | null;
   liveOutput: string;
   forceActive?: boolean;
   onToggleCollapse: (turnId: string, currentCollapsed: boolean) => void;
@@ -412,6 +413,22 @@ function latestItemTimestamp(items: ThreadHistoryItemDto[]) {
     latest = latest === null ? millis : Math.max(latest, millis);
   }
   return latest;
+}
+
+function latestActivityTimestamp(
+  startedAt: string | null | undefined,
+  items: ThreadHistoryItemDto[],
+  liveActivityAt: string | null | undefined,
+) {
+  const candidates = [
+    Date.parse(startedAt ?? ''),
+    latestItemTimestamp(items) ?? Number.NaN,
+    Date.parse(liveActivityAt ?? ''),
+  ].filter(Number.isFinite);
+
+  return candidates.length > 0
+    ? new Date(Math.max(...candidates)).toISOString()
+    : null;
 }
 
 function formatWorkedDuration(startedAt: string | null | undefined, items: ThreadHistoryItemDto[]) {
@@ -557,6 +574,7 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
   isCollapsed,
   livePlan,
   liveItems,
+  liveActivityAt = null,
   liveOutput,
   forceActive = false,
   onToggleCollapse,
@@ -586,6 +604,10 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
   const mergedItems = useMemo(
     () => mergeLiveTurnItems(turn.items, liveItems),
     [liveItems, turn.items],
+  );
+  const lastActivityAt = useMemo(
+    () => latestActivityTimestamp(turn.startedAt, mergedItems, liveActivityAt),
+    [liveActivityAt, mergedItems, turn.startedAt],
   );
   const displayedLivePlan = useMemo(
     () => deriveDisplayedLivePlan(livePlan, mergedItems, turn.status),
@@ -692,7 +714,11 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
       />
     ) : null;
   const footerNode = activeForRendering ? (
-    <TurnStatusBar turn={activeFooterTurn} variant="footer" />
+    <TurnStatusBar
+      turn={activeFooterTurn}
+      variant="footer"
+      lastActivityAt={lastActivityAt}
+    />
   ) : null;
   const collapsedSummary = useMemo(
     () => collapsedSummaryMessages(groupedItems),

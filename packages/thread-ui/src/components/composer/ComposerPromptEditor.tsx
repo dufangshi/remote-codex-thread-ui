@@ -67,7 +67,7 @@ export function ComposerPromptEditor({
   return (
     <div
       data-slot="input-group-control"
-      className={`${composerPromptRegionClassName} relative w-full`}
+      className={`${composerPromptRegionClassName} relative w-full ${canInterrupt ? "z-[90]" : ""}`}
     >
       <div className={graphChatInputClassName}>
         {prompt.length === 0 && (
@@ -125,7 +125,7 @@ export function ComposerPromptEditor({
             event.preventDefault();
             void onInterrupt?.();
           }}
-          className="thread-graph-composer-stop-button ui-action-danger absolute right-2 top-2 z-30 h-8 w-8 rounded-full text-sm font-medium"
+          className="thread-graph-composer-stop-button ui-action-danger absolute right-2 top-2 z-[90] h-8 w-8 rounded-full text-sm font-medium pointer-events-auto"
         >
           <span
             aria-hidden="true"

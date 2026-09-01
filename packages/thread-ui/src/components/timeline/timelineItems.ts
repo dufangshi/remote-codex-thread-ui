@@ -88,8 +88,13 @@ export type TimelineTurn = Omit<ThreadTurnDto, "status"> & {
 function isRenderableHistoryItem(
   item: ThreadHistoryItemDto | null | undefined,
 ): item is ThreadHistoryItemDto {
-  return Boolean(
-    item && typeof item.id === "string" && typeof item.kind === "string",
+  if (!item || typeof item.id !== "string" || typeof item.kind !== "string") {
+    return false;
+  }
+
+  return !(
+    (item.kind === "agentMessage" || item.kind === "reasoning") &&
+    (typeof item.text !== "string" || item.text.trim().length === 0)
   );
 }
 
@@ -608,7 +613,14 @@ function isAgentActivityEntry(entry: TimelineHistoryEntry) {
     entry.item.kind === "fileRead" ||
     entry.item.kind === "toolCall" ||
     entry.item.kind === "agentToolCall" ||
-    entry.item.kind === "skillToolCall"
+    entry.item.kind === "skillToolCall" ||
+    entry.item.kind === "reasoning"
+  );
+}
+
+function containsReasoningEntry(entries: TimelineHistoryEntry[]) {
+  return entries.some(
+    (entry) => entry.kind === "item" && entry.item.kind === "reasoning",
   );
 }
 
@@ -653,8 +665,8 @@ function groupAgentActivitySequences(entries: TimelineHistoryEntry[]) {
     );
 
     if (
-      activityEntries.length > 1 &&
-      isCompletedAgentNarrative(entries[index])
+      containsReasoningEntry(activityEntries) ||
+      (activityEntries.length > 1 && isCompletedAgentNarrative(entries[index]))
     ) {
       grouped.push({
         kind: "agentActivityGroup",

@@ -50,10 +50,12 @@ export interface ThreadTimelineProps {
     turnId: string;
     explanation: string | null;
     plan: Array<{ step: string; status: string }>;
+    updatedAt?: string | null;
   } | null;
   liveItems?: {
     turnId: string;
     items: ThreadHistoryItemDto[];
+    updatedAt?: string | null;
   } | null;
   respondingRequestId?: string | null;
   onRespondToRequest?: (
@@ -102,6 +104,20 @@ export interface ThreadTimelineProps {
 
 function isTerminalTurnStatus(status: TimelineTurn['status']) {
   return status === 'completed' || status === 'failed' || status === 'interrupted';
+}
+
+function latestTimestamp(...timestamps: Array<string | null | undefined>) {
+  let latest: { timestamp: string; millis: number } | null = null;
+  for (const timestamp of timestamps) {
+    if (!timestamp) {
+      continue;
+    }
+    const millis = Date.parse(timestamp);
+    if (Number.isFinite(millis) && (!latest || millis > latest.millis)) {
+      latest = { timestamp, millis };
+    }
+  }
+  return latest?.timestamp ?? null;
 }
 
 function mergeOptimisticTurnItems(
@@ -320,6 +336,10 @@ function ThreadTimelineComponent({
         )
       : null;
   const liveOutputAttachedToVisibleTurn = Boolean(liveOutputTargetTurnId);
+  const liveOutputActivityAt = useMemo(
+    () => (liveOutput ? new Date().toISOString() : null),
+    [liveOutput],
+  );
   const unattachedLiveHookPromptItem = useMemo(
     () => parseHookPromptText(liveOutput),
     [liveOutput],
@@ -533,6 +553,11 @@ function ThreadTimelineComponent({
                       liveItemsTargetTurnId === turn.id ? liveItems?.items ?? null : null;
                     const rowLiveOutput =
                       liveOutputTargetTurnId === turn.id ? liveOutput : '';
+                    const rowLiveActivityAt = latestTimestamp(
+                      rowLivePlan?.updatedAt,
+                      liveItemsTargetTurnId === turn.id ? liveItems?.updatedAt : null,
+                      rowLiveOutput ? liveOutputActivityAt : null,
+                    );
                     const rowForceActive =
                       activeTurnId === turn.id ||
                       (
@@ -557,6 +582,7 @@ function ThreadTimelineComponent({
                     isCollapsed={rowCollapsed}
                     livePlan={rowLivePlan}
                     liveItems={rowLiveItems}
+                    liveActivityAt={rowLiveActivityAt}
                     liveOutput={rowLiveOutput}
                     forceActive={rowForceActive}
                     onToggleCollapse={handleToggleCollapse}
@@ -609,6 +635,12 @@ function ThreadTimelineComponent({
                   ) : null}
                   {(() => {
                     const rowLiveOutput = liveOutputAttachedToOptimisticTurn ? liveOutput : '';
+                    const rowLiveActivityAt = latestTimestamp(
+                      liveItemsTargetTurnId === optimisticTurn.id
+                        ? liveItems?.updatedAt
+                        : null,
+                      rowLiveOutput ? liveOutputActivityAt : null,
+                    );
                     const rowForceActive =
                       activeTurnId === optimisticTurn.id ||
                       (
@@ -632,6 +664,7 @@ function ThreadTimelineComponent({
                     isCollapsed={rowCollapsed}
                     livePlan={null}
                     liveItems={optimisticLiveItems}
+                    liveActivityAt={rowLiveActivityAt}
                     liveOutput={rowLiveOutput}
                     forceActive={rowForceActive}
                     onToggleCollapse={handleToggleCollapse}
@@ -744,6 +777,10 @@ function ThreadTimelineComponent({
               isCollapsed={collapsedTurnOverrides[unattachedLiveTurn.id] ?? false}
               livePlan={livePlan?.turnId === unattachedLiveTurn.id ? livePlan : null}
               liveItems={unattachedLiveItems}
+              liveActivityAt={latestTimestamp(
+                livePlan?.turnId === unattachedLiveTurn.id ? livePlan.updatedAt : null,
+                liveItems?.turnId === unattachedLiveTurn.id ? liveItems.updatedAt : null,
+              )}
               liveOutput=""
               forceActive
               onToggleCollapse={handleToggleCollapse}

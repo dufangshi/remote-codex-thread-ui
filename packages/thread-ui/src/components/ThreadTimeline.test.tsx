@@ -33,6 +33,7 @@ afterEach(() => {
   root = null;
   container?.remove();
   container = null;
+  vi.useRealTimers();
 });
 
 function completedTurn(items: ThreadTurnDto['items']): ThreadTurnDto {
@@ -227,6 +228,52 @@ describe('ThreadTimeline', () => {
     expect(element.textContent).toContain(formatShortTimestamp(agentAt));
   });
 
+  it('shows the latest activity time and a second-precision running duration', () => {
+    vi.useFakeTimers();
+    const startedAt = new Date(Date.UTC(2026, 6, 3, 20, 10, 0)).toISOString();
+    const activityAt = new Date(Date.UTC(2026, 6, 3, 20, 10, 7)).toISOString();
+    vi.setSystemTime(new Date(Date.UTC(2026, 6, 3, 20, 10, 10)));
+
+    const element = render(
+      <ThreadTimeline
+        autoCollapseCompletedTurns={false}
+        activeTurnId="turn-1"
+        threadRunning
+        liveOutput=""
+        liveItems={{
+          turnId: 'turn-1',
+          updatedAt: activityAt,
+          items: [
+            {
+              id: 'command-1',
+              kind: 'commandExecution',
+              text: 'pnpm test',
+              status: 'running',
+              createdAt: new Date(Date.UTC(2026, 6, 3, 20, 10, 5)).toISOString(),
+            },
+          ],
+        }}
+        turns={[
+          {
+            id: 'turn-1',
+            startedAt,
+            status: 'inProgress',
+            error: null,
+            items: [],
+          },
+        ]}
+      />,
+    );
+
+    expect(element.textContent).toContain(formatShortTimestamp(activityAt));
+    expect(element.textContent).toContain('10s');
+
+    flushSync(() => {
+      vi.advanceTimersByTime(1_000);
+    });
+    expect(element.textContent).toContain('11s');
+  });
+
   it('renders a command batch without redundant activity or batch labels', () => {
     const element = render(
       <ThreadTimeline
@@ -258,6 +305,73 @@ describe('ThreadTimeline', () => {
     expect(element.textContent).not.toContain('Agent activity');
     expect(element.textContent).not.toContain('Batch');
     expect(element.textContent).toContain('All commands completed.');
+  });
+
+  it('folds imported reasoning summaries into activity and omits empty assistant rows', () => {
+    const element = render(
+      <ThreadTimeline
+        autoCollapseCompletedTurns={false}
+        liveOutput=""
+        turns={[
+          completedTurn([
+            {
+              id: 'agent-before',
+              kind: 'agentMessage',
+              text: 'The first finding is ready.',
+            },
+            {
+              id: 'reasoning-1',
+              kind: 'reasoning',
+              text: '**Planning concurrent browser inspection**',
+            },
+            {
+              id: 'reasoning-empty',
+              kind: 'reasoning',
+              text: '  ',
+            },
+            {
+              id: 'command-1',
+              kind: 'commandExecution',
+              text: 'pnpm test',
+              status: 'completed',
+            },
+            {
+              id: 'reasoning-2',
+              kind: 'reasoning',
+              text: '**Checking item timestamps, statuses, and duplicates**',
+            },
+            {
+              id: 'agent-after',
+              kind: 'agentMessage',
+              text: 'The imported session now reads cleanly.',
+            },
+          ]),
+        ]}
+      />,
+    );
+
+    expect(element.textContent).toContain('The first finding is ready.');
+    expect(element.textContent).toContain('Agent activity');
+    expect(element.textContent).toContain('3 operations');
+    expect(element.textContent).toContain('The imported session now reads cleanly.');
+    expect(element.textContent).not.toContain('Planning concurrent browser inspection');
+    expect(
+      Array.from(element.querySelectorAll('.thread-graph-message-sender')).filter(
+        (sender) => sender.textContent === 'Assistant',
+      ),
+    ).toHaveLength(2);
+
+    const expandButton = Array.from(element.querySelectorAll('button')).find(
+      (button) => button.getAttribute('aria-label') === 'Expand 3 operations',
+    );
+    expect(expandButton).toBeTruthy();
+    flushSync(() => {
+      expandButton?.click();
+    });
+    expect(element.textContent).toContain('Planning concurrent browser inspection');
+    expect(element.textContent).toContain(
+      'Checking item timestamps, statuses, and duplicates',
+    );
   });
 
   it('auto-collapses a single tool item after newer live history arrives', () => {

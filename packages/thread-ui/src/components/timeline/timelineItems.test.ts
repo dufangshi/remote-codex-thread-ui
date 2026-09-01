@@ -120,7 +120,7 @@ describe("timeline item utilities", () => {
     });
   });
 
-  it("groups consecutive tool-like history items and keeps reasoning as its own bubble", () => {
+  it("groups consecutive tool-like history items and folds reasoning into activity", () => {
     const entries = groupTimelineHistoryItems([
       item("reason-before", "reasoning"),
       item("agent", "agentMessage"),
@@ -133,7 +133,7 @@ describe("timeline item utilities", () => {
     ]);
 
     expect(entries.map((entry) => entry.kind)).toEqual([
-      "item",
+      "agentActivityGroup",
       "item",
       "commandGroup",
       "fileReadGroup",
@@ -141,8 +141,9 @@ describe("timeline item utilities", () => {
       "item",
     ]);
     expect(entries[0]).toMatchObject({
-      kind: "item",
-      item: { id: "reason-before" },
+      kind: "agentActivityGroup",
+      itemCount: 1,
+      entries: [{ kind: "item", item: { id: "reason-before" } }],
     });
     expect(entries[1]).toMatchObject({
       kind: "item",
@@ -238,6 +239,42 @@ describe("timeline item utilities", () => {
     ]);
 
     expect(entries.map((entry) => entry.kind)).toEqual(["toolCallGroup"]);
+  });
+
+  it("folds imported reasoning summaries and operations into one activity batch", () => {
+    const entries = groupTimelineHistoryItems([
+      item("narrative-before", "agentMessage", {
+        text: "I found the first issue.",
+      }),
+      item("reason-1", "reasoning", {
+        text: "**Planning concurrent browser inspection**",
+      }),
+      item("cmd-1", "commandExecution"),
+      item("reason-empty", "reasoning", { text: "  \n" }),
+      item("reason-2", "reasoning", {
+        text: "**Checking item timestamps, statuses, and duplicates**",
+      }),
+      item("file-1", "fileChange"),
+      item("narrative-after", "agentMessage", {
+        text: "The imported session now reads cleanly.",
+      }),
+    ]);
+
+    expect(entries.map((entry) => entry.kind)).toEqual([
+      "item",
+      "agentActivityGroup",
+      "item",
+    ]);
+    expect(entries[1]).toMatchObject({
+      kind: "agentActivityGroup",
+      itemCount: 4,
+      entries: [
+        { kind: "item", item: { id: "reason-1" } },
+        { kind: "item", item: { id: "cmd-1" } },
+        { kind: "item", item: { id: "reason-2" } },
+        { kind: "item", item: { id: "file-1" } },
+      ],
+    });
   });
 
   it("ignores incomplete history entries instead of crashing transcript grouping", () => {

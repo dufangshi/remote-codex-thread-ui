@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react';
+
 import type { ThreadHistoryItemDto } from '@remote-codex/shared';
 
 import {
@@ -163,6 +165,45 @@ function formatTurnRuntimeSummary(turn: TimelineTurn) {
   return [modelLabel, reasoningLabel].join(' · ');
 }
 
+function useSecondClock(enabled: boolean) {
+  const [now, setNow] = useState(() => Date.now());
+
+  useEffect(() => {
+    if (!enabled) {
+      return;
+    }
+
+    setNow(Date.now());
+    const interval = window.setInterval(() => setNow(Date.now()), 1_000);
+    return () => window.clearInterval(interval);
+  }, [enabled]);
+
+  return now;
+}
+
+function formatElapsedDuration(
+  startedAt: string | null | undefined,
+  now: number,
+) {
+  const startedAtMillis = Date.parse(startedAt ?? '');
+  if (!Number.isFinite(startedAtMillis)) {
+    return null;
+  }
+
+  const totalSeconds = Math.max(0, Math.floor((now - startedAtMillis) / 1_000));
+  const hours = Math.floor(totalSeconds / 3_600);
+  const minutes = Math.floor((totalSeconds % 3_600) / 60);
+  const seconds = totalSeconds % 60;
+
+  if (hours > 0) {
+    return `${hours}h ${String(minutes).padStart(2, '0')}m ${String(seconds).padStart(2, '0')}s`;
+  }
+  if (minutes > 0) {
+    return `${minutes}m ${String(seconds).padStart(2, '0')}s`;
+  }
+  return `${seconds}s`;
+}
+
 function TurnStatusIndicator({
   status,
 }: {
@@ -247,15 +288,20 @@ function TurnStatusIndicator({
 export function TurnStatusBar({
   turn,
   variant = 'header',
+  lastActivityAt = null,
 }: {
   turn: TimelineTurn;
   variant?: 'header' | 'footer';
+  lastActivityAt?: string | null;
 }) {
   const label = turnStatusLabel(turn.status);
   const runtimeSummary = formatTurnRuntimeSummary(turn);
   const tokenBadges = buildTurnTokenBadges(turn);
   const priceBadge = buildTurnPriceBadge(turn);
   const active = isActiveTurnStatus(turn.status);
+  const now = useSecondClock(active && variant === 'footer');
+  const elapsedLabel = active ? formatElapsedDuration(turn.startedAt, now) : null;
+  const effectiveLastActivityAt = lastActivityAt ?? turn.startedAt;
   const toneClassName =
     turn.status === 'failed'
       ? 'border-rose-300/20 bg-rose-300/[0.06] text-rose-100'
@@ -275,14 +321,19 @@ export function TurnStatusBar({
               {runtimeSummary}
             </span>
           </div>
-          {turn.startedAt && (
-            <time
-              dateTime={turn.startedAt}
-              title={formatLongTimestamp(turn.startedAt)}
-              className="timeline-meta-text shrink-0 text-[11px]"
+          {effectiveLastActivityAt && (
+            <span
+              className="timeline-meta-text flex shrink-0 items-center gap-1 whitespace-nowrap text-[11px]"
+              title={[
+                `Last activity ${formatLongTimestamp(effectiveLastActivityAt)}`,
+                elapsedLabel ? `Running for ${elapsedLabel}` : null,
+              ].filter(Boolean).join(' · ')}
             >
-              {formatShortTimestamp(turn.startedAt)}
-            </time>
+              <time dateTime={effectiveLastActivityAt}>
+                {formatShortTimestamp(effectiveLastActivityAt)}
+              </time>
+              {elapsedLabel ? <span aria-label={`Running for ${elapsedLabel}`}>· {elapsedLabel}</span> : null}
+            </span>
           )}
         </div>
         {(priceBadge || tokenBadges.length > 0) && (
