@@ -914,6 +914,7 @@ export const GraphChatImageItem = memo(function GraphChatImageItem({
   getImageAssetUrl?: GetImageAssetUrl | undefined;
   timeMeta?: ReactNode;
 }) {
+  const [previewFailed, setPreviewFailed] = useState(false);
   const assetPath = item.assetPath ?? item.detailText ?? null;
   const imageUrl =
     threadId && assetPath
@@ -929,7 +930,7 @@ export const GraphChatImageItem = memo(function GraphChatImageItem({
       title="image"
       tone="image"
     >
-      {imageUrl ? (
+      {imageUrl && !previewFailed ? (
         <button
           type="button"
           onClick={() => onOpen('Image Path', assetPath ?? item.text)}
@@ -940,11 +941,12 @@ export const GraphChatImageItem = memo(function GraphChatImageItem({
             alt={item.text || 'Image preview'}
             className="thread-graph-history-event-image"
             loading="lazy"
+            onError={() => setPreviewFailed(true)}
           />
         </button>
       ) : (
         <div className="thread-graph-history-event-summary">
-          {item.text}
+          {previewFailed ? `${item.text || 'Image preview'} (preview unavailable)` : item.text}
         </div>
       )}
       {assetPath ? (

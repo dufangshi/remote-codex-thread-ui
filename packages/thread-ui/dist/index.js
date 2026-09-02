@@ -12918,6 +12918,44 @@ function tokenizeUserMessageText(text) {
   }
   return segments;
 }
+function GraphChatPhotoAttachment({
+  imageUrl,
+  label,
+  path
+}) {
+  const [failed, setFailed] = useState16(false);
+  useEffect12(() => {
+    setFailed(false);
+  }, [imageUrl]);
+  return /* @__PURE__ */ jsx33("span", { className: "mx-[0.14rem] inline-flex align-middle", children: /* @__PURE__ */ jsxs27("span", { className: "inline-flex max-w-full flex-col rounded-[1rem] border border-sky-300/28 bg-sky-300/[0.08] p-1.5 shadow-sm shadow-stone-950/20", children: [
+    imageUrl && !failed ? /* @__PURE__ */ jsx33(
+      "img",
+      {
+        src: imageUrl,
+        alt: label,
+        className: "h-[4.5rem] w-[6rem] rounded-[0.75rem] bg-stone-950 object-contain",
+        loading: "lazy",
+        onError: () => setFailed(true)
+      }
+    ) : /* @__PURE__ */ jsx33(
+      "span",
+      {
+        className: "inline-flex h-[4.5rem] w-[6rem] items-center justify-center rounded-[0.75rem] bg-stone-950 text-[10px] font-semibold text-sky-100",
+        role: "img",
+        "aria-label": failed ? `${label}, preview unavailable` : label,
+        children: "PHOTO"
+      }
+    ),
+    /* @__PURE__ */ jsx33(
+      "span",
+      {
+        className: "mt-1 max-w-[7rem] truncate text-[10px] font-medium tracking-[0.08em] text-sky-50",
+        title: path,
+        children: label
+      }
+    )
+  ] }) });
+}
 function GraphChatLinkifiedPlainText({ text }) {
   const parts = [];
   let cursor = 0;
@@ -13092,28 +13130,11 @@ var GraphChatUserMessageBody = memo2(
         const imageUrl = attachmentPreviewUrls?.[segment.path] ?? (threadId ? getImageAssetUrl?.({ threadId, path: segment.path }) ?? null : null);
         const label = basenameFromAssetPath(segment.path) || "Attached image";
         return /* @__PURE__ */ jsx33(
-          "span",
+          GraphChatPhotoAttachment,
           {
-            className: "mx-[0.14rem] inline-flex align-middle",
-            children: /* @__PURE__ */ jsxs27("span", { className: "inline-flex max-w-full flex-col rounded-[1rem] border border-sky-300/28 bg-sky-300/[0.08] p-1.5 shadow-sm shadow-stone-950/20", children: [
-              imageUrl ? /* @__PURE__ */ jsx33(
-                "img",
-                {
-                  src: imageUrl,
-                  alt: label,
-                  className: "h-[4.5rem] w-[6rem] rounded-[0.75rem] bg-stone-950 object-contain",
-                  loading: "lazy"
-                }
-              ) : /* @__PURE__ */ jsx33("span", { className: "inline-flex h-[4.5rem] w-[6rem] items-center justify-center rounded-[0.75rem] bg-stone-950 text-[10px] text-sky-100", children: "PHOTO" }),
-              /* @__PURE__ */ jsx33(
-                "span",
-                {
-                  className: "mt-1 max-w-[7rem] truncate text-[10px] font-medium tracking-[0.08em] text-sky-50",
-                  title: segment.path,
-                  children: label
-                }
-              )
-            ] })
+            imageUrl,
+            label,
+            path: segment.path
           },
           segment.key
         );
@@ -15172,6 +15193,7 @@ var GraphChatImageItem = memo4(function GraphChatImageItem2({
   getImageAssetUrl,
   timeMeta
 }) {
+  const [previewFailed, setPreviewFailed] = useState19(false);
   const assetPath = item.assetPath ?? item.detailText ?? null;
   const imageUrl = threadId && assetPath ? getImageAssetUrl?.({ threadId, path: assetPath }) ?? null : null;
   return /* @__PURE__ */ jsxs32(
@@ -15184,7 +15206,7 @@ var GraphChatImageItem = memo4(function GraphChatImageItem2({
       title: "image",
       tone: "image",
       children: [
-        imageUrl ? /* @__PURE__ */ jsx40(
+        imageUrl && !previewFailed ? /* @__PURE__ */ jsx40(
           "button",
           {
             type: "button",
@@ -15196,11 +15218,12 @@ var GraphChatImageItem = memo4(function GraphChatImageItem2({
                 src: imageUrl,
                 alt: item.text || "Image preview",
                 className: "thread-graph-history-event-image",
-                loading: "lazy"
+                loading: "lazy",
+                onError: () => setPreviewFailed(true)
               }
             )
           }
-        ) : /* @__PURE__ */ jsx40("div", { className: "thread-graph-history-event-summary", children: item.text }),
+        ) : /* @__PURE__ */ jsx40("div", { className: "thread-graph-history-event-summary", children: previewFailed ? `${item.text || "Image preview"} (preview unavailable)` : item.text }),
         assetPath ? /* @__PURE__ */ jsx40(
           "button",
           {
@@ -16810,6 +16833,10 @@ var ThreadTurnRow = memo5(function ThreadTurnRow2({
   liveOutput,
   forceActive = false,
   onToggleCollapse,
+  onLoadDeferredItems = () => {
+  },
+  deferredItemsLoading = false,
+  deferredItemsError = null,
   onOpenExpandedText,
   onOpenCommandDetail,
   onOpenToolCallDetail,
@@ -16936,10 +16963,34 @@ var ThreadTurnRow = memo5(function ThreadTurnRow2({
     () => formatWorkedDuration(turn.startedAt, mergedItems),
     [mergedItems, turn.startedAt]
   );
-  const hasCollapsedHiddenItems = collapsedSummary.hiddenEntries.length > 0;
+  const hasCollapsedHiddenItems = collapsedSummary.hiddenEntries.length > 0 || turn.hasDeferredItems === true;
   const effectiveCollapsed = isCollapsed && hasCollapsedHiddenItems;
   const canToggleWorkedSummary = isTerminalTurnStatus(turn.status) && hasCollapsedHiddenItems;
-  const expandedWorkedToggleNode = canToggleWorkedSummary && !effectiveCollapsed ? /* @__PURE__ */ jsxs37(
+  const expandedWorkedToggleNode = canToggleWorkedSummary && !effectiveCollapsed ? deferredItemsLoading ? /* @__PURE__ */ jsxs37(
+    "div",
+    {
+      className: "thread-graph-worked-summary flex w-full items-center gap-2 py-2 text-sm",
+      "aria-live": "polite",
+      children: [
+        /* @__PURE__ */ jsx45("span", { className: "thread-graph-worked-label shrink-0", children: "Loading activity..." }),
+        /* @__PURE__ */ jsx45("span", { className: "thread-graph-worked-rule h-px min-w-0 flex-1", "aria-hidden": "true" })
+      ]
+    }
+  ) : deferredItemsError ? /* @__PURE__ */ jsxs37(
+    "button",
+    {
+      type: "button",
+      className: "thread-graph-worked-summary group flex w-full items-center gap-2 py-2 text-left text-sm transition",
+      onClick: () => onLoadDeferredItems(turn.id),
+      "aria-label": `Retry loading activity for turn ${absoluteIndex}`,
+      title: deferredItemsError,
+      children: [
+        /* @__PURE__ */ jsx45("span", { className: "thread-graph-worked-label shrink-0", children: "Retry activity" }),
+        /* @__PURE__ */ jsx45(ChevronRight2, { className: "h-4 w-4 shrink-0 transition group-hover:translate-x-0.5" }),
+        /* @__PURE__ */ jsx45("span", { className: "thread-graph-worked-rule h-px min-w-0 flex-1", "aria-hidden": "true" })
+      ]
+    }
+  ) : /* @__PURE__ */ jsxs37(
     "button",
     {
       type: "button",
@@ -17783,6 +17834,7 @@ function ThreadTimelineComponent({
   optimisticSteers = [],
   optimisticTurn = null,
   onLoadHistoryItemDetail,
+  onLoadTurnDetail,
   onOpenThread,
   onSelectArtifact,
   onSelectHistoryItemDetail,
@@ -17794,12 +17846,18 @@ function ThreadTimelineComponent({
   const [collapsedTurnOverrides, setCollapsedTurnOverrides] = useState24(
     {}
   );
+  const [loadedTurnDetails, setLoadedTurnDetails] = useState24({});
+  const [loadingTurnDetailIds, setLoadingTurnDetailIds] = useState24(
+    () => /* @__PURE__ */ new Set()
+  );
+  const [turnDetailErrors, setTurnDetailErrors] = useState24({});
   const [cancelingSteerIds, setCancelingSteerIds] = useState24(
     () => /* @__PURE__ */ new Set()
   );
   const lastPreviousTurnTargetIdRef = useRef12(null);
   const lastNextTurnTargetIdRef = useRef12(null);
   const loadHistoryItemDetail = adapter?.onLoadHistoryItemDetail ?? onLoadHistoryItemDetail;
+  const loadTurnDetail = adapter?.onLoadTurnDetail ?? onLoadTurnDetail;
   const openLinkedThread = adapter?.onOpenLinkedThread;
   const {
     expandedText,
@@ -17857,12 +17915,46 @@ function ThreadTimelineComponent({
       bottomSpacer
     ]
   });
+  useEffect16(() => {
+    setLoadedTurnDetails({});
+    setLoadingTurnDetailIds(/* @__PURE__ */ new Set());
+    setTurnDetailErrors({});
+  }, [threadId]);
+  const handleLoadTurnDetail = useCallback14((turnId) => {
+    const turn = turns.find((entry) => entry.id === turnId);
+    if (!turn?.hasDeferredItems || !loadTurnDetail || loadedTurnDetails[turnId] || loadingTurnDetailIds.has(turnId)) {
+      return;
+    }
+    setLoadingTurnDetailIds((current) => new Set(current).add(turnId));
+    setTurnDetailErrors((current) => {
+      const next = { ...current };
+      delete next[turnId];
+      return next;
+    });
+    void Promise.resolve(loadTurnDetail(turnId)).then((detail) => {
+      setLoadedTurnDetails((current) => ({ ...current, [turnId]: detail }));
+    }).catch((error) => {
+      setTurnDetailErrors((current) => ({
+        ...current,
+        [turnId]: error instanceof Error ? error.message : "Unable to load turn activity."
+      }));
+    }).finally(() => {
+      setLoadingTurnDetailIds((current) => {
+        const next = new Set(current);
+        next.delete(turnId);
+        return next;
+      });
+    });
+  }, [loadTurnDetail, loadedTurnDetails, loadingTurnDetailIds, turns]);
   const handleToggleCollapse = useCallback14((turnId, currentCollapsed) => {
     setCollapsedTurnOverrides((current) => ({
       ...current,
       [turnId]: !currentCollapsed
     }));
-  }, []);
+    if (currentCollapsed) {
+      handleLoadTurnDetail(turnId);
+    }
+  }, [handleLoadTurnDetail]);
   const collapsedStateForTurn = useCallback14((turn, input) => {
     const override = collapsedTurnOverrides[turn.id];
     if (override !== void 0) {
@@ -18064,7 +18156,10 @@ function ThreadTimelineComponent({
                 }
               ) : null,
               (() => {
-                const displayTurn = mergeOptimisticTurnItems(turn, optimisticTurn);
+                const displayTurn = mergeOptimisticTurnItems(
+                  loadedTurnDetails[turn.id] ?? turn,
+                  optimisticTurn
+                );
                 const rowLivePlan = livePlan?.turnId === turn.id ? livePlan : null;
                 const rowLiveItems = liveItemsTargetTurnId === turn.id ? liveItems?.items ?? null : null;
                 const rowLiveOutput = liveOutputTargetTurnId === turn.id ? liveOutput : "";
@@ -18087,6 +18182,9 @@ function ThreadTimelineComponent({
                     liveOutput: rowLiveOutput,
                     forceActive: rowForceActive,
                     onToggleCollapse: handleToggleCollapse,
+                    onLoadDeferredItems: handleLoadTurnDetail,
+                    deferredItemsLoading: loadingTurnDetailIds.has(turn.id),
+                    deferredItemsError: turnDetailErrors[turn.id] ?? null,
                     onOpenExpandedText: handleOpenExpandedText,
                     onOpenCommandDetail: handleOpenCommandDetail,
                     onOpenToolCallDetail: handleOpenToolCallDetail,
@@ -22233,6 +22331,7 @@ function ThreadDetailSurface({
   const {
     getImageAssetUrl,
     loadHistoryItemDetail,
+    loadTurnDetail,
     openWorkspaceFile,
     openThread,
     cancelPendingSteer
@@ -22245,12 +22344,14 @@ function ThreadDetailSurface({
       onOpenLinkedThread: openThread,
       ...openWorkspaceFile ? { onOpenWorkspaceFile: openWorkspaceFile } : {},
       ...loadHistoryItemDetail ? { onLoadHistoryItemDetail: loadHistoryItemDetail } : {},
+      ...loadTurnDetail ? { onLoadTurnDetail: loadTurnDetail } : {},
       ...cancelPendingSteer ? { cancelPendingSteer } : {}
     }),
     [
       cancelPendingSteer,
       getImageAssetUrl,
       loadHistoryItemDetail,
+      loadTurnDetail,
       openWorkspaceFile,
       openThread
     ]
@@ -22266,7 +22367,7 @@ function ThreadDetailSurface({
   );
   const transcriptItemCount = useMemo19(
     () => detail ? detail.turns.reduce(
-      (count, turn) => count + turn.items.length,
+      (count, turn) => count + turn.items.length + (turn.deferredItemCount ?? 0),
       detail.liveItems?.items.length ?? 0
     ) : 0,
     [detail]

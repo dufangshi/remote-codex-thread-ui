@@ -46,6 +46,101 @@ function completedTurn(items: ThreadTurnDto['items']): ThreadTurnDto {
 }
 
 describe('ThreadTimeline', () => {
+  it('loads deferred turn activity only after the Worked summary is expanded', async () => {
+    let resolveDetail!: (turn: ThreadTurnDto) => void;
+    const detailPromise = new Promise<ThreadTurnDto>((resolve) => {
+      resolveDetail = resolve;
+    });
+    const onLoadTurnDetail = vi.fn(() => detailPromise);
+    const user = {
+      id: 'user-1',
+      kind: 'userMessage' as const,
+      text: 'Keep prompt visible.',
+      createdAt: '2026-07-03T20:10:00.000Z',
+    };
+    const finalAgent = {
+      id: 'agent-final',
+      kind: 'agentMessage' as const,
+      text: 'Final reply stays visible.',
+      createdAt: '2026-07-03T20:11:00.000Z',
+    };
+    const element = render(
+      <ThreadTimeline
+        autoCollapseCompletedTurns={true}
+        liveOutput=""
+        adapter={{ onLoadTurnDetail }}
+        turns={[{
+          ...completedTurn([user, finalAgent]),
+          hasDeferredItems: true,
+          deferredItemCount: 1,
+        }]}
+      />,
+    );
+
+    expect(element.textContent).toContain('Keep prompt visible.');
+    expect(element.textContent).toContain('Final reply stays visible.');
+    expect(element.textContent).not.toContain('Fetched process detail.');
+    const expandButton = Array.from(element.querySelectorAll('button')).find(
+      (button) => button.getAttribute('aria-label')?.includes('Expand turn 1'),
+    );
+    flushSync(() => expandButton?.click());
+
+    expect(onLoadTurnDetail).toHaveBeenCalledTimes(1);
+    expect(onLoadTurnDetail).toHaveBeenCalledWith('turn-1');
+    expect(element.textContent).toContain('Loading activity...');
+
+    resolveDetail({
+      ...completedTurn([
+        user,
+        {
+          id: 'agent-progress',
+          kind: 'agentMessage',
+          text: 'Fetched process detail.',
+          createdAt: '2026-07-03T20:10:30.000Z',
+        },
+        finalAgent,
+      ]),
+      hasDeferredItems: false,
+      deferredItemCount: 0,
+    });
+    await detailPromise;
+    await new Promise((resolve) => window.setTimeout(resolve, 0));
+    flushSync(() => {});
+
+    expect(element.textContent).toContain('Fetched process detail.');
+    expect(element.textContent).not.toContain('Loading activity...');
+  });
+
+  it('replaces a failed image preview with a stable attachment placeholder', () => {
+    const element = render(
+      <ThreadTimeline
+        autoCollapseCompletedTurns={false}
+        liveOutput=""
+        threadId="thread-1"
+        adapter={{
+          getImageAssetUrl: () => '/api/image.png?token=demo',
+        }}
+        turns={[completedTurn([{
+          id: 'user-photo',
+          kind: 'userMessage',
+          text: 'Inspect [PHOTO image.png]',
+        }])]}
+      />,
+    );
+    const image = element.querySelector('img[alt="image.png"]');
+    expect(image).toBeTruthy();
+
+    flushSync(() => {
+      image?.dispatchEvent(new Event('error'));
+    });
+
+    expect(element.querySelector('img[alt="image.png"]')).toBeNull();
+    expect(
+      element.querySelector('[role="img"]')?.getAttribute('aria-label'),
+    ).toBe('image.png, preview unavailable');
+    expect(element.textContent).toContain('PHOTO');
+  });
+
   it('shows Worked when reasoning is the collapsed middle agent bubble', () => {
     const element = render(
       <ThreadTimeline

@@ -293,6 +293,7 @@ export function ThreadDetailSurface({
   const {
     getImageAssetUrl,
     loadHistoryItemDetail,
+    loadTurnDetail,
     openWorkspaceFile,
     openThread,
     cancelPendingSteer,
@@ -310,12 +311,14 @@ export function ThreadDetailSurface({
       ...(loadHistoryItemDetail
         ? { onLoadHistoryItemDetail: loadHistoryItemDetail }
         : {}),
+      ...(loadTurnDetail ? { onLoadTurnDetail: loadTurnDetail } : {}),
       ...(cancelPendingSteer ? { cancelPendingSteer } : {}),
     }),
     [
       cancelPendingSteer,
       getImageAssetUrl,
       loadHistoryItemDetail,
+      loadTurnDetail,
       openWorkspaceFile,
       openThread,
     ],
@@ -335,7 +338,8 @@ export function ThreadDetailSurface({
     () =>
       detail
         ? detail.turns.reduce(
-            (count, turn) => count + turn.items.length,
+            (count, turn) =>
+              count + turn.items.length + (turn.deferredItemCount ?? 0),
             detail.liveItems?.items.length ?? 0,
           )
         : 0,

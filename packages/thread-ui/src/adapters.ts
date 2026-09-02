@@ -3,6 +3,7 @@ import type {
   ShellSessionDto,
   ThreadDto,
   ThreadHistoryItemDetailDto,
+  ThreadTurnDto,
   ThreadShellStateDto,
   UpdateShellInput,
   UpdateThreadSettingsInput,
@@ -22,6 +23,9 @@ export interface ThreadTimelineAdapter {
   onLoadHistoryItemDetail?: (
     itemId: string,
   ) => Promise<ThreadHistoryItemDetailDto> | ThreadHistoryItemDetailDto;
+  onLoadTurnDetail?: (
+    turnId: string,
+  ) => Promise<ThreadTurnDto> | ThreadTurnDto;
 }
 
 export interface ShellSocketHandlers {
@@ -171,6 +175,7 @@ export interface ThreadDetailUiAdapter {
   loadHistoryItemDetail?: (
     itemId: string,
   ) => Promise<ThreadHistoryItemDetailDto> | ThreadHistoryItemDetailDto;
+  loadTurnDetail?: (turnId: string) => Promise<ThreadTurnDto> | ThreadTurnDto;
   getImageAssetUrl?: (path: string) => string;
   openWorkspaceFile?: (input: { path: string; line?: number }) => void;
   workspace?: ThreadWorkspaceAdapter | null;

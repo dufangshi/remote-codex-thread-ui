@@ -85,6 +85,52 @@ function tokenizeUserMessageText(text: string): UserMessageSegment[] {
   return segments;
 }
 
+function GraphChatPhotoAttachment({
+  imageUrl,
+  label,
+  path,
+}: {
+  imageUrl: string | null;
+  label: string;
+  path: string;
+}) {
+  const [failed, setFailed] = useState(false);
+
+  useEffect(() => {
+    setFailed(false);
+  }, [imageUrl]);
+
+  return (
+    <span className="mx-[0.14rem] inline-flex align-middle">
+      <span className="inline-flex max-w-full flex-col rounded-[1rem] border border-sky-300/28 bg-sky-300/[0.08] p-1.5 shadow-sm shadow-stone-950/20">
+        {imageUrl && !failed ? (
+          <img
+            src={imageUrl}
+            alt={label}
+            className="h-[4.5rem] w-[6rem] rounded-[0.75rem] bg-stone-950 object-contain"
+            loading="lazy"
+            onError={() => setFailed(true)}
+          />
+        ) : (
+          <span
+            className="inline-flex h-[4.5rem] w-[6rem] items-center justify-center rounded-[0.75rem] bg-stone-950 text-[10px] font-semibold text-sky-100"
+            role="img"
+            aria-label={failed ? `${label}, preview unavailable` : label}
+          >
+            PHOTO
+          </span>
+        )}
+        <span
+          className="mt-1 max-w-[7rem] truncate text-[10px] font-medium tracking-[0.08em] text-sky-50"
+          title={path}
+        >
+          {label}
+        </span>
+      </span>
+    </span>
+  );
+}
+
 export function GraphChatLinkifiedPlainText({ text }: { text: string }) {
   const parts: ReactNode[] = [];
   let cursor = 0;
@@ -323,31 +369,12 @@ export const GraphChatUserMessageBody = memo(
             const label = basenameFromAssetPath(segment.path) || 'Attached image';
 
             return (
-              <span
+              <GraphChatPhotoAttachment
                 key={segment.key}
-                className="mx-[0.14rem] inline-flex align-middle"
-              >
-                <span className="inline-flex max-w-full flex-col rounded-[1rem] border border-sky-300/28 bg-sky-300/[0.08] p-1.5 shadow-sm shadow-stone-950/20">
-                  {imageUrl ? (
-                    <img
-                      src={imageUrl}
-                      alt={label}
-                      className="h-[4.5rem] w-[6rem] rounded-[0.75rem] bg-stone-950 object-contain"
-                      loading="lazy"
-                    />
-                  ) : (
-                    <span className="inline-flex h-[4.5rem] w-[6rem] items-center justify-center rounded-[0.75rem] bg-stone-950 text-[10px] text-sky-100">
-                      PHOTO
-                    </span>
-                  )}
-                  <span
-                    className="mt-1 max-w-[7rem] truncate text-[10px] font-medium tracking-[0.08em] text-sky-50"
-                    title={segment.path}
-                  >
-                    {label}
-                  </span>
-                </span>
-              </span>
+                imageUrl={imageUrl}
+                label={label}
+                path={segment.path}
+              />
             );
           }
 

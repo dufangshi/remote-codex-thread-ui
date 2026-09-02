@@ -382,6 +382,9 @@ interface ThreadTurnRowProps {
   liveOutput: string;
   forceActive?: boolean;
   onToggleCollapse: (turnId: string, currentCollapsed: boolean) => void;
+  onLoadDeferredItems?: (turnId: string) => void;
+  deferredItemsLoading?: boolean;
+  deferredItemsError?: string | null;
   onOpenExpandedText: OpenExpandedTextHandler;
   onOpenCommandDetail: OpenCommandDetailHandler;
   onOpenToolCallDetail: OpenToolCallDetailHandler;
@@ -560,6 +563,9 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
   liveOutput,
   forceActive = false,
   onToggleCollapse,
+  onLoadDeferredItems = () => {},
+  deferredItemsLoading = false,
+  deferredItemsError = null,
   onOpenExpandedText,
   onOpenCommandDetail,
   onOpenToolCallDetail,
@@ -702,21 +708,44 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
     () => formatWorkedDuration(turn.startedAt, mergedItems),
     [mergedItems, turn.startedAt],
   );
-  const hasCollapsedHiddenItems = collapsedSummary.hiddenEntries.length > 0;
+  const hasCollapsedHiddenItems =
+    collapsedSummary.hiddenEntries.length > 0 || turn.hasDeferredItems === true;
   const effectiveCollapsed = isCollapsed && hasCollapsedHiddenItems;
   const canToggleWorkedSummary =
     isTerminalTurnStatus(turn.status) && hasCollapsedHiddenItems;
   const expandedWorkedToggleNode = canToggleWorkedSummary && !effectiveCollapsed ? (
-    <button
-      type="button"
-      className="thread-graph-worked-summary group flex w-full items-center gap-2 py-2 text-left text-sm transition"
-      onClick={() => onToggleCollapse(turn.id, false)}
-      aria-label={`${workedLabel}. Collapse turn ${absoluteIndex}`}
-    >
-      <span className="thread-graph-worked-label shrink-0">{workedLabel}</span>
-      <ChevronDown className="h-4 w-4 shrink-0 transition group-hover:translate-y-0.5" />
-      <span className="thread-graph-worked-rule h-px min-w-0 flex-1" aria-hidden="true" />
-    </button>
+    deferredItemsLoading ? (
+      <div
+        className="thread-graph-worked-summary flex w-full items-center gap-2 py-2 text-sm"
+        aria-live="polite"
+      >
+        <span className="thread-graph-worked-label shrink-0">Loading activity...</span>
+        <span className="thread-graph-worked-rule h-px min-w-0 flex-1" aria-hidden="true" />
+      </div>
+    ) : deferredItemsError ? (
+      <button
+        type="button"
+        className="thread-graph-worked-summary group flex w-full items-center gap-2 py-2 text-left text-sm transition"
+        onClick={() => onLoadDeferredItems(turn.id)}
+        aria-label={`Retry loading activity for turn ${absoluteIndex}`}
+        title={deferredItemsError}
+      >
+        <span className="thread-graph-worked-label shrink-0">Retry activity</span>
+        <ChevronRight className="h-4 w-4 shrink-0 transition group-hover:translate-x-0.5" />
+        <span className="thread-graph-worked-rule h-px min-w-0 flex-1" aria-hidden="true" />
+      </button>
+    ) : (
+      <button
+        type="button"
+        className="thread-graph-worked-summary group flex w-full items-center gap-2 py-2 text-left text-sm transition"
+        onClick={() => onToggleCollapse(turn.id, false)}
+        aria-label={`${workedLabel}. Collapse turn ${absoluteIndex}`}
+      >
+        <span className="thread-graph-worked-label shrink-0">{workedLabel}</span>
+        <ChevronDown className="h-4 w-4 shrink-0 transition group-hover:translate-y-0.5" />
+        <span className="thread-graph-worked-rule h-px min-w-0 flex-1" aria-hidden="true" />
+      </button>
+    )
   ) : null;
   const collapsedSummaryNode = isTerminalTurnStatus(turn.status) && hasCollapsedHiddenItems ? (
     <div className="thread-graph-turn-collapsed-summary space-y-2">

@@ -87,6 +87,9 @@ export interface ThreadTimelineProps {
   onLoadHistoryItemDetail?: (
     itemId: string,
   ) => Promise<ThreadHistoryItemDetailDto> | ThreadHistoryItemDetailDto;
+  onLoadTurnDetail?: (
+    turnId: string,
+  ) => Promise<ThreadTurnDto> | ThreadTurnDto;
   onOpenThread?: (threadId: string) => void;
   onSelectArtifact?: (input: {
     item: ThreadHistoryItemDto & { kind: 'artifact' };
@@ -156,6 +159,7 @@ function ThreadTimelineComponent({
   optimisticSteers = [],
   optimisticTurn = null,
   onLoadHistoryItemDetail,
+  onLoadTurnDetail,
   onOpenThread,
   onSelectArtifact,
   onSelectHistoryItemDetail,
@@ -170,6 +174,11 @@ function ThreadTimelineComponent({
   const [collapsedTurnOverrides, setCollapsedTurnOverrides] = useState<Record<string, boolean>>(
     {},
   );
+  const [loadedTurnDetails, setLoadedTurnDetails] = useState<Record<string, ThreadTurnDto>>({});
+  const [loadingTurnDetailIds, setLoadingTurnDetailIds] = useState<Set<string>>(
+    () => new Set(),
+  );
+  const [turnDetailErrors, setTurnDetailErrors] = useState<Record<string, string>>({});
   const [cancelingSteerIds, setCancelingSteerIds] = useState<Set<string>>(
     () => new Set(),
   );
@@ -177,6 +186,7 @@ function ThreadTimelineComponent({
   const lastNextTurnTargetIdRef = useRef<string | null>(null);
   const loadHistoryItemDetail =
     adapter?.onLoadHistoryItemDetail ?? onLoadHistoryItemDetail;
+  const loadTurnDetail = adapter?.onLoadTurnDetail ?? onLoadTurnDetail;
   const openLinkedThread = adapter?.onOpenLinkedThread;
   const {
     expandedText,
@@ -235,12 +245,57 @@ function ThreadTimelineComponent({
     ],
   });
 
+  useEffect(() => {
+    setLoadedTurnDetails({});
+    setLoadingTurnDetailIds(new Set());
+    setTurnDetailErrors({});
+  }, [threadId]);
+
+  const handleLoadTurnDetail = useCallback((turnId: string) => {
+    const turn = turns.find((entry) => entry.id === turnId);
+    if (
+      !turn?.hasDeferredItems ||
+      !loadTurnDetail ||
+      loadedTurnDetails[turnId] ||
+      loadingTurnDetailIds.has(turnId)
+    ) {
+      return;
+    }
+
+    setLoadingTurnDetailIds((current) => new Set(current).add(turnId));
+    setTurnDetailErrors((current) => {
+      const next = { ...current };
+      delete next[turnId];
+      return next;
+    });
+    void Promise.resolve(loadTurnDetail(turnId))
+      .then((detail) => {
+        setLoadedTurnDetails((current) => ({ ...current, [turnId]: detail }));
+      })
+      .catch((error) => {
+        setTurnDetailErrors((current) => ({
+          ...current,
+          [turnId]: error instanceof Error ? error.message : 'Unable to load turn activity.',
+        }));
+      })
+      .finally(() => {
+        setLoadingTurnDetailIds((current) => {
+          const next = new Set(current);
+          next.delete(turnId);
+          return next;
+        });
+      });
+  }, [loadTurnDetail, loadedTurnDetails, loadingTurnDetailIds, turns]);
+
   const handleToggleCollapse = useCallback((turnId: string, currentCollapsed: boolean) => {
     setCollapsedTurnOverrides((current) => ({
       ...current,
       [turnId]: !currentCollapsed,
     }));
-  }, []);
+    if (currentCollapsed) {
+      handleLoadTurnDetail(turnId);
+    }
+  }, [handleLoadTurnDetail]);
 
   const collapsedStateForTurn = useCallback((
     turn: TimelineTurn,
@@ -527,7 +582,10 @@ function ThreadTimelineComponent({
                     />
                   ) : null}
                   {(() => {
-                    const displayTurn = mergeOptimisticTurnItems(turn, optimisticTurn);
+                    const displayTurn = mergeOptimisticTurnItems(
+                      loadedTurnDetails[turn.id] ?? turn,
+                      optimisticTurn,
+                    );
                     const rowLivePlan = livePlan?.turnId === turn.id ? livePlan : null;
                     const rowLiveItems =
                       liveItemsTargetTurnId === turn.id ? liveItems?.items ?? null : null;
@@ -560,6 +618,9 @@ function ThreadTimelineComponent({
                     liveOutput={rowLiveOutput}
                     forceActive={rowForceActive}
                     onToggleCollapse={handleToggleCollapse}
+                    onLoadDeferredItems={handleLoadTurnDetail}
+                    deferredItemsLoading={loadingTurnDetailIds.has(turn.id)}
+                    deferredItemsError={turnDetailErrors[turn.id] ?? null}
                     onOpenExpandedText={handleOpenExpandedText}
                     onOpenCommandDetail={handleOpenCommandDetail}
                     onOpenToolCallDetail={handleOpenToolCallDetail}
