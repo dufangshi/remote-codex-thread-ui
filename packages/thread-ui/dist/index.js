@@ -1,4984 +1,14 @@
-var __defProp = Object.defineProperty;
-var __getOwnPropNames = Object.getOwnPropertyNames;
-var __esm = (fn, res) => function __init() {
-  return fn && (res = (0, fn[__getOwnPropNames(fn)[0]])(fn = 0)), res;
-};
-var __export = (target, all) => {
-  for (var name in all)
-    __defProp(target, name, { get: all[name], enumerable: true });
-};
-
-// src/components/graph-ui/utils.ts
-import { clsx } from "clsx";
-import { twMerge } from "tailwind-merge";
-function cn(...inputs) {
-  return twMerge(clsx(inputs));
-}
-var init_utils = __esm({
-  "src/components/graph-ui/utils.ts"() {
-    "use strict";
-  }
-});
-
-// src/components/graph-ui/Button.tsx
-import { Slot } from "@radix-ui/react-slot";
-import { cva } from "class-variance-authority";
-import { jsx as jsx2 } from "react/jsx-runtime";
-function Button({
-  asChild = false,
-  className,
-  size,
-  variant,
-  ...props
-}) {
-  const Comp = asChild ? Slot : "button";
-  return /* @__PURE__ */ jsx2(
-    Comp,
-    {
-      "data-slot": "button",
-      className: cn(buttonVariants({ variant, size, className })),
-      ...props
-    }
-  );
-}
-var buttonVariants;
-var init_Button = __esm({
-  "src/components/graph-ui/Button.tsx"() {
-    "use strict";
-    init_utils();
-    buttonVariants = cva(
-      "inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium outline-none transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40",
-      {
-        variants: {
-          variant: {
-            default: "bg-primary text-primary-foreground shadow-xs hover:bg-primary/90",
-            destructive: "bg-destructive text-white shadow-xs hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:bg-destructive/60 dark:focus-visible:ring-destructive/40",
-            outline: "border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50",
-            secondary: "bg-secondary text-secondary-foreground shadow-xs hover:bg-secondary/80",
-            ghost: "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
-            link: "text-primary underline-offset-4 hover:underline"
-          },
-          size: {
-            default: "h-9 px-4 py-2 has-[>svg]:px-3",
-            sm: "h-8 gap-1.5 rounded-md px-3 has-[>svg]:px-2.5",
-            lg: "h-10 rounded-md px-6 has-[>svg]:px-4",
-            icon: "size-9"
-          }
-        },
-        defaultVariants: {
-          variant: "default",
-          size: "default"
-        }
-      }
-    );
-  }
-});
-
-// src/components/graph-workspace/GraphResizablePanels.tsx
-import { GripVerticalIcon } from "lucide-react";
-import * as ResizablePrimitive from "react-resizable-panels";
-import { jsx as jsx26 } from "react/jsx-runtime";
-function classNames(...values) {
-  return values.filter(Boolean).join(" ");
-}
-function ResizablePanelGroup({
-  className,
-  ...props
-}) {
-  return /* @__PURE__ */ jsx26(
-    ResizablePrimitive.PanelGroup,
-    {
-      "data-slot": "resizable-panel-group",
-      className: classNames(
-        "flex h-full w-full data-[panel-group-direction=vertical]:flex-col",
-        className
-      ),
-      ...props
-    }
-  );
-}
-function ResizablePanel({
-  ...props
-}) {
-  return /* @__PURE__ */ jsx26(ResizablePrimitive.Panel, { "data-slot": "resizable-panel", ...props });
-}
-function ResizableHandle({
-  withHandle,
-  className,
-  ...props
-}) {
-  return /* @__PURE__ */ jsx26(
-    ResizablePrimitive.PanelResizeHandle,
-    {
-      "data-slot": "resizable-handle",
-      className: classNames(
-        "bg-border focus-visible:ring-ring relative flex w-px items-center justify-center after:absolute after:inset-y-0 after:left-1/2 after:w-1 after:-translate-x-1/2 focus-visible:ring-1 focus-visible:ring-offset-1 focus-visible:outline-hidden data-[panel-group-direction=vertical]:h-px data-[panel-group-direction=vertical]:w-full data-[panel-group-direction=vertical]:after:left-0 data-[panel-group-direction=vertical]:after:h-1 data-[panel-group-direction=vertical]:after:w-full data-[panel-group-direction=vertical]:after:translate-x-0 data-[panel-group-direction=vertical]:after:-translate-y-1/2 [&[data-panel-group-direction=vertical]>div]:rotate-90",
-        className
-      ),
-      ...props,
-      children: withHandle ? /* @__PURE__ */ jsx26("div", { className: "bg-border z-10 flex h-4 w-3 items-center justify-center rounded-xs border", children: /* @__PURE__ */ jsx26(GripVerticalIcon, { className: "size-2.5" }) }) : null
-    }
-  );
-}
-var init_GraphResizablePanels = __esm({
-  "src/components/graph-workspace/GraphResizablePanels.tsx"() {
-    "use strict";
-  }
-});
-
-// src/components/graph-workspace/GraphAccordion.tsx
-import * as AccordionPrimitive from "@radix-ui/react-accordion";
-import { ChevronDownIcon } from "lucide-react";
-import { jsx as jsx30, jsxs as jsxs24 } from "react/jsx-runtime";
-function classNames2(...values) {
-  return values.filter(Boolean).join(" ");
-}
-function Accordion({
-  ...props
-}) {
-  return /* @__PURE__ */ jsx30(AccordionPrimitive.Root, { "data-slot": "accordion", ...props });
-}
-function AccordionItem({
-  className,
-  ...props
-}) {
-  return /* @__PURE__ */ jsx30(
-    AccordionPrimitive.Item,
-    {
-      "data-slot": "accordion-item",
-      className: classNames2("border-b last:border-b-0", className),
-      ...props
-    }
-  );
-}
-function AccordionTrigger({
-  className,
-  children,
-  ...props
-}) {
-  return /* @__PURE__ */ jsx30(AccordionPrimitive.Header, { className: "flex", children: /* @__PURE__ */ jsxs24(
-    AccordionPrimitive.Trigger,
-    {
-      "data-slot": "accordion-trigger",
-      className: classNames2(
-        "flex flex-1 items-start justify-between gap-4 rounded-md py-4 text-left text-sm font-medium outline-none transition-all hover:underline disabled:pointer-events-none disabled:opacity-50 [&[data-state=open]>svg]:rotate-180",
-        className
-      ),
-      ...props,
-      children: [
-        children,
-        /* @__PURE__ */ jsx30(ChevronDownIcon, { className: "pointer-events-none size-4 shrink-0 translate-y-0.5 text-[var(--theme-fg-muted)] transition-transform duration-200" })
-      ]
-    }
-  ) });
-}
-function AccordionContent({
-  className,
-  children,
-  ...props
-}) {
-  return /* @__PURE__ */ jsx30(
-    AccordionPrimitive.Content,
-    {
-      "data-slot": "accordion-content",
-      className: "overflow-hidden text-sm data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down",
-      ...props,
-      children: /* @__PURE__ */ jsx30("div", { className: classNames2("pb-4 pt-0", className), children })
-    }
-  );
-}
-var init_GraphAccordion = __esm({
-  "src/components/graph-workspace/GraphAccordion.tsx"() {
-    "use strict";
-  }
-});
-
-// src/components/graph-chat/graphChatShiki.ts
-function getGraphChatHighlighter() {
-  graphChatHighlighterPromise ??= Promise.all([
-    import("shiki/core"),
-    import("shiki/engine/javascript"),
-    import("shiki/themes/ayu-light.mjs"),
-    import("shiki/themes/ayu-dark.mjs"),
-    import("shiki/langs/javascript.mjs"),
-    import("shiki/langs/typescript.mjs"),
-    import("shiki/langs/tsx.mjs"),
-    import("shiki/langs/jsx.mjs"),
-    import("shiki/langs/python.mjs"),
-    import("shiki/langs/json.mjs"),
-    import("shiki/langs/bash.mjs"),
-    import("shiki/langs/shellscript.mjs"),
-    import("shiki/langs/yaml.mjs"),
-    import("shiki/langs/toml.mjs"),
-    import("shiki/langs/markdown.mjs"),
-    import("shiki/langs/html.mjs"),
-    import("shiki/langs/css.mjs"),
-    import("shiki/langs/sql.mjs"),
-    import("shiki/langs/csv.mjs"),
-    import("shiki/langs/ruby.mjs"),
-    import("shiki/langs/rust.mjs"),
-    import("shiki/langs/go.mjs"),
-    import("shiki/langs/java.mjs"),
-    import("shiki/langs/c.mjs"),
-    import("shiki/langs/cpp.mjs"),
-    import("shiki/langs/csharp.mjs"),
-    import("shiki/langs/xml.mjs")
-  ]).then(
-    ([
-      { createHighlighterCore },
-      { createJavaScriptRegexEngine },
-      ayuLight,
-      ayuDark,
-      javascript,
-      typescript,
-      tsx,
-      jsx76,
-      python,
-      json,
-      bash,
-      shellscript,
-      yaml,
-      toml,
-      markdown,
-      html,
-      css,
-      sql,
-      csv,
-      ruby,
-      rust,
-      go,
-      java,
-      c,
-      cpp,
-      csharp,
-      xml
-    ]) => createHighlighterCore({
-      engine: createJavaScriptRegexEngine(),
-      themes: [ayuLight.default, ayuDark.default],
-      langs: [
-        javascript.default,
-        typescript.default,
-        tsx.default,
-        jsx76.default,
-        python.default,
-        json.default,
-        bash.default,
-        shellscript.default,
-        yaml.default,
-        toml.default,
-        markdown.default,
-        html.default,
-        css.default,
-        sql.default,
-        csv.default,
-        ruby.default,
-        rust.default,
-        go.default,
-        java.default,
-        c.default,
-        cpp.default,
-        csharp.default,
-        xml.default
-      ]
-    })
-  );
-  return graphChatHighlighterPromise;
-}
-var graphChatHighlighterPromise;
-var init_graphChatShiki = __esm({
-  "src/components/graph-chat/graphChatShiki.ts"() {
-    "use strict";
-    graphChatHighlighterPromise = null;
-  }
-});
-
-// src/components/graph-workspace/workspaceTree.ts
-function collectArtifacts(detail) {
-  const artifacts = [];
-  for (const turn of detail.turns) {
-    for (const item of turn.items) {
-      if (item.kind === "artifact" && item.artifact) {
-        artifacts.push(item.artifact);
-      }
-    }
-  }
-  for (const item of detail.liveItems?.items ?? []) {
-    if (item.kind === "artifact" && item.artifact) {
-      artifacts.push(item.artifact);
-    }
-  }
-  return artifacts;
-}
-function sanitizePathSegment(value) {
-  return value.trim().replace(/^\/+|\/+$/g, "").replace(/[^\w.-]+/g, "-").replace(/^-+|-+$/g, "").toLowerCase();
-}
-function extensionOf(path) {
-  return path.split(".").pop()?.toLowerCase() || "";
-}
-function fileNameFromPath(path) {
-  return path.split("/").filter(Boolean).at(-1) ?? path;
-}
-function workspaceTreeNodeToGraphNode(node) {
-  const kind = node.kind === "directory" ? "directory" : "file";
-  const children = (node.children ?? []).map(workspaceTreeNodeToGraphNode);
-  return {
-    id: `workspace:${node.path}`,
-    name: node.name,
-    path: node.path,
-    kind,
-    ...node.size !== void 0 ? { size: node.size } : {},
-    ...node.hasChildren !== void 0 ? { hasChildren: node.hasChildren } : kind === "directory" ? { hasChildren: children.length > 0 } : {},
-    ...node.childrenLoaded !== void 0 ? { childrenLoaded: node.childrenLoaded } : kind === "directory" ? { childrenLoaded: node.children !== void 0 } : {},
-    ...node.truncated !== void 0 ? { truncated: node.truncated } : {},
-    workspaceNode: node,
-    children
-  };
-}
-function replaceWorkspaceNodeChildren(node, targetPath, children, options = {}) {
-  if (node.path === targetPath) {
-    return {
-      ...node,
-      children,
-      hasChildren: children.length > 0,
-      childrenLoaded: true,
-      truncated: options.truncated ?? node.truncated
-    };
-  }
-  if (node.children.length === 0) {
-    return node;
-  }
-  let changed = false;
-  const nextChildren = node.children.map((child) => {
-    const nextChild = replaceWorkspaceNodeChildren(
-      child,
-      targetPath,
-      children,
-      options
-    );
-    if (nextChild !== child) {
-      changed = true;
-    }
-    return nextChild;
-  });
-  return changed ? { ...node, children: nextChildren } : node;
-}
-function findFirstWorkspaceFile(node) {
-  if (node.kind === "file") {
-    return node;
-  }
-  for (const child of node.children) {
-    const found = findFirstWorkspaceFile(child);
-    if (found) {
-      return found;
-    }
-  }
-  return null;
-}
-function findWorkspaceNodeByPath(node, targetPath) {
-  if (!node || targetPath === null) {
-    return null;
-  }
-  if (node.path === targetPath) {
-    return node;
-  }
-  for (const child of node.children) {
-    const found = findWorkspaceNodeByPath(child, targetPath);
-    if (found) {
-      return found;
-    }
-  }
-  return null;
-}
-function normalizeWorkspacePath(path) {
-  return path.trim().replace(/\\/g, "/").replace(/^\.\/+/, "").replace(/^\/+/, "");
-}
-function workspaceRelativeFocusPath(path, workspaceRootPath) {
-  const normalizedPath = normalizeWorkspacePath(path);
-  const normalizedRoot = normalizeWorkspacePath(workspaceRootPath).replace(/\/+$/, "");
-  if (!normalizedRoot || normalizedPath === normalizedRoot) {
-    return normalizedPath === normalizedRoot ? "" : normalizedPath;
-  }
-  return normalizedPath.startsWith(`${normalizedRoot}/`) ? normalizedPath.slice(normalizedRoot.length + 1) : normalizedPath;
-}
-function ancestorDirectoryPaths(path) {
-  const normalized = normalizeWorkspacePath(path);
-  const segments = normalized.split("/").filter(Boolean);
-  segments.pop();
-  const paths = [];
-  let current = "";
-  for (const segment of segments) {
-    current = current ? `${current}/${segment}` : segment;
-    paths.push(current);
-  }
-  return paths;
-}
-function replaceWorkspaceNode(node, targetPath, replacement) {
-  if (node.path === targetPath) {
-    return replacement;
-  }
-  if (node.children.length === 0) {
-    return node;
-  }
-  let changed = false;
-  const children = node.children.map((child) => {
-    const next = replaceWorkspaceNode(child, targetPath, replacement);
-    if (next !== child) {
-      changed = true;
-    }
-    return next;
-  });
-  return changed ? { ...node, children } : node;
-}
-function hasWorkspacePath(node, targetPath) {
-  if (!node || !targetPath) {
-    return false;
-  }
-  if (node.path === targetPath) {
-    return true;
-  }
-  return node.children.some((child) => hasWorkspacePath(child, targetPath));
-}
-function buildMoleculePreviewSnapshot(file) {
-  if (!file) {
-    return null;
-  }
-  const extension = extensionOf(file.path);
-  if (!MOLECULAR_EXTENSIONS.has(extension)) {
-    return null;
-  }
-  return {
-    content: [file.content.endsWith("\n") ? file.content : `${file.content}
-`],
-    format: extension === "extxyz" ? "xyz" : extension,
-    name: file.name,
-    uuid: file.path
-  };
-}
-function languageForPath(path) {
-  const extension = extensionOf(path);
-  if (extension === "tsx" || extension === "jsx") {
-    return "tsx";
-  }
-  if (extension === "yml") {
-    return "yaml";
-  }
-  return extension || "text";
-}
-function ensureDirectory(root, segments) {
-  let current = root;
-  let path = "";
-  for (const segment of segments) {
-    path = path ? `${path}/${segment}` : segment;
-    let child = current.children.find(
-      (node) => node.kind === "directory" && node.name === segment
-    );
-    if (!child) {
-      child = {
-        id: `dir:${path}`,
-        name: segment,
-        path,
-        kind: "directory",
-        children: []
-      };
-      current.children.push(child);
-    }
-    current = child;
-  }
-  return current;
-}
-function addPathNode(root, path, node) {
-  const segments = path.split("/").filter(Boolean);
-  const fileName = segments.pop() ?? node.name;
-  const parent = ensureDirectory(root, segments);
-  parent.children.push({
-    ...node,
-    name: node.name || fileName,
-    path
-  });
-}
-function compareWorkspaceNodes(left, right) {
-  if (left.kind === "directory" && right.kind !== "directory") {
-    return -1;
-  }
-  if (left.kind !== "directory" && right.kind === "directory") {
-    return 1;
-  }
-  return left.name.localeCompare(right.name);
-}
-function sortWorkspaceTree(node) {
-  node.children.sort(compareWorkspaceNodes);
-  for (const child of node.children) {
-    sortWorkspaceTree(child);
-  }
-  return node;
-}
-function collectWorkspaceItems(detail, artifacts, status, activeView) {
-  const root = {
-    id: "root",
-    name: detail.workspace.label ?? "Workspace",
-    path: "",
-    kind: "directory",
-    children: []
-  };
-  const artifactRoot = {
-    id: "artifacts",
-    name: "artifacts",
-    path: "artifacts",
-    kind: "directory",
-    children: []
-  };
-  for (const artifact of artifacts) {
-    const title = artifact.title || artifact.id;
-    const safeName = sanitizePathSegment(title) || artifact.id;
-    artifactRoot.children.push({
-      id: `artifact:${artifact.id}`,
-      name: `${safeName}.artifact`,
-      path: `artifacts/${safeName}.artifact`,
-      kind: "artifact",
-      artifact,
-      preview: artifact.summaryText ?? artifact.type,
-      detail: JSON.stringify(artifact.payload, null, 2),
-      children: []
-    });
-  }
-  const eventRoot = {
-    id: "thread-events",
-    name: "thread-events",
-    path: "thread-events",
-    kind: "directory",
-    children: []
-  };
-  const liveRoot = {
-    id: "live",
-    name: "live",
-    path: "live",
-    kind: "directory",
-    children: []
-  };
-  let sequence = 0;
-  const addEventNode = (turnId, item, live = false) => {
-    sequence += 1;
-    const label = item.kind.replace(/([A-Z])/g, "-$1").toLowerCase();
-    const eventPath = `${live ? "live" : `thread-events/${turnId}`}/${String(
-      sequence
-    ).padStart(3, "0")}-${label}.json`;
-    const preview = "text" in item && typeof item.text === "string" ? item.text.slice(0, 160) : item.kind;
-    const artifact = item.kind === "artifact" && item.artifact ? item.artifact : null;
-    const node = artifact && live ? {
-      id: `live-artifact:${artifact.id}`,
-      name: artifact.title || artifact.id,
-      path: eventPath,
-      kind: "live-artifact",
-      artifact,
-      item,
-      preview: artifact.summaryText ?? artifact.type,
-      detail: JSON.stringify(artifact.payload, null, 2),
-      children: []
-    } : {
-      id: `event:${item.id}`,
-      name: fileNameFromPath(eventPath),
-      path: eventPath,
-      kind: "event",
-      item,
-      preview,
-      detail: JSON.stringify(item, null, 2),
-      children: []
-    };
-    if (live) {
-      liveRoot.children.push(node);
-      return;
-    }
-    addPathNode(eventRoot, eventPath.replace(/^thread-events\//, ""), node);
-  };
-  for (const turn of detail.turns) {
-    for (const item of turn.items) {
-      if (item.kind === "commandExecution" || item.kind === "webSearch" || item.kind === "fileRead" || item.kind === "fileChange" || item.kind === "agentToolCall" || item.kind === "skillToolCall" || item.kind === "toolCall" || item.kind === "hook" || item.kind === "plan" || item.kind === "reasoning") {
-        addEventNode(turn.id, item);
-      }
-    }
-  }
-  for (const item of detail.liveItems?.items ?? []) {
-    addEventNode(detail.thread.activeTurnId ?? "live", item, true);
-  }
-  void status;
-  void activeView;
-  root.children.push(artifactRoot, eventRoot, liveRoot);
-  return sortWorkspaceTree(root);
-}
-function flattenWorkspaceNodes(root) {
-  const map = /* @__PURE__ */ new Map();
-  const visit = (node) => {
-    map.set(node.id, node);
-    for (const child of node.children) {
-      visit(child);
-    }
-  };
-  visit(root);
-  return map;
-}
-function findFirstPreviewNode(node) {
-  if (node.kind === "artifact" || node.kind === "live-artifact" || node.kind === "event" || node.kind === "file") {
-    return node;
-  }
-  for (const child of node.children) {
-    const found = findFirstPreviewNode(child);
-    if (found) {
-      return found;
-    }
-  }
-  return null;
-}
-function collectAncestorPaths(path) {
-  const segments = path.split("/").filter(Boolean);
-  const paths = [];
-  for (let index = 1; index <= segments.length; index += 1) {
-    paths.push(segments.slice(0, index).join("/"));
-  }
-  return paths;
-}
-var MOLECULAR_EXTENSIONS, IMAGE_EXTENSIONS, PDF_EXTENSIONS;
-var init_workspaceTree = __esm({
-  "src/components/graph-workspace/workspaceTree.ts"() {
-    "use strict";
-    MOLECULAR_EXTENSIONS = /* @__PURE__ */ new Set(["xyz", "extxyz", "cif", "pdb"]);
-    IMAGE_EXTENSIONS = /* @__PURE__ */ new Set([
-      "png",
-      "jpg",
-      "jpeg",
-      "gif",
-      "webp",
-      "svg"
-    ]);
-    PDF_EXTENSIONS = /* @__PURE__ */ new Set(["pdf"]);
-  }
-});
-
-// src/components/graph-workspace/GraphWorkspaceCards.tsx
-import { jsx as jsx50, jsxs as jsxs42 } from "react/jsx-runtime";
-function WorkspaceInfoCard({
-  label,
-  children
-}) {
-  return /* @__PURE__ */ jsxs42("section", { className: "thread-workspace-card rounded-lg border p-3", children: [
-    /* @__PURE__ */ jsx50("p", { className: "text-xs font-medium uppercase tracking-[0.14em] text-[var(--theme-fg-muted)]", children: label }),
-    /* @__PURE__ */ jsx50("div", { className: "mt-2 text-sm text-[var(--theme-fg)]", children })
-  ] });
-}
-var init_GraphWorkspaceCards = __esm({
-  "src/components/graph-workspace/GraphWorkspaceCards.tsx"() {
-    "use strict";
-  }
-});
-
-// src/components/graph-ui/Separator.tsx
-import * as SeparatorPrimitive from "@radix-ui/react-separator";
-import { jsx as jsx51 } from "react/jsx-runtime";
-function Separator({
-  className,
-  decorative = true,
-  orientation = "horizontal",
-  ...props
-}) {
-  return /* @__PURE__ */ jsx51(
-    SeparatorPrimitive.Root,
-    {
-      "data-slot": "separator",
-      decorative,
-      orientation,
-      className: cn(
-        "shrink-0 bg-border data-[orientation=horizontal]:h-px data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-full data-[orientation=vertical]:w-px",
-        className
-      ),
-      ...props
-    }
-  );
-}
-var init_Separator = __esm({
-  "src/components/graph-ui/Separator.tsx"() {
-    "use strict";
-    init_utils();
-  }
-});
-
-// src/components/graph-ui/ButtonGroup.tsx
-import { Slot as Slot3 } from "@radix-ui/react-slot";
-import { cva as cva4 } from "class-variance-authority";
-import { jsx as jsx52 } from "react/jsx-runtime";
-function ButtonGroup({
-  className,
-  orientation,
-  ...props
-}) {
-  return /* @__PURE__ */ jsx52(
-    "div",
-    {
-      role: "group",
-      "data-slot": "button-group",
-      "data-orientation": orientation,
-      className: cn(buttonGroupVariants({ orientation }), className),
-      ...props
-    }
-  );
-}
-function ButtonGroupSeparator({
-  className,
-  orientation = "vertical",
-  ...props
-}) {
-  return /* @__PURE__ */ jsx52(
-    Separator,
-    {
-      "data-slot": "button-group-separator",
-      orientation,
-      className: cn(
-        "relative !m-0 self-stretch bg-input data-[orientation=vertical]:h-auto",
-        className
-      ),
-      ...props
-    }
-  );
-}
-var buttonGroupVariants;
-var init_ButtonGroup = __esm({
-  "src/components/graph-ui/ButtonGroup.tsx"() {
-    "use strict";
-    init_Separator();
-    init_utils();
-    buttonGroupVariants = cva4(
-      "flex w-fit items-stretch has-[>[data-slot=button-group]]:gap-2 [&>*]:focus-visible:relative [&>*]:focus-visible:z-10 [&>[data-slot=select-trigger]:not([class*='w-'])]:w-fit [&>input]:flex-1 has-[select[aria-hidden=true]:last-child]:[&>[data-slot=select-trigger]:last-of-type]:rounded-r-md",
-      {
-        variants: {
-          orientation: {
-            horizontal: "[&>*:not(:first-child)]:rounded-l-none [&>*:not(:first-child)]:border-l-0 [&>*:not(:last-child)]:rounded-r-none",
-            vertical: "flex-col [&>*:not(:first-child)]:rounded-t-none [&>*:not(:first-child)]:border-t-0 [&>*:not(:last-child)]:rounded-b-none"
-          }
-        },
-        defaultVariants: {
-          orientation: "horizontal"
-        }
-      }
-    );
-  }
-});
-
-// src/components/graph-ui/Tooltip.tsx
-import * as TooltipPrimitive from "@radix-ui/react-tooltip";
-import { jsx as jsx53, jsxs as jsxs43 } from "react/jsx-runtime";
-function TooltipProvider({
-  delayDuration = 0,
-  ...props
-}) {
-  return /* @__PURE__ */ jsx53(
-    TooltipPrimitive.Provider,
-    {
-      "data-slot": "tooltip-provider",
-      delayDuration,
-      ...props
-    }
-  );
-}
-function Tooltip({ ...props }) {
-  return /* @__PURE__ */ jsx53(TooltipProvider, { children: /* @__PURE__ */ jsx53(TooltipPrimitive.Root, { "data-slot": "tooltip", ...props }) });
-}
-function TooltipTrigger({
-  ...props
-}) {
-  return /* @__PURE__ */ jsx53(TooltipPrimitive.Trigger, { "data-slot": "tooltip-trigger", ...props });
-}
-function TooltipContent({
-  children,
-  className,
-  sideOffset = 0,
-  ...props
-}) {
-  return /* @__PURE__ */ jsx53(TooltipPrimitive.Portal, { children: /* @__PURE__ */ jsxs43(
-    TooltipPrimitive.Content,
-    {
-      "data-slot": "tooltip-content",
-      sideOffset,
-      className: cn(
-        "z-50 w-fit origin-(--radix-tooltip-content-transform-origin) rounded-md bg-foreground px-3 py-1.5 text-balance text-xs text-background animate-in fade-in-0 zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95",
-        className
-      ),
-      ...props,
-      children: [
-        children,
-        /* @__PURE__ */ jsx53(TooltipPrimitive.Arrow, { className: "z-50 size-2.5 translate-y-[calc(-50%_-_2px)] rotate-45 rounded-[2px] bg-foreground fill-foreground" })
-      ]
-    }
-  ) });
-}
-var init_Tooltip = __esm({
-  "src/components/graph-ui/Tooltip.tsx"() {
-    "use strict";
-    init_utils();
-  }
-});
-
-// src/components/graph-workspace/GraphMoleculeViewerControls.tsx
-import { jsx as jsx54, jsxs as jsxs44 } from "react/jsx-runtime";
-function moleculeSlug(value) {
-  const normalized = value?.trim().replace(/[^a-zA-Z0-9_-]+/g, "-").replace(/^-+|-+$/g, "");
-  return normalized || "molecule";
-}
-function downloadTextFile(content, filename) {
-  const blob = new Blob([content], { type: "text/plain" });
-  const url = URL.createObjectURL(blob);
-  const anchor = document.createElement("a");
-  anchor.href = url;
-  anchor.download = filename;
-  anchor.click();
-  URL.revokeObjectURL(url);
-}
-function GraphMoleculeIconButton({
-  children,
-  disabled,
-  label,
-  onClick
-}) {
-  return /* @__PURE__ */ jsxs44(Tooltip, { children: [
-    /* @__PURE__ */ jsx54(TooltipTrigger, { asChild: true, children: /* @__PURE__ */ jsx54(
-      Button,
-      {
-        type: "button",
-        variant: "outline",
-        size: "icon",
-        className: "thread-graph-molecule-button size-8",
-        disabled,
-        onClick,
-        title: label,
-        "aria-label": label,
-        children
-      }
-    ) }),
-    /* @__PURE__ */ jsx54(TooltipContent, { children: /* @__PURE__ */ jsx54("p", { children: label }) })
-  ] });
-}
-function GraphMoleculeButtonGroup({
-  children,
-  className = ""
-}) {
-  return /* @__PURE__ */ jsx54(ButtonGroup, { className: `thread-graph-molecule-button-group ${className}`, children });
-}
-var init_GraphMoleculeViewerControls = __esm({
-  "src/components/graph-workspace/GraphMoleculeViewerControls.tsx"() {
-    "use strict";
-    init_Button();
-    init_ButtonGroup();
-    init_Tooltip();
-  }
-});
-
-// src/components/graph-workspace/GraphMoleculeViewerLowerButtonGroup.tsx
 import {
-  AlignVerticalDistributeCenter,
-  ArrowUpRight,
-  Box,
-  Boxes,
-  Bubbles,
-  CircleX,
-  Eraser,
-  Rotate3d,
-  Send,
-  Share2,
-  Spline,
-  Trash2 as Trash22,
-  Waypoints
-} from "lucide-react";
-import { Fragment as Fragment15, jsx as jsx55, jsxs as jsxs45 } from "react/jsx-runtime";
-function GraphMoleculeViewerLowerButtonGroup({
-  cameraInfo,
-  onClearSelection,
-  onClearStaged,
-  onSendSelection,
-  onSendStaged,
-  onStageSelection,
-  onToggleUnitCell,
-  selectedAtomLabels,
-  selectedSerials,
-  stagedAtoms,
-  stagedMolecules,
-  unitCellAvailable,
-  unitCellVisible
-}) {
-  const hasSelection = selectedSerials.length > 0;
-  const hasStaged = stagedAtoms > 0;
-  return /* @__PURE__ */ jsxs45(Fragment15, { children: [
-    /* @__PURE__ */ jsxs45("div", { className: "flex w-full justify-between gap-2 overflow-x-auto", children: [
-      /* @__PURE__ */ jsxs45(GraphMoleculeButtonGroup, { children: [
-        /* @__PURE__ */ jsx55(GraphMoleculeIconButton, { label: "Distance", children: /* @__PURE__ */ jsx55(AlignVerticalDistributeCenter, { className: "size-4" }) }),
-        /* @__PURE__ */ jsx55(GraphMoleculeIconButton, { label: "Connectivity", children: /* @__PURE__ */ jsx55(Share2, { className: "size-4" }) }),
-        /* @__PURE__ */ jsx55(GraphMoleculeIconButton, { label: "Angle", children: /* @__PURE__ */ jsx55(Waypoints, { className: "size-4" }) }),
-        /* @__PURE__ */ jsx55(GraphMoleculeIconButton, { label: "Dihedral", children: /* @__PURE__ */ jsx55(Spline, { className: "size-4" }) }),
-        /* @__PURE__ */ jsx55(GraphMoleculeIconButton, { label: "Add dummy atoms", children: /* @__PURE__ */ jsx55(Bubbles, { className: "size-4" }) }),
-        /* @__PURE__ */ jsx55(GraphMoleculeIconButton, { label: "Delete atoms", children: /* @__PURE__ */ jsx55(CircleX, { className: "size-4" }) }),
-        /* @__PURE__ */ jsx55(GraphMoleculeIconButton, { label: "Rotate", children: /* @__PURE__ */ jsx55(Rotate3d, { className: "size-4" }) })
-      ] }),
-      /* @__PURE__ */ jsxs45(GraphMoleculeButtonGroup, { children: [
-        /* @__PURE__ */ jsx55(
-          GraphMoleculeIconButton,
-          {
-            label: unitCellVisible ? "Hide unit cell" : "Show unit cell",
-            disabled: !unitCellAvailable,
-            onClick: onToggleUnitCell,
-            children: /* @__PURE__ */ jsx55(Boxes, { className: "size-4" })
-          }
-        ),
-        /* @__PURE__ */ jsx55(
-          GraphMoleculeIconButton,
-          {
-            label: "Clear selection",
-            disabled: !hasSelection,
-            onClick: onClearSelection,
-            children: /* @__PURE__ */ jsx55(Trash22, { className: "size-4" })
-          }
-        ),
-        /* @__PURE__ */ jsx55(
-          GraphMoleculeIconButton,
-          {
-            label: "Send selection",
-            disabled: !hasSelection,
-            onClick: onSendSelection,
-            children: /* @__PURE__ */ jsx55(Send, { className: "size-4" })
-          }
-        ),
-        /* @__PURE__ */ jsx55(
-          GraphMoleculeIconButton,
-          {
-            label: "Stage current selection",
-            disabled: !hasSelection,
-            onClick: onStageSelection,
-            children: /* @__PURE__ */ jsx55(Box, { className: "size-4" })
-          }
-        ),
-        /* @__PURE__ */ jsx55(
-          GraphMoleculeIconButton,
-          {
-            label: "Clear staged selections",
-            disabled: !hasStaged,
-            onClick: onClearStaged,
-            children: /* @__PURE__ */ jsx55(Eraser, { className: "size-4" })
-          }
-        ),
-        /* @__PURE__ */ jsx55(
-          GraphMoleculeIconButton,
-          {
-            label: "Send staged selections",
-            disabled: !hasStaged,
-            onClick: onSendStaged,
-            children: /* @__PURE__ */ jsx55(ArrowUpRight, { className: "size-4" })
-          }
-        )
-      ] })
-    ] }),
-    cameraInfo ? /* @__PURE__ */ jsxs45("div", { className: "thread-graph-molecule-camera", children: [
-      /* @__PURE__ */ jsxs45("div", { children: [
-        /* @__PURE__ */ jsx55("strong", { children: "XYZ: " }),
-        "x=",
-        cameraInfo.position.x.toFixed(1),
-        " y=",
-        cameraInfo.position.y.toFixed(1),
-        " z=",
-        cameraInfo.position.z.toFixed(1),
-        /* @__PURE__ */ jsx55("br", {}),
-        /* @__PURE__ */ jsx55("strong", { children: "Quat: " }),
-        "qx=",
-        cameraInfo.position.qx.toFixed(2),
-        " qy=",
-        cameraInfo.position.qy.toFixed(2),
-        " qz=",
-        cameraInfo.position.qz.toFixed(2),
-        " qw=",
-        cameraInfo.position.qw.toFixed(2)
-      ] }),
-      /* @__PURE__ */ jsx55("div", { className: "thread-graph-molecule-camera-divider" }),
-      /* @__PURE__ */ jsxs45("div", { className: "flex flex-col gap-1 text-[10px]", children: [
-        /* @__PURE__ */ jsxs45("div", { children: [
-          "Selected atoms:",
-          " ",
-          selectedSerials.length > 0 ? selectedSerials.map(
-            (serial) => `${selectedAtomLabels[serial] ?? "Atom"}(${serial})`
-          ).join(", ") : "None"
-        ] }),
-        /* @__PURE__ */ jsxs45("div", { children: [
-          "Staged: ",
-          stagedMolecules,
-          " molecule(s), ",
-          stagedAtoms,
-          " atom(s)"
-        ] })
-      ] })
-    ] }) : null
-  ] });
-}
-var init_GraphMoleculeViewerLowerButtonGroup = __esm({
-  "src/components/graph-workspace/GraphMoleculeViewerLowerButtonGroup.tsx"() {
-    "use strict";
-    init_GraphMoleculeViewerControls();
-  }
-});
-
-// src/components/graph-workspace/GraphMoleculeViewerUpperButtonGroup.tsx
-import { Box as Box2, Camera, Copy as Copy4, Download, RotateCcw, ZoomIn, ZoomOut } from "lucide-react";
-import { jsx as jsx56, jsxs as jsxs46 } from "react/jsx-runtime";
-function GraphMoleculeViewerUpperButtonGroup({
-  currentIndex,
-  exportContent,
-  moleculeId,
-  onScreenshot,
-  viewerRef,
-  xyzContent,
-  xyzFormat
-}) {
-  const slug = moleculeSlug(moleculeId);
-  async function handleCopyXYZ() {
-    if (!xyzContent) {
-      return;
-    }
-    await navigator.clipboard.writeText(xyzContent);
-  }
-  function handleDownloadXYZ() {
-    if (!xyzContent) {
-      return;
-    }
-    downloadTextFile(
-      xyzContent,
-      `${slug}_step_${currentIndex + 1}.${xyzFormat || "xyz"}`
-    );
-  }
-  function handleDownloadAllXYZ() {
-    if (!exportContent) {
-      return;
-    }
-    downloadTextFile(exportContent, `${slug}_trajectory.${xyzFormat || "xyz"}`);
-  }
-  function handleZoomIn() {
-    if (!viewerRef.current) {
-      return;
-    }
-    viewerRef.current.zoom(1.2);
-    viewerRef.current.render();
-  }
-  function handleZoomOut() {
-    if (!viewerRef.current) {
-      return;
-    }
-    viewerRef.current.zoom(0.8);
-    viewerRef.current.render();
-  }
-  function handleReset() {
-    if (!viewerRef.current) {
-      return;
-    }
-    viewerRef.current.zoomTo();
-    viewerRef.current.setCameraParameters({});
-    viewerRef.current.render();
-  }
-  return /* @__PURE__ */ jsxs46(GraphMoleculeButtonGroup, { className: "ml-auto justify-end", children: [
-    /* @__PURE__ */ jsx56(
-      GraphMoleculeIconButton,
-      {
-        label: "Copy current structure",
-        onClick: () => void handleCopyXYZ(),
-        disabled: !xyzContent,
-        children: /* @__PURE__ */ jsx56(Copy4, { className: "size-3.5" })
-      }
-    ),
-    /* @__PURE__ */ jsx56(
-      GraphMoleculeIconButton,
-      {
-        label: "Download current structure",
-        onClick: handleDownloadXYZ,
-        disabled: !xyzContent,
-        children: /* @__PURE__ */ jsx56(Download, { className: "size-3.5" })
-      }
-    ),
-    /* @__PURE__ */ jsx56(
-      GraphMoleculeIconButton,
-      {
-        label: "Download full trajectory",
-        onClick: handleDownloadAllXYZ,
-        disabled: !exportContent,
-        children: /* @__PURE__ */ jsx56(Box2, { className: "size-3.5" })
-      }
-    ),
-    /* @__PURE__ */ jsx56(
-      GraphMoleculeIconButton,
-      {
-        label: "Copy screenshot",
-        onClick: onScreenshot,
-        disabled: !viewerRef.current || !xyzContent,
-        children: /* @__PURE__ */ jsx56(Camera, { className: "size-3.5" })
-      }
-    ),
-    /* @__PURE__ */ jsx56(ButtonGroupSeparator, { className: "thread-graph-molecule-button-divider" }),
-    /* @__PURE__ */ jsx56(
-      GraphMoleculeIconButton,
-      {
-        label: "Zoom in",
-        onClick: handleZoomIn,
-        disabled: !viewerRef.current || !xyzContent,
-        children: /* @__PURE__ */ jsx56(ZoomIn, { className: "size-3.5" })
-      }
-    ),
-    /* @__PURE__ */ jsx56(
-      GraphMoleculeIconButton,
-      {
-        label: "Zoom out",
-        onClick: handleZoomOut,
-        disabled: !viewerRef.current || !xyzContent,
-        children: /* @__PURE__ */ jsx56(ZoomOut, { className: "size-3.5" })
-      }
-    ),
-    /* @__PURE__ */ jsx56(
-      GraphMoleculeIconButton,
-      {
-        label: "Reset camera",
-        onClick: handleReset,
-        disabled: !viewerRef.current || !xyzContent,
-        children: /* @__PURE__ */ jsx56(RotateCcw, { className: "size-3.5" })
-      }
-    )
-  ] });
-}
-var init_GraphMoleculeViewerUpperButtonGroup = __esm({
-  "src/components/graph-workspace/GraphMoleculeViewerUpperButtonGroup.tsx"() {
-    "use strict";
-    init_ButtonGroup();
-    init_GraphMoleculeViewerControls();
-  }
-});
-
-// src/components/graph-workspace/load3Dmol.ts
-async function load3Dmol() {
-  if (typeof window === "undefined") {
-    throw new Error("3Dmol is only available in a browser environment.");
-  }
-  if (window["3Dmol"]) {
-    return window["3Dmol"];
-  }
-  if (!threeDmolPromise) {
-    threeDmolPromise = new Promise((resolve, reject) => {
-      const existingScript = document.querySelector(
-        'script[data-remote-codex-3dmol="true"]'
-      );
-      const handleLoad = () => {
-        if (window["3Dmol"]) {
-          resolve(window["3Dmol"]);
-          return;
-        }
-        reject(new Error("3Dmol loaded without exposing the expected global."));
-      };
-      if (existingScript) {
-        existingScript.addEventListener("load", handleLoad, { once: true });
-        existingScript.addEventListener(
-          "error",
-          () => reject(new Error("Unable to load 3Dmol viewer runtime.")),
-          { once: true }
-        );
-        return;
-      }
-      const script = document.createElement("script");
-      script.src = "/vendor/3Dmol-min.js";
-      script.async = true;
-      script.dataset.remoteCodex3dmol = "true";
-      script.addEventListener("load", handleLoad, { once: true });
-      script.addEventListener(
-        "error",
-        () => reject(new Error("Unable to load 3Dmol viewer runtime.")),
-        { once: true }
-      );
-      document.head.appendChild(script);
-    });
-  }
-  return threeDmolPromise;
-}
-var threeDmolPromise;
-var init_load3Dmol = __esm({
-  "src/components/graph-workspace/load3Dmol.ts"() {
-    "use strict";
-    threeDmolPromise = null;
-  }
-});
-
-// src/components/graph-ui/Slider.tsx
-import * as SliderPrimitive from "@radix-ui/react-slider";
-import { useMemo as useMemo11 } from "react";
-import { jsx as jsx57, jsxs as jsxs47 } from "react/jsx-runtime";
-function Slider({
-  className,
-  defaultValue,
-  max = 100,
-  min = 0,
-  value,
-  ...props
-}) {
-  const values = useMemo11(
-    () => Array.isArray(value) ? value : Array.isArray(defaultValue) ? defaultValue : [min, max],
-    [defaultValue, max, min, value]
-  );
-  return /* @__PURE__ */ jsxs47(
-    SliderPrimitive.Root,
-    {
-      "data-slot": "slider",
-      ...defaultValue !== void 0 ? { defaultValue } : {},
-      ...value !== void 0 ? { value } : {},
-      min,
-      max,
-      className: cn(
-        "relative flex w-full touch-none select-none items-center data-[disabled]:opacity-50 data-[orientation=vertical]:h-full data-[orientation=vertical]:min-h-44 data-[orientation=vertical]:w-auto data-[orientation=vertical]:flex-col",
-        className
-      ),
-      ...props,
-      children: [
-        /* @__PURE__ */ jsx57(
-          SliderPrimitive.Track,
-          {
-            "data-slot": "slider-track",
-            className: "relative grow overflow-hidden rounded-full bg-muted data-[orientation=horizontal]:h-1.5 data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-full data-[orientation=vertical]:w-1.5",
-            children: /* @__PURE__ */ jsx57(
-              SliderPrimitive.Range,
-              {
-                "data-slot": "slider-range",
-                className: "absolute bg-primary data-[orientation=horizontal]:h-full data-[orientation=vertical]:w-full"
-              }
-            )
-          }
-        ),
-        Array.from({ length: values.length }, (_, index) => /* @__PURE__ */ jsx57(
-          SliderPrimitive.Thumb,
-          {
-            "data-slot": "slider-thumb",
-            className: "block size-4 shrink-0 rounded-full border border-primary bg-white shadow-sm transition-[color,box-shadow] hover:ring-4 focus-visible:outline-hidden focus-visible:ring-4 disabled:pointer-events-none disabled:opacity-50"
-          },
-          index
-        ))
-      ]
-    }
-  );
-}
-var init_Slider = __esm({
-  "src/components/graph-ui/Slider.tsx"() {
-    "use strict";
-    init_utils();
-  }
-});
-
-// src/components/graph-workspace/GraphMoleculeViewerData.ts
-function normalizeFormat(format) {
-  const normalized = format?.trim().toLowerCase();
-  if (!normalized || normalized === "extxyz") {
-    return "xyz";
-  }
-  return normalized;
-}
-function splitXyzTrajectory(content) {
-  const lines = content.replace(/\r\n/g, "\n").replace(/\r/g, "\n").split("\n");
-  const frames = [];
-  let cursor = 0;
-  while (cursor < lines.length) {
-    while (cursor < lines.length && lines[cursor]?.trim() === "") {
-      cursor += 1;
-    }
-    if (cursor >= lines.length) {
-      break;
-    }
-    const atomCount = Number.parseInt(lines[cursor]?.trim() ?? "", 10);
-    if (!Number.isFinite(atomCount) || atomCount < 0) {
-      return [content];
-    }
-    const frameLineCount = atomCount + 2;
-    if (cursor + frameLineCount > lines.length) {
-      return [content];
-    }
-    frames.push(`${lines.slice(cursor, cursor + frameLineCount).join("\n")}
-`);
-    cursor += frameLineCount;
-  }
-  return frames.length > 0 ? frames : [content];
-}
-function normalizeSnapshotFrames(content, format) {
-  if (format !== "xyz") {
-    return content;
-  }
-  return content.flatMap((frame) => splitXyzTrajectory(frame));
-}
-function joinFramesForExport(content) {
-  return content.map((frame) => `${frame.replace(/\s+$/g, "")}
-`).join("");
-}
-function readGraphMoleculeViewerData(source) {
-  if (!source) {
-    return {
-      format: "xyz",
-      frames: [],
-      exportContent: ""
-    };
-  }
-  if (typeof source === "string") {
-    const frames2 = normalizeSnapshotFrames([source], "xyz");
-    return {
-      frames: frames2,
-      format: "xyz",
-      exportContent: joinFramesForExport(frames2)
-    };
-  }
-  const format = normalizeFormat(source.format);
-  const content = source.content.filter((frame) => frame.trim().length > 0);
-  const frames = normalizeSnapshotFrames(content, format);
-  return {
-    frames,
-    format,
-    exportContent: joinFramesForExport(content)
-  };
-}
-var init_GraphMoleculeViewerData = __esm({
-  "src/components/graph-workspace/GraphMoleculeViewerData.ts"() {
-    "use strict";
-  }
-});
-
-// src/components/graph-workspace/GraphMoleculeViewer.tsx
-import { Pause, Play } from "lucide-react";
-import { useCallback as useCallback17, useEffect as useEffect21, useMemo as useMemo12, useRef as useRef15, useState as useState28 } from "react";
-import { jsx as jsx58, jsxs as jsxs48 } from "react/jsx-runtime";
-function GraphMoleculeViewer({
-  className = "",
-  moleculeId = null,
-  onScreenshot,
-  onSelectionChange,
-  source,
-  title = "PyMOL-style (PDB/CIF)"
-}) {
-  const viewerHostRef = useRef15(null);
-  const viewerRef = useRef15(null);
-  const modelRef = useRef15(null);
-  const zoomedRef = useRef15(false);
-  const unitCellPreferenceRef = useRef15(true);
-  const [cameraInfo, setCameraInfo] = useState28(
-    null
-  );
-  const [currentIndex, setCurrentIndex] = useState28(0);
-  const [hoveredAtom, setHoveredAtom] = useState28(null);
-  const [isPlaying, setIsPlaying] = useState28(false);
-  const [selectedAtomLabels, setSelectedAtomLabels] = useState28({});
-  const [selectedSerials, setSelectedSerials] = useState28([]);
-  const [stagedSelections, setStagedSelections] = useState28({});
-  const [unitCellAvailable, setUnitCellAvailable] = useState28(false);
-  const [unitCellVisible, setUnitCellVisible] = useState28(false);
-  const [viewerInitError, setViewerInitError] = useState28(null);
-  const viewerData = useMemo12(() => readGraphMoleculeViewerData(source), [source]);
-  const xyzArray = viewerData.frames;
-  const xyzFormat = viewerData.format;
-  const xyzContent = xyzArray[currentIndex] ?? null;
-  const isLive = xyzArray.length > 0 && currentIndex === xyzArray.length - 1;
-  const moleculeKey = moleculeId ?? "current";
-  const stagedAtoms = Object.values(stagedSelections).reduce(
-    (sum, atoms) => sum + atoms.length,
-    0
-  );
-  const stagedMolecules = Object.keys(stagedSelections).length;
-  useEffect21(() => {
-    if (xyzArray.length === 0) {
-      setCurrentIndex(0);
-      return;
-    }
-    setCurrentIndex(xyzArray.length - 1);
-  }, [xyzArray.length]);
-  useEffect21(() => {
-    if (!isPlaying || xyzArray.length <= 1) {
-      return;
-    }
-    const interval = window.setInterval(() => {
-      setCurrentIndex((previous) => {
-        if (previous >= xyzArray.length - 1) {
-          window.clearInterval(interval);
-          setIsPlaying(false);
-          return previous;
-        }
-        return previous + 1;
-      });
-    }, 200);
-    return () => window.clearInterval(interval);
-  }, [isPlaying, xyzArray.length]);
-  useEffect21(() => {
-    const host = viewerHostRef.current;
-    if (!host || viewerRef.current) {
-      return;
-    }
-    let cancelled = false;
-    try {
-      const canvas = document.createElement("canvas");
-      const webGl = canvas.getContext("webgl2") || canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
-      if (!webGl) {
-        setViewerInitError(
-          "WebGL is unavailable in this browser environment. Unable to render 3D viewer."
-        );
-        return;
-      }
-    } catch {
-      setViewerInitError(
-        "WebGL is unavailable in this browser environment. Unable to render 3D viewer."
-      );
-      return;
-    }
-    const resizeViewer = () => {
-      viewerRef.current?.resize();
-      viewerRef.current?.render();
-    };
-    load3Dmol().then(($3Dmol) => {
-      if (cancelled || viewerRef.current) {
-        return;
-      }
-      try {
-        const viewer = $3Dmol.createViewer(host, {});
-        viewerRef.current = viewer;
-        viewer.setBackgroundColor("#f8fafc", 0.8);
-        window.addEventListener("resize", resizeViewer);
-        window.setTimeout(resizeViewer, 100);
-      } catch (error) {
-        console.error("Failed to initialize 3Dmol viewer:", error);
-        setViewerInitError(
-          "Failed to initialize 3D viewer. Please refresh or try another browser."
-        );
-      }
-    }).catch((error) => {
-      console.error("Failed to load 3Dmol viewer runtime:", error);
-      setViewerInitError(
-        "Failed to load 3D viewer runtime. Please refresh or try another browser."
-      );
-    });
-    return () => {
-      cancelled = true;
-      window.removeEventListener("resize", resizeViewer);
-      viewerRef.current = null;
-      modelRef.current = null;
-    };
-  }, []);
-  useEffect21(() => {
-    const viewer = viewerRef.current;
-    if (!viewer || !xyzContent) {
-      return;
-    }
-    try {
-      viewer.removeAllModels();
-      viewer.removeAllShapes();
-      viewer.removeAllLabels();
-      const model = viewer.addModel(xyzContent, xyzFormat || "xyz");
-      modelRef.current = model;
-      model.setStyle({}, { stick: { radius: 0.2 }, sphere: { scale: 0.3 } });
-      const crystalData = model.getCrystData();
-      const hasUnitCell = Boolean(
-        crystalData && typeof crystalData === "object" && Object.keys(crystalData).length
-      );
-      setUnitCellAvailable(hasUnitCell);
-      setUnitCellVisible(hasUnitCell ? unitCellPreferenceRef.current : false);
-      setSelectedSerials([]);
-      setSelectedAtomLabels({});
-      const frameAtomLabels = xyzContent.split("\n").slice(2).map((line) => line.trim()).filter(Boolean).map((line) => line.split(/\s+/)[0] ?? "Atom");
-      if (!zoomedRef.current) {
-        viewer.zoomTo();
-        zoomedRef.current = true;
-      }
-      model.setClickable(
-        {},
-        true,
-        (atom, _viewer, event) => {
-          const serial = atom.serial ?? atom.index;
-          if (serial === void 0) {
-            return;
-          }
-          const label = atom.atom || atom.elem || frameAtomLabels[serial] || "Atom";
-          setSelectedSerials((previous) => {
-            const isMulti = Boolean(
-              event?.shiftKey || event?.metaKey || event?.ctrlKey
-            );
-            const next = !isMulti ? previous.length === 1 && previous[0] === serial ? [] : [serial] : previous.includes(serial) ? previous.filter((entry) => entry !== serial) : [...previous, serial];
-            setSelectedAtomLabels((current) => {
-              if (next.length === 0) {
-                return {};
-              }
-              const labelsBySerial = {};
-              next.forEach((entry) => {
-                labelsBySerial[entry] = current[entry] || frameAtomLabels[entry] || label;
-              });
-              return labelsBySerial;
-            });
-            return next;
-          });
-        }
-      );
-      model.setHoverable(
-        {},
-        true,
-        (atom, _viewer, event) => {
-          if (!event || !atom) {
-            return;
-          }
-          setHoveredAtom({
-            x: event.clientX,
-            y: event.clientY,
-            label: `${atom.atom || atom.elem || "Atom"} (${atom.serial ?? atom.index ?? "?"})`,
-            coords: {
-              x: atom.x.toFixed(2),
-              y: atom.y.toFixed(2),
-              z: atom.z.toFixed(2)
-            }
-          });
-        },
-        () => setHoveredAtom(null)
-      );
-      viewer.render();
-    } catch (error) {
-      console.error("Failed to render molecule:", error);
-      setViewerInitError("Unable to render this molecular structure.");
-    }
-  }, [xyzContent, xyzFormat]);
-  useEffect21(() => {
-    const viewer = viewerRef.current;
-    const model = modelRef.current;
-    if (!viewer || !model) {
-      return;
-    }
-    try {
-      viewer.removeUnitCell(model);
-    } catch {
-    }
-    if (unitCellVisible && unitCellAvailable) {
-      try {
-        viewer.addUnitCell(model, {
-          box: { color: "black", opacity: 1, linewidth: 5 },
-          astyle: { radius: 0.12, mid: 0.85, color: "red", opacity: 0.6 },
-          bstyle: { radius: 0.12, mid: 0.85, color: "green", opacity: 0.6 },
-          cstyle: { radius: 0.12, mid: 0.85, color: "blue", opacity: 0.6 },
-          alabel: "a",
-          blabel: "b",
-          clabel: "c"
-        });
-      } catch {
-        setUnitCellAvailable(false);
-        setUnitCellVisible(false);
-      }
-    }
-    viewer.render();
-  }, [unitCellAvailable, unitCellVisible, xyzContent, xyzFormat]);
-  useEffect21(() => {
-    const viewer = viewerRef.current;
-    const model = modelRef.current;
-    if (!viewer || !model || !xyzContent) {
-      return;
-    }
-    model.setStyle({}, { stick: { radius: 0.2 }, sphere: { scale: 0.3 } });
-    if (selectedSerials.length > 0) {
-      model.setStyle(
-        { serial: selectedSerials },
-        {
-          stick: { radius: 0.3, color: "yellow" },
-          sphere: { scale: 0.4, color: "yellow" }
-        }
-      );
-    }
-    viewer.render();
-    onSelectionChange?.({ moleculeId, atoms: selectedSerials });
-  }, [moleculeId, onSelectionChange, selectedSerials, xyzContent]);
-  useEffect21(() => {
-    if (!xyzContent) {
-      return;
-    }
-    let animationFrame = 0;
-    const tick = () => {
-      const view = viewerRef.current?.getView?.();
-      if (Array.isArray(view) && view.length >= 8) {
-        const [x, y, z, zoom, qx, qy, qz, qw] = view;
-        if (typeof x === "number" && typeof y === "number" && typeof z === "number" && typeof zoom === "number" && typeof qx === "number" && typeof qy === "number" && typeof qz === "number" && typeof qw === "number") {
-          const magnitude = Math.sqrt(qx * qx + qy * qy + qz * qz);
-          const lookAt = magnitude > 0 ? { x: qx / magnitude, y: qy / magnitude, z: qz / magnitude } : { x: 0, y: 0, z: 0 };
-          setCameraInfo({
-            position: { x, y, z, qx, qy, qz, qw },
-            lookAt,
-            zoom
-          });
-        }
-      }
-      animationFrame = window.requestAnimationFrame(tick);
-    };
-    animationFrame = window.requestAnimationFrame(tick);
-    return () => window.cancelAnimationFrame(animationFrame);
-  }, [xyzContent]);
-  const handleScreenshot = useCallback17(async () => {
-    const viewer = viewerRef.current;
-    if (!viewer?.pngURI) {
-      return;
-    }
-    viewer.render();
-    const image = viewer.pngURI();
-    if (!image) {
-      return;
-    }
-    try {
-      const response = await fetch(image);
-      const blob = await response.blob();
-      const clipboardItem = new ClipboardItem({
-        [blob.type || "image/png"]: blob
-      });
-      await navigator.clipboard.write([clipboardItem]);
-    } catch {
-    }
-    onScreenshot?.({ moleculeId, image });
-  }, [moleculeId, onScreenshot]);
-  function handleToggleUnitCell() {
-    if (!unitCellAvailable) {
-      return;
-    }
-    setUnitCellVisible((previous) => {
-      const next = !previous;
-      unitCellPreferenceRef.current = next;
-      return next;
-    });
-  }
-  function handleStageSelection() {
-    if (selectedSerials.length === 0) {
-      return;
-    }
-    setStagedSelections((current) => {
-      const existing = current[moleculeKey] ?? [];
-      return {
-        ...current,
-        [moleculeKey]: Array.from(/* @__PURE__ */ new Set([...existing, ...selectedSerials]))
-      };
-    });
-  }
-  return /* @__PURE__ */ jsxs48(
-    "div",
-    {
-      className: `thread-graph-molecule-viewer flex h-full min-h-0 flex-col bg-white ${className}`,
-      children: [
-        /* @__PURE__ */ jsxs48("div", { className: "thread-graph-molecule-header flex shrink-0 items-center justify-between gap-3 border-b border-slate-200 px-3 py-2 sm:px-4 sm:py-3", children: [
-          /* @__PURE__ */ jsxs48("div", { className: "min-w-0", children: [
-            /* @__PURE__ */ jsx58("h2", { className: "truncate text-sm font-semibold text-slate-900", children: title }),
-            /* @__PURE__ */ jsx58("p", { className: "mt-1 hidden text-[11px] text-slate-400 sm:block", children: "cartoon + surface" })
-          ] }),
-          /* @__PURE__ */ jsx58("span", { className: "shrink-0 text-[11px] text-slate-400", children: "workspace preview" })
-        ] }),
-        /* @__PURE__ */ jsxs48("div", { className: "thread-graph-molecule-body min-h-0 flex-1", children: [
-          /* @__PURE__ */ jsxs48(
-            "div",
-            {
-              ref: viewerHostRef,
-              "data-testid": "molecule-viewer",
-              className: "thread-graph-molecule-stage relative min-h-0 flex-1 overflow-hidden",
-              children: [
-                viewerInitError ? /* @__PURE__ */ jsx58(
-                  "div",
-                  {
-                    "data-testid": "molecule-viewer-error",
-                    className: "thread-graph-molecule-error absolute inset-0 flex items-center justify-center bg-red-50 p-4 text-sm text-red-700",
-                    children: viewerInitError
-                  }
-                ) : null,
-                !viewerInitError && !xyzContent ? /* @__PURE__ */ jsx58("div", { className: "thread-graph-molecule-empty absolute inset-0 flex items-center justify-center p-4 text-sm text-slate-400", children: "No molecule data available." }) : null,
-                hoveredAtom ? /* @__PURE__ */ jsxs48(
-                  "div",
-                  {
-                    className: "thread-graph-molecule-tooltip pointer-events-none fixed z-[1000] rounded-md border border-gray-300 bg-white/95 px-2 py-1.5 text-[10px] text-gray-800 shadow-md",
-                    style: { left: hoveredAtom.x - 20, top: hoveredAtom.y - 50 },
-                    children: [
-                      /* @__PURE__ */ jsx58("div", { className: "mb-0.5 font-semibold text-gray-900", children: hoveredAtom.label }),
-                      /* @__PURE__ */ jsxs48("div", { className: "space-x-2 text-gray-600", children: [
-                        /* @__PURE__ */ jsxs48("span", { children: [
-                          "x: ",
-                          hoveredAtom.coords.x
-                        ] }),
-                        /* @__PURE__ */ jsxs48("span", { children: [
-                          "y: ",
-                          hoveredAtom.coords.y
-                        ] }),
-                        /* @__PURE__ */ jsxs48("span", { children: [
-                          "z: ",
-                          hoveredAtom.coords.z
-                        ] })
-                      ] })
-                    ]
-                  }
-                ) : null
-              ]
-            }
-          ),
-          /* @__PURE__ */ jsxs48("div", { className: "thread-graph-molecule-controls shrink-0", children: [
-            /* @__PURE__ */ jsxs48("div", { className: "thread-graph-molecule-control-row", children: [
-              /* @__PURE__ */ jsxs48("div", { className: "min-w-0", children: [
-                /* @__PURE__ */ jsx58("p", { className: "thread-graph-molecule-control-title", children: "Ball & Stick" }),
-                /* @__PURE__ */ jsx58("p", { className: "thread-graph-molecule-control-subtitle", children: "XYZ / PDB / CIF preview" })
-              ] }),
-              /* @__PURE__ */ jsx58(
-                GraphMoleculeViewerUpperButtonGroup,
-                {
-                  currentIndex,
-                  exportContent: viewerData.exportContent,
-                  moleculeId,
-                  onScreenshot: () => void handleScreenshot(),
-                  viewerRef,
-                  xyzContent,
-                  xyzFormat
-                }
-              )
-            ] }),
-            xyzArray.length > 1 ? /* @__PURE__ */ jsxs48("div", { className: "thread-graph-molecule-trajectory", children: [
-              /* @__PURE__ */ jsxs48("div", { className: "mb-2 flex justify-between gap-3 text-xs", children: [
-                /* @__PURE__ */ jsxs48("span", { className: "flex min-w-0 items-center gap-2", children: [
-                  "Trajectory ",
-                  currentIndex + 1,
-                  " / ",
-                  xyzArray.length,
-                  /* @__PURE__ */ jsx58(
-                    Button,
-                    {
-                      type: "button",
-                      variant: "ghost",
-                      size: "icon",
-                      className: "thread-graph-molecule-button h-5 w-5",
-                      onClick: () => {
-                        setIsPlaying((previous) => {
-                          const next = !previous;
-                          if (next && currentIndex === xyzArray.length - 1) {
-                            setCurrentIndex(0);
-                          }
-                          return next;
-                        });
-                      },
-                      "aria-label": isPlaying ? "Pause trajectory" : "Play trajectory",
-                      title: isPlaying ? "Pause trajectory" : "Play trajectory",
-                      children: isPlaying && currentIndex !== xyzArray.length - 1 ? /* @__PURE__ */ jsx58(Pause, { className: "h-3 w-3" }) : /* @__PURE__ */ jsx58(Play, { className: "h-3 w-3" })
-                    }
-                  )
-                ] }),
-                /* @__PURE__ */ jsxs48(
-                  Button,
-                  {
-                    type: "button",
-                    variant: "ghost",
-                    onClick: () => setCurrentIndex(xyzArray.length - 1),
-                    className: "thread-graph-molecule-live-button",
-                    children: [
-                      /* @__PURE__ */ jsx58(
-                        "span",
-                        {
-                          className: `h-2.5 w-2.5 rounded-full ${isLive ? "animate-pulse bg-red-600" : "bg-gray-300"}`
-                        }
-                      ),
-                      "Live"
-                    ]
-                  }
-                )
-              ] }),
-              /* @__PURE__ */ jsx58(
-                Slider,
-                {
-                  value: [currentIndex],
-                  max: xyzArray.length - 1,
-                  step: 1,
-                  onValueChange: (value) => setCurrentIndex(value[0] ?? 0),
-                  "aria-label": "Trajectory frame"
-                }
-              )
-            ] }) : null,
-            /* @__PURE__ */ jsx58(
-              GraphMoleculeViewerLowerButtonGroup,
-              {
-                cameraInfo,
-                onClearSelection: () => setSelectedSerials([]),
-                onClearStaged: () => setStagedSelections({}),
-                onSendSelection: () => onSelectionChange?.({ moleculeId, atoms: selectedSerials }),
-                onSendStaged: () => {
-                  Object.entries(stagedSelections).forEach(([key, atoms]) => {
-                    onSelectionChange?.({
-                      moleculeId: key === "current" ? moleculeId : key,
-                      atoms
-                    });
-                  });
-                },
-                onStageSelection: handleStageSelection,
-                onToggleUnitCell: handleToggleUnitCell,
-                selectedAtomLabels,
-                selectedSerials,
-                stagedAtoms,
-                stagedMolecules,
-                unitCellAvailable,
-                unitCellVisible
-              }
-            )
-          ] })
-        ] })
-      ]
-    }
-  );
-}
-var init_GraphMoleculeViewer = __esm({
-  "src/components/graph-workspace/GraphMoleculeViewer.tsx"() {
-    "use strict";
-    init_GraphMoleculeViewerLowerButtonGroup();
-    init_GraphMoleculeViewerUpperButtonGroup();
-    init_load3Dmol();
-    init_Button();
-    init_Slider();
-    init_GraphMoleculeViewerData();
-  }
-});
-
-// src/components/graph-workspace/GraphWorkspacePreviewPane.tsx
+  Button,
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+  cn,
+  getGraphChatHighlighter
+} from "./chunk-GYSSCOEU.js";
 import {
-  memo as memo7,
-  useEffect as useEffect22,
-  useMemo as useMemo13,
-  useRef as useRef16,
-  useState as useState29
-} from "react";
-import { createPortal as createPortal3 } from "react-dom";
-import {
-  BookOpen,
-  ChevronsRight as ChevronsRight2,
-  Code2,
-  Minus,
-  Pencil as Pencil2,
-  Plus as Plus2,
-  RotateCcw as RotateCcw2,
-  Save,
-  X as X3
-} from "lucide-react";
-import ReactMarkdown2 from "react-markdown";
-import remarkGfm2 from "remark-gfm";
-import { Fragment as Fragment16, jsx as jsx59, jsxs as jsxs49 } from "react/jsx-runtime";
-function transparentHighlightBackground(html) {
-  return html.replace(/background-color:[^;"]+;?/g, "background-color: transparent;").replace(/background:[^;"]+;?/g, "background: transparent;");
-}
-function decodeWorkspaceResourcePath(value) {
-  try {
-    return decodeURIComponent(value);
-  } catch {
-    return value;
-  }
-}
-function normalizeWorkspaceResourceSegments(value) {
-  const segments = [];
-  for (const segment of value.replace(/\\/g, "/").split("/")) {
-    if (!segment || segment === ".") {
-      continue;
-    }
-    if (segment === "..") {
-      if (segments.length === 0) {
-        return null;
-      }
-      segments.pop();
-      continue;
-    }
-    segments.push(segment);
-  }
-  return segments.join("/");
-}
-function resolveWorkspaceMarkdownPath({
-  markdownPath,
-  resourceUrl,
-  workspaceRootPath = ""
-}) {
-  const trimmed = resourceUrl.trim();
-  const windowsAbsolutePath = /^[a-zA-Z]:[\\/]/.test(trimmed);
-  if (!trimmed || trimmed.startsWith("#") || trimmed.startsWith("//") || !windowsAbsolutePath && /^[a-zA-Z][a-zA-Z\d+.-]*:/.test(trimmed)) {
-    if (!/^https?:/i.test(trimmed) || typeof window === "undefined") {
-      return null;
-    }
-    try {
-      const parsed = new URL(trimmed);
-      if (parsed.origin !== window.location.origin) {
-        return null;
-      }
-      resourceUrl = parsed.pathname;
-    } catch {
-      return null;
-    }
-  }
-  const rawPath = decodeWorkspaceResourcePath(
-    resourceUrl.trim().split(/[?#]/, 1)[0] ?? ""
-  );
-  if (!rawPath) {
-    return null;
-  }
-  const normalizedRoot = workspaceRootPath.trim().replace(/\\/g, "/").replace(/\/+$/, "");
-  const normalizedRawPath = rawPath.replace(/\\/g, "/");
-  const absolutePath = normalizedRawPath.startsWith("/") || /^[a-zA-Z]:\//.test(normalizedRawPath);
-  if (absolutePath) {
-    if (normalizedRoot && normalizedRawPath !== normalizedRoot && !normalizedRawPath.startsWith(`${normalizedRoot}/`)) {
-      return null;
-    }
-    const rootMatches = normalizedRoot && (normalizedRawPath === normalizedRoot || normalizedRawPath.startsWith(`${normalizedRoot}/`));
-    const rootRelativePath = rootMatches ? normalizedRawPath.slice(normalizedRoot.length) : normalizedRawPath;
-    return normalizeWorkspaceResourceSegments(rootRelativePath);
-  }
-  const normalizedMarkdownPath = markdownPath.replace(/\\/g, "/");
-  const markdownPathIsAbsolute = normalizedMarkdownPath.startsWith("/") || /^[a-zA-Z]:\//.test(normalizedMarkdownPath);
-  if (markdownPathIsAbsolute && normalizedRoot && normalizedMarkdownPath !== normalizedRoot && !normalizedMarkdownPath.startsWith(`${normalizedRoot}/`)) {
-    return null;
-  }
-  const workspaceRelativeMarkdownPath = markdownPathIsAbsolute && normalizedRoot ? normalizedMarkdownPath.slice(normalizedRoot.length).replace(/^\/+/, "") : normalizedMarkdownPath.replace(/^\/+/, "");
-  const lastSlash = workspaceRelativeMarkdownPath.lastIndexOf("/");
-  const directory = lastSlash >= 0 ? workspaceRelativeMarkdownPath.slice(0, lastSlash) : "";
-  return normalizeWorkspaceResourceSegments(
-    directory ? `${directory}/${rawPath}` : rawPath
-  );
-}
-function isSmallEditableTextFile(file) {
-  return !file.truncated && file.size <= SMALL_TEXT_FILE_MAX_BYTES && file.content.split("\n").length <= SMALL_TEXT_FILE_MAX_LINES;
-}
-function previewTargetTitle(target) {
-  if (!target) {
-    return null;
-  }
-  return target.node.path || target.node.name || null;
-}
-function clampImageLightboxScale(scale) {
-  return Math.min(
-    IMAGE_LIGHTBOX_MAX_SCALE,
-    Math.max(IMAGE_LIGHTBOX_MIN_SCALE, scale)
-  );
-}
-function GraphWorkspaceImageLightbox({
-  alt,
-  onClose,
-  src
-}) {
-  const viewportRef = useRef16(null);
-  const closeButtonRef = useRef16(null);
-  const dragRef = useRef16(null);
-  const [scale, setScale] = useState29(1);
-  const [offset, setOffset] = useState29({ x: 0, y: 0 });
-  const [dragging, setDragging] = useState29(false);
-  useEffect22(() => {
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    closeButtonRef.current?.focus();
-    const handleKeyDown = (event) => {
-      if (event.key === "Escape") {
-        onClose();
-      }
-    };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => {
-      document.body.style.overflow = previousOverflow;
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [onClose]);
-  function resetView() {
-    setScale(1);
-    setOffset({ x: 0, y: 0 });
-  }
-  function updateScale(nextScale, clientX, clientY) {
-    const clampedScale = clampImageLightboxScale(nextScale);
-    if (clampedScale === scale) {
-      return;
-    }
-    if (typeof clientX === "number" && typeof clientY === "number" && viewportRef.current) {
-      const rect = viewportRef.current.getBoundingClientRect();
-      const anchorX = clientX - (rect.left + rect.width / 2);
-      const anchorY = clientY - (rect.top + rect.height / 2);
-      const ratio = clampedScale / scale;
-      setOffset((current) => ({
-        x: anchorX - (anchorX - current.x) * ratio,
-        y: anchorY - (anchorY - current.y) * ratio
-      }));
-    }
-    setScale(clampedScale);
-  }
-  function handleWheel(event) {
-    event.preventDefault();
-    const direction = event.deltaY < 0 ? 1 : -1;
-    updateScale(
-      scale + direction * IMAGE_LIGHTBOX_SCALE_STEP,
-      event.clientX,
-      event.clientY
-    );
-  }
-  function handlePointerDown(event) {
-    if (scale <= 1 || event.button !== 0) {
-      return;
-    }
-    event.currentTarget.setPointerCapture(event.pointerId);
-    dragRef.current = {
-      pointerId: event.pointerId,
-      startClientX: event.clientX,
-      startClientY: event.clientY,
-      startOffsetX: offset.x,
-      startOffsetY: offset.y
-    };
-    setDragging(true);
-  }
-  function handlePointerMove(event) {
-    const drag = dragRef.current;
-    if (!drag || drag.pointerId !== event.pointerId) {
-      return;
-    }
-    setOffset({
-      x: drag.startOffsetX + event.clientX - drag.startClientX,
-      y: drag.startOffsetY + event.clientY - drag.startClientY
-    });
-  }
-  function handlePointerEnd(event) {
-    if (dragRef.current?.pointerId !== event.pointerId) {
-      return;
-    }
-    dragRef.current = null;
-    setDragging(false);
-  }
-  return createPortal3(
-    /* @__PURE__ */ jsxs49(
-      "div",
-      {
-        className: "thread-graph-image-lightbox",
-        role: "dialog",
-        "aria-modal": "true",
-        "aria-label": `Image preview: ${alt || "workspace image"}`,
-        children: [
-          /* @__PURE__ */ jsxs49(
-            "div",
-            {
-              className: "thread-graph-image-lightbox-toolbar",
-              role: "toolbar",
-              "aria-label": "Image zoom controls",
-              children: [
-                /* @__PURE__ */ jsx59(
-                  "button",
-                  {
-                    type: "button",
-                    onClick: () => updateScale(scale - IMAGE_LIGHTBOX_SCALE_STEP),
-                    disabled: scale <= IMAGE_LIGHTBOX_MIN_SCALE,
-                    title: "Zoom out",
-                    "aria-label": "Zoom out",
-                    children: /* @__PURE__ */ jsx59(Minus, { className: "h-4 w-4" })
-                  }
-                ),
-                /* @__PURE__ */ jsxs49(
-                  "button",
-                  {
-                    type: "button",
-                    onClick: resetView,
-                    className: "thread-graph-image-lightbox-scale",
-                    title: "Reset zoom",
-                    "aria-label": `Reset zoom, currently ${Math.round(scale * 100)}%`,
-                    children: [
-                      /* @__PURE__ */ jsx59(RotateCcw2, { className: "h-3.5 w-3.5" }),
-                      /* @__PURE__ */ jsxs49("span", { children: [
-                        Math.round(scale * 100),
-                        "%"
-                      ] })
-                    ]
-                  }
-                ),
-                /* @__PURE__ */ jsx59(
-                  "button",
-                  {
-                    type: "button",
-                    onClick: () => updateScale(scale + IMAGE_LIGHTBOX_SCALE_STEP),
-                    disabled: scale >= IMAGE_LIGHTBOX_MAX_SCALE,
-                    title: "Zoom in",
-                    "aria-label": "Zoom in",
-                    children: /* @__PURE__ */ jsx59(Plus2, { className: "h-4 w-4" })
-                  }
-                ),
-                /* @__PURE__ */ jsx59(
-                  "span",
-                  {
-                    className: "thread-graph-image-lightbox-divider",
-                    "aria-hidden": "true"
-                  }
-                ),
-                /* @__PURE__ */ jsx59(
-                  "button",
-                  {
-                    ref: closeButtonRef,
-                    type: "button",
-                    onClick: onClose,
-                    title: "Close image preview",
-                    "aria-label": "Close image preview",
-                    children: /* @__PURE__ */ jsx59(X3, { className: "h-4 w-4" })
-                  }
-                )
-              ]
-            }
-          ),
-          /* @__PURE__ */ jsx59(
-            "div",
-            {
-              ref: viewportRef,
-              className: "thread-graph-image-lightbox-viewport",
-              onClick: (event) => {
-                if (event.target === event.currentTarget) {
-                  onClose();
-                }
-              },
-              onWheel: handleWheel,
-              children: /* @__PURE__ */ jsx59(
-                "img",
-                {
-                  src,
-                  alt,
-                  draggable: false,
-                  className: dragging ? "is-dragging" : "",
-                  onPointerDown: handlePointerDown,
-                  onPointerMove: handlePointerMove,
-                  onPointerUp: handlePointerEnd,
-                  onPointerCancel: handlePointerEnd,
-                  style: {
-                    transform: `translate3d(${offset.x}px, ${offset.y}px, 0) scale(${scale})`
-                  }
-                }
-              )
-            }
-          )
-        ]
-      }
-    ),
-    document.body
-  );
-}
-function GraphWorkspaceZoomableImage({
-  alt,
-  className,
-  loading,
-  src
-}) {
-  const triggerRef = useRef16(null);
-  const [open, setOpen] = useState29(false);
-  function closeLightbox() {
-    setOpen(false);
-    window.requestAnimationFrame(() => triggerRef.current?.focus());
-  }
-  return /* @__PURE__ */ jsxs49(Fragment16, { children: [
-    /* @__PURE__ */ jsx59(
-      "button",
-      {
-        ref: triggerRef,
-        type: "button",
-        className: "thread-graph-zoomable-image-trigger",
-        onClick: () => setOpen(true),
-        title: "Open image preview",
-        "aria-label": `Open image preview: ${alt || "workspace image"}`,
-        children: /* @__PURE__ */ jsx59("img", { src, alt, className, loading })
-      }
-    ),
-    open ? /* @__PURE__ */ jsx59(
-      GraphWorkspaceImageLightbox,
-      {
-        src,
-        alt,
-        onClose: closeLightbox
-      }
-    ) : null
-  ] });
-}
-function graphWorkspacePreviewTargetFromNode(node) {
-  if (!node) {
-    return null;
-  }
-  switch (node.kind) {
-    case "live-artifact":
-      return { kind: "live-molecule", node };
-    case "file":
-      return { kind: "workspace-file", node };
-    case "artifact":
-      return { kind: "artifact", node };
-    case "event":
-      return { kind: "event", node };
-    case "meta":
-      return { kind: "meta", node };
-    case "directory":
-      return null;
-  }
-}
-function GraphWorkspacePreviewPane({
-  error,
-  imageUrl,
-  loadingMore,
-  onSaveFile,
-  onOpenWorkspaceFile,
-  onLoadMore,
-  onCollapse,
-  pdfUrl,
-  previewFile,
-  previewLoading,
-  plugins,
-  resolveWorkspaceFileUrl,
-  selectedTarget,
-  workspaceRootPath
-}) {
-  const [editing, setEditing] = useState29(false);
-  const [draftContent, setDraftContent] = useState29("");
-  const [saveError, setSaveError] = useState29(null);
-  const [saving, setSaving] = useState29(false);
-  const [markdownView, setMarkdownView] = useState29(
-    "preview"
-  );
-  const activeNode = selectedTarget?.node ?? null;
-  const renderedArtifact = activeNode?.artifact ? plugins.renderArtifact({
-    artifact: activeNode.artifact,
-    expanded: true,
-    onToggleExpanded: () => void 0
-  }) : null;
-  const moleculeSnapshot = buildMoleculePreviewSnapshot(previewFile ?? null);
-  const fileLanguage = previewFile?.language || languageForPath(previewFile?.path ?? "");
-  const extension = previewFile ? extensionOf(previewFile.path) : "";
-  const isMarkdownFile = MARKDOWN_EXTENSIONS.has(extension);
-  const title = previewTargetTitle(selectedTarget);
-  const selectedFileIsMolecule = previewFile !== null && MOLECULAR_EXTENSIONS.has(extension);
-  const canEditFile = Boolean(previewFile && onSaveFile) && !selectedFileIsMolecule && isSmallEditableTextFile(previewFile);
-  const isLiveArtifactPreview = selectedTarget?.kind === "live-molecule";
-  const isArtifactPreview = Boolean(activeNode?.artifact && renderedArtifact);
-  const isMoleculePreview = Boolean(moleculeSnapshot) || isArtifactPreview;
-  useEffect22(() => {
-    setEditing(false);
-    setDraftContent(previewFile?.content ?? "");
-    setSaveError(null);
-    setMarkdownView("preview");
-  }, [previewFile?.path, previewFile?.content]);
-  async function handleSaveFile() {
-    if (!previewFile || !onSaveFile) {
-      return;
-    }
-    setSaving(true);
-    setSaveError(null);
-    try {
-      await onSaveFile({
-        path: previewFile.path,
-        content: draftContent
-      });
-      setEditing(false);
-    } catch (error2) {
-      setSaveError(
-        error2 instanceof Error ? error2.message : "Failed to save file."
-      );
-    } finally {
-      setSaving(false);
-    }
-  }
-  return /* @__PURE__ */ jsxs49(
-    "section",
-    {
-      className: "thread-graph-viewer flex h-full min-h-0 flex-col overflow-hidden rounded-[12px]",
-      "data-preview-target-kind": selectedTarget?.kind ?? "none",
-      children: [
-        /* @__PURE__ */ jsxs49("div", { className: "thread-graph-viewer-header flex h-12 shrink-0 items-center justify-between gap-3 border-b px-3 sm:h-[60px] sm:px-5", children: [
-          /* @__PURE__ */ jsxs49("div", { className: "flex min-w-0 items-center gap-3", children: [
-            /* @__PURE__ */ jsx59("h2", { className: "text-base font-semibold text-slate-900 sm:text-[18px] dark:text-slate-100", children: "Viewer" }),
-            title ? /* @__PURE__ */ jsx59("span", { className: "min-w-0 truncate text-sm font-medium text-slate-500 dark:text-slate-400", children: title }) : null
-          ] }),
-          onCollapse ? /* @__PURE__ */ jsx59(
-            "button",
-            {
-              type: "button",
-              onClick: onCollapse,
-              "data-testid": "collapse-viewer",
-              className: "flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-[#222733] dark:hover:text-slate-100",
-              title: "Collapse workspace",
-              "aria-label": "Collapse workspace",
-              children: /* @__PURE__ */ jsx59(ChevronsRight2, { className: "h-4 w-4" })
-            }
-          ) : null
-        ] }),
-        /* @__PURE__ */ jsxs49("div", { className: "flex min-h-0 flex-1 flex-col overflow-hidden", children: [
-          error ? /* @__PURE__ */ jsx59("div", { className: "border-b border-rose-200 bg-rose-50 px-5 py-3 text-sm text-rose-700 dark:border-rose-400/25 dark:bg-rose-400/10 dark:text-rose-200", children: error }) : null,
-          !selectedTarget ? /* @__PURE__ */ jsx59("div", { className: "flex min-h-0 flex-1 items-center justify-center px-5 text-center text-sm text-slate-400 dark:text-slate-500", children: "Pick a live molecule, workspace file, artifact, or thread event to preview it." }) : selectedTarget.kind === "workspace-file" && previewLoading ? /* @__PURE__ */ jsx59("div", { className: "flex min-h-0 flex-1 items-center justify-center px-5 text-center text-sm text-slate-400 dark:text-slate-500", children: "Loading file preview..." }) : selectedTarget.kind === "workspace-file" && moleculeSnapshot ? /* @__PURE__ */ jsx59("div", { className: "thread-graph-molecule-preview min-h-0 flex-1 overflow-hidden", children: /* @__PURE__ */ jsx59(
-            GraphMoleculeViewer,
-            {
-              source: moleculeSnapshot,
-              moleculeId: moleculeSnapshot.uuid ?? selectedTarget.node.path,
-              title: "PyMOL-style (PDB/CIF)"
-            }
-          ) }) : selectedTarget.kind === "workspace-file" && imageUrl ? /* @__PURE__ */ jsx59("div", { className: "flex min-h-0 flex-1 items-center justify-center overflow-auto p-5", children: /* @__PURE__ */ jsx59(
-            GraphWorkspaceZoomableImage,
-            {
-              src: imageUrl,
-              alt: selectedTarget.node.path || selectedTarget.node.name,
-              className: "max-h-full max-w-full object-contain"
-            }
-          ) }) : selectedTarget.kind === "workspace-file" && pdfUrl ? /* @__PURE__ */ jsx59("div", { className: "thread-graph-file-preview-frame min-h-0 flex-1 overflow-hidden", children: /* @__PURE__ */ jsx59(
-            "iframe",
-            {
-              src: pdfUrl,
-              title: `PDF preview: ${selectedTarget.node.path || selectedTarget.node.name}`,
-              className: "h-full w-full border-0"
-            }
-          ) }) : selectedTarget.kind === "workspace-file" && previewFile ? /* @__PURE__ */ jsxs49("div", { className: "flex min-h-0 flex-1 flex-col", children: [
-            /* @__PURE__ */ jsxs49("div", { className: "thread-graph-file-preview-header flex min-h-12 flex-wrap items-center justify-between gap-2 border-b px-4 py-2", children: [
-              /* @__PURE__ */ jsxs49("div", { className: "min-w-0 text-xs uppercase tracking-[0.12em]", children: [
-                selectedFileIsMolecule ? "molecule" : fileLanguage || extension || "text",
-                " ",
-                "| ",
-                previewFile.size.toLocaleString(),
-                " bytes",
-                previewFile.truncated ? /* @__PURE__ */ jsxs49("span", { className: "ml-2 text-amber-500", children: [
-                  "showing ",
-                  previewFile.nextOffset.toLocaleString(),
-                  " bytes"
-                ] }) : null
-              ] }),
-              isMarkdownFile || canEditFile ? /* @__PURE__ */ jsxs49("div", { className: "flex shrink-0 items-center gap-1.5", children: [
-                isMarkdownFile && !editing ? /* @__PURE__ */ jsxs49(
-                  "div",
-                  {
-                    className: "thread-graph-markdown-view-switch inline-flex items-center rounded-md border p-0.5",
-                    role: "group",
-                    "aria-label": "Markdown view",
-                    children: [
-                      /* @__PURE__ */ jsxs49(
-                        "button",
-                        {
-                          type: "button",
-                          onClick: () => setMarkdownView("preview"),
-                          className: `inline-flex h-7 items-center gap-1 rounded px-2 text-xs transition ${markdownView === "preview" ? "is-active" : ""}`,
-                          "aria-pressed": markdownView === "preview",
-                          children: [
-                            /* @__PURE__ */ jsx59(BookOpen, { className: "h-3.5 w-3.5" }),
-                            /* @__PURE__ */ jsx59("span", { children: "Preview" })
-                          ]
-                        }
-                      ),
-                      /* @__PURE__ */ jsxs49(
-                        "button",
-                        {
-                          type: "button",
-                          onClick: () => setMarkdownView("source"),
-                          className: `inline-flex h-7 items-center gap-1 rounded px-2 text-xs transition ${markdownView === "source" ? "is-active" : ""}`,
-                          "aria-pressed": markdownView === "source",
-                          children: [
-                            /* @__PURE__ */ jsx59(Code2, { className: "h-3.5 w-3.5" }),
-                            /* @__PURE__ */ jsx59("span", { children: "Source" })
-                          ]
-                        }
-                      )
-                    ]
-                  }
-                ) : null,
-                canEditFile ? /* @__PURE__ */ jsx59("div", { className: "flex shrink-0 items-center gap-1", children: editing ? /* @__PURE__ */ jsxs49(Fragment16, { children: [
-                  /* @__PURE__ */ jsx59(
-                    "button",
-                    {
-                      type: "button",
-                      onClick: () => {
-                        setDraftContent(previewFile.content);
-                        setEditing(false);
-                        setSaveError(null);
-                      },
-                      disabled: saving,
-                      className: "thread-graph-explorer-icon-button flex h-8 w-8 items-center justify-center rounded-lg border shadow-none transition disabled:cursor-not-allowed disabled:opacity-50",
-                      title: "Cancel edits",
-                      "aria-label": "Cancel edits",
-                      children: /* @__PURE__ */ jsx59(X3, { className: "h-4 w-4" })
-                    }
-                  ),
-                  /* @__PURE__ */ jsx59(
-                    "button",
-                    {
-                      type: "button",
-                      onClick: () => void handleSaveFile(),
-                      disabled: saving || draftContent === previewFile.content,
-                      className: "thread-graph-explorer-icon-button flex h-8 w-8 items-center justify-center rounded-lg border shadow-none transition disabled:cursor-not-allowed disabled:opacity-50",
-                      title: "Save file",
-                      "aria-label": "Save file",
-                      children: /* @__PURE__ */ jsx59(Save, { className: "h-4 w-4" })
-                    }
-                  )
-                ] }) : /* @__PURE__ */ jsx59(
-                  "button",
-                  {
-                    type: "button",
-                    onClick: () => {
-                      setDraftContent(previewFile.content);
-                      setMarkdownView("source");
-                      setEditing(true);
-                      setSaveError(null);
-                    },
-                    className: "thread-graph-explorer-icon-button flex h-8 w-8 items-center justify-center rounded-lg border shadow-none transition",
-                    title: "Edit file",
-                    "aria-label": "Edit file",
-                    children: /* @__PURE__ */ jsx59(Pencil2, { className: "h-4 w-4" })
-                  }
-                ) }) : null
-              ] }) : null
-            ] }),
-            saveError ? /* @__PURE__ */ jsx59("div", { className: "border-b border-rose-200 bg-rose-50 px-4 py-2 text-sm text-rose-700 dark:border-rose-400/25 dark:bg-rose-400/10 dark:text-rose-200", children: saveError }) : null,
-            editing ? /* @__PURE__ */ jsx59(
-              "textarea",
-              {
-                value: draftContent,
-                onChange: (event) => setDraftContent(event.currentTarget.value),
-                spellCheck: false,
-                "aria-label": "Workspace file editor",
-                className: "thread-graph-file-editor min-h-0 flex-1 resize-none border-0 bg-transparent p-4 font-mono text-[12px] leading-5 text-slate-900 outline-none dark:text-slate-100"
-              }
-            ) : isMarkdownFile && markdownView === "preview" ? /* @__PURE__ */ jsx59(
-              GraphWorkspaceMarkdownPreview,
-              {
-                content: previewFile.content,
-                markdownPath: previewFile.path,
-                ...onOpenWorkspaceFile ? { onOpenWorkspaceFile } : {},
-                ...resolveWorkspaceFileUrl ? { resolveWorkspaceFileUrl } : {},
-                ...workspaceRootPath ? { workspaceRootPath } : {}
-              }
-            ) : /* @__PURE__ */ jsx59(
-              GraphWorkspaceCodePreview,
-              {
-                content: previewFile.content,
-                language: fileLanguage
-              }
-            ),
-            previewFile.truncated && onLoadMore ? /* @__PURE__ */ jsx59("div", { className: "thread-graph-file-preview-footer flex justify-center border-t px-4 py-3", children: /* @__PURE__ */ jsx59(
-              "button",
-              {
-                type: "button",
-                onClick: onLoadMore,
-                disabled: loadingMore,
-                title: "Load more workspace preview",
-                "aria-label": "Load more workspace preview",
-                className: "thread-graph-load-more-button rounded-md px-4 py-1.5 text-xs disabled:opacity-50",
-                children: loadingMore ? "Loading..." : `Load more (${(previewFile.size - previewFile.nextOffset).toLocaleString()} bytes remaining)`
-              }
-            ) }) : null
-          ] }) : (selectedTarget.kind === "live-molecule" || selectedTarget.kind === "artifact") && selectedTarget.node.artifact ? /* @__PURE__ */ jsx59(
-            "div",
-            {
-              className: isMoleculePreview || isLiveArtifactPreview ? "min-h-0 flex-1 overflow-hidden" : "min-h-0 flex-1 overflow-auto p-3",
-              children: renderedArtifact
-            }
-          ) : selectedTarget.kind === "meta" ? /* @__PURE__ */ jsx59("div", { className: "min-h-0 flex-1 overflow-auto p-3", children: /* @__PURE__ */ jsx59("div", { className: "grid gap-3", children: /* @__PURE__ */ jsx59(WorkspaceInfoCard, { label: "Workspace Data", children: /* @__PURE__ */ jsx59(
-            GraphWorkspaceCodePreview,
-            {
-              content: selectedTarget.node.detail ?? ""
-            }
-          ) }) }) }) : /* @__PURE__ */ jsxs49("div", { className: "flex min-h-0 flex-1 flex-col", children: [
-            /* @__PURE__ */ jsx59("div", { className: "thread-graph-file-preview-header border-b px-4 py-3 text-xs uppercase tracking-[0.12em]", children: selectedTarget.node.kind }),
-            /* @__PURE__ */ jsx59(
-              GraphWorkspaceCodePreview,
-              {
-                content: selectedTarget.node.detail ?? selectedTarget.node.preview ?? selectedTarget.node.name
-              }
-            )
-          ] })
-        ] })
-      ]
-    }
-  );
-}
-var SMALL_TEXT_FILE_MAX_BYTES, SMALL_TEXT_FILE_MAX_LINES, MARKDOWN_EXTENSIONS, IMAGE_LIGHTBOX_MIN_SCALE, IMAGE_LIGHTBOX_MAX_SCALE, IMAGE_LIGHTBOX_SCALE_STEP, CODE_LANGUAGE_ALIASES, GraphWorkspaceCodePreview, GraphWorkspaceMarkdownPreview;
-var init_GraphWorkspacePreviewPane = __esm({
-  "src/components/graph-workspace/GraphWorkspacePreviewPane.tsx"() {
-    "use strict";
-    init_graphChatShiki();
-    init_workspaceTree();
-    init_GraphWorkspaceCards();
-    init_GraphMoleculeViewer();
-    SMALL_TEXT_FILE_MAX_BYTES = 50 * 1024;
-    SMALL_TEXT_FILE_MAX_LINES = 1e3;
-    MARKDOWN_EXTENSIONS = /* @__PURE__ */ new Set(["md", "markdown"]);
-    IMAGE_LIGHTBOX_MIN_SCALE = 0.5;
-    IMAGE_LIGHTBOX_MAX_SCALE = 5;
-    IMAGE_LIGHTBOX_SCALE_STEP = 0.25;
-    CODE_LANGUAGE_ALIASES = {
-      cs: "csharp",
-      jsonl: "json",
-      md: "markdown",
-      rb: "ruby",
-      rs: "rust",
-      sh: "bash",
-      yml: "yaml"
-    };
-    GraphWorkspaceCodePreview = memo7(function GraphWorkspaceCodePreview2({
-      content,
-      language = "text"
-    }) {
-      const rootRef = useRef16(null);
-      const [highlighter, setHighlighter] = useState29(null);
-      const [dark, setDark] = useState29(false);
-      useEffect22(() => {
-        let alive = true;
-        getGraphChatHighlighter().then((loadedHighlighter) => {
-          if (alive) {
-            setHighlighter(loadedHighlighter);
-          }
-        }).catch(() => void 0);
-        return () => {
-          alive = false;
-        };
-      }, []);
-      useEffect22(() => {
-        const shell = rootRef.current?.closest(".thread-ui-shell");
-        const readDark = () => shell ? shell.getAttribute("data-theme-effective") === "dark" || shell.classList.contains("dark") || shell.classList.contains("thread-ui-theme-dark") : document.documentElement.classList.contains("dark");
-        setDark(readDark());
-        if (!shell) {
-          return;
-        }
-        const observer = new MutationObserver(() => setDark(readDark()));
-        observer.observe(shell, {
-          attributes: true,
-          attributeFilter: ["class", "data-theme-effective"]
-        });
-        return () => observer.disconnect();
-      }, []);
-      const highlightedHtml = useMemo13(() => {
-        if (!highlighter) {
-          return "";
-        }
-        const loadedLanguages = highlighter.getLoadedLanguages?.() ?? [];
-        const normalizedLanguage = CODE_LANGUAGE_ALIASES[language] ?? language;
-        const resolvedLanguage = loadedLanguages.includes(normalizedLanguage) ? normalizedLanguage : "text";
-        try {
-          return transparentHighlightBackground(
-            highlighter.codeToHtml(content, {
-              lang: resolvedLanguage,
-              theme: dark ? "ayu-dark" : "ayu-light"
-            })
-          );
-        } catch {
-          return transparentHighlightBackground(
-            highlighter.codeToHtml(content, {
-              lang: "text",
-              theme: dark ? "ayu-dark" : "ayu-light"
-            })
-          );
-        }
-      }, [content, dark, highlighter, language]);
-      const lines = content.split("\n");
-      return /* @__PURE__ */ jsx59(
-        "div",
-        {
-          ref: rootRef,
-          className: "thread-graph-code-preview min-h-0 flex-1 overflow-auto",
-          role: "region",
-          "aria-label": "Source code",
-          children: highlightedHtml ? /* @__PURE__ */ jsx59(
-            "div",
-            {
-              className: "thread-graph-highlighted-code-preview",
-              dangerouslySetInnerHTML: { __html: highlightedHtml }
-            }
-          ) : /* @__PURE__ */ jsx59("pre", { className: "thread-graph-plain-code-preview", children: /* @__PURE__ */ jsx59("code", { children: lines.map((line, index) => /* @__PURE__ */ jsxs49("span", { className: "thread-graph-code-line", children: [
-            /* @__PURE__ */ jsx59(
-              "span",
-              {
-                className: "thread-graph-code-line-number",
-                "aria-hidden": "true",
-                children: index + 1
-              }
-            ),
-            /* @__PURE__ */ jsx59("span", { children: line || " " })
-          ] }, index)) }) })
-        }
-      );
-    });
-    GraphWorkspaceMarkdownPreview = memo7(
-      function GraphWorkspaceMarkdownPreview2({
-        content,
-        markdownPath,
-        onOpenWorkspaceFile,
-        resolveWorkspaceFileUrl,
-        workspaceRootPath
-      }) {
-        const resolvePath = (resourceUrl) => resourceUrl ? resolveWorkspaceMarkdownPath({
-          markdownPath,
-          resourceUrl,
-          workspaceRootPath: workspaceRootPath ?? ""
-        }) : null;
-        return /* @__PURE__ */ jsx59("div", { className: "thread-graph-markdown thread-graph-markdown-preview min-h-0 flex-1 overflow-auto px-5 py-4 sm:px-7 sm:py-6", children: /* @__PURE__ */ jsx59(
-          ReactMarkdown2,
-          {
-            remarkPlugins: [remarkGfm2],
-            components: {
-              a({ href, children, ...props }) {
-                const workspacePath = resolvePath(href);
-                if (workspacePath && onOpenWorkspaceFile) {
-                  return /* @__PURE__ */ jsx59(
-                    "a",
-                    {
-                      ...props,
-                      href: resolveWorkspaceFileUrl?.(workspacePath) ?? href,
-                      onClick: (event) => {
-                        event.preventDefault();
-                        onOpenWorkspaceFile(workspacePath);
-                      },
-                      children
-                    }
-                  );
-                }
-                return /* @__PURE__ */ jsx59("a", { ...props, href, children });
-              },
-              img({ src, alt, ...props }) {
-                const workspacePath = resolvePath(src);
-                const resolvedSrc = workspacePath ? resolveWorkspaceFileUrl?.(workspacePath) ?? src : src;
-                if (!resolvedSrc) {
-                  return null;
-                }
-                return /* @__PURE__ */ jsx59(
-                  GraphWorkspaceZoomableImage,
-                  {
-                    src: resolvedSrc,
-                    alt: alt ?? "",
-                    loading: "lazy",
-                    className: props.className
-                  }
-                );
-              }
-            },
-            children: content
-          }
-        ) });
-      }
-    );
-  }
-});
-
-// src/components/graph-workspace/GraphEmptyGarbageDialog.tsx
-import { jsx as jsx60, jsxs as jsxs50 } from "react/jsx-runtime";
-function GraphEmptyGarbageDialog({
-  files,
-  onCancel,
-  onConfirm
-}) {
-  return /* @__PURE__ */ jsx60("div", { className: "thread-graph-dialog-backdrop fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4", children: /* @__PURE__ */ jsxs50("div", { className: "thread-graph-dialog w-full max-w-sm rounded-xl border bg-[var(--theme-panel)] p-6 shadow-xl", children: [
-    /* @__PURE__ */ jsx60("h3", { className: "text-base font-semibold text-[var(--theme-fg)]", children: "Empty garbage?" }),
-    /* @__PURE__ */ jsxs50("p", { className: "mt-1 text-sm leading-5 text-[var(--theme-fg-muted)]", children: [
-      "Permanently delete all files in the",
-      " ",
-      /* @__PURE__ */ jsx60("code", { className: "rounded bg-[var(--theme-muted)] px-1 text-xs text-[var(--theme-fg-soft)]", children: "garbage/" }),
-      " ",
-      "folder."
-    ] }),
-    files.length === 0 ? /* @__PURE__ */ jsx60("p", { className: "mt-3 text-sm text-[var(--theme-fg-muted)]", children: "Garbage is empty." }) : /* @__PURE__ */ jsx60("ul", { className: "mt-3 max-h-40 overflow-y-auto rounded-md border border-[var(--theme-border)] bg-[var(--theme-surface)] p-2 text-xs text-[var(--theme-fg-soft)]", children: files.map((file) => /* @__PURE__ */ jsx60("li", { className: "truncate py-0.5", title: file, children: file }, file)) }),
-    /* @__PURE__ */ jsxs50("div", { className: "mt-4 flex justify-end gap-2", children: [
-      /* @__PURE__ */ jsx60(
-        "button",
-        {
-          type: "button",
-          onClick: onCancel,
-          className: "thread-secondary-action rounded-md px-3 py-1.5 text-sm",
-          children: "Cancel"
-        }
-      ),
-      files.length > 0 ? /* @__PURE__ */ jsx60(
-        "button",
-        {
-          type: "button",
-          onClick: onConfirm,
-          className: "ui-action-danger rounded-md px-3 py-1.5 text-sm font-medium",
-          children: "Yes, empty garbage"
-        }
-      ) : null
-    ] })
-  ] }) });
-}
-var init_GraphEmptyGarbageDialog = __esm({
-  "src/components/graph-workspace/GraphEmptyGarbageDialog.tsx"() {
-    "use strict";
-  }
-});
-
-// src/components/graph-workspace/GraphWorkspaceExplorer.tsx
-import {
-  useEffect as useEffect23,
-  useLayoutEffect as useLayoutEffect7,
-  useMemo as useMemo14,
-  useRef as useRef17,
-  useState as useState30
-} from "react";
-import {
-  ChevronDown as ChevronDown2,
-  ChevronRight as ChevronRight3,
-  ChevronsLeft as ChevronsLeft2,
-  Copy as Copy5,
-  Download as Download2,
-  Eye,
-  File,
-  FileArchive,
-  FileCode2,
-  FileImage,
-  Folder as Folder2,
-  FolderOpen,
-  RefreshCw,
-  Trash2 as Trash23,
-  Upload
-} from "lucide-react";
-import { jsx as jsx61, jsxs as jsxs51 } from "react/jsx-runtime";
-function expandedPathsStorageKey(input) {
-  return `${EXPANDED_PATHS_STORAGE_PREFIX}${input.workspaceId ?? "workspace"}:${input.threadId}`;
-}
-function readExpandedPaths(input) {
-  if (typeof window === "undefined") {
-    return [];
-  }
-  try {
-    const raw = window.localStorage.getItem(expandedPathsStorageKey(input));
-    if (!raw) {
-      return [];
-    }
-    const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed.filter((value) => typeof value === "string") : [];
-  } catch {
-    return [];
-  }
-}
-function writeExpandedPaths(input, paths) {
-  if (typeof window === "undefined") {
-    return;
-  }
-  try {
-    window.localStorage.setItem(
-      expandedPathsStorageKey(input),
-      JSON.stringify([...paths])
-    );
-  } catch {
-  }
-}
-function mergeRefreshedWorkspaceTree(refreshed, previous) {
-  if (!previous || refreshed.path !== previous.path) {
-    return refreshed;
-  }
-  if (refreshed.kind !== "directory") {
-    return refreshed;
-  }
-  const previousByPath = new Map(
-    previous.children.map((child) => [child.path, child])
-  );
-  const children = refreshed.children.map(
-    (child) => mergeRefreshedWorkspaceTree(child, previousByPath.get(child.path) ?? null)
-  );
-  const refreshedHasLoadedChildren = refreshed.childrenLoaded && refreshed.children.length > 0;
-  return {
-    ...refreshed,
-    children: refreshedHasLoadedChildren || !previous.childrenLoaded ? children : previous.children,
-    childrenLoaded: refreshed.childrenLoaded || previous.childrenLoaded,
-    truncated: refreshed.truncated ?? previous.truncated
-  };
-}
-function iconForWorkspaceNode(node, expanded) {
-  if (node.kind === "directory") {
-    return expanded ? /* @__PURE__ */ jsx61(FolderOpen, { className: "h-4 w-4 text-slate-500 dark:text-slate-400" }) : /* @__PURE__ */ jsx61(Folder2, { className: "h-4 w-4 text-slate-500 dark:text-slate-400" });
-  }
-  const extension = extensionOf(node.name);
-  if (extension === "zip") {
-    return /* @__PURE__ */ jsx61(FileArchive, { className: "h-4 w-4 text-amber-600" });
-  }
-  if (node.kind === "file" && ["png", "jpg", "jpeg", "gif", "webp", "svg"].includes(extension)) {
-    return /* @__PURE__ */ jsx61(FileImage, { className: "h-4 w-4 text-sky-500" });
-  }
-  if (node.kind === "artifact" || [
-    "xyz",
-    "extxyz",
-    "cif",
-    "pdf",
-    "json",
-    "ts",
-    "tsx",
-    "js",
-    "jsx",
-    "md",
-    "yaml",
-    "yml",
-    "py"
-  ].includes(extension)) {
-    return /* @__PURE__ */ jsx61(FileCode2, { className: "h-4 w-4 text-emerald-600" });
-  }
-  return /* @__PURE__ */ jsx61(File, { className: "h-4 w-4 text-slate-400 dark:text-slate-500" });
-}
-function WorkspaceTreeRow({
-  depth,
-  expandedPaths,
-  loadingPaths,
-  node,
-  onCopyPath,
-  onDownload,
-  onPreview,
-  onSelect,
-  onToggle,
-  selectedNodeId
-}) {
-  const isDirectory = node.kind === "directory";
-  const expanded = isDirectory && (node.path === "" || expandedPaths.has(node.path));
-  const loadingChildren = isDirectory && loadingPaths.has(node.path);
-  const selected = selectedNodeId === node.id;
-  const paddingLeft = `${depth * TREE_LEVEL_INDENT_REM + 0.5}rem`;
-  if (isDirectory) {
-    return /* @__PURE__ */ jsxs51("div", { children: [
-      /* @__PURE__ */ jsxs51("div", { className: "thread-graph-tree-row group relative flex items-center text-sm text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-[#222733] dark:hover:text-slate-100", children: [
-        /* @__PURE__ */ jsxs51(
-          "button",
-          {
-            type: "button",
-            onClick: () => onToggle(node.path),
-            className: "flex min-h-9 min-w-0 flex-1 items-center gap-2 px-2 py-2 text-left sm:min-h-0 sm:py-1.5",
-            style: { paddingLeft },
-            children: [
-              expanded ? /* @__PURE__ */ jsx61(ChevronDown2, { className: "h-3.5 w-3.5 shrink-0 text-slate-400 dark:text-slate-500" }) : /* @__PURE__ */ jsx61(ChevronRight3, { className: "h-3.5 w-3.5 shrink-0 text-slate-400 dark:text-slate-500" }),
-              iconForWorkspaceNode(node, expanded),
-              /* @__PURE__ */ jsx61("span", { className: "truncate", children: node.name }),
-              loadingChildren ? /* @__PURE__ */ jsx61("span", { className: "ml-auto shrink-0 text-xs text-slate-400 dark:text-slate-500", children: "Loading" }) : null
-            ]
-          }
-        ),
-        onDownload || onCopyPath && node.path ? /* @__PURE__ */ jsxs51("div", { className: "thread-graph-tree-actions absolute inset-y-0 right-1 flex items-center gap-0.5 pl-1", children: [
-          onDownload ? /* @__PURE__ */ jsx61(
-            "button",
-            {
-              type: "button",
-              onClick: () => onDownload(node),
-              className: "thread-graph-tree-action flex h-9 w-9 shrink-0 items-center justify-center rounded-md text-slate-400 transition hover:bg-white hover:text-slate-900 sm:h-7 sm:w-7 dark:text-slate-500 dark:hover:bg-[#1d222c] dark:hover:text-slate-100",
-              title: node.path ? `Download ${node.name}` : "Download workspace",
-              "aria-label": node.path ? `Download ${node.name}` : "Download workspace",
-              children: /* @__PURE__ */ jsx61(Download2, { className: "h-3.5 w-3.5" })
-            }
-          ) : null,
-          onCopyPath && node.path ? /* @__PURE__ */ jsx61(
-            "button",
-            {
-              type: "button",
-              onClick: () => onCopyPath(node),
-              className: "thread-graph-tree-action flex h-9 w-9 shrink-0 items-center justify-center rounded-md text-slate-400 transition hover:bg-white hover:text-slate-900 sm:h-7 sm:w-7 dark:text-slate-500 dark:hover:bg-[#1d222c] dark:hover:text-slate-100",
-              title: `Copy path for ${node.name}`,
-              "aria-label": `Copy path for ${node.name}`,
-              children: /* @__PURE__ */ jsx61(Copy5, { className: "h-3.5 w-3.5" })
-            }
-          ) : null
-        ] }) : null
-      ] }),
-      expanded ? /* @__PURE__ */ jsxs51("div", { children: [
-        node.children.map((child) => /* @__PURE__ */ jsx61(
-          WorkspaceTreeRow,
-          {
-            depth: depth + 1,
-            expandedPaths,
-            loadingPaths,
-            node: child,
-            ...onCopyPath ? { onCopyPath } : {},
-            ...onDownload ? { onDownload } : {},
-            ...onPreview ? { onPreview } : {},
-            onSelect,
-            onToggle,
-            selectedNodeId
-          },
-          child.id
-        )),
-        node.truncated ? /* @__PURE__ */ jsx61(
-          "div",
-          {
-            className: "px-2 py-1 text-xs text-slate-400 dark:text-slate-500",
-            style: {
-              paddingLeft: `${(depth + 1) * TREE_LEVEL_INDENT_REM + 0.5}rem`
-            },
-            children: "More items not shown"
-          }
-        ) : null
-      ] }) : null
-    ] });
-  }
-  return /* @__PURE__ */ jsxs51(
-    "div",
-    {
-      className: `thread-graph-tree-row group relative flex items-center text-sm transition ${selected ? "is-selected" : "text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-[#222733] dark:hover:text-slate-100"}`,
-      children: [
-        /* @__PURE__ */ jsxs51(
-          "button",
-          {
-            type: "button",
-            onClick: () => onSelect(node.id),
-            className: "flex min-h-9 min-w-0 flex-1 items-center gap-2 px-2 py-2 text-left sm:min-h-0 sm:py-1.5",
-            style: { paddingLeft: `${depth * TREE_LEVEL_INDENT_REM + 1.9}rem` },
-            children: [
-              iconForWorkspaceNode(node, false),
-              /* @__PURE__ */ jsx61("span", { className: "truncate", children: node.name })
-            ]
-          }
-        ),
-        node.kind === "file" && (onPreview || onDownload || onCopyPath) ? /* @__PURE__ */ jsxs51("div", { className: "thread-graph-tree-actions absolute inset-y-0 right-1 flex items-center gap-0.5 pl-1", children: [
-          onPreview ? /* @__PURE__ */ jsx61(
-            "button",
-            {
-              type: "button",
-              onClick: () => onPreview(node),
-              className: `thread-graph-tree-action flex h-9 w-9 shrink-0 items-center justify-center rounded-md transition sm:h-7 sm:w-7 ${selected ? "is-selected" : "text-slate-400 hover:bg-white hover:text-slate-900 dark:text-slate-500 dark:hover:bg-[#1d222c] dark:hover:text-slate-100"}`,
-              title: `Preview ${node.name}`,
-              "aria-label": `Preview ${node.name}`,
-              children: /* @__PURE__ */ jsx61(Eye, { className: "h-3.5 w-3.5" })
-            }
-          ) : null,
-          onDownload ? /* @__PURE__ */ jsx61(
-            "button",
-            {
-              type: "button",
-              onClick: () => onDownload(node),
-              className: `thread-graph-tree-action flex h-9 w-9 shrink-0 items-center justify-center rounded-md transition sm:h-7 sm:w-7 ${selected ? "is-selected" : "text-slate-400 hover:bg-white hover:text-slate-900 dark:text-slate-500 dark:hover:bg-[#1d222c] dark:hover:text-slate-100"}`,
-              title: `Download ${node.name}`,
-              "aria-label": `Download ${node.name}`,
-              children: /* @__PURE__ */ jsx61(Download2, { className: "h-3.5 w-3.5" })
-            }
-          ) : null,
-          onCopyPath ? /* @__PURE__ */ jsx61(
-            "button",
-            {
-              type: "button",
-              onClick: () => onCopyPath(node),
-              className: `thread-graph-tree-action flex h-9 w-9 shrink-0 items-center justify-center rounded-md transition sm:h-7 sm:w-7 ${selected ? "is-selected" : "text-slate-400 hover:bg-white hover:text-slate-900 dark:text-slate-500 dark:hover:bg-[#1d222c] dark:hover:text-slate-100"}`,
-              title: `Copy path for ${node.name}`,
-              "aria-label": `Copy path for ${node.name}`,
-              children: /* @__PURE__ */ jsx61(Copy5, { className: "h-3.5 w-3.5" })
-            }
-          ) : null
-        ] }) : null
-      ]
-    }
-  );
-}
-function LiveWorkspaceSection({
-  liveNodes,
-  onSelect,
-  selectedNodeId
-}) {
-  if (liveNodes.length === 0) {
-    return null;
-  }
-  return /* @__PURE__ */ jsxs51("div", { className: "border-b border-slate-200 py-2 dark:border-[#2a2f3a]", children: [
-    /* @__PURE__ */ jsx61("div", { className: "thread-graph-workspace-label px-3 pb-1 text-[11px] font-semibold tracking-normal text-slate-500 dark:text-slate-400", children: "Live" }),
-    /* @__PURE__ */ jsx61("div", { className: "space-y-0.5", children: liveNodes.map((node) => {
-      const selected = selectedNodeId === node.id;
-      return /* @__PURE__ */ jsxs51(
-        "button",
-        {
-          type: "button",
-          "data-testid": "live-molecule-item",
-          "data-molecule-id": node.artifact?.id ?? node.id,
-          onClick: () => onSelect(node.id),
-          className: `thread-graph-tree-row flex min-h-9 w-full items-center gap-2 px-3 py-2 text-left text-sm transition sm:min-h-0 sm:py-1.5 ${selected ? "is-selected" : "text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-[#222733] dark:hover:text-slate-100"}`,
-          children: [
-            /* @__PURE__ */ jsx61(
-              FileCode2,
-              {
-                className: `h-4 w-4 shrink-0 ${selected ? "text-current" : "text-emerald-600 dark:text-emerald-300"}`
-              }
-            ),
-            /* @__PURE__ */ jsx61("span", { className: "min-w-0 flex-1 truncate", children: node.name })
-          ]
-        },
-        node.id
-      );
-    }) })
-  ] });
-}
-function WorkspaceExplorerPanel({
-  canEmptyGarbage,
-  canUpload,
-  onCollapse,
-  expandedPaths,
-  loadingPaths,
-  loading,
-  onDownload,
-  onCopyPath,
-  onEmptyGarbage,
-  onPreview,
-  onRefresh,
-  onSelect,
-  onToggle,
-  onUpload,
-  explorerScrollTopRef,
-  explorerScrollerRef,
-  selectedNodeId,
-  tree,
-  liveNodes
-}) {
-  const visibleTree = useMemo14(
-    () => ({
-      ...tree,
-      children: tree.children.filter((node) => node.path !== "live")
-    }),
-    [tree]
-  );
-  useLayoutEffect7(() => {
-    const scroller = explorerScrollerRef.current;
-    if (!scroller) {
-      return;
-    }
-    scroller.scrollTop = explorerScrollTopRef.current;
-  }, [explorerScrollerRef, explorerScrollTopRef]);
-  return /* @__PURE__ */ jsxs51("aside", { className: `${explorerPanelClassName} flex flex-col`, children: [
-    /* @__PURE__ */ jsxs51("div", { className: explorerHeaderClassName, children: [
-      /* @__PURE__ */ jsx61("div", { className: "min-w-0", children: /* @__PURE__ */ jsx61("h2", { className: explorerHeadingClassName, children: "Explorer" }) }),
-      /* @__PURE__ */ jsxs51("div", { className: "flex items-center gap-1", children: [
-        onCollapse ? /* @__PURE__ */ jsxs51(
-          "button",
-          {
-            type: "button",
-            "data-testid": "collapse-explorer",
-            onClick: onCollapse,
-            className: collapseGhostButtonClassName,
-            title: "Collapse Explorer",
-            "aria-label": "Collapse Explorer",
-            children: [
-              /* @__PURE__ */ jsx61(ChevronsLeft2, { className: "h-4 w-4" }),
-              /* @__PURE__ */ jsx61("span", { className: "sr-only", children: "Collapse Explorer" })
-            ]
-          }
-        ) : null,
-        /* @__PURE__ */ jsx61(
-          "button",
-          {
-            type: "button",
-            onClick: onUpload,
-            disabled: !canUpload,
-            className: explorerIconButtonClassName,
-            title: canUpload ? "Upload file" : "Upload is unavailable for this workspace",
-            "aria-label": "Upload file",
-            children: /* @__PURE__ */ jsx61(Upload, { className: "h-4 w-4" })
-          }
-        ),
-        /* @__PURE__ */ jsx61(
-          "button",
-          {
-            type: "button",
-            onClick: onRefresh,
-            className: explorerIconButtonClassName,
-            title: "Refresh workspace",
-            "aria-label": "Refresh workspace",
-            children: /* @__PURE__ */ jsx61(RefreshCw, { className: `h-4 w-4 ${loading ? "animate-spin" : ""}` })
-          }
-        ),
-        onEmptyGarbage ? /* @__PURE__ */ jsx61(
-          "button",
-          {
-            type: "button",
-            onClick: onEmptyGarbage,
-            disabled: !canEmptyGarbage,
-            className: explorerIconButtonClassName,
-            title: canEmptyGarbage ? "Empty garbage" : "Garbage controls are unavailable",
-            "aria-label": "Empty garbage",
-            children: /* @__PURE__ */ jsx61(Trash23, { className: "h-4 w-4" })
-          }
-        ) : null
-      ] })
-    ] }),
-    /* @__PURE__ */ jsxs51(
-      "div",
-      {
-        ref: explorerScrollerRef,
-        className: "thread-graph-workspace-tree-scroll min-h-0 flex-1 overflow-y-auto py-2",
-        onScroll: (event) => {
-          explorerScrollTopRef.current = event.currentTarget.scrollTop;
-        },
-        children: [
-          /* @__PURE__ */ jsx61(
-            LiveWorkspaceSection,
-            {
-              liveNodes: liveNodes ?? [],
-              onSelect,
-              selectedNodeId
-            }
-          ),
-          /* @__PURE__ */ jsx61("div", { className: workspaceLabelClassName, children: "Workspace" }),
-          /* @__PURE__ */ jsx61(
-            WorkspaceTreeRow,
-            {
-              depth: 0,
-              expandedPaths,
-              loadingPaths,
-              node: visibleTree,
-              ...onCopyPath ? { onCopyPath } : {},
-              ...onDownload ? { onDownload } : {},
-              ...onPreview ? { onPreview } : {},
-              onSelect,
-              onToggle,
-              selectedNodeId
-            }
-          ),
-          visibleTree.children.length === 0 ? /* @__PURE__ */ jsx61("p", { className: emptyWorkspaceClassName, children: "This workspace is empty. Agent tool runs execute inside the thread workspace, so files should appear here as the session works." }) : null
-        ]
-      }
-    )
-  ] });
-}
-function GraphWorkspaceExplorer({
-  activeView,
-  detail,
-  artifacts,
-  plugins,
-  status,
-  focusPathRequest,
-  workspaceAdapter
-}) {
-  const [adapterTree, setAdapterTree] = useState30(
-    null
-  );
-  const fallbackTree = useMemo14(
-    () => workspaceAdapter && adapterTree ? null : collectWorkspaceItems(detail, artifacts, status, activeView),
-    [activeView, adapterTree, artifacts, detail, status, workspaceAdapter]
-  );
-  const tree = adapterTree ?? fallbackTree ?? collectWorkspaceItems(detail, artifacts, status, activeView);
-  const nodeMap = useMemo14(() => flattenWorkspaceNodes(tree), [tree]);
-  const liveNodes = useMemo14(
-    () => tree.children.find((node) => node.path === "live")?.children ?? [],
-    [tree]
-  );
-  const firstSelectableNode = findFirstPreviewNode(tree);
-  const [selectedNodeId, setSelectedNodeId] = useState30(
-    () => firstSelectableNode?.id ?? null
-  );
-  const [expandedPaths, setExpandedPaths] = useState30(
-    () => /* @__PURE__ */ new Set([
-      "",
-      "artifacts",
-      "thread-events",
-      "live",
-      ...collectAncestorPaths(firstSelectableNode?.path ?? "")
-    ])
-  );
-  const [collapsedPanel, setCollapsedPanel] = useState30(
-    () => typeof window !== "undefined" && typeof window.matchMedia === "function" && window.matchMedia("(max-width: 639px)").matches ? "viewer" : null
-  );
-  const [workspaceError, setWorkspaceError] = useState30(null);
-  const [loadingTree, setLoadingTree] = useState30(false);
-  const [loadingDirectoryPaths, setLoadingDirectoryPaths] = useState30(() => /* @__PURE__ */ new Set());
-  const [previewLoading, setPreviewLoading] = useState30(false);
-  const [loadingMore, setLoadingMore] = useState30(false);
-  const [showGarbageDialog, setShowGarbageDialog] = useState30(false);
-  const [garbageFiles, setGarbageFiles] = useState30([]);
-  const [previewFile, setPreviewFile] = useState30(null);
-  const [imageUrl, setImageUrl] = useState30(null);
-  const [pdfUrl, setPdfUrl] = useState30(null);
-  const [isMobileViewport, setIsMobileViewport] = useState30(false);
-  const fileInputRef = useRef17(null);
-  const explorerScrollerRef = useRef17(null);
-  const explorerScrollTopRef = useRef17(0);
-  const pendingExplorerScrollRestoreRef = useRef17(null);
-  const workspaceAdapterAvailable = Boolean(workspaceAdapter);
-  const activeNode = (selectedNodeId ? nodeMap.get(selectedNodeId) : null) ?? firstSelectableNode ?? null;
-  const workspaceIdentity = {
-    threadId: detail.thread.id,
-    workspaceId: detail.workspace.id ?? detail.thread.workspaceId ?? null
-  };
-  useEffect23(() => {
-    explorerScrollTopRef.current = 0;
-    pendingExplorerScrollRestoreRef.current = null;
-    setExpandedPaths(
-      /* @__PURE__ */ new Set([
-        "",
-        "artifacts",
-        "thread-events",
-        "live",
-        ...readExpandedPaths(workspaceIdentity),
-        ...collectAncestorPaths(firstSelectableNode?.path ?? "")
-      ])
-    );
-  }, [workspaceIdentity.threadId, workspaceIdentity.workspaceId]);
-  function rememberExplorerScroll() {
-    const currentScrollTop = explorerScrollerRef.current?.scrollTop ?? explorerScrollTopRef.current;
-    explorerScrollTopRef.current = currentScrollTop;
-    pendingExplorerScrollRestoreRef.current = currentScrollTop;
-  }
-  function restoreExplorerScroll() {
-    const target = pendingExplorerScrollRestoreRef.current ?? explorerScrollTopRef.current;
-    const scroller = explorerScrollerRef.current;
-    if (!scroller) {
-      return;
-    }
-    let frame = 0;
-    const restore = () => {
-      const current = explorerScrollerRef.current;
-      if (!current) {
-        return;
-      }
-      current.scrollTop = Math.min(
-        target,
-        Math.max(0, current.scrollHeight - current.clientHeight)
-      );
-      explorerScrollTopRef.current = current.scrollTop;
-      frame += 1;
-      if (frame < 8) {
-        window.requestAnimationFrame(restore);
-      } else {
-        pendingExplorerScrollRestoreRef.current = null;
-      }
-    };
-    window.requestAnimationFrame(restore);
-  }
-  useLayoutEffect7(() => {
-    if (collapsedPanel === "explorer") {
-      return;
-    }
-    restoreExplorerScroll();
-  }, [collapsedPanel, tree]);
-  useEffect23(() => {
-    if (typeof window === "undefined" || typeof window.matchMedia !== "function") {
-      return;
-    }
-    const mediaQuery = window.matchMedia("(max-width: 639px)");
-    const update = () => setIsMobileViewport(mediaQuery.matches);
-    update();
-    if (typeof mediaQuery.addEventListener === "function") {
-      mediaQuery.addEventListener("change", update);
-      return () => mediaQuery.removeEventListener("change", update);
-    }
-    mediaQuery.addListener(update);
-    return () => mediaQuery.removeListener(update);
-  }, []);
-  async function refreshWorkspaceTree(preferredPath) {
-    if (!workspaceAdapter) {
-      return;
-    }
-    const currentSelectedPath = preferredPath ?? activeNode?.path ?? null;
-    setLoadingTree(true);
-    setWorkspaceError(null);
-    try {
-      const refreshedTree = workspaceTreeNodeToGraphNode(
-        await workspaceAdapter.listTree({ ...workspaceIdentity, path: "" })
-      );
-      let nextTree = adapterTree ? mergeRefreshedWorkspaceTree(refreshedTree, adapterTree) : refreshedTree;
-      if (adapterTree) {
-        const expandedDirectories = [...expandedPaths].filter((path) => path).sort(
-          (left, right) => left.split("/").length - right.split("/").length
-        );
-        for (const path of expandedDirectories) {
-          const previousNode = findWorkspaceNodeByPath(adapterTree, path);
-          if (previousNode?.kind !== "directory" || !previousNode.childrenLoaded) {
-            continue;
-          }
-          const refreshedNode = workspaceTreeNodeToGraphNode(
-            await workspaceAdapter.listTree({ ...workspaceIdentity, path })
-          );
-          nextTree = replaceWorkspaceNode(
-            nextTree,
-            path,
-            mergeRefreshedWorkspaceTree(refreshedNode, previousNode)
-          );
-        }
-      }
-      setAdapterTree(nextTree);
-      const firstFile = findFirstWorkspaceFile(nextTree);
-      setSelectedNodeId((current) => {
-        const fallbackPath = currentSelectedPath ?? (current ? nodeMap.get(current)?.path : null);
-        if (fallbackPath && hasWorkspacePath(nextTree, fallbackPath)) {
-          return `workspace:${fallbackPath}`;
-        }
-        return firstFile?.id ?? current;
-      });
-    } catch (error) {
-      setWorkspaceError(
-        error instanceof Error ? error.message : "Failed to load workspace"
-      );
-      setAdapterTree(null);
-    } finally {
-      setLoadingTree(false);
-    }
-  }
-  async function loadDirectoryChildren(path) {
-    if (!workspaceAdapter || !adapterTree) {
-      return;
-    }
-    setLoadingDirectoryPaths((current) => {
-      if (current.has(path)) {
-        return current;
-      }
-      const next = new Set(current);
-      next.add(path);
-      return next;
-    });
-    setWorkspaceError(null);
-    try {
-      const loadedNode = workspaceTreeNodeToGraphNode(
-        await workspaceAdapter.listTree({ ...workspaceIdentity, path })
-      );
-      setAdapterTree(
-        (current) => current ? replaceWorkspaceNodeChildren(current, path, loadedNode.children, {
-          truncated: loadedNode.truncated
-        }) : current
-      );
-    } catch (error) {
-      setWorkspaceError(
-        error instanceof Error ? error.message : "Failed to load directory"
-      );
-    } finally {
-      setLoadingDirectoryPaths((current) => {
-        if (!current.has(path)) {
-          return current;
-        }
-        const next = new Set(current);
-        next.delete(path);
-        return next;
-      });
-    }
-  }
-  async function focusWorkspacePath(path) {
-    const targetPath = workspaceRelativeFocusPath(path, detail.workspace.absPath);
-    if (!targetPath) {
-      return;
-    }
-    const ancestors = ancestorDirectoryPaths(targetPath);
-    setCollapsedPanel(null);
-    setExpandedPaths((current) => {
-      const next = new Set(current);
-      next.add("");
-      for (const ancestor of ancestors) {
-        next.add(ancestor);
-      }
-      writeExpandedPaths(workspaceIdentity, next);
-      return next;
-    });
-    if (!workspaceAdapter) {
-      if (hasWorkspacePath(tree, targetPath)) {
-        setSelectedNodeId(`workspace:${targetPath}`);
-      }
-      return;
-    }
-    setLoadingTree(true);
-    setWorkspaceError(null);
-    try {
-      let nextTree = adapterTree ?? workspaceTreeNodeToGraphNode(
-        await workspaceAdapter.listTree({ ...workspaceIdentity, path: "" })
-      );
-      for (const ancestor of ancestors) {
-        const existing = findWorkspaceNodeByPath(nextTree, ancestor);
-        if (existing?.kind === "directory" && existing.childrenLoaded) {
-          continue;
-        }
-        const loadedNode = workspaceTreeNodeToGraphNode(
-          await workspaceAdapter.listTree({
-            ...workspaceIdentity,
-            path: ancestor
-          })
-        );
-        nextTree = replaceWorkspaceNode(nextTree, ancestor, loadedNode);
-      }
-      setAdapterTree(nextTree);
-      setSelectedNodeId(`workspace:${targetPath}`);
-    } catch (error) {
-      setWorkspaceError(
-        error instanceof Error ? error.message : `Failed to open ${targetPath}`
-      );
-    } finally {
-      setLoadingTree(false);
-    }
-  }
-  useEffect23(() => {
-    if (!workspaceAdapter || !adapterTree) {
-      return;
-    }
-    for (const node of nodeMap.values()) {
-      if (node.path && node.kind === "directory" && expandedPaths.has(node.path) && node.hasChildren && !node.childrenLoaded && !loadingDirectoryPaths.has(node.path)) {
-        void loadDirectoryChildren(node.path);
-      }
-    }
-  }, [adapterTree, expandedPaths, nodeMap, workspaceAdapter]);
-  useEffect23(() => {
-    setAdapterTree(null);
-    setLoadingDirectoryPaths(/* @__PURE__ */ new Set());
-    setPreviewFile(null);
-    setImageUrl(null);
-    setPdfUrl(null);
-    setWorkspaceError(null);
-    void refreshWorkspaceTree();
-  }, [
-    workspaceAdapterAvailable,
-    detail.thread.id,
-    detail.workspace.id,
-    detail.thread.workspaceId
-  ]);
-  useEffect23(() => {
-    if (!focusPathRequest) {
-      return;
-    }
-    void focusWorkspacePath(focusPathRequest.path);
-  }, [focusPathRequest?.requestId]);
-  useEffect23(() => {
-    if (!workspaceAdapter?.subscribeWorkspaceChanged) {
-      return;
-    }
-  }, [
-    workspaceAdapter,
-    workspaceIdentity.threadId,
-    workspaceIdentity.workspaceId
-  ]);
-  useEffect23(() => {
-    const selectedPathCandidate = workspaceAdapter && activeNode?.kind === "file" ? activeNode.path : null;
-    if (!selectedPathCandidate) {
-      setPreviewFile(null);
-      setImageUrl(null);
-      setPdfUrl(null);
-      return;
-    }
-    const selectedPath = selectedPathCandidate;
-    let cancelled = false;
-    async function loadPreview() {
-      if (!workspaceAdapter) {
-        return;
-      }
-      setPreviewLoading(true);
-      setWorkspaceError(null);
-      setPreviewFile(null);
-      setImageUrl(null);
-      setPdfUrl(null);
-      try {
-        const extension = extensionOf(selectedPath);
-        const rawUrl = workspaceAdapter.getRawFileUrl?.({
-          ...workspaceIdentity,
-          path: selectedPath
-        });
-        if (rawUrl && IMAGE_EXTENSIONS.has(extension)) {
-          if (!cancelled) {
-            setImageUrl(rawUrl);
-          }
-          return;
-        }
-        if (rawUrl && PDF_EXTENSIONS.has(extension)) {
-          if (!cancelled) {
-            setPdfUrl(rawUrl);
-          }
-          return;
-        }
-        const file = await workspaceAdapter.readFile({
-          ...workspaceIdentity,
-          path: selectedPath,
-          limit: PREVIEW_CHUNK_BYTES
-        });
-        if (!cancelled) {
-          setPreviewFile(file);
-        }
-      } catch (error) {
-        if (!cancelled) {
-          setWorkspaceError(
-            error instanceof Error ? error.message : "Failed to read file"
-          );
-        }
-      } finally {
-        if (!cancelled) {
-          setPreviewLoading(false);
-        }
-      }
-    }
-    void loadPreview();
-    return () => {
-      cancelled = true;
-    };
-  }, [workspaceAdapter, activeNode?.id]);
-  async function handleLoadMore() {
-    if (!workspaceAdapter || !previewFile?.truncated) {
-      return;
-    }
-    setLoadingMore(true);
-    try {
-      const chunk = await workspaceAdapter.readFile({
-        ...workspaceIdentity,
-        path: previewFile.path,
-        offset: previewFile.nextOffset,
-        limit: PREVIEW_CHUNK_BYTES
-      });
-      setPreviewFile(
-        (current) => current ? {
-          ...current,
-          content: current.content + chunk.content,
-          truncated: chunk.truncated,
-          nextOffset: chunk.nextOffset,
-          size: chunk.size
-        } : current
-      );
-    } finally {
-      setLoadingMore(false);
-    }
-  }
-  async function handleSaveFile(input) {
-    if (!workspaceAdapter?.writeFile) {
-      return;
-    }
-    setWorkspaceError(null);
-    await workspaceAdapter.writeFile({
-      ...workspaceIdentity,
-      path: input.path,
-      content: input.content
-    });
-    await refreshWorkspaceTree(input.path);
-    const file = await workspaceAdapter.readFile({
-      ...workspaceIdentity,
-      path: input.path,
-      limit: PREVIEW_CHUNK_BYTES
-    });
-    setPreviewFile(file);
-  }
-  async function uploadWorkspaceFile(file) {
-    if (!workspaceAdapter?.uploadFile || !file) {
-      return;
-    }
-    setLoadingTree(true);
-    setWorkspaceError(null);
-    try {
-      const result = await workspaceAdapter.uploadFile({
-        ...workspaceIdentity,
-        path: file.name,
-        file
-      });
-      const preferredPath = result.kind === "archive" ? result.paths[0] ?? null : result.file.path;
-      await refreshWorkspaceTree(preferredPath);
-    } catch (error) {
-      setWorkspaceError(
-        error instanceof Error ? error.message : "Failed to upload file"
-      );
-    } finally {
-      setLoadingTree(false);
-    }
-  }
-  async function handleUpload(event) {
-    const file = event.target.files?.[0];
-    event.target.value = "";
-    if (file) {
-      await uploadWorkspaceFile(file);
-    }
-  }
-  function pickUploadFile() {
-    if (!workspaceAdapter?.uploadFile) {
-      return;
-    }
-    const defaultPick = () => fileInputRef.current?.click();
-    if (workspaceAdapter.pickUploadFile) {
-      void workspaceAdapter.pickUploadFile({
-        ...workspaceIdentity,
-        defaultPick,
-        upload: uploadWorkspaceFile
-      });
-      return;
-    }
-    defaultPick();
-  }
-  function handleDownload(node) {
-    void workspaceAdapter?.downloadNode?.({
-      ...workspaceIdentity,
-      path: node.path,
-      kind: node.kind === "directory" ? "directory" : "file"
-    });
-  }
-  function handleCopyPath(node) {
-    if (!node.path || typeof navigator === "undefined" || !navigator.clipboard) {
-      return;
-    }
-    const workspaceRoot = detail.workspace.absPath.replace(/\/+$/, "");
-    const copyPath = node.path.startsWith("/") ? node.path : workspaceRoot ? `${workspaceRoot}/${node.path.replace(/^\/+/, "")}` : node.path;
-    void navigator.clipboard.writeText(copyPath).catch((error) => {
-      setWorkspaceError(
-        error instanceof Error ? error.message : "Failed to copy file path"
-      );
-    });
-  }
-  function handlePreview(node) {
-    if (node.kind !== "file") {
-      return;
-    }
-    rememberExplorerScroll();
-    setSelectedNodeId(node.id);
-    setCollapsedPanel("explorer");
-  }
-  async function handleOpenGarbage() {
-    if (!workspaceAdapter?.emptyGarbage) {
-      return;
-    }
-    setWorkspaceError(null);
-    if (!workspaceAdapter.listGarbage) {
-      setGarbageFiles([]);
-      setShowGarbageDialog(true);
-      return;
-    }
-    try {
-      const files = await workspaceAdapter.listGarbage(workspaceIdentity);
-      setGarbageFiles(files.map((file) => `garbage/${file}`));
-    } catch (error) {
-      setGarbageFiles([]);
-      setWorkspaceError(
-        error instanceof Error ? error.message : "Failed to list garbage files"
-      );
-    } finally {
-      setShowGarbageDialog(true);
-    }
-  }
-  async function handleConfirmEmptyGarbage() {
-    if (!workspaceAdapter?.emptyGarbage) {
-      return;
-    }
-    setShowGarbageDialog(false);
-    setWorkspaceError(null);
-    try {
-      await workspaceAdapter.emptyGarbage(workspaceIdentity);
-      await refreshWorkspaceTree(activeNode?.path ?? null);
-    } catch (error) {
-      setWorkspaceError(
-        error instanceof Error ? error.message : "Failed to empty garbage"
-      );
-    }
-  }
-  const explorerActions = {
-    onCopyPath: handleCopyPath,
-    ...workspaceAdapter?.downloadNode ? { onDownload: handleDownload } : {},
-    ...workspaceAdapter?.emptyGarbage ? { onEmptyGarbage: handleOpenGarbage } : {},
-    ...workspaceAdapter ? { onRefresh: () => void refreshWorkspaceTree(activeNode?.path ?? null) } : {},
-    ...workspaceAdapter?.uploadFile ? { onUpload: pickUploadFile } : {}
-  };
-  function toggleDirectory(path) {
-    if (!path) {
-      return;
-    }
-    const node = nodeMap.get(`workspace:${path}`);
-    const shouldLoad = node?.kind === "directory" && node.hasChildren && !node.childrenLoaded && !loadingDirectoryPaths.has(path);
-    setExpandedPaths((current) => {
-      const next = new Set(current);
-      if (next.has(path)) {
-        next.delete(path);
-      } else {
-        next.add(path);
-      }
-      writeExpandedPaths(workspaceIdentity, next);
-      return next;
-    });
-    if (!expandedPaths.has(path) && shouldLoad) {
-      void loadDirectoryChildren(path);
-    }
-  }
-  const explorerPanel = /* @__PURE__ */ jsx61(
-    WorkspaceExplorerPanel,
-    {
-      canEmptyGarbage: Boolean(workspaceAdapter?.emptyGarbage),
-      canUpload: Boolean(workspaceAdapter?.uploadFile),
-      onCollapse: () => {
-        rememberExplorerScroll();
-        setCollapsedPanel("explorer");
-      },
-      expandedPaths,
-      loadingPaths: loadingDirectoryPaths,
-      loading: loadingTree,
-      explorerScrollTopRef,
-      explorerScrollerRef,
-      ...explorerActions,
-      onPreview: handlePreview,
-      onSelect: (nodeId) => {
-        setSelectedNodeId(nodeId);
-      },
-      onToggle: toggleDirectory,
-      selectedNodeId: activeNode?.id ?? null,
-      tree,
-      liveNodes
-    }
-  );
-  const viewerPanel = /* @__PURE__ */ jsx61(
-    GraphWorkspacePreviewPane,
-    {
-      error: workspaceError,
-      imageUrl,
-      loadingMore,
-      onOpenWorkspaceFile: (path) => {
-        void focusWorkspacePath(path);
-      },
-      onLoadMore: handleLoadMore,
-      ...workspaceAdapter?.writeFile ? { onSaveFile: handleSaveFile } : {},
-      onCollapse: () => {
-        rememberExplorerScroll();
-        setCollapsedPanel("viewer");
-      },
-      pdfUrl,
-      previewFile,
-      previewLoading,
-      plugins,
-      ...workspaceAdapter?.getRawFileUrl ? {
-        resolveWorkspaceFileUrl: (path) => workspaceAdapter.getRawFileUrl?.({
-          ...workspaceIdentity,
-          path
-        }) ?? null
-      } : {},
-      selectedTarget: graphWorkspacePreviewTargetFromNode(activeNode),
-      workspaceRootPath: detail.workspace.absPath
-    }
-  );
-  if (collapsedPanel === "explorer") {
-    return /* @__PURE__ */ jsx61(
-      "div",
-      {
-        "data-testid": "workspace-panel",
-        className: "relative h-full min-h-0 w-full overflow-hidden p-2",
-        children: viewerPanel
-      }
-    );
-  }
-  if (collapsedPanel === "viewer") {
-    return /* @__PURE__ */ jsx61(
-      "div",
-      {
-        "data-testid": "workspace-panel",
-        className: "relative h-full min-h-0 w-full overflow-hidden p-2",
-        children: explorerPanel
-      }
-    );
-  }
-  return /* @__PURE__ */ jsxs51(
-    "div",
-    {
-      "data-testid": "workspace-panel",
-      className: "flex h-full min-h-0 w-full overflow-hidden bg-transparent p-2",
-      children: [
-        showGarbageDialog ? /* @__PURE__ */ jsx61(
-          GraphEmptyGarbageDialog,
-          {
-            files: garbageFiles,
-            onCancel: () => setShowGarbageDialog(false),
-            onConfirm: () => void handleConfirmEmptyGarbage()
-          }
-        ) : null,
-        isMobileViewport ? /* @__PURE__ */ jsxs51(
-          ResizablePanelGroup,
-          {
-            direction: "vertical",
-            className: "thread-graph-workspace-mobile-stack",
-            children: [
-              /* @__PURE__ */ jsx61(ResizablePanel, { defaultSize: 42, minSize: 18, children: /* @__PURE__ */ jsx61("div", { className: "thread-graph-workspace-mobile-explorer h-full min-h-0 overflow-hidden", children: explorerPanel }) }),
-              /* @__PURE__ */ jsx61(ResizableHandle, { className: "thread-graph-workspace-resize-handle h-2 bg-transparent after:h-px after:bg-slate-200/80 after:transition-colors hover:after:bg-slate-300 dark:after:bg-[#303642] dark:hover:after:bg-[#475063]" }),
-              /* @__PURE__ */ jsx61(ResizablePanel, { defaultSize: 58, minSize: 18, children: /* @__PURE__ */ jsx61("div", { className: "thread-graph-workspace-mobile-viewer h-full min-h-0 overflow-hidden", children: viewerPanel }) })
-            ]
-          }
-        ) : /* @__PURE__ */ jsxs51(
-          ResizablePanelGroup,
-          {
-            direction: "horizontal",
-            className: "thread-graph-workspace-resizable",
-            children: [
-              /* @__PURE__ */ jsx61(ResizablePanel, { defaultSize: 33, minSize: 20, children: /* @__PURE__ */ jsx61("div", { className: "thread-graph-workspace-explorer-pane h-full min-h-0 overflow-hidden", children: explorerPanel }) }),
-              /* @__PURE__ */ jsx61(ResizableHandle, { className: "thread-graph-workspace-resize-handle w-2 bg-transparent after:w-px after:bg-slate-200/80 after:transition-colors hover:after:bg-slate-300 dark:after:bg-[#303642] dark:hover:after:bg-[#475063]" }),
-              /* @__PURE__ */ jsx61(ResizablePanel, { defaultSize: 67, minSize: 30, children: /* @__PURE__ */ jsx61("div", { className: "thread-graph-workspace-viewer-pane h-full min-h-0 overflow-hidden", children: viewerPanel }) })
-            ]
-          }
-        ),
-        /* @__PURE__ */ jsx61(
-          "input",
-          {
-            ref: fileInputRef,
-            type: "file",
-            "aria-label": "Workspace upload file input",
-            "data-testid": "workspace-upload-file-input",
-            className: "hidden",
-            onChange: (event) => void handleUpload(event)
-          }
-        )
-      ]
-    }
-  );
-}
-var PREVIEW_CHUNK_BYTES, EXPANDED_PATHS_STORAGE_PREFIX, TREE_LEVEL_INDENT_REM, explorerPanelClassName, explorerHeaderClassName, explorerHeadingClassName, explorerIconButtonClassName, collapseGhostButtonClassName, workspaceLabelClassName, emptyWorkspaceClassName;
-var init_GraphWorkspaceExplorer = __esm({
-  "src/components/graph-workspace/GraphWorkspaceExplorer.tsx"() {
-    "use strict";
-    init_workspaceTree();
-    init_GraphWorkspacePreviewPane();
-    init_GraphEmptyGarbageDialog();
-    init_GraphResizablePanels();
-    PREVIEW_CHUNK_BYTES = 24e3;
-    EXPANDED_PATHS_STORAGE_PREFIX = "remote-codex:graphchat:workspace:expanded:";
-    TREE_LEVEL_INDENT_REM = 0.5;
-    explorerPanelClassName = "thread-graph-explorer h-full min-h-0 overflow-hidden rounded-[12px]";
-    explorerHeaderClassName = "thread-graph-explorer-header flex h-[60px] shrink-0 items-center justify-between border-b px-4";
-    explorerHeadingClassName = "text-[18px] font-semibold text-slate-900 dark:text-slate-100";
-    explorerIconButtonClassName = "thread-graph-explorer-icon-button flex h-8 w-8 items-center justify-center rounded-lg border shadow-none transition disabled:cursor-not-allowed disabled:opacity-50";
-    collapseGhostButtonClassName = "thread-graph-explorer-collapse-button flex h-8 w-8 items-center justify-center rounded-full text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-[#222733] dark:hover:text-slate-100";
-    workspaceLabelClassName = "thread-graph-workspace-label px-3 pb-1 pt-2 text-[11px] font-semibold tracking-normal text-slate-500 dark:text-slate-400";
-    emptyWorkspaceClassName = "thread-graph-workspace-empty mx-4 mt-3 rounded-lg border border-dashed border-slate-200 bg-slate-50 px-3 py-4 text-sm text-slate-500 dark:border-[#303642] dark:bg-[#1b1f29] dark:text-slate-400";
-  }
-});
-
-// src/components/graph-workspace/GraphGuidePanel.tsx
-import {
-  BarChart2,
-  Code2 as Code22,
-  FileImage as FileImage2,
-  FolderOpen as FolderOpen2,
-  MessageSquare as MessageSquare2,
-  MoveRight,
-  Plus as Plus3,
-  RefreshCw as RefreshCw2,
-  Trash2 as Trash24,
-  Upload as Upload2,
-  Zap
-} from "lucide-react";
-import { Fragment as Fragment17, jsx as jsx62, jsxs as jsxs52 } from "react/jsx-runtime";
-function GuideTag({ children }) {
-  return /* @__PURE__ */ jsx62("span", { className: "thread-guide-tag inline-flex items-center rounded px-1.5 py-0.5 font-mono text-[10px]", children });
-}
-function GuideBullets({ items }) {
-  return /* @__PURE__ */ jsx62("ul", { className: "space-y-1 text-[12px] text-[var(--theme-fg-muted)]", children: items.map((item, index) => /* @__PURE__ */ jsxs52("li", { className: "flex gap-2", children: [
-    /* @__PURE__ */ jsx62("span", { className: "mt-[6px] h-1 w-1 shrink-0 rounded-full bg-[var(--theme-border-contrast)]" }),
-    /* @__PURE__ */ jsx62("span", { children: item })
-  ] }, index)) });
-}
-function SectionIcon({ children }) {
-  return /* @__PURE__ */ jsx62("span", { className: "thread-guide-icon flex h-5 w-5 shrink-0 items-center justify-center rounded-md", children });
-}
-function GuideAccordionItem({
-  value,
-  title,
-  icon,
-  children
-}) {
-  return /* @__PURE__ */ jsxs52(
-    AccordionItem,
-    {
-      value,
-      className: "thread-guide-section border-b border-[var(--theme-border)] last:border-b-0",
-      children: [
-        /* @__PURE__ */ jsx62(AccordionTrigger, { className: "py-3 hover:no-underline [&[data-state=open]]:pb-2", children: /* @__PURE__ */ jsxs52("div", { className: "flex items-center gap-2 text-xs font-semibold text-[var(--theme-fg)]", children: [
-          /* @__PURE__ */ jsx62(SectionIcon, { children: icon }),
-          title
-        ] }) }),
-        /* @__PURE__ */ jsx62(AccordionContent, { className: "space-y-3 pb-3", children })
-      ]
-    }
-  );
-}
-function GraphGuidePanel() {
-  return /* @__PURE__ */ jsxs52("div", { className: "flex h-full min-h-0 flex-col overflow-hidden", children: [
-    /* @__PURE__ */ jsxs52("div", { className: "shrink-0 border-b border-[var(--theme-border)] px-4 py-3", children: [
-      /* @__PURE__ */ jsx62("h2", { className: "text-xs font-semibold uppercase tracking-wide text-[var(--theme-fg-muted)]", children: "What can I do?" }),
-      /* @__PURE__ */ jsx62("p", { className: "mt-0.5 text-[11px] text-[var(--theme-fg-muted)]", children: "Upload files, ask in plain language, get results." })
-    ] }),
-    /* @__PURE__ */ jsx62("div", { className: "min-h-0 flex-1 overflow-y-auto px-3 pb-6", children: /* @__PURE__ */ jsxs52(
-      Accordion,
-      {
-        type: "multiple",
-        defaultValue: ["start", "workspace", "remote-codex"],
-        className: "space-y-0",
-        children: [
-          /* @__PURE__ */ jsxs52(
-            GuideAccordionItem,
-            {
-              value: "start",
-              title: "Getting Started",
-              icon: /* @__PURE__ */ jsx62(Zap, { className: "h-3 w-3" }),
-              children: [
-                /* @__PURE__ */ jsx62("p", { className: "text-[11px] leading-5 text-[var(--theme-fg-muted)]", children: "graphchat connects a language model to your files and a set of tools. Each Remote Codex thread has its own isolated workspace." }),
-                /* @__PURE__ */ jsx62(
-                  GuideBullets,
-                  {
-                    items: [
-                      "Upload data files via the Workspace panel",
-                      "Type a question or task in plain language",
-                      "The agent calls tools, writes results to the workspace, and explains what it found",
-                      "Agent-produced files appear in the workspace automatically when the host reports changes"
-                    ]
-                  }
-                )
-              ]
-            }
-          ),
-          /* @__PURE__ */ jsxs52(
-            GuideAccordionItem,
-            {
-              value: "workspace",
-              title: "Workspace Explorer",
-              icon: /* @__PURE__ */ jsx62(FolderOpen2, { className: "h-3 w-3" }),
-              children: [
-                /* @__PURE__ */ jsxs52("div", { className: "flex items-start gap-2", children: [
-                  /* @__PURE__ */ jsx62(Upload2, { className: "mt-0.5 h-3.5 w-3.5 shrink-0 text-[var(--theme-fg-muted)]" }),
-                  /* @__PURE__ */ jsxs52("div", { children: [
-                    /* @__PURE__ */ jsx62("p", { className: "text-[11px] font-medium text-[var(--theme-fg)]", children: "Upload" }),
-                    /* @__PURE__ */ jsx62("p", { className: "text-[11px] leading-5 text-[var(--theme-fg-muted)]", children: "Upload files through the Workspace panel when the host exposes workspace upload support. Composer attachments stay available for prompt context." })
-                  ] })
-                ] }),
-                /* @__PURE__ */ jsxs52("div", { className: "flex items-start gap-2", children: [
-                  /* @__PURE__ */ jsx62(Plus3, { className: "mt-0.5 h-3.5 w-3.5 shrink-0 text-[var(--theme-fg-muted)]" }),
-                  /* @__PURE__ */ jsxs52("div", { children: [
-                    /* @__PURE__ */ jsx62("p", { className: "text-[11px] font-medium text-[var(--theme-fg)]", children: "New files and folders" }),
-                    /* @__PURE__ */ jsx62("p", { className: "text-[11px] leading-5 text-[var(--theme-fg-muted)]", children: "Remote Codex normally creates files through tools and shell commands. They appear in Explorer after workspace refreshes." })
-                  ] })
-                ] }),
-                /* @__PURE__ */ jsxs52("div", { className: "flex items-start gap-2", children: [
-                  /* @__PURE__ */ jsx62(MoveRight, { className: "mt-0.5 h-3.5 w-3.5 shrink-0 text-[var(--theme-fg-muted)]" }),
-                  /* @__PURE__ */ jsxs52("div", { children: [
-                    /* @__PURE__ */ jsx62("p", { className: "text-[11px] font-medium text-[var(--theme-fg)]", children: "Move and organize" }),
-                    /* @__PURE__ */ jsx62("p", { className: "text-[11px] leading-5 text-[var(--theme-fg-muted)]", children: "Use the agent or terminal to reorganize files. Explorer keeps the GraphChat file tree and preview flow." })
-                  ] })
-                ] }),
-                /* @__PURE__ */ jsxs52("div", { className: "flex items-start gap-2", children: [
-                  /* @__PURE__ */ jsx62(Trash24, { className: "mt-0.5 h-3.5 w-3.5 shrink-0 text-rose-400" }),
-                  /* @__PURE__ */ jsxs52("div", { children: [
-                    /* @__PURE__ */ jsx62("p", { className: "text-[11px] font-medium text-[var(--theme-fg)]", children: "Garbage folder" }),
-                    /* @__PURE__ */ jsx62("p", { className: "text-[11px] leading-5 text-[var(--theme-fg-muted)]", children: "If the host exposes garbage controls, Explorer can permanently empty unwanted workspace files." })
-                  ] })
-                ] }),
-                /* @__PURE__ */ jsxs52("div", { className: "flex items-start gap-2", children: [
-                  /* @__PURE__ */ jsx62(RefreshCw2, { className: "mt-0.5 h-3.5 w-3.5 shrink-0 text-[var(--theme-fg-muted)]" }),
-                  /* @__PURE__ */ jsxs52("div", { children: [
-                    /* @__PURE__ */ jsx62("p", { className: "text-[11px] font-medium text-[var(--theme-fg)]", children: "Refresh" }),
-                    /* @__PURE__ */ jsx62("p", { className: "text-[11px] leading-5 text-[var(--theme-fg-muted)]", children: "Resync the file tree manually after shell commands, external changes, or agent tool runs." })
-                  ] })
-                ] }),
-                /* @__PURE__ */ jsxs52("div", { className: "rounded-lg border border-[var(--theme-border)] p-2.5", children: [
-                  /* @__PURE__ */ jsx62("p", { className: "mb-1.5 text-[10px] font-semibold uppercase tracking-wide text-[var(--theme-fg-muted)]", children: "Preview surfaces" }),
-                  /* @__PURE__ */ jsx62(
-                    GuideBullets,
-                    {
-                      items: [
-                        /* @__PURE__ */ jsxs52(Fragment17, { children: [
-                          /* @__PURE__ */ jsx62(GuideTag, { children: ".xyz .extxyz .cif" }),
-                          " use the 3D molecule plugin."
-                        ] }),
-                        /* @__PURE__ */ jsxs52(Fragment17, { children: [
-                          /* @__PURE__ */ jsx62(GuideTag, { children: ".png .jpg .gif .svg .webp" }),
-                          " use inline image preview."
-                        ] }),
-                        /* @__PURE__ */ jsxs52(Fragment17, { children: [
-                          /* @__PURE__ */ jsx62(GuideTag, { children: ".py .json .ts .md .csv" }),
-                          " use text/code preview."
-                        ] }),
-                        "Large files load in chunks when the workspace adapter supports it."
-                      ]
-                    }
-                  )
-                ] })
-              ]
-            }
-          ),
-          /* @__PURE__ */ jsxs52(
-            GuideAccordionItem,
-            {
-              value: "viewer",
-              title: "Viewer",
-              icon: /* @__PURE__ */ jsx62(FileImage2, { className: "h-3 w-3" }),
-              children: [
-                /* @__PURE__ */ jsx62("p", { className: "text-[11px] leading-5 text-[var(--theme-fg-muted)]", children: "Viewer is the GraphChat-style artifact surface. It opens Remote Codex artifacts through the same frontend plugin renderers used in rich message bubbles, and previews workspace files from Explorer." }),
-                /* @__PURE__ */ jsx62(
-                  GuideBullets,
-                  {
-                    items: [
-                      "Expand one artifact at a time for inspection",
-                      "Fallback JSON preview is available for unknown artifact types",
-                      "3D molecule artifacts remain interactive when the XYZ plugin is enabled"
-                    ]
-                  }
-                )
-              ]
-            }
-          ),
-          /* @__PURE__ */ jsxs52(
-            GuideAccordionItem,
-            {
-              value: "usage",
-              title: "Tool Usage & Chat",
-              icon: /* @__PURE__ */ jsx62(BarChart2, { className: "h-3 w-3" }),
-              children: [
-                /* @__PURE__ */ jsxs52("div", { className: "flex items-start gap-2", children: [
-                  /* @__PURE__ */ jsx62(BarChart2, { className: "mt-0.5 h-3.5 w-3.5 shrink-0 text-[var(--theme-fg-muted)]" }),
-                  /* @__PURE__ */ jsxs52("div", { children: [
-                    /* @__PURE__ */ jsx62("p", { className: "text-[11px] font-medium text-[var(--theme-fg)]", children: "Usage tab" }),
-                    /* @__PURE__ */ jsx62(
-                      GuideBullets,
-                      {
-                        items: [
-                          "Bar chart of tool and command counts for this thread",
-                          "Expandable call log: inspect every input and output",
-                          "Recent live events appear with persisted history"
-                        ]
-                      }
-                    )
-                  ] })
-                ] }),
-                /* @__PURE__ */ jsxs52("div", { className: "flex items-start gap-2", children: [
-                  /* @__PURE__ */ jsx62(MessageSquare2, { className: "mt-0.5 h-3.5 w-3.5 shrink-0 text-[var(--theme-fg-muted)]" }),
-                  /* @__PURE__ */ jsxs52("div", { children: [
-                    /* @__PURE__ */ jsx62("p", { className: "text-[11px] font-medium text-[var(--theme-fg)]", children: "Chat controls" }),
-                    /* @__PURE__ */ jsx62(
-                      GuideBullets,
-                      {
-                        items: [
-                          "New Chat creates a fresh Remote Codex thread with its own workspace",
-                          "Interrupt, compact, goal controls, and model controls remain in the composer",
-                          "Shell view stays available when a shell adapter is attached"
-                        ]
-                      }
-                    )
-                  ] })
-                ] })
-              ]
-            }
-          ),
-          /* @__PURE__ */ jsx62(
-            GuideAccordionItem,
-            {
-              value: "remote-codex",
-              title: "Remote Codex Extras",
-              icon: /* @__PURE__ */ jsx62(Code22, { className: "h-3 w-3" }),
-              children: /* @__PURE__ */ jsx62(
-                GuideBullets,
-                {
-                  items: [
-                    "Slash toolbox: skills, MCP, hooks, goals, forks, model controls, provider settings",
-                    "Rich message bubbles: reasoning, commands, searches, file reads, file changes, plans, action requests, artifacts",
-                    "Plugin surfaces: terminal, XYZ molecule viewer, inline code renderers, and imported plugin panels",
-                    "Thread metadata stays in the left rail and Workspace tab instead of replacing chat"
-                  ]
-                }
-              )
-            }
-          )
-        ]
-      }
-    ) })
-  ] });
-}
-var init_GraphGuidePanel = __esm({
-  "src/components/graph-workspace/GraphGuidePanel.tsx"() {
-    "use strict";
-    init_GraphAccordion();
-  }
-});
-
-// src/components/graph-workspace/GraphToolUsagePanel.tsx
-import { useEffect as useEffect24, useRef as useRef18, useState as useState31 } from "react";
-import { RefreshCw as RefreshCw3 } from "lucide-react";
-import { jsx as jsx63, jsxs as jsxs53 } from "react/jsx-runtime";
-function formatValue(value) {
-  if (value === null || value === void 0) {
-    return "\u2014";
-  }
-  if (typeof value === "string") {
-    return value.length > 2e3 ? `${value.slice(0, 2e3)}
-...(truncated)` : value;
-  }
-  try {
-    return JSON.stringify(value, null, 2);
-  } catch {
-    return String(value);
-  }
-}
-function CallSection({ label, value }) {
-  return /* @__PURE__ */ jsxs53("div", { children: [
-    /* @__PURE__ */ jsx63("p", { className: "mb-1 text-[10px] font-semibold uppercase tracking-wide text-[var(--theme-fg-muted)]", children: label }),
-    /* @__PURE__ */ jsx63("pre", { className: "max-h-48 overflow-auto whitespace-pre-wrap break-words rounded bg-[var(--theme-surface-strong)] p-2 text-[11px] leading-relaxed text-[var(--theme-fg-soft)]", children: formatValue(value) })
-  ] });
-}
-function ToolEventAccordion({ event }) {
-  return /* @__PURE__ */ jsxs53(
-    AccordionItem,
-    {
-      value: event.id,
-      className: "thread-tool-call mb-2 overflow-hidden rounded-lg border border-[var(--theme-border)] last:mb-0",
-      children: [
-        /* @__PURE__ */ jsxs53(AccordionTrigger, { className: "px-3 py-2 text-xs font-medium text-[var(--theme-fg)] hover:bg-[var(--theme-hover)] hover:no-underline [&[data-state=open]]:bg-[var(--theme-hover)]", children: [
-          /* @__PURE__ */ jsxs53("div", { className: "flex min-w-0 items-center gap-2", children: [
-            /* @__PURE__ */ jsx63("span", { className: "h-2 w-2 shrink-0 rounded-full bg-[var(--theme-accent-strong)]" }),
-            /* @__PURE__ */ jsx63("span", { className: "truncate font-mono text-xs font-medium text-[var(--theme-fg)]", children: event.label }),
-            event.status ? /* @__PURE__ */ jsx63("span", { className: "shrink-0 rounded-full border border-[var(--theme-border)] px-1.5 py-0.5 text-[9px] uppercase tracking-[0.12em] text-[var(--theme-fg-muted)]", children: event.status }) : null
-          ] }),
-          /* @__PURE__ */ jsx63("div", { className: "ml-auto flex shrink-0 items-center gap-2", children: event.turnId ? /* @__PURE__ */ jsx63("span", { className: "max-w-20 truncate text-[10px] text-[var(--theme-fg-muted)]", children: event.turnId }) : null })
-        ] }),
-        /* @__PURE__ */ jsx63(AccordionContent, { className: "px-3 pb-3", children: /* @__PURE__ */ jsxs53("div", { className: "space-y-2 px-3 pb-3 pt-1", children: [
-          /* @__PURE__ */ jsx63(CallSection, { label: "Input", value: event.preview }),
-          /* @__PURE__ */ jsx63(CallSection, { label: "Output", value: event.detail })
-        ] }) })
-      ]
-    }
-  );
-}
-function GraphToolUsagePanel({
-  formatToolKind: formatToolKind2,
-  toolCounts,
-  toolEvents,
-  maxToolCount
-}) {
-  const [expandedEventId, setExpandedEventId] = useState31(
-    () => toolEvents.at(-1)?.id ?? null
-  );
-  const bottomRef = useRef18(null);
-  useEffect24(() => {
-    setExpandedEventId((current) => current ?? toolEvents.at(-1)?.id ?? null);
-  }, [toolEvents]);
-  useEffect24(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
-  }, [toolEvents.length]);
-  if (!toolCounts.length) {
-    return /* @__PURE__ */ jsxs53("div", { className: "flex h-full flex-col items-center justify-center gap-3 text-sm text-[var(--theme-fg-muted)]", children: [
-      /* @__PURE__ */ jsx63("span", { children: "No tool calls yet. Run the agent to see usage." }),
-      /* @__PURE__ */ jsxs53("span", { className: "inline-flex items-center gap-1 rounded px-2 py-1 text-xs", children: [
-        /* @__PURE__ */ jsx63(RefreshCw3, { className: "h-3 w-3" }),
-        "Reload from workspace"
-      ] })
-    ] });
-  }
-  return /* @__PURE__ */ jsxs53("div", { className: "flex h-full min-h-0 flex-col overflow-hidden", children: [
-    /* @__PURE__ */ jsxs53("div", { className: "shrink-0 border-b border-[var(--theme-border)] p-4", children: [
-      /* @__PURE__ */ jsxs53("div", { className: "mb-3 flex items-center justify-between gap-3", children: [
-        /* @__PURE__ */ jsx63("h2", { className: "text-xs font-semibold uppercase tracking-wide text-[var(--theme-fg-muted)]", children: "Calls this session" }),
-        /* @__PURE__ */ jsxs53(
-          "button",
-          {
-            type: "button",
-            className: "inline-flex items-center gap-1 rounded px-2 py-1 text-[11px] text-[var(--theme-fg-muted)] opacity-60",
-            disabled: true,
-            title: "Remote Codex streams tool history from thread events",
-            children: [
-              /* @__PURE__ */ jsx63(RefreshCw3, { className: "h-3 w-3" }),
-              "Reload"
-            ]
-          }
-        )
-      ] }),
-      /* @__PURE__ */ jsx63("div", { className: "space-y-2", children: toolCounts.map(([kind, count]) => /* @__PURE__ */ jsxs53("div", { className: "flex items-center gap-3", children: [
-        /* @__PURE__ */ jsx63(
-          "span",
-          {
-            className: "w-40 shrink-0 truncate text-right font-mono text-[11px] text-[var(--theme-fg-muted)]",
-            title: formatToolKind2(kind),
-            children: formatToolKind2(kind)
-          }
-        ),
-        /* @__PURE__ */ jsxs53("div", { className: "flex flex-1 items-center gap-2", children: [
-          /* @__PURE__ */ jsx63("div", { className: "relative h-4 flex-1 overflow-hidden rounded-sm bg-[var(--theme-muted)]", children: /* @__PURE__ */ jsx63(
-            "div",
-            {
-              className: "h-full rounded-sm bg-[var(--theme-accent-strong)] transition-all duration-300",
-              style: { width: `${count / maxToolCount * 100}%` }
-            }
-          ) }),
-          /* @__PURE__ */ jsx63("span", { className: "w-5 shrink-0 text-right text-[11px] font-medium text-[var(--theme-fg-soft)]", children: count })
-        ] })
-      ] }, kind)) })
-    ] }),
-    /* @__PURE__ */ jsxs53("div", { className: "min-h-0 flex-1 overflow-y-auto p-4", children: [
-      /* @__PURE__ */ jsx63("h2", { className: "mb-3 text-xs font-semibold uppercase tracking-wide text-[var(--theme-fg-muted)]", children: "Call log" }),
-      /* @__PURE__ */ jsx63(
-        Accordion,
-        {
-          type: "single",
-          collapsible: true,
-          value: expandedEventId ?? "",
-          onValueChange: (value) => setExpandedEventId(value || null),
-          className: "space-y-0",
-          children: toolEvents.slice(-50).map((event) => /* @__PURE__ */ jsx63(ToolEventAccordion, { event }, event.id))
-        }
-      ),
-      /* @__PURE__ */ jsx63("div", { ref: bottomRef })
-    ] })
-  ] });
-}
-var init_GraphToolUsagePanel = __esm({
-  "src/components/graph-workspace/GraphToolUsagePanel.tsx"() {
-    "use strict";
-    init_GraphAccordion();
-  }
-});
-
-// src/components/graph-chat/FloatingHelper.tsx
-import { MarkerType, Position } from "@xyflow/react";
-import { jsx as jsx64, jsxs as jsxs54 } from "react/jsx-runtime";
-function getNodeIntersection(intersectionNode, targetNode) {
-  const intersectionNodeWidth = Math.max(intersectionNode.measured.width ?? 1, 1);
-  const intersectionNodeHeight = Math.max(
-    intersectionNode.measured.height ?? 1,
-    1
-  );
-  const intersectionNodePosition = intersectionNode.internals.positionAbsolute;
-  const targetPosition = targetNode.internals.positionAbsolute;
-  const targetNodeWidth = Math.max(targetNode.measured.width ?? 1, 1);
-  const targetNodeHeight = Math.max(targetNode.measured.height ?? 1, 1);
-  const w = intersectionNodeWidth / 2;
-  const h = intersectionNodeHeight / 2;
-  const x2 = intersectionNodePosition.x + w;
-  const y2 = intersectionNodePosition.y + h;
-  const x1 = targetPosition.x + targetNodeWidth / 2;
-  const y1 = targetPosition.y + targetNodeHeight / 2;
-  const xx1 = (x1 - x2) / (2 * w) - (y1 - y2) / (2 * h);
-  const yy1 = (x1 - x2) / (2 * w) + (y1 - y2) / (2 * h);
-  const a = 1 / (Math.abs(xx1) + Math.abs(yy1));
-  const xx3 = a * xx1;
-  const yy3 = a * yy1;
-  const x = w * (xx3 + yy3) + x2;
-  const y = h * (-xx3 + yy3) + y2;
-  return { x, y };
-}
-function getEdgePosition(node, intersectionPoint) {
-  const n = { ...node.internals.positionAbsolute, ...node };
-  const nx = Math.round(n.x);
-  const ny = Math.round(n.y);
-  const px = Math.round(intersectionPoint.x);
-  const py = Math.round(intersectionPoint.y);
-  if (px <= nx + 1) {
-    return Position.Left;
-  }
-  if (px >= nx + (node.measured.width ?? 1) - 1) {
-    return Position.Right;
-  }
-  if (py <= ny + 1) {
-    return Position.Top;
-  }
-  if (py >= n.y + (node.measured.height ?? 1) - 1) {
-    return Position.Bottom;
-  }
-  return Position.Top;
-}
-function getEdgeParams(source, target) {
-  const sourceIntersectionPoint = getNodeIntersection(source, target);
-  const targetIntersectionPoint = getNodeIntersection(target, source);
-  const sourcePos = getEdgePosition(source, sourceIntersectionPoint);
-  const targetPos = getEdgePosition(target, targetIntersectionPoint);
-  return {
-    sx: sourceIntersectionPoint.x,
-    sy: sourceIntersectionPoint.y,
-    tx: targetIntersectionPoint.x,
-    ty: targetIntersectionPoint.y,
-    sourcePos,
-    targetPos
-  };
-}
-function buildGraph(inputNodes, width = 900, height = 620) {
-  if (!inputNodes || !Array.isArray(inputNodes)) {
-    return { nodes: [], edges: [] };
-  }
-  const forceLayout = (nodes2, edges2, layoutWidth, layoutHeight) => {
-    const nodePositions = /* @__PURE__ */ new Map();
-    const nodeCount = nodes2.length;
-    nodes2.forEach((node, index) => {
-      const hash = node.id.split("").reduce((value, character) => {
-        const nextValue = (value << 5) - value + character.charCodeAt(0);
-        return nextValue & nextValue;
-      }, 0);
-      nodePositions.set(node.id, {
-        x: Math.abs(hash) % layoutWidth + index * 100 % layoutWidth,
-        y: Math.abs(hash >> 16) % layoutHeight + index * 150 % layoutHeight,
-        vx: 0,
-        vy: 0
-      });
-    });
-    for (let iteration = 0; iteration < 200; iteration += 1) {
-      for (let i = 0; i < nodeCount; i += 1) {
-        for (let j = i + 1; j < nodeCount; j += 1) {
-          const firstNode = nodes2[i];
-          const secondNode = nodes2[j];
-          if (!firstNode || !secondNode) {
-            continue;
-          }
-          const pos1 = nodePositions.get(firstNode.id);
-          const pos2 = nodePositions.get(secondNode.id);
-          if (!pos1 || !pos2) {
-            continue;
-          }
-          const dx = pos1.x - pos2.x;
-          const dy = pos1.y - pos2.y;
-          const distance = Math.sqrt(dx * dx + dy * dy) || 1;
-          const optimalDistance = 200;
-          const force = (optimalDistance - distance) * 0.5;
-          const fx = dx / distance * force;
-          const fy = dy / distance * force;
-          pos1.vx += fx;
-          pos1.vy += fy;
-          pos2.vx -= fx;
-          pos2.vy -= fy;
-        }
-      }
-      edges2.forEach((edge) => {
-        const pos1 = nodePositions.get(edge.source);
-        const pos2 = nodePositions.get(edge.target);
-        if (!pos1 || !pos2) {
-          return;
-        }
-        const dx = pos2.x - pos1.x;
-        const dy = pos2.y - pos1.y;
-        const distance = Math.sqrt(dx * dx + dy * dy) || 1;
-        const targetLength = 120;
-        const springForce = (distance - targetLength) * 0.3;
-        const fx = dx / distance * springForce;
-        const fy = dy / distance * springForce;
-        pos1.vx += fx;
-        pos1.vy += fy;
-        pos2.vx -= fx;
-        pos2.vy -= fy;
-      });
-      nodePositions.forEach((position) => {
-        position.x += position.vx * 0.1;
-        position.y += position.vy * 0.1;
-        position.vx *= 0.9;
-        position.vy *= 0.9;
-        position.x = Math.max(80, Math.min(layoutWidth - 80, position.x));
-        position.y = Math.max(80, Math.min(layoutHeight - 80, position.y));
-      });
-    }
-    return nodePositions;
-  };
-  const inputIds = new Set(inputNodes.map((node) => node.id));
-  const edges = [];
-  inputNodes.forEach((node) => {
-    if (!node.out_node_id) {
-      return;
-    }
-    const outNodes = Array.isArray(node.out_node_id) ? node.out_node_id : [node.out_node_id];
-    outNodes.forEach((outNodeId) => {
-      if (!inputIds.has(outNodeId)) {
-        return;
-      }
-      edges.push({
-        id: `${node.id}-${outNodeId}`,
-        source: node.id,
-        target: outNodeId,
-        type: "floating",
-        sourceHandle: null,
-        targetHandle: null,
-        markerEnd: { type: MarkerType.Arrow }
-      });
-    });
-  });
-  const positions = forceLayout(inputNodes, edges, width, height);
-  const nodes = inputNodes.map((node) => ({
-    id: node.id,
-    type: "styledNode",
-    position: positions.get(node.id) ?? { x: 100, y: 100 },
-    data: {
-      label: /* @__PURE__ */ jsxs54("div", { className: "text-center", children: [
-        /* @__PURE__ */ jsx64("div", { className: "text-sm font-semibold", children: node.name }),
-        node.description ? /* @__PURE__ */ jsx64("div", { className: "mt-1 max-w-32 overflow-hidden text-ellipsis text-xs text-slate-500 dark:text-slate-400", children: node.description }) : null
-      ] })
-    }
-  }));
-  return { nodes, edges };
-}
-var init_FloatingHelper = __esm({
-  "src/components/graph-chat/FloatingHelper.tsx"() {
-    "use strict";
-  }
-});
-
-// src/components/graph-chat/FloatingConnectionLine.tsx
-import { getBezierPath } from "@xyflow/react";
-import { jsx as jsx65, jsxs as jsxs55 } from "react/jsx-runtime";
-function FloatingConnectionLine({
-  toX,
-  toY,
-  fromPosition,
-  toPosition,
-  fromNode
-}) {
-  if (!fromNode) {
-    return null;
-  }
-  const targetNode = {
-    id: "connection-target",
-    measured: {
-      width: 1,
-      height: 1
-    },
-    internals: {
-      positionAbsolute: { x: toX, y: toY }
-    }
-  };
-  const { sx, sy, tx, ty, sourcePos, targetPos } = getEdgeParams(
-    fromNode,
-    targetNode
-  );
-  const [edgePath] = getBezierPath({
-    sourceX: sx,
-    sourceY: sy,
-    sourcePosition: sourcePos || fromPosition,
-    targetPosition: targetPos || toPosition,
-    targetX: tx || toX,
-    targetY: ty || toY
-  });
-  return /* @__PURE__ */ jsxs55("g", { children: [
-    /* @__PURE__ */ jsx65(
-      "path",
-      {
-        fill: "none",
-        stroke: "currentColor",
-        strokeWidth: 1.5,
-        className: "animated",
-        d: edgePath
-      }
-    ),
-    /* @__PURE__ */ jsx65(
-      "circle",
-      {
-        cx: tx || toX,
-        cy: ty || toY,
-        fill: "var(--theme-panel)",
-        r: 3,
-        stroke: "currentColor",
-        strokeWidth: 1.5
-      }
-    )
-  ] });
-}
-var init_FloatingConnectionLine = __esm({
-  "src/components/graph-chat/FloatingConnectionLine.tsx"() {
-    "use strict";
-    init_FloatingHelper();
-  }
-});
-
-// src/components/graph-chat/FloatingEdge.tsx
-import { getBezierPath as getBezierPath2, useInternalNode } from "@xyflow/react";
-import { jsx as jsx66 } from "react/jsx-runtime";
-function FloatingEdge({
-  id,
-  source,
-  target,
-  markerEnd,
-  style
-}) {
-  const sourceNode = useInternalNode(source);
-  const targetNode = useInternalNode(target);
-  if (!sourceNode || !targetNode) {
-    return null;
-  }
-  const { sx, sy, tx, ty, sourcePos, targetPos } = getEdgeParams(
-    sourceNode,
-    targetNode
-  );
-  const [edgePath] = getBezierPath2({
-    sourceX: sx,
-    sourceY: sy,
-    sourcePosition: sourcePos,
-    targetPosition: targetPos,
-    targetX: tx,
-    targetY: ty
-  });
-  return /* @__PURE__ */ jsx66(
-    "path",
-    {
-      id,
-      className: "react-flow__edge-path",
-      d: edgePath,
-      markerEnd,
-      style
-    }
-  );
-}
-var init_FloatingEdge = __esm({
-  "src/components/graph-chat/FloatingEdge.tsx"() {
-    "use strict";
-    init_FloatingHelper();
-  }
-});
-
-// src/components/graph-chat/GraphVisualization.tsx
-import { useCallback as useCallback18, useEffect as useEffect25, useMemo as useMemo15 } from "react";
-import {
-  addEdge,
-  Background,
-  Controls,
-  Handle,
-  MarkerType as MarkerType2,
-  Position as Position4,
-  ReactFlow,
-  ReactFlowProvider,
-  useEdgesState,
-  useNodesState
-} from "@xyflow/react";
-import "@xyflow/react/dist/style.css";
-import { jsx as jsx67, jsxs as jsxs56 } from "react/jsx-runtime";
-function GraphVisualization({ nodes: inputNodes }) {
-  const [flowNodes, setFlowNodes, onNodesChange] = useNodesState([]);
-  const [flowEdges, setFlowEdges, onEdgesChange] = useEdgesState([]);
-  const graph = useMemo15(() => buildGraph(inputNodes), [inputNodes]);
-  const edgeTypes = useMemo15(() => ({ floating: FloatingEdge }), []);
-  const nodeTypes = useMemo15(
-    () => ({
-      styledNode: ({ data, isConnectable }) => /* @__PURE__ */ jsxs56("div", { className: "thread-graph-flow-node", children: [
-        data.label,
-        /* @__PURE__ */ jsx67(
-          Handle,
-          {
-            type: "target",
-            position: Position4.Top,
-            isConnectable,
-            style: { opacity: 0, pointerEvents: "none" }
-          }
-        ),
-        /* @__PURE__ */ jsx67(
-          Handle,
-          {
-            type: "source",
-            position: Position4.Bottom,
-            isConnectable,
-            style: { opacity: 0, pointerEvents: "none" }
-          }
-        )
-      ] })
-    }),
-    []
-  );
-  useEffect25(() => {
-    setFlowNodes(graph.nodes);
-    setFlowEdges(graph.edges);
-  }, [graph.edges, graph.nodes, setFlowEdges, setFlowNodes]);
-  const onConnect = useCallback18(
-    (params) => setFlowEdges(
-      (edges) => addEdge(
-        {
-          ...params,
-          type: "floating",
-          sourceHandle: null,
-          targetHandle: null,
-          markerEnd: { type: MarkerType2.Arrow }
-        },
-        edges
-      )
-    ),
-    [setFlowEdges]
-  );
-  return /* @__PURE__ */ jsx67("div", { className: "thread-graph-flow h-full min-h-0", children: /* @__PURE__ */ jsx67(ReactFlowProvider, { children: /* @__PURE__ */ jsxs56(
-    ReactFlow,
-    {
-      nodes: flowNodes,
-      edges: flowEdges,
-      onNodesChange,
-      onEdgesChange,
-      onConnect,
-      fitView: true,
-      nodeTypes,
-      edgeTypes,
-      connectionLineComponent: FloatingConnectionLine,
-      children: [
-        /* @__PURE__ */ jsx67(Controls, {}),
-        /* @__PURE__ */ jsx67(Background, { gap: 16 })
-      ]
-    }
-  ) }) });
-}
-var init_GraphVisualization = __esm({
-  "src/components/graph-chat/GraphVisualization.tsx"() {
-    "use strict";
-    init_FloatingConnectionLine();
-    init_FloatingEdge();
-    init_FloatingHelper();
-  }
-});
-
-// src/components/ThreadGraphWorkspacePanel.tsx
-import { memo as memo8, useEffect as useEffect26, useMemo as useMemo16, useState as useState32 } from "react";
-import {
-  BarChart2 as BarChart22,
-  BookOpen as BookOpen2,
-  GitBranch,
-  Paperclip,
-  Terminal as Terminal2,
-  Trash2 as Trash25,
-  Wrench as Wrench3
-} from "lucide-react";
-import { jsx as jsx68, jsxs as jsxs57 } from "react/jsx-runtime";
-function resolveWorkspaceFeatures(features) {
-  return {
-    ...DEFAULT_WORKSPACE_FEATURES,
-    ...features
-  };
-}
-function firstEnabledWorkspaceTab(features, preferred) {
-  const isEnabled = (tab) => {
-    switch (tab) {
-      case "workspace":
-        return features.workspace;
-      case "tools":
-        return features.toolUsage;
-      case "guide":
-        return features.guide;
-      case "graph":
-        return features.threadGraph;
-      case "extensions":
-        return features.extensions;
-    }
-  };
-  if (preferred && isEnabled(preferred)) {
-    return preferred;
-  }
-  return [
-    "workspace",
-    "tools",
-    "guide",
-    "graph",
-    "extensions"
-  ].find(isEnabled) ?? null;
-}
-function isWorkspaceTabEnabled(features, tab) {
-  switch (tab) {
-    case "workspace":
-      return features.workspace;
-    case "tools":
-      return features.toolUsage;
-    case "guide":
-      return features.guide;
-    case "graph":
-      return features.threadGraph;
-    case "extensions":
-      return features.extensions;
-  }
-}
-function collectToolEvents(detail) {
-  const events = [];
-  const toolKinds = /* @__PURE__ */ new Set([
-    "toolCall",
-    "commandExecution",
-    "webSearch",
-    "fileRead",
-    "fileChange",
-    "agentToolCall",
-    "skillToolCall",
-    "hook"
-  ]);
-  let sequence = 0;
-  for (const turn of detail.turns) {
-    for (const item of turn.items) {
-      if (!toolKinds.has(item.kind)) {
-        continue;
-      }
-      events.push({
-        id: item.id,
-        kind: item.kind,
-        label: formatToolKind(item.kind),
-        preview: item.previewText ?? item.text ?? item.kind,
-        detail: item.detailText ?? item.text ?? item.previewText ?? item.kind,
-        turnId: item.sourceTurnId ?? turn.id,
-        status: item.status ?? null,
-        sequence
-      });
-      sequence += 1;
-    }
-  }
-  for (const item of detail.liveItems?.items ?? []) {
-    if (!toolKinds.has(item.kind)) {
-      continue;
-    }
-    events.push({
-      id: item.id,
-      kind: item.kind,
-      label: formatToolKind(item.kind),
-      preview: item.previewText ?? item.text ?? item.kind,
-      detail: item.detailText ?? item.text ?? item.previewText ?? item.kind,
-      turnId: item.sourceTurnId ?? null,
-      status: item.status ?? null,
-      sequence
-    });
-    sequence += 1;
-  }
-  return events;
-}
-function formatToolKind(value) {
-  switch (value) {
-    case "toolCall":
-      return "Tool call";
-    case "agentToolCall":
-      return "Agent tool";
-    case "skillToolCall":
-      return "Skill tool";
-    case "commandExecution":
-      return "Command";
-    case "webSearch":
-      return "Search";
-    case "fileRead":
-      return "File read";
-    case "fileChange":
-      return "File change";
-    case "hook":
-      return "Hook";
-    default:
-      return value.replace(/([A-Z])/g, " $1").replace(/^./, (letter) => letter.toUpperCase());
-  }
-}
-function itemGraphLabel(item) {
-  switch (item.kind) {
-    case "userMessage":
-      return "User";
-    case "agentMessage":
-      return "Agent";
-    default:
-      return formatToolKind(item.kind);
-  }
-}
-function itemGraphDescription(item) {
-  const source = item.previewText ?? item.text ?? item.detailText ?? item.kind;
-  return source.replace(/\s+/g, " ").slice(0, 96);
-}
-function collectGraphNodes(detail, toolEvents) {
-  const nodes = [
-    {
-      id: `thread:${detail.thread.id}`,
-      name: detail.thread.title || "Thread",
-      description: detail.thread.model ?? detail.thread.status
-    },
-    {
-      id: `workspace:${detail.workspace.id}`,
-      name: detail.workspace.label ?? "Workspace",
-      description: detail.workspace.absPath,
-      out_node_id: `thread:${detail.thread.id}`
-    }
-  ];
-  let previousTurnId = null;
-  for (const turn of detail.turns) {
-    const turnId = `turn:${turn.id}`;
-    nodes.push({
-      id: turnId,
-      name: `Turn ${nodes.filter((node) => node.id.startsWith("turn:")).length + 1}`,
-      description: turn.status,
-      out_node_id: previousTurnId ? [`thread:${detail.thread.id}`, previousTurnId] : `thread:${detail.thread.id}`
-    });
-    previousTurnId = turnId;
-    let previousItemId = null;
-    for (const item of turn.items) {
-      const itemId = `item:${item.id}`;
-      const outNodeIds = [turnId];
-      if (previousItemId) {
-        outNodeIds.push(previousItemId);
-      }
-      nodes.push({
-        id: itemId,
-        name: itemGraphLabel(item),
-        description: itemGraphDescription(item),
-        out_node_id: outNodeIds
-      });
-      previousItemId = itemId;
-      if (item.kind === "artifact" && item.artifact) {
-        nodes.push({
-          id: `artifact:${item.artifact.id}`,
-          name: item.artifact.title || item.artifact.type,
-          description: item.artifact.summaryText ?? item.artifact.type,
-          out_node_id: itemId
-        });
-      }
-    }
-  }
-  const toolNodeIds = new Set(nodes.map((node) => node.id));
-  for (const event of toolEvents) {
-    const eventId = `tool:${event.id}`;
-    if (toolNodeIds.has(eventId) || toolNodeIds.has(`item:${event.id}`)) {
-      continue;
-    }
-    nodes.push({
-      id: eventId,
-      name: event.label,
-      description: event.preview,
-      out_node_id: event.turnId ? `turn:${event.turnId}` : `thread:${detail.thread.id}`
-    });
-  }
-  return nodes.slice(0, 120);
-}
-function ThreadGraphWorkspacePanel({
-  detail,
-  status,
-  plugins,
-  workspaceAdapter,
-  metaContent,
-  settingsContent,
-  activeView = "chat",
-  features: featureConfig,
-  focusPathRequest = null
-}) {
-  const features = useMemo16(
-    () => resolveWorkspaceFeatures(featureConfig),
-    [featureConfig]
-  );
-  const initialTab = firstEnabledWorkspaceTab(features, featureConfig?.defaultTab);
-  const [activeTab, setActiveTab] = useState32(initialTab);
-  const artifacts = useMemo16(() => collectArtifacts(detail), [detail]);
-  const toolEvents = useMemo16(() => collectToolEvents(detail), [detail]);
-  const toolCounts = useMemo16(() => {
-    const counts = /* @__PURE__ */ new Map();
-    for (const event of toolEvents) {
-      counts.set(event.kind, (counts.get(event.kind) ?? 0) + 1);
-    }
-    return [...counts.entries()].sort((left, right) => right[1] - left[1]);
-  }, [toolEvents]);
-  const threadPanels = plugins.getThreadPanels();
-  const maxToolCount = Math.max(...toolCounts.map(([, count]) => count), 1);
-  const graphNodes = useMemo16(
-    () => collectGraphNodes(detail, toolEvents),
-    [detail, toolEvents]
-  );
-  const primaryTabs = useMemo16(() => {
-    const tabs = [];
-    if (features.workspace) {
-      tabs.push({ id: "workspace", label: "Workspace", icon: null });
-    }
-    if (features.toolUsage) {
-      tabs.push({ id: "tools", label: "Tool Usage", icon: BarChart22 });
-    }
-    if (features.guide) {
-      tabs.push({ id: "guide", label: "Guide", icon: BookOpen2 });
-    }
-    return tabs;
-  }, [features.guide, features.toolUsage, features.workspace]);
-  const secondaryTabs = useMemo16(() => {
-    const tabs = [];
-    if (features.threadGraph) {
-      tabs.push({ id: "graph", label: "Thread graph", icon: GitBranch });
-    }
-    if (features.extensions) {
-      tabs.push({ id: "extensions", label: "Remote Codex extensions", icon: Wrench3 });
-    }
-    return tabs;
-  }, [features.extensions, features.threadGraph]);
-  useEffect26(() => {
-    if (!activeTab || !isWorkspaceTabEnabled(features, activeTab)) {
-      setActiveTab(firstEnabledWorkspaceTab(features, featureConfig?.defaultTab));
-    }
-  }, [activeTab, featureConfig?.defaultTab, features]);
-  useEffect26(() => {
-    if (focusPathRequest && features.workspace) {
-      setActiveTab("workspace");
-    }
-  }, [features.workspace, focusPathRequest?.requestId]);
-  if (!activeTab) {
-    return null;
-  }
-  return /* @__PURE__ */ jsxs57("div", { className: "thread-graph-right-panel flex h-full min-h-0 flex-col overflow-hidden", children: [
-    /* @__PURE__ */ jsxs57("div", { className: "thread-graph-right-tabs flex shrink-0 items-center gap-1 overflow-hidden border-b px-3 py-2", children: [
-      primaryTabs.map((tab) => {
-        const Icon = tab.icon;
-        return /* @__PURE__ */ jsxs57(
-          "button",
-          {
-            type: "button",
-            onClick: () => setActiveTab(tab.id),
-            className: `thread-graph-right-tab inline-flex h-8 shrink-0 items-center gap-1.5 rounded-md px-3 text-xs font-medium transition ${activeTab === tab.id ? "is-active" : ""}`,
-            children: [
-              Icon ? /* @__PURE__ */ jsx68(Icon, { className: "h-3.5 w-3.5" }) : null,
-              tab.label
-            ]
-          },
-          tab.id
-        );
-      }),
-      secondaryTabs.length ? /* @__PURE__ */ jsx68(
-        "div",
-        {
-          className: "thread-graph-right-tab-secondary ml-auto flex min-w-0 shrink items-center gap-1 border-l pl-2",
-          "aria-label": "Remote Codex workspace extensions",
-          children: secondaryTabs.map((tab) => {
-            const Icon = tab.icon;
-            return /* @__PURE__ */ jsx68(
-              "button",
-              {
-                type: "button",
-                onClick: () => setActiveTab(tab.id),
-                className: `thread-graph-right-tab inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-xs font-medium transition ${activeTab === tab.id ? "is-active" : ""}`,
-                title: tab.label,
-                "aria-label": tab.label,
-                children: /* @__PURE__ */ jsx68(Icon, { className: "h-3.5 w-3.5" })
-              },
-              tab.id
-            );
-          })
-        }
-      ) : null
-    ] }),
-    /* @__PURE__ */ jsxs57("div", { className: "min-h-0 flex-1 overflow-hidden", children: [
-      activeTab === "workspace" ? /* @__PURE__ */ jsx68(
-        GraphWorkspaceExplorer,
-        {
-          activeView,
-          detail,
-          artifacts,
-          plugins,
-          status,
-          focusPathRequest,
-          workspaceAdapter: workspaceAdapter ?? null
-        }
-      ) : null,
-      activeTab === "tools" ? /* @__PURE__ */ jsx68(
-        GraphToolUsagePanel,
-        {
-          formatToolKind,
-          toolCounts,
-          toolEvents,
-          maxToolCount
-        }
-      ) : null,
-      activeTab === "graph" ? /* @__PURE__ */ jsx68("div", { className: "thread-graph-visualization-panel h-full min-h-0 p-3", children: /* @__PURE__ */ jsx68(GraphVisualization, { nodes: graphNodes }) }) : null,
-      activeTab === "extensions" ? /* @__PURE__ */ jsx68("div", { className: "h-full min-h-0 overflow-y-auto p-3", children: /* @__PURE__ */ jsxs57("div", { className: "grid gap-3", children: [
-        /* @__PURE__ */ jsx68(WorkspaceInfoCard, { label: "Plugin Panels", children: threadPanels.length ? /* @__PURE__ */ jsx68("div", { className: "flex flex-wrap gap-2", children: threadPanels.map((panel) => /* @__PURE__ */ jsx68(
-          "span",
-          {
-            className: "rounded-full border border-[var(--theme-border)] px-2 py-1 text-xs text-[var(--theme-fg-soft)]",
-            children: panel.label
-          },
-          panel.id
-        )) }) : /* @__PURE__ */ jsx68("p", { className: "text-[var(--theme-fg-muted)]", children: "No thread panels are enabled." }) }),
-        /* @__PURE__ */ jsx68(WorkspaceInfoCard, { label: "Enabled Renderers", children: /* @__PURE__ */ jsx68("div", { className: "flex flex-wrap gap-2", children: plugins.plugins.filter((plugin) => plugin.enabled).map((plugin) => /* @__PURE__ */ jsx68(
-          "span",
-          {
-            className: "rounded-full border border-[var(--theme-border)] px-2 py-1 text-xs text-[var(--theme-fg-soft)]",
-            children: plugin.name
-          },
-          plugin.id
-        )) }) }),
-        /* @__PURE__ */ jsx68(WorkspaceInfoCard, { label: "Remote Codex Tools", children: /* @__PURE__ */ jsxs57("div", { className: "grid gap-2 text-[var(--theme-fg-muted)]", children: [
-          /* @__PURE__ */ jsxs57("div", { className: "flex items-start gap-2", children: [
-            /* @__PURE__ */ jsx68(Terminal2, { className: "mt-0.5 h-4 w-4 shrink-0" }),
-            /* @__PURE__ */ jsx68("p", { children: "Terminal stays available when the Terminal plugin and shell adapter are attached." })
-          ] }),
-          /* @__PURE__ */ jsxs57("div", { className: "flex items-start gap-2", children: [
-            /* @__PURE__ */ jsx68(Paperclip, { className: "mt-0.5 h-4 w-4 shrink-0" }),
-            /* @__PURE__ */ jsx68("p", { children: "Composer attachments, slash panels, hooks, MCP, goals, and fork controls remain part of the chat surface." })
-          ] }),
-          /* @__PURE__ */ jsxs57("div", { className: "flex items-start gap-2", children: [
-            /* @__PURE__ */ jsx68(Trash25, { className: "mt-0.5 h-4 w-4 shrink-0" }),
-            /* @__PURE__ */ jsx68("p", { children: "Destructive actions stay explicit: delete thread, interrupt, compact, and hook trust controls remain host governed." })
-          ] })
-        ] }) }),
-        metaContent ? /* @__PURE__ */ jsx68(WorkspaceInfoCard, { label: "Thread Meta", children: metaContent }) : null,
-        settingsContent ? /* @__PURE__ */ jsx68(WorkspaceInfoCard, { label: "Settings", children: settingsContent }) : null
-      ] }) }) : null,
-      activeTab === "guide" ? /* @__PURE__ */ jsx68(GraphGuidePanel, {}) : null
-    ] })
-  ] });
-}
-var DEFAULT_WORKSPACE_FEATURES, MemoizedThreadGraphWorkspacePanel;
-var init_ThreadGraphWorkspacePanel = __esm({
-  "src/components/ThreadGraphWorkspacePanel.tsx"() {
-    "use strict";
-    init_GraphWorkspaceExplorer();
-    init_GraphWorkspaceCards();
-    init_GraphGuidePanel();
-    init_GraphToolUsagePanel();
-    init_workspaceTree();
-    init_GraphVisualization();
-    DEFAULT_WORKSPACE_FEATURES = {
-      workspace: true,
-      toolUsage: true,
-      guide: true,
-      threadGraph: true,
-      extensions: true
-    };
-    MemoizedThreadGraphWorkspacePanel = memo8(
-      ThreadGraphWorkspacePanel
-    );
-  }
-});
-
-// src/workspace-panel.ts
-var workspace_panel_exports = {};
-__export(workspace_panel_exports, {
-  MemoizedThreadGraphWorkspacePanel: () => MemoizedThreadGraphWorkspacePanel,
-  ThreadGraphWorkspacePanel: () => ThreadGraphWorkspacePanel
-});
-var init_workspace_panel = __esm({
-  "src/workspace-panel.ts"() {
-    "use strict";
-    init_ThreadGraphWorkspacePanel();
-  }
-});
-
-// #style-inject:#style-inject
-function styleInject(css, { insertAt } = {}) {
-  if (!css || typeof document === "undefined") return;
-  const head = document.head || document.getElementsByTagName("head")[0];
-  const style = document.createElement("style");
-  style.type = "text/css";
-  if (insertAt === "top") {
-    if (head.firstChild) {
-      head.insertBefore(style, head.firstChild);
-    } else {
-      head.appendChild(style);
-    }
-  } else {
-    head.appendChild(style);
-  }
-  if (style.styleSheet) {
-    style.styleSheet.cssText = css;
-  } else {
-    style.appendChild(document.createTextNode(css));
-  }
-}
+  styleInject
+} from "./chunk-7O5E2ZHX.js";
 
 // src/styles/base.css
 styleInject('.thread-ui-shell,\n.thread-graph-dialog {\n  color-scheme: light;\n  --radius: 0.625rem;\n  --background: oklch(1 0 0);\n  --foreground: oklch(0.145 0 0);\n  --card: oklch(1 0 0);\n  --card-foreground: oklch(0.145 0 0);\n  --popover: oklch(1 0 0);\n  --popover-foreground: oklch(0.145 0 0);\n  --primary: oklch(0.205 0 0);\n  --primary-foreground: oklch(0.985 0 0);\n  --secondary: oklch(0.97 0 0);\n  --secondary-foreground: oklch(0.205 0 0);\n  --muted: oklch(0.97 0 0);\n  --muted-foreground: oklch(0.556 0 0);\n  --accent: oklch(0.97 0 0);\n  --accent-foreground: oklch(0.205 0 0);\n  --destructive: oklch(0.577 0.245 27.325);\n  --border: oklch(0.922 0 0);\n  --input: oklch(0.922 0 0);\n  --ring: oklch(0.708 0 0);\n  --sidebar: oklch(0.985 0 0);\n  --sidebar-foreground: oklch(0.145 0 0);\n  --sidebar-accent: oklch(0.97 0 0);\n  --sidebar-accent-foreground: oklch(0.205 0 0);\n  --sidebar-border: oklch(0.922 0 0);\n  --thread-gc-bg: #eef2f7;\n  --thread-gc-panel: #f8fafc;\n  --thread-gc-workspace: #f3f6fb;\n  --thread-gc-surface: #edf2f7;\n  --thread-gc-muted: #e6edf5;\n  --thread-gc-hover: #e8eef6;\n  --thread-gc-border: rgb(203 213 225 / 0.82);\n  --thread-gc-border-strong: rgb(174 187 204);\n  --thread-gc-border-contrast: rgb(123 139 161);\n  --thread-gc-fg: rgb(15 23 42);\n  --thread-gc-fg-soft: rgb(51 65 85);\n  --thread-gc-fg-muted: rgb(148 163 184);\n  --thread-gc-primary: rgb(2 6 23);\n  --thread-gc-primary-hover: rgb(30 41 59);\n  --thread-gc-primary-fg: #f8fafc;\n  --thread-gc-accent-soft: rgb(241 245 249);\n  --thread-gc-accent-strong: rgb(15 23 42);\n  --thread-gc-accent-border: rgb(203 213 225);\n  --thread-gc-shadow: 0 10px 30px rgb(15 23 42 / 0.04);\n  --theme-bg: var(--thread-gc-bg);\n  --theme-panel: var(--thread-gc-panel);\n  --theme-surface: var(--thread-gc-workspace);\n  --theme-surface-strong: var(--thread-gc-surface);\n  --theme-muted: var(--thread-gc-muted);\n  --theme-hover: var(--thread-gc-hover);\n  --theme-border: var(--thread-gc-border);\n  --theme-border-strong: var(--thread-gc-border-strong);\n  --theme-border-contrast: var(--thread-gc-border-contrast);\n  --theme-fg: var(--thread-gc-fg);\n  --theme-fg-soft: var(--thread-gc-fg-soft);\n  --theme-fg-muted: var(--thread-gc-fg-muted);\n  --theme-accent-solid: var(--thread-gc-primary);\n  --theme-accent-solid-hover: var(--thread-gc-primary-hover);\n  --theme-accent-solid-fg: var(--thread-gc-primary-fg);\n  --theme-accent-soft: var(--thread-gc-accent-soft);\n  --theme-accent-strong: var(--thread-gc-accent-strong);\n  --theme-accent-border: var(--thread-gc-accent-border);\n  --theme-shadow: var(--thread-gc-shadow);\n  background: var(--theme-bg);\n  color: var(--theme-fg);\n  isolation: isolate;\n  font-family:\n    Inter,\n    ui-sans-serif,\n    system-ui,\n    -apple-system,\n    BlinkMacSystemFont,\n    "Segoe UI",\n    "Noto Sans CJK SC",\n    "Noto Sans SC",\n    "Microsoft YaHei",\n    "PingFang SC",\n    "Hiragino Sans GB",\n    sans-serif;\n}\n.thread-graph-dialog {\n  background: var(--theme-panel);\n  color: var(--theme-fg);\n}\n.thread-ui-shell.thread-ui-viewport-constrained {\n  height: 100svh;\n  max-height: 100svh;\n  min-height: 0;\n  overflow: hidden;\n  overscroll-behavior: none;\n}\n.thread-ui-shell.thread-ui-theme-dark,\n.thread-ui-shell[data-theme-effective=dark],\n:root[data-theme-effective=dark] .thread-ui-shell,\n.thread-ui-shell.dark,\n.thread-ui-shell[data-theme=dark],\n.thread-ui-shell[data-theme-mode=dark],\n.thread-ui-shell[data-theme-mode=system][data-system-theme=dark],\n.thread-graph-dialog[data-theme-effective=dark],\n.thread-graph-dialog[data-theme-mode=dark],\n.thread-graph-dialog[data-theme-mode=system][data-system-theme=dark] {\n  color-scheme: dark;\n  --background: oklch(0.145 0 0);\n  --foreground: oklch(0.985 0 0);\n  --card: oklch(0.205 0 0);\n  --card-foreground: oklch(0.985 0 0);\n  --popover: oklch(0.205 0 0);\n  --popover-foreground: oklch(0.985 0 0);\n  --primary: oklch(0.922 0 0);\n  --primary-foreground: oklch(0.205 0 0);\n  --secondary: oklch(0.269 0 0);\n  --secondary-foreground: oklch(0.985 0 0);\n  --muted: oklch(0.269 0 0);\n  --muted-foreground: oklch(0.708 0 0);\n  --accent: oklch(0.269 0 0);\n  --accent-foreground: oklch(0.985 0 0);\n  --destructive: oklch(0.704 0.191 22.216);\n  --border: oklch(1 0 0 / 10%);\n  --input: oklch(1 0 0 / 15%);\n  --ring: oklch(0.556 0 0);\n  --sidebar: oklch(0.205 0 0);\n  --sidebar-foreground: oklch(0.985 0 0);\n  --sidebar-accent: oklch(0.269 0 0);\n  --sidebar-accent-foreground: oklch(0.985 0 0);\n  --sidebar-border: oklch(1 0 0 / 10%);\n  --thread-gc-bg: #101217;\n  --thread-gc-panel: #171a22;\n  --thread-gc-workspace: #151820;\n  --thread-gc-surface: #1d222c;\n  --thread-gc-muted: #222733;\n  --thread-gc-hover: #222733;\n  --thread-gc-border: #2a2f3a;\n  --thread-gc-border-strong: #303642;\n  --thread-gc-border-contrast: #475063;\n  --thread-gc-fg: rgb(241 245 249);\n  --thread-gc-fg-soft: rgb(203 213 225);\n  --thread-gc-fg-muted: rgb(148 163 184);\n  --thread-gc-primary: rgb(241 245 249);\n  --thread-gc-primary-hover: rgb(203 213 225);\n  --thread-gc-primary-fg: #11141a;\n  --thread-gc-accent-soft: #222733;\n  --thread-gc-accent-strong: rgb(241 245 249);\n  --thread-gc-accent-border: #303642;\n  --thread-gc-shadow: 0 18px 40px rgb(0 0 0 / 0.28);\n}\n.thread-ui-shell *,\n.thread-ui-shell *::before,\n.thread-ui-shell *::after {\n  box-sizing: border-box;\n}\n.thread-ui-shell .thread-main-panel,\n.thread-ui-shell .thread-detail-surface,\n.thread-ui-shell .thread-sidebar-surface,\n.thread-ui-shell .thread-workspace-panel,\n.thread-ui-shell .thread-workspace-card {\n  border-color: var(--theme-border);\n  background: var(--theme-panel);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-sidebar-surface {\n  background: color-mix(in oklch, var(--theme-panel) 92%, var(--theme-surface));\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-rooms-surface,\n.thread-ui-shell .thread-topbar-surface {\n  border-color: var(--theme-border);\n  background: var(--theme-panel);\n  color: var(--theme-fg);\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-rooms-surface,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-rooms-surface,\n:root[data-theme-effective=dark] .thread-ui-shell .thread-graph-rooms-surface,\n.thread-ui-shell.dark .thread-graph-rooms-surface,\n.thread-ui-shell.thread-ui-theme-dark .thread-topbar-surface,\n.thread-ui-shell[data-theme-effective=dark] .thread-topbar-surface,\n:root[data-theme-effective=dark] .thread-ui-shell .thread-topbar-surface,\n.thread-ui-shell.dark .thread-topbar-surface {\n  border-color: #2a2f3a;\n  background: #171a22;\n  color: rgb(241 245 249);\n  box-shadow: 0 18px 40px rgb(0 0 0 / 0.28);\n}\n.thread-ui-shell[data-theme-effective=light] .thread-graph-rooms-surface,\n:root[data-theme-effective=light] .thread-ui-shell .thread-graph-rooms-surface,\n.thread-ui-shell[data-theme-effective=light] .thread-topbar-surface,\n:root[data-theme-effective=light] .thread-ui-shell .thread-topbar-surface {\n  border-color: rgb(226 232 240 / 0.8);\n  background: rgb(255 255 255);\n  color: rgb(15 23 42);\n  box-shadow: 0 10px 30px rgb(15 23 42 / 0.04);\n}\n.thread-ui-shell[data-theme-effective=dark] .thread-mobile-scrim,\n:root[data-theme-effective=dark] .thread-ui-shell .thread-mobile-scrim,\n.thread-ui-shell.thread-ui-theme-dark .thread-mobile-scrim,\n.thread-ui-shell.dark .thread-mobile-scrim {\n  background: rgb(0 0 0 / 0.55);\n}\n.thread-ui-shell .thread-shell-frame {\n  display: block;\n  height: 100%;\n  min-height: 0;\n  width: 100%;\n}\n.thread-ui-shell .thread-rooms-rail {\n  transform: none;\n  translate: -100% 0;\n  overflow-x: hidden;\n}\n.thread-ui-shell .thread-rooms-rail.translate-x-0 {\n  transform: none;\n  translate: 0 0;\n}\n.thread-ui-shell .thread-shell-main {\n  height: 100%;\n  width: 100%;\n  min-width: 0;\n  min-height: 0;\n  overflow: hidden;\n}\n.thread-ui-shell .thread-shell-card {\n  border-color: transparent;\n}\n.thread-ui-shell .thread-desktop-only-flex,\n.thread-ui-shell .thread-desktop-only-inline-flex,\n.thread-ui-shell .thread-mobile-chat-hidden,\n.thread-ui-shell .thread-mobile-workspace-hidden {\n  display: none;\n}\n.thread-ui-shell .thread-mobile-only-block {\n  display: block;\n}\n.thread-ui-shell .thread-mobile-only-grid {\n  display: grid;\n}\n.thread-ui-shell .thread-mobile-only-inline-flex {\n  display: inline-flex;\n}\n.thread-ui-shell .thread-main-panel,\n.thread-ui-shell .thread-shell-card {\n  height: 100%;\n  min-height: 0;\n}\n.thread-ui-shell .thread-topbar-surface {\n  min-height: 3.5rem;\n}\n.thread-ui-shell .thread-icon-button,\n.thread-ui-shell .thread-secondary-action {\n  border-color: var(--theme-border);\n  background: transparent;\n  color: var(--theme-fg-soft);\n}\n.thread-ui-shell .thread-icon-button:hover,\n.thread-ui-shell .thread-secondary-action:hover {\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-topbar-meta-row {\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell button.thread-topbar-meta-row:hover {\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-topbar-meta-row[aria-expanded=true] {\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-topbar-details-trigger {\n  border-color: var(--theme-border);\n  background: var(--theme-surface);\n  color: var(--theme-fg-soft);\n}\n.thread-ui-shell .thread-topbar-details-trigger:hover,\n.thread-ui-shell .thread-topbar-details-trigger[aria-expanded=true] {\n  border-color: var(--theme-border-strong);\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-topbar-details-popover {\n  border-color: var(--theme-border);\n  background: var(--theme-panel);\n  color: var(--theme-fg);\n  box-shadow: var(--theme-shadow);\n}\n.thread-ui-shell .thread-topbar-meta-row .font-mono {\n  color: var(--theme-fg-soft);\n}\n.thread-ui-shell button.thread-topbar-meta-row:hover .font-mono {\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-topbar-actions {\n  border-color: var(--theme-border);\n  background: var(--theme-surface);\n}\n.thread-ui-shell .thread-graph-topbar-actions > * {\n  display: inline-flex;\n  align-items: center;\n  gap: 0.25rem;\n}\n.thread-ui-shell .thread-graph-topbar-actions button,\n.thread-ui-shell .thread-graph-topbar-actions a {\n  min-width: 2rem;\n  height: 2rem;\n  border-radius: 0.375rem;\n  border-color: transparent;\n  background: transparent;\n  color: var(--theme-fg-soft);\n  box-shadow: none;\n}\n.thread-ui-shell .thread-graph-topbar-actions button:hover,\n.thread-ui-shell .thread-graph-topbar-actions a:hover {\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-topbar-actions button:disabled,\n.thread-ui-shell .thread-graph-topbar-actions a[aria-disabled=true] {\n  cursor: not-allowed;\n  opacity: 0.5;\n}\n.thread-ui-shell .thread-graph-dialog,\n.thread-graph-dialog {\n  border-color: var(--theme-border);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-settings-dialog,\n.thread-graph-settings-dialog,\n.thread-graph-create-thread-dialog {\n  border-color: var(--theme-border);\n  background: var(--theme-panel);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-settings-dialog [data-slot=dialog-description],\n.thread-graph-settings-dialog [data-slot=dialog-description],\n.thread-graph-create-thread-dialog [data-slot=dialog-description] {\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-graph-settings-dialog [data-slot=dialog-close],\n.thread-graph-settings-dialog [data-slot=dialog-close],\n.thread-graph-create-thread-dialog [data-slot=dialog-close] {\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-graph-settings-dialog [data-slot=dialog-close]:hover,\n.thread-graph-settings-dialog [data-slot=dialog-close]:hover,\n.thread-graph-create-thread-dialog [data-slot=dialog-close]:hover {\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-settings-card,\n.thread-ui-shell .thread-graph-theme-mode-group,\n.thread-ui-shell .thread-graph-settings-tabs,\n.thread-graph-settings-dialog .thread-graph-settings-card,\n.thread-graph-settings-dialog .thread-graph-theme-mode-group,\n.thread-graph-settings-dialog .thread-graph-settings-tabs {\n  border-color: var(--theme-border);\n  background: var(--theme-surface);\n}\n.thread-ui-shell .thread-graph-theme-mode-button,\n.thread-ui-shell .thread-graph-settings-tab-button,\n.thread-graph-settings-dialog .thread-graph-theme-mode-button,\n.thread-graph-settings-dialog .thread-graph-settings-tab-button {\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-graph-theme-mode-button:hover:not(:disabled),\n.thread-ui-shell .thread-graph-settings-tab-button:hover:not(:disabled),\n.thread-graph-settings-dialog .thread-graph-theme-mode-button:hover:not(:disabled),\n.thread-graph-settings-dialog .thread-graph-settings-tab-button:hover:not(:disabled) {\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-theme-mode-button.is-selected,\n.thread-ui-shell .thread-graph-settings-tab-button.is-active,\n.thread-graph-settings-dialog .thread-graph-theme-mode-button.is-selected,\n.thread-graph-settings-dialog .thread-graph-settings-tab-button.is-active {\n  background: var(--theme-accent-solid);\n  color: var(--theme-accent-solid-fg);\n  box-shadow: 0 1px 2px rgb(15 23 42 / 0.08);\n}\n.thread-ui-shell .thread-graph-theme-mode-button:disabled,\n.thread-ui-shell .thread-graph-settings-tab-button:disabled,\n.thread-graph-settings-dialog .thread-graph-theme-mode-button:disabled,\n.thread-graph-settings-dialog .thread-graph-settings-tab-button:disabled {\n  cursor: not-allowed;\n  opacity: 0.55;\n}\n.thread-graph-settings-dialog .thread-graph-settings-body {\n  max-height: min(62vh, 42rem);\n  color: var(--theme-fg);\n}\n.thread-graph-settings-dialog .thread-graph-settings-global-content {\n  color: var(--theme-fg);\n}\n.thread-graph-settings-dialog .thread-graph-settings-body dt,\n.thread-graph-settings-dialog .thread-graph-settings-body .text-stone-500,\n.thread-graph-settings-dialog .thread-graph-settings-body .text-slate-500,\n.thread-graph-settings-dialog .thread-graph-settings-body .text-stone-400,\n.thread-graph-settings-dialog .thread-graph-settings-body .text-slate-400 {\n  color: var(--theme-fg-muted) !important;\n}\n.thread-graph-settings-dialog .thread-graph-settings-body dd,\n.thread-graph-settings-dialog .thread-graph-settings-body .text-stone-100,\n.thread-graph-settings-dialog .thread-graph-settings-body .text-stone-200,\n.thread-graph-settings-dialog .thread-graph-settings-body .text-stone-300,\n.thread-graph-settings-dialog .thread-graph-settings-body .text-slate-100,\n.thread-graph-settings-dialog .thread-graph-settings-body .text-slate-200,\n.thread-graph-settings-dialog .thread-graph-settings-body .text-slate-300 {\n  color: var(--theme-fg) !important;\n}\n.thread-graph-settings-dialog .thread-graph-settings-body .bg-stone-950,\n.thread-graph-settings-dialog .thread-graph-settings-body .bg-stone-900,\n.thread-graph-settings-dialog .thread-graph-settings-body .bg-slate-950,\n.thread-graph-settings-dialog .thread-graph-settings-body .bg-slate-900 {\n  background: var(--theme-surface-strong) !important;\n}\n.thread-graph-settings-dialog .thread-graph-settings-body .border-stone-800,\n.thread-graph-settings-dialog .thread-graph-settings-body .border-stone-700,\n.thread-graph-settings-dialog .thread-graph-settings-body .border-slate-800,\n.thread-graph-settings-dialog .thread-graph-settings-body .border-slate-700 {\n  border-color: var(--theme-border) !important;\n}\n.thread-graph-create-thread-input {\n  border-color: var(--theme-border);\n  background: var(--theme-surface);\n  color: var(--theme-fg);\n}\n.thread-graph-create-thread-input::placeholder {\n  color: var(--theme-fg-muted);\n}\n.thread-graph-create-thread-input:focus {\n  border-color: var(--theme-border-contrast);\n  box-shadow: 0 0 0 2px color-mix(in srgb, var(--theme-border-contrast) 18%, transparent);\n}\n.thread-graph-create-thread-submit {\n  background: var(--theme-accent-solid);\n  color: var(--theme-accent-solid-fg);\n}\n.thread-graph-create-thread-submit:hover:not(:disabled) {\n  background: var(--theme-accent-solid-hover);\n}\n.thread-ui-shell .ui-action-danger {\n  border: 1px solid color-mix(in oklch, rgb(244 63 94) 48%, var(--theme-border));\n  background: color-mix(in oklch, rgb(244 63 94) 18%, var(--theme-panel));\n  color: color-mix(in oklch, rgb(254 226 226) 86%, var(--theme-fg));\n}\n.thread-ui-shell .ui-action-danger:hover {\n  background: color-mix(in oklch, rgb(244 63 94) 26%, var(--theme-panel));\n  color: rgb(254 226 226);\n}\n.thread-ui-shell .thread-mobile-segment {\n  background: var(--theme-surface-strong);\n  color: var(--theme-fg-soft);\n}\n.thread-ui-shell .thread-mobile-segment:hover {\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-mobile-segment.is-active {\n  background: var(--theme-accent-solid);\n  color: var(--theme-accent-solid-fg);\n}\n.thread-ui-shell .thread-sidebar-card {\n  border-color: transparent;\n  background: var(--theme-surface-strong);\n  color: var(--theme-fg-soft);\n}\n.thread-ui-shell .thread-graph-room-card {\n  border-color: rgb(226 232 240 / 0.9);\n  background: rgb(248 250 252);\n  color: rgb(51 65 85);\n}\n.thread-ui-shell[data-theme-effective=light] .thread-graph-room-card {\n  border-color: rgb(226 232 240 / 0.9);\n  background: rgb(248 250 252);\n  color: rgb(51 65 85);\n}\n.thread-ui-shell .thread-sidebar-card:hover {\n  border-color: var(--theme-border);\n  background: var(--theme-panel);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-room-card:hover {\n  border-color: rgb(203 213 225);\n  background: rgb(255 255 255);\n  color: rgb(15 23 42);\n}\n.thread-ui-shell[data-theme-effective=light] .thread-graph-room-card:hover {\n  border-color: rgb(203 213 225);\n  background: rgb(255 255 255);\n  color: rgb(15 23 42);\n}\n.thread-ui-shell .thread-sidebar-card-active {\n  border-color: var(--theme-accent-solid);\n  background: var(--theme-accent-solid);\n  color: var(--theme-accent-solid-fg);\n  box-shadow: 0 12px 30px oklch(0.22 0.024 255 / 0.18);\n}\n.thread-ui-shell .thread-graph-room-card.is-active {\n  border-color: rgb(203 213 225);\n  background: rgb(241 245 249);\n  color: rgb(15 23 42);\n  box-shadow: 0 8px 22px rgb(15 23 42 / 0.06);\n}\n.thread-ui-shell[data-theme-effective=light] .thread-graph-room-card.is-active {\n  border-color: rgb(203 213 225);\n  background: rgb(241 245 249);\n  color: rgb(15 23 42);\n  box-shadow: 0 8px 22px rgb(15 23 42 / 0.06);\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-room-card.is-active,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-room-card.is-active,\n.thread-ui-shell.dark .thread-graph-room-card.is-active {\n  border-color: #3c4556;\n  background: #262c38;\n  color: rgb(241 245 249);\n  box-shadow: 0 10px 24px rgb(0 0 0 / 0.18);\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-room-card,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-room-card,\n.thread-ui-shell.dark .thread-graph-room-card {\n  border-color: transparent;\n  background: #1d222c;\n  color: rgb(203 213 225);\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-room-card:hover,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-room-card:hover,\n.thread-ui-shell.dark .thread-graph-room-card:hover {\n  border-color: #343b48;\n  background: #222733;\n  color: rgb(241 245 249);\n}\n.thread-ui-shell .thread-sidebar-card-icon {\n  background: var(--theme-panel);\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-graph-room-card-icon {\n  background: rgb(255 255 255);\n  color: rgb(100 116 139);\n}\n.thread-ui-shell[data-theme-effective=light] .thread-graph-room-card-icon {\n  background: rgb(255 255 255);\n  color: rgb(100 116 139);\n}\n.thread-ui-shell .thread-sidebar-card-icon.is-active {\n  background: color-mix(in oklch, var(--theme-accent-solid-fg) 16%, transparent);\n  color: var(--theme-accent-solid-fg);\n}\n.thread-ui-shell .thread-graph-room-card-icon.is-active {\n  background: rgb(226 232 240);\n  color: rgb(15 23 42);\n}\n.thread-ui-shell[data-theme-effective=light] .thread-graph-room-card-icon.is-active {\n  background: rgb(226 232 240);\n  color: rgb(15 23 42);\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-room-card-icon.is-active,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-room-card-icon.is-active,\n.thread-ui-shell.dark .thread-graph-room-card-icon.is-active {\n  background: #12151c;\n  color: rgb(226 232 240);\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-room-card-icon,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-room-card-icon,\n.thread-ui-shell.dark .thread-graph-room-card-icon {\n  background: #12151c;\n  color: rgb(148 163 184);\n}\n.thread-ui-shell .thread-sidebar-card-active .thread-sidebar-card-title,\n.thread-ui-shell .thread-sidebar-card-active p,\n.thread-ui-shell .thread-sidebar-card-active span,\n.thread-ui-shell .thread-sidebar-card-active button,\n.thread-ui-shell .thread-graph-room-card.is-active .thread-graph-room-card-title,\n.thread-ui-shell .thread-graph-room-card.is-active p,\n.thread-ui-shell .thread-graph-room-card.is-active button {\n  color: inherit;\n}\n.thread-ui-shell .thread-card-quiet-button {\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-card-quiet-button:hover {\n  background: color-mix(in oklch, var(--theme-hover) 80%, transparent);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-card-session-copy-button {\n  opacity: 0;\n}\n.thread-ui-shell .thread-composer-pending-queue {\n  border-color: var(--theme-border);\n  background: color-mix(in srgb, var(--theme-panel) 94%, transparent);\n  box-shadow: 0 8px 24px color-mix(in srgb, var(--app-bg) 18%, transparent);\n}\n.thread-ui-shell .thread-composer-pending-row {\n  border-color: var(--theme-border);\n  background: var(--theme-surface);\n}\n.thread-ui-shell .thread-composer-steer-button {\n  border-color: color-mix(in srgb, var(--theme-accent) 35%, var(--theme-border));\n  background: color-mix(in srgb, var(--theme-accent) 10%, var(--theme-surface));\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-composer-steer-button:hover:not(:disabled) {\n  background: color-mix(in srgb, var(--theme-accent) 18%, var(--theme-surface));\n}\n.thread-ui-shell .thread-composer-queue-remove {\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-composer-queue-remove:hover:not(:disabled) {\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n@media (max-width: 639px) {\n  .thread-ui-shell .thread-composer-pending-queue {\n    margin-bottom: 0.375rem;\n    border-radius: 0.75rem;\n  }\n  .thread-ui-shell .thread-composer-pending-row {\n    min-height: 2.75rem;\n  }\n}\n.thread-ui-shell .thread-graph-room-card:hover .thread-card-session-copy-button,\n.thread-ui-shell .thread-card-session-copy-button:focus-visible,\n.thread-ui-shell .thread-card-session-copy-button:active {\n  opacity: 1;\n}\n.thread-ui-shell .thread-card-danger-button {\n  color: oklch(0.62 0.16 25);\n}\n.thread-ui-shell .thread-card-danger-button:hover {\n  background: rgb(254 226 226);\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-card-danger-button:hover,\n.thread-ui-shell[data-theme-effective=dark] .thread-card-danger-button:hover,\n.thread-ui-shell.dark .thread-card-danger-button:hover {\n  background: rgb(127 29 29 / 0.32);\n}\n.thread-ui-shell .thread-new-thread-button,\n.thread-ui-shell .thread-graph-new-room-button {\n  min-width: 0;\n}\n.thread-ui-shell .thread-graph-new-room-strip {\n  border-color: var(--theme-border);\n}\n.thread-ui-shell .thread-graph-new-room-button {\n  background: var(--theme-accent-solid);\n  color: var(--theme-accent-solid-fg);\n  transition: background-color 160ms ease, transform 160ms ease;\n}\n.thread-ui-shell .thread-graph-new-room-button:hover {\n  background: var(--theme-accent-solid-hover);\n  transform: translateY(-1px);\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-new-room-button,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-new-room-button,\n.thread-ui-shell.dark .thread-graph-new-room-button {\n  border: 1px solid #343b48;\n  background: #222733;\n  color: rgb(241 245 249);\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-new-room-button:hover,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-new-room-button:hover,\n.thread-ui-shell.dark .thread-graph-new-room-button:hover {\n  border-color: #465164;\n  background: #2b313d;\n}\n');
@@ -4990,7 +20,7 @@ styleInject(".thread-ui-shell .thread-detail-surface {\n  border-color: transpar
 styleInject(".thread-ui-shell .thread-workspace-panel {\n  background: var(--theme-panel);\n}\n.thread-ui-shell .thread-workspace-card {\n  background: var(--theme-surface);\n}\n.thread-ui-shell .thread-workspace-collapse-tab,\n.thread-ui-shell .thread-workspace-small-toggle,\n.thread-ui-shell .thread-workspace-expand-fab,\n.thread-ui-shell .thread-graph-panel-expand-fab {\n  align-items: center;\n  justify-content: center;\n  width: 2rem;\n  height: 2rem;\n  border: 1px solid var(--theme-border);\n  border-radius: 999px;\n  background: color-mix(in oklch, var(--theme-panel) 92%, transparent);\n  color: var(--theme-fg-soft);\n  box-shadow: 0 10px 26px color-mix(in oklch, var(--theme-bg) 62%, transparent);\n  transition:\n    background-color 160ms ease,\n    border-color 160ms ease,\n    color 160ms ease,\n    transform 160ms ease,\n    box-shadow 160ms ease;\n}\n.thread-ui-shell .thread-workspace-collapse-tab:hover,\n.thread-ui-shell .thread-workspace-small-toggle:hover,\n.thread-ui-shell .thread-workspace-expand-fab:hover,\n.thread-ui-shell .thread-graph-panel-expand-fab:hover {\n  border-color: var(--theme-border-strong);\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n  box-shadow: 0 14px 30px color-mix(in oklch, var(--theme-bg) 72%, transparent);\n}\n.thread-ui-shell .thread-workspace-collapse-tab {\n  position: absolute;\n  left: -1rem;\n  top: 50%;\n  z-index: 30;\n  transform: translateY(-50%);\n}\n.thread-ui-shell .thread-workspace-collapse-tab:hover {\n  transform: translateY(-50%) translateX(-1px);\n}\n.thread-ui-shell .thread-workspace-expand-fab {\n  position: absolute;\n  right: 0.75rem;\n  top: 50%;\n  z-index: 30;\n  transform: translateY(-50%);\n}\n.thread-ui-shell .thread-workspace-expand-fab:hover {\n  transform: translateY(-50%) translateX(-1px);\n}\n.thread-ui-shell .thread-chat-usage-footer {\n  background: var(--theme-surface);\n  color: rgb(148 163 184);\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-chat-usage-footer,\n.thread-ui-shell[data-theme-effective=dark] .thread-chat-usage-footer,\n.thread-ui-shell.dark .thread-chat-usage-footer {\n  background: var(--theme-surface);\n  color: rgb(100 116 139);\n}\n.thread-ui-shell .thread-graph-composer-host {\n  border-top: 1px solid rgb(226 232 240);\n  background: var(--theme-surface);\n  padding: 0.5rem 0.75rem calc(env(safe-area-inset-bottom) + 0.5rem);\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-composer-host,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-composer-host,\n.thread-ui-shell.dark .thread-graph-composer-host {\n  border-top-color: #2a2f3a;\n  background: var(--theme-surface);\n}\n.thread-ui-shell .thread-graph-composer-host > .thread-composer-layer,\n.thread-ui-shell .thread-graph-composer-host > .thread-graph-composer-layer {\n  width: 100%;\n}\n.thread-ui-shell .thread-split-chat-pane,\n.thread-ui-shell .thread-split-workspace-pane {\n  width: 100%;\n  min-height: 0;\n}\n.thread-ui-shell .thread-split-chat-pane {\n  min-width: 0;\n}\n.thread-ui-shell .thread-split-region,\n.thread-ui-shell .thread-split-container {\n  height: 100%;\n  min-height: 0;\n  overflow: hidden;\n}\n.thread-ui-shell .thread-graph-shell-desktop-split {\n  display: none !important;\n}\n.thread-ui-shell .thread-graph-shell-mobile-split {\n  display: block !important;\n}\n.thread-ui-shell[data-thread-layout=desktop] .thread-graph-shell-desktop-split {\n  display: flex !important;\n}\n.thread-ui-shell[data-thread-layout=desktop] .thread-graph-shell-mobile-split {\n  display: none !important;\n}\n.thread-ui-shell[data-thread-layout=desktop] .thread-graph-shell-desktop-split .thread-split-chat-pane,\n.thread-ui-shell[data-thread-layout=desktop] .thread-graph-shell-desktop-split .thread-split-workspace-pane,\n.thread-ui-shell .thread-graph-shell-desktop-split .thread-split-chat-pane,\n.thread-ui-shell .thread-graph-shell-desktop-split .thread-split-workspace-pane {\n  min-width: 0;\n  height: 100%;\n}\n.thread-ui-shell[data-thread-layout=desktop] .thread-graph-shell-desktop-split .thread-split-chat-pane,\n.thread-ui-shell[data-thread-layout=desktop] .thread-graph-shell-desktop-split .thread-split-workspace-pane {\n  flex: 1 1 0;\n  min-width: 0;\n  width: auto;\n}\n.thread-ui-shell[data-thread-layout=desktop] {\n  padding: 0.5rem;\n}\n.thread-ui-shell[data-thread-layout=desktop].thread-ui-viewport-constrained {\n  height: 100svh;\n  max-height: 100svh;\n}\n.thread-ui-shell[data-thread-layout=desktop] .thread-shell-frame {\n  display: grid;\n  grid-template-columns: 264px minmax(0, 1fr);\n  gap: 0.5rem;\n  height: 100%;\n  min-height: 0;\n}\n.thread-ui-shell[data-thread-layout=desktop] .thread-desktop-only-flex {\n  display: flex !important;\n}\n.thread-ui-shell[data-thread-layout=desktop] .thread-desktop-only-inline-flex {\n  display: inline-flex !important;\n}\n.thread-ui-shell[data-thread-layout=desktop] .thread-mobile-only-block,\n.thread-ui-shell[data-thread-layout=desktop] .thread-mobile-only-grid,\n.thread-ui-shell[data-thread-layout=desktop] .thread-mobile-only-inline-flex {\n  display: none !important;\n}\n.thread-ui-shell[data-thread-layout=desktop] .thread-mobile-chat-hidden,\n.thread-ui-shell[data-thread-layout=desktop] .thread-mobile-workspace-hidden {\n  display: block !important;\n}\n.thread-ui-shell[data-thread-layout=desktop] .thread-desktop-collapsed-hidden {\n  display: none;\n}\n.thread-ui-shell[data-thread-layout=desktop] .thread-shell-frame.is-rail-collapsed {\n  grid-template-columns: 56px minmax(0, 1fr);\n}\n.thread-ui-shell[data-thread-layout=desktop] .thread-shell-frame.is-rail-hidden {\n  grid-template-columns: minmax(0, 1fr);\n}\n.thread-ui-shell[data-thread-layout=desktop] .thread-rooms-rail {\n  position: static;\n  z-index: auto;\n  width: auto;\n  min-width: 0;\n  height: 100%;\n  transform: none;\n  translate: 0 0;\n  pointer-events: auto;\n  border: 1px solid var(--theme-border);\n  border-radius: 12px;\n  box-shadow: var(--theme-shadow);\n}\n.thread-ui-shell[data-thread-layout=desktop] .thread-rooms-rail-header {\n  height: 4rem;\n  align-items: center;\n  padding-bottom: 0;\n}\n.thread-ui-shell[data-thread-layout=desktop] .thread-shell-card {\n  border: 1px solid var(--theme-border);\n  border-radius: 12px;\n}\n.thread-ui-shell[data-thread-layout=desktop] .thread-topbar-row {\n  min-height: 4rem;\n  padding-left: 1.25rem;\n  padding-right: 1.25rem;\n}\n.thread-ui-shell[data-thread-layout=desktop] .thread-mobile-view-switch {\n  display: none !important;\n}\n.thread-ui-shell[data-thread-layout=desktop] .thread-split-region {\n  padding: 0.5rem;\n}\n.thread-ui-shell[data-thread-layout=desktop] .thread-split-container.has-workspace {\n  display: flex;\n  align-items: stretch;\n  min-width: 0;\n  min-height: 0;\n}\n.thread-ui-shell[data-thread-layout=desktop] .thread-split-chat-pane {\n  flex: 0 0 var(--thread-chat-percent, 54%);\n  min-width: min(31rem, 100%);\n  width: auto;\n  height: 100%;\n  display: block;\n}\n.thread-ui-shell[data-thread-layout=desktop] .thread-split-workspace-pane {\n  flex: 0 0 var(--thread-workspace-percent, 46%);\n  min-width: 19rem;\n  width: auto;\n  height: 100%;\n  display: block;\n}\n.thread-ui-shell[data-thread-layout=desktop] .thread-resize-handle {\n  display: flex !important;\n}\n@media (min-width: 640px) {\n  .thread-ui-shell:not([data-thread-layout=mobile]) {\n    padding: 0.5rem;\n  }\n  .thread-ui-shell:not([data-thread-layout=mobile]).thread-ui-viewport-constrained {\n    height: 100svh;\n    max-height: 100svh;\n  }\n  .thread-ui-shell:not([data-thread-layout=mobile]) .thread-shell-frame {\n    display: grid;\n    grid-template-columns: 264px minmax(0, 1fr);\n    gap: 0.5rem;\n    height: 100%;\n    min-height: 0;\n  }\n  .thread-ui-shell:not([data-thread-layout=mobile]) .thread-desktop-only-flex {\n    display: flex !important;\n  }\n  .thread-ui-shell:not([data-thread-layout=mobile]) .thread-desktop-only-inline-flex {\n    display: inline-flex !important;\n  }\n  .thread-ui-shell:not([data-thread-layout=mobile]) .thread-mobile-only-block,\n  .thread-ui-shell:not([data-thread-layout=mobile]) .thread-mobile-only-grid,\n  .thread-ui-shell:not([data-thread-layout=mobile]) .thread-mobile-only-inline-flex {\n    display: none !important;\n  }\n  .thread-ui-shell:not([data-thread-layout=mobile]) .thread-mobile-chat-hidden,\n  .thread-ui-shell:not([data-thread-layout=mobile]) .thread-mobile-workspace-hidden {\n    display: block !important;\n  }\n  .thread-ui-shell:not([data-thread-layout=mobile]) .thread-desktop-collapsed-hidden {\n    display: none;\n  }\n  .thread-ui-shell:not([data-thread-layout=mobile]) .thread-shell-frame.is-rail-collapsed {\n    grid-template-columns: 56px minmax(0, 1fr);\n  }\n  .thread-ui-shell:not([data-thread-layout=mobile]) .thread-shell-frame.is-rail-hidden {\n    grid-template-columns: minmax(0, 1fr);\n  }\n  .thread-ui-shell:not([data-thread-layout=mobile]) .thread-rooms-rail {\n    position: static;\n    z-index: auto;\n    width: auto;\n    min-width: 0;\n    height: 100%;\n    transform: none;\n    translate: 0 0;\n    pointer-events: auto;\n    border: 1px solid var(--theme-border);\n    border-radius: 12px;\n    box-shadow: var(--theme-shadow);\n  }\n  .thread-ui-shell:not([data-thread-layout=mobile]) .thread-rooms-rail-header {\n    height: 4rem;\n    align-items: center;\n    padding-bottom: 0;\n  }\n  .thread-ui-shell:not([data-thread-layout=mobile]) .thread-shell-card {\n    border: 1px solid var(--theme-border);\n    border-radius: 12px;\n  }\n  .thread-ui-shell:not([data-thread-layout=mobile]) .thread-topbar-row {\n    min-height: 4rem;\n    padding-left: 1.25rem;\n    padding-right: 1.25rem;\n  }\n  .thread-ui-shell:not([data-thread-layout=mobile]) .thread-mobile-view-switch {\n    display: none !important;\n  }\n  .thread-ui-shell:not([data-thread-layout=mobile]) .thread-split-region {\n    padding: 0.5rem;\n  }\n  .thread-ui-shell:not([data-thread-layout=mobile]) .thread-split-container.has-workspace {\n    display: flex;\n    align-items: stretch;\n    min-width: 0;\n    min-height: 0;\n  }\n  .thread-ui-shell:not([data-thread-layout=mobile]) .thread-split-chat-pane {\n    flex: 0 0 var(--thread-chat-percent, 54%);\n    min-width: min(31rem, 100%);\n    width: auto;\n    height: 100%;\n    display: block;\n  }\n  .thread-ui-shell:not([data-thread-layout=mobile]) .thread-split-workspace-pane {\n    flex: 0 0 var(--thread-workspace-percent, 46%);\n    min-width: 19rem;\n    width: auto;\n    height: 100%;\n    display: block;\n  }\n  .thread-ui-shell:not([data-thread-layout=mobile]) .thread-resize-handle {\n    display: flex !important;\n  }\n  .thread-ui-shell:not([data-thread-layout=mobile]) .thread-graph-shell-desktop-split {\n    display: flex !important;\n  }\n  .thread-ui-shell:not([data-thread-layout=mobile]) .thread-graph-shell-mobile-split {\n    display: none !important;\n  }\n  .thread-ui-shell:not([data-thread-layout=mobile]) .thread-graph-shell-desktop-split .thread-split-chat-pane,\n  .thread-ui-shell:not([data-thread-layout=mobile]) .thread-graph-shell-desktop-split .thread-split-workspace-pane {\n    flex: 1 1 0;\n    min-width: 0;\n    width: auto;\n  }\n  .thread-ui-shell:not([data-thread-layout=mobile]) .thread-graph-shell-desktop-split .thread-split-chat-pane {\n    min-width: 0;\n  }\n  .thread-ui-shell:not([data-thread-layout=mobile]) .thread-graph-shell-desktop-split .thread-split-workspace-pane {\n    min-width: 0;\n  }\n}\n.thread-ui-shell .thread-resize-handle span {\n  background: var(--theme-border);\n}\n.thread-ui-shell .thread-resize-handle:hover span,\n.thread-ui-shell .thread-resize-handle:focus-visible span {\n  background: var(--theme-border-strong);\n  box-shadow: 0 0 0 3px color-mix(in oklch, var(--theme-accent-border) 24%, transparent);\n}\n.thread-ui-shell .thread-graph-right-tabs {\n  border-color: var(--theme-border);\n  background: var(--theme-surface);\n}\n.thread-ui-shell .thread-graph-right-tab-secondary {\n  border-color: var(--theme-border);\n}\n.thread-ui-shell .thread-workspace-tab,\n.thread-ui-shell .thread-graph-right-tab {\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-workspace-tab:hover,\n.thread-ui-shell .thread-graph-right-tab:hover {\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-workspace-tab.is-active,\n.thread-ui-shell .thread-graph-right-tab.is-active {\n  background: var(--theme-surface-strong);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-visualization-panel {\n  background: var(--theme-surface);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-flow {\n  overflow: hidden;\n  border: 1px solid var(--theme-border);\n  border-radius: 12px;\n  background: var(--theme-surface);\n}\n.thread-ui-shell .thread-graph-flow-node {\n  position: relative;\n  min-width: 8rem;\n  max-width: 12rem;\n  border: 1px solid var(--theme-border-strong);\n  border-radius: 8px;\n  background: var(--theme-panel);\n  padding: 0.85rem 1rem;\n  color: var(--theme-fg);\n  text-align: center;\n  box-shadow: var(--theme-shadow);\n}\n.thread-ui-shell .thread-graph-flow .react-flow {\n  background: var(--theme-surface);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-flow .react-flow__edge-path {\n  stroke: var(--theme-border-contrast);\n}\n.thread-ui-shell .thread-graph-flow .react-flow__background {\n  background: var(--theme-surface);\n}\n.thread-ui-shell .thread-graph-flow .react-flow__controls {\n  overflow: hidden;\n  border: 1px solid var(--theme-border);\n  border-radius: 8px;\n  box-shadow: var(--theme-shadow);\n}\n.thread-ui-shell .thread-graph-flow .react-flow__controls-button {\n  border-bottom-color: var(--theme-border);\n  background: var(--theme-panel);\n  color: var(--theme-fg-soft);\n}\n.thread-ui-shell .thread-graph-flow .react-flow__controls-button:hover {\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-flow .react-flow__controls-button svg {\n  fill: currentColor;\n}\n.thread-ui-shell .thread-guide-section {\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-guide-icon,\n.thread-ui-shell .thread-guide-tag {\n  background: var(--theme-surface-strong);\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-graph-workspace-mobile-tabs,\n.thread-ui-shell .thread-graph-workspace-mobile-explorer {\n  border-color: var(--theme-border);\n  background: var(--theme-surface);\n}\n.thread-ui-shell .thread-graph-workspace-mobile-stack,\n.thread-ui-shell .thread-graph-workspace-mobile-viewer {\n  background: var(--theme-surface);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-workspace-resizable {\n  height: 100%;\n  min-width: 0;\n}\n.thread-ui-shell .thread-graph-workspace-explorer-pane {\n  min-width: 0;\n}\n.thread-ui-shell .thread-graph-workspace-viewer-pane {\n  min-width: 0;\n}\n.thread-ui-shell .thread-graph-workspace-resize-handle::after {\n  background: var(--theme-border);\n}\n.thread-ui-shell .thread-graph-workspace-resize-handle:hover::after,\n.thread-ui-shell .thread-graph-workspace-resize-handle:focus-visible::after {\n  background: var(--theme-border-contrast);\n}\n.thread-ui-shell .thread-graph-explorer,\n.thread-ui-shell .thread-graph-viewer {\n  border-color: var(--theme-border);\n  background: var(--theme-surface);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-explorer-header,\n.thread-ui-shell .thread-graph-viewer-header {\n  border-color: var(--theme-border);\n  background: var(--theme-surface);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-explorer h2,\n.thread-ui-shell .thread-graph-viewer h2 {\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-explorer-icon-button,\n.thread-ui-shell .thread-graph-explorer-collapse-button,\n.thread-ui-shell .thread-graph-viewer-header button {\n  border-color: var(--theme-border);\n  background: var(--theme-surface-strong);\n  color: var(--theme-fg-soft);\n}\n.thread-ui-shell .thread-graph-explorer-icon-button:hover,\n.thread-ui-shell .thread-graph-explorer-collapse-button:hover,\n.thread-ui-shell .thread-graph-viewer-header button:hover {\n  border-color: var(--theme-border-strong);\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-panel-expand-fab {\n  position: absolute;\n  top: 50%;\n  z-index: 30;\n  display: inline-flex;\n  transform: translateY(-50%);\n}\n");
 
 // src/styles/history-markdown.css
-styleInject('.thread-ui-shell .thread-graph-panel-expand-fab.left-3 {\n  left: 0.75rem;\n}\n.thread-ui-shell .thread-graph-panel-expand-fab.right-3 {\n  right: 0.75rem;\n}\n.thread-ui-shell .thread-graph-panel-expand-fab:hover {\n  transform: translateY(-50%) scale(1.04);\n}\n.thread-ui-shell .thread-graph-workspace-label,\n.thread-ui-shell .thread-graph-workspace-loading,\n.thread-ui-shell .thread-graph-workspace-empty,\n.thread-ui-shell .thread-graph-file-preview-header,\n.thread-ui-shell .thread-graph-file-preview-footer {\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-graph-file-preview-header,\n.thread-ui-shell .thread-graph-file-preview-footer {\n  border-color: var(--theme-border);\n}\n.thread-ui-shell .thread-graph-file-preview-footer,\n.thread-ui-shell .thread-graph-file-preview-frame {\n  background: var(--theme-bg);\n}\n.thread-ui-shell .thread-graph-workspace-empty {\n  border-color: var(--theme-border);\n  background: var(--theme-surface-strong);\n}\n.thread-ui-shell .thread-graph-explorer button,\n.thread-ui-shell .thread-graph-viewer button {\n  color: inherit;\n}\n.thread-ui-shell .thread-graph-tree-row {\n  --thread-graph-tree-row-background: transparent;\n  color: var(--theme-fg-soft);\n}\n.thread-ui-shell .thread-graph-tree-row:hover {\n  --thread-graph-tree-row-background: var(--theme-hover);\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-tree-row:focus-within {\n  --thread-graph-tree-row-background: var(--theme-hover);\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-tree-row.is-selected {\n  --thread-graph-tree-row-background: color-mix( in oklch, var(--theme-accent-solid) 13%, var(--theme-panel) );\n  background: var(--thread-graph-tree-row-background);\n  color: var(--theme-fg);\n  box-shadow: inset 3px 0 0 color-mix(in oklch, var(--theme-accent-solid) 72%, transparent);\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-tree-row.is-selected,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-tree-row.is-selected,\n.thread-ui-shell.dark .thread-graph-tree-row.is-selected {\n  --thread-graph-tree-row-background: color-mix( in oklch, var(--theme-accent-solid) 18%, var(--theme-panel) );\n  background: var(--thread-graph-tree-row-background);\n  color: var(--theme-fg);\n  box-shadow: inset 3px 0 0 color-mix(in oklch, var(--theme-accent-solid) 72%, transparent);\n}\n.thread-ui-shell .thread-graph-tree-row.is-selected svg {\n  color: currentColor;\n}\n.thread-ui-shell .thread-graph-tree-row.is-selected .thread-graph-tree-action,\n.thread-ui-shell .thread-graph-tree-action.is-selected {\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-graph-tree-row.is-selected .thread-graph-tree-action:hover,\n.thread-ui-shell .thread-graph-tree-action.is-selected:hover {\n  background: color-mix(in oklch, var(--theme-accent-solid) 12%, transparent);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-tree-action {\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-graph-tree-actions {\n  z-index: 1;\n  background: var(--thread-graph-tree-row-background);\n  opacity: 0;\n  pointer-events: none;\n  transition: opacity 160ms cubic-bezier(0.16, 1, 0.3, 1);\n}\n.thread-ui-shell .thread-graph-tree-row:hover .thread-graph-tree-actions,\n.thread-ui-shell .thread-graph-tree-row:focus-within .thread-graph-tree-actions {\n  opacity: 1;\n  pointer-events: auto;\n}\n.thread-ui-shell .thread-graph-tree-action:hover {\n  background: var(--theme-surface-strong);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-molecule-preview {\n  background: var(--theme-surface);\n}\n.thread-ui-shell .thread-graph-molecule-viewer {\n  background: var(--theme-surface);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-molecule-header,\n.thread-ui-shell .thread-graph-molecule-controls {\n  border-color: var(--theme-border);\n  background: var(--theme-surface);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-molecule-body {\n  display: flex;\n  min-height: 0;\n  flex: 1;\n  flex-direction: column;\n  overflow: hidden;\n}\n.thread-ui-shell .thread-graph-molecule-header h2 {\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-molecule-header p,\n.thread-ui-shell .thread-graph-molecule-header span,\n.thread-ui-shell .thread-graph-molecule-trajectory {\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-graph-molecule-controls {\n  border-top: 1px solid var(--theme-border);\n  display: flex;\n  flex-direction: column;\n  gap: 0.75rem;\n  max-height: min(42%, 18rem);\n  overflow: auto;\n  padding: 0.75rem;\n}\n.thread-ui-shell .thread-graph-molecule-control-row {\n  display: flex;\n  align-items: flex-start;\n  justify-content: space-between;\n  gap: 0.75rem;\n}\n.thread-ui-shell .thread-graph-molecule-control-title {\n  color: var(--theme-fg);\n  font-size: 0.875rem;\n  font-weight: 600;\n  line-height: 1.25rem;\n}\n.thread-ui-shell .thread-graph-molecule-control-subtitle {\n  margin-top: 0.125rem;\n  color: var(--theme-fg-muted);\n  font-size: 0.6875rem;\n  line-height: 1rem;\n}\n.thread-ui-shell .thread-graph-molecule-button-group {\n  display: inline-flex;\n  align-items: center;\n  gap: 0.125rem;\n  border: 1px solid var(--theme-border);\n  border-radius: 0.5rem;\n  background: var(--theme-surface);\n  padding: 0.125rem;\n}\n.thread-ui-shell .thread-graph-molecule-button {\n  display: inline-flex;\n  min-width: 1.75rem;\n  height: 1.75rem;\n  align-items: center;\n  justify-content: center;\n  border: 1px solid transparent;\n  border-radius: 0.375rem;\n  background: transparent;\n  color: var(--theme-fg-soft);\n  transition:\n    background-color 140ms ease,\n    border-color 140ms ease,\n    color 140ms ease,\n    opacity 140ms ease;\n}\n.thread-ui-shell .thread-graph-molecule-button:hover:not(:disabled) {\n  border-color: var(--theme-border);\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-molecule-button:disabled {\n  cursor: not-allowed;\n  color: var(--theme-fg-subtle);\n  opacity: 0.45;\n}\n.thread-ui-shell .thread-graph-molecule-button-divider {\n  width: 1px;\n  align-self: stretch;\n  margin-inline: 0.25rem;\n  background: var(--theme-border);\n}\n.thread-ui-shell .thread-graph-molecule-stage {\n  background: var(--theme-bg);\n}\n.thread-ui-shell .thread-graph-molecule-error {\n  background: color-mix(in oklch, #ef4444 12%, var(--theme-surface));\n  color: var(--theme-danger);\n}\n.thread-ui-shell .thread-graph-molecule-empty {\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-graph-molecule-tooltip {\n  border-color: var(--theme-border);\n  background: color-mix(in oklch, var(--theme-surface) 96%, transparent);\n  color: var(--theme-fg);\n  box-shadow: 0 10px 28px color-mix(in oklch, var(--theme-bg) 72%, transparent);\n}\n.thread-ui-shell .thread-graph-molecule-tooltip div,\n.thread-ui-shell .thread-graph-molecule-tooltip span {\n  color: inherit;\n}\n.thread-ui-shell .thread-graph-molecule-trajectory input {\n  accent-color: var(--theme-accent-solid);\n}\n.thread-ui-shell .thread-graph-molecule-live-button {\n  display: inline-flex;\n  align-items: center;\n  gap: 0.25rem;\n  border: 1px solid var(--theme-border);\n  border-radius: 0.375rem;\n  background: var(--theme-surface);\n  padding: 0.125rem 0.5rem;\n  color: var(--theme-fg-muted);\n  transition: background-color 140ms ease, color 140ms ease;\n}\n.thread-ui-shell .thread-graph-molecule-live-button:hover {\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-molecule-camera {\n  margin-top: 0.75rem;\n  border: 1px solid var(--theme-border);\n  border-radius: 0.5rem;\n  padding: 0.5rem;\n  color: var(--theme-fg-muted);\n  font-size: 0.625rem;\n}\n.thread-ui-shell .thread-graph-molecule-camera-divider {\n  width: 100%;\n  height: 1px;\n  margin-block: 0.5rem;\n  background: var(--theme-border);\n}\n.thread-ui-shell .thread-graph-molecule-preview .xyz-viewer-plugin {\n  height: 100%;\n  min-height: 0;\n  border: 0;\n  border-radius: 0;\n  background: var(--theme-surface);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-molecule-preview .xyz-viewer-plugin__header {\n  min-height: 60px;\n  border-color: var(--theme-border);\n  background: var(--theme-surface);\n  padding: 0.75rem 1.25rem;\n}\n.thread-ui-shell .thread-graph-molecule-preview .xyz-viewer-plugin__header h2 {\n  color: var(--theme-fg);\n  font-size: 0.875rem;\n  font-weight: 650;\n}\n.thread-ui-shell .thread-graph-molecule-preview .xyz-viewer-plugin__header p,\n.thread-ui-shell .thread-graph-molecule-preview .xyz-viewer-plugin__header span {\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-graph-molecule-preview .xyz-viewer-plugin__toolbar {\n  border-color: var(--theme-border);\n  background: var(--theme-surface);\n  padding: 0.5rem 0.625rem;\n}\n.thread-ui-shell .thread-graph-molecule-preview .xyz-viewer-plugin__toolbar button,\n.thread-ui-shell .thread-graph-molecule-preview .xyz-viewer-plugin__timeline button {\n  border-color: var(--theme-border);\n  background: var(--theme-surface-strong);\n  color: var(--theme-fg-soft);\n}\n.thread-ui-shell .thread-graph-molecule-preview .xyz-viewer-plugin__toolbar button:hover,\n.thread-ui-shell .thread-graph-molecule-preview .xyz-viewer-plugin__timeline button:hover {\n  border-color: var(--theme-border-strong);\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-molecule-preview .xyz-viewer-plugin__toolbar button:disabled,\n.thread-ui-shell .thread-graph-molecule-preview .xyz-viewer-plugin__timeline button:disabled {\n  color: var(--theme-fg-subtle);\n}\n.thread-ui-shell .thread-graph-molecule-preview .xyz-viewer-plugin__toolbar-divider {\n  background: var(--theme-border);\n}\n.thread-ui-shell .thread-graph-molecule-preview .xyz-viewer-plugin__stage {\n  min-height: 0;\n  background: var(--theme-bg);\n}\n.thread-ui-shell .thread-graph-molecule-preview .xyz-viewer-plugin__error {\n  background: color-mix(in oklch, #ef4444 12%, var(--theme-surface));\n  color: var(--theme-danger);\n}\n.thread-ui-shell .thread-graph-molecule-preview .xyz-viewer-plugin__empty {\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-graph-molecule-preview .xyz-viewer-plugin__tooltip {\n  border-color: var(--theme-border);\n  background: color-mix(in oklch, var(--theme-surface) 96%, transparent);\n  color: var(--theme-fg);\n  box-shadow: 0 10px 28px color-mix(in oklch, var(--theme-bg) 72%, transparent);\n}\n.thread-ui-shell .thread-graph-molecule-preview .xyz-viewer-plugin__tooltip span {\n  color: var(--theme-fg-soft);\n}\n.thread-ui-shell .thread-graph-molecule-preview .xyz-viewer-plugin__timeline,\n.thread-ui-shell .thread-graph-molecule-preview .xyz-viewer-plugin__status {\n  border-color: var(--theme-border);\n  background: var(--theme-surface);\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-graph-molecule-preview .xyz-viewer-plugin__timeline input {\n  accent-color: var(--theme-accent-solid);\n}\n.thread-ui-shell .thread-graph-molecule-preview .xyz-viewer-plugin__timeline button.is-live {\n  color: var(--theme-danger);\n}\n.thread-ui-shell .thread-graph-file-preview-header,\n.thread-ui-shell .thread-graph-file-preview-footer {\n  border-color: var(--theme-border);\n  background: var(--theme-surface);\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-graph-load-more-button {\n  border: 1px solid var(--theme-border);\n  background: color-mix(in oklch, var(--theme-accent-solid) 8%, var(--theme-panel));\n  color: var(--theme-fg-soft);\n  transition:\n    background-color 140ms ease,\n    border-color 140ms ease,\n    color 140ms ease;\n}\n.thread-ui-shell .thread-graph-load-more-button:hover:not(:disabled) {\n  border-color: color-mix(in oklch, var(--theme-accent-solid) 28%, var(--theme-border));\n  background: color-mix(in oklch, var(--theme-accent-solid) 14%, var(--theme-panel));\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-code-preview {\n  background: var(--theme-bg);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-code-preview pre,\n.thread-ui-shell .thread-graph-code-preview code {\n  font-family:\n    ui-monospace,\n    SFMono-Regular,\n    Menlo,\n    Monaco,\n    Consolas,\n    "Liberation Mono",\n    monospace !important;\n  font-size: 0.78rem;\n  line-height: 1.55;\n}\n.thread-ui-shell .thread-graph-highlighted-code-preview pre {\n  min-height: 100%;\n  margin: 0;\n  padding: 1rem 0;\n  background: transparent !important;\n}\n.thread-ui-shell .thread-graph-highlighted-code-preview code {\n  display: block;\n  min-width: max-content;\n  counter-reset: workspace-code-line;\n}\n.thread-ui-shell .thread-graph-highlighted-code-preview .line {\n  display: block;\n  min-width: max-content;\n  padding-right: 1rem;\n  counter-increment: workspace-code-line;\n}\n.thread-ui-shell .thread-graph-highlighted-code-preview .line::before {\n  content: counter(workspace-code-line);\n  display: inline-block;\n  width: 3.5rem;\n  margin-right: 1rem;\n  border-right: 1px solid var(--theme-border);\n  padding-right: 0.75rem;\n  color: var(--theme-fg-muted);\n  text-align: right;\n  user-select: none;\n}\n.thread-ui-shell .thread-graph-plain-code-preview {\n  min-height: 100%;\n  margin: 0;\n  padding: 1rem;\n  background: transparent;\n  color: var(--theme-fg);\n  white-space: pre;\n}\n.thread-ui-shell .thread-graph-code-line {\n  display: block;\n  min-width: max-content;\n}\n.thread-ui-shell .thread-graph-code-line-number {\n  display: inline-block;\n  width: 2.5rem;\n  margin-right: 1rem;\n  border-right: 1px solid var(--theme-border);\n  padding-right: 0.75rem;\n  color: var(--theme-fg-muted);\n  text-align: right;\n  user-select: none;\n}\n.thread-ui-shell .thread-graph-markdown-preview {\n  background: var(--theme-bg);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-markdown-preview > * {\n  max-width: 74ch;\n  margin-inline: auto;\n}\n.thread-ui-shell .thread-graph-markdown-preview :where(h1, h2, h3, h4) {\n  margin: 1.4em 0 0.55em;\n  color: var(--theme-fg);\n  font-weight: 650;\n  line-height: 1.25;\n}\n.thread-ui-shell .thread-graph-markdown-preview :where(h1:first-child, h2:first-child, h3:first-child) {\n  margin-top: 0;\n}\n.thread-ui-shell .thread-graph-markdown-preview h1 {\n  font-size: 1.5rem;\n}\n.thread-ui-shell .thread-graph-markdown-preview h2 {\n  font-size: 1.2rem;\n}\n.thread-ui-shell .thread-graph-markdown-preview h3 {\n  font-size: 1rem;\n}\n.thread-ui-shell .thread-graph-markdown-preview :where(p, ul, ol, pre, blockquote, table) {\n  margin-bottom: 0.9rem;\n}\n.thread-ui-shell .thread-graph-markdown-preview :where(ul, ol) {\n  padding-left: 1.35rem;\n}\n.thread-ui-shell .thread-graph-markdown-preview :where(img) {\n  display: block;\n  max-width: 100%;\n  height: auto;\n  margin: 1rem auto;\n  border: 1px solid var(--theme-border);\n  border-radius: 0.375rem;\n  background: var(--theme-surface);\n}\n.thread-ui-shell .thread-graph-zoomable-image-trigger {\n  display: flex;\n  max-width: 100%;\n  max-height: 100%;\n  margin: 0 auto;\n  cursor: zoom-in;\n  align-items: center;\n  justify-content: center;\n  border: 0;\n  background: transparent;\n  padding: 0;\n}\n.thread-ui-shell .thread-graph-zoomable-image-trigger:focus-visible {\n  outline: 2px solid var(--theme-accent-ring);\n  outline-offset: 3px;\n}\n.thread-graph-image-lightbox {\n  position: fixed;\n  z-index: 120;\n  inset: 0;\n  overflow: hidden;\n  background: rgb(8 10 14 / 0.94);\n  color: rgb(241 245 249);\n}\n.thread-graph-image-lightbox-toolbar {\n  position: absolute;\n  z-index: 2;\n  top: max(0.75rem, env(safe-area-inset-top));\n  right: max(0.75rem, env(safe-area-inset-right));\n  display: flex;\n  height: 2.5rem;\n  align-items: center;\n  gap: 0.25rem;\n  border: 1px solid rgb(148 163 184 / 0.3);\n  border-radius: 0.5rem;\n  background: rgb(24 28 36 / 0.96);\n  padding: 0.25rem;\n  box-shadow: 0 12px 32px rgb(0 0 0 / 0.32);\n}\n.thread-graph-image-lightbox-toolbar button {\n  display: inline-flex;\n  width: 2rem;\n  height: 2rem;\n  align-items: center;\n  justify-content: center;\n  border: 0;\n  border-radius: 0.375rem;\n  background: transparent;\n  color: rgb(226 232 240);\n  transition: background-color 160ms ease-out, color 160ms ease-out;\n}\n.thread-graph-image-lightbox-toolbar button:hover:not(:disabled),\n.thread-graph-image-lightbox-toolbar button:focus-visible {\n  background: rgb(71 85 105 / 0.62);\n  color: rgb(248 250 252);\n  outline: none;\n}\n.thread-graph-image-lightbox-toolbar button:disabled {\n  cursor: not-allowed;\n  opacity: 0.35;\n}\n.thread-graph-image-lightbox-toolbar .thread-graph-image-lightbox-scale {\n  width: 4.75rem;\n  gap: 0.35rem;\n  font-variant-numeric: tabular-nums;\n  font-size: 0.75rem;\n}\n.thread-graph-image-lightbox-divider {\n  width: 1px;\n  height: 1.25rem;\n  margin: 0 0.125rem;\n  background: rgb(148 163 184 / 0.3);\n}\n.thread-graph-image-lightbox-viewport {\n  display: flex;\n  width: 100%;\n  height: 100%;\n  touch-action: none;\n  align-items: center;\n  justify-content: center;\n  overflow: hidden;\n  padding: max(4rem, calc(env(safe-area-inset-top) + 3.5rem)) 1rem max(1rem, env(safe-area-inset-bottom));\n}\n.thread-graph-image-lightbox-viewport img {\n  max-width: 100%;\n  max-height: 100%;\n  cursor: grab;\n  object-fit: contain;\n  user-select: none;\n  will-change: transform;\n}\n.thread-graph-image-lightbox-viewport img.is-dragging {\n  cursor: grabbing;\n}\n.thread-ui-shell .thread-graph-markdown-preview :where(pre) {\n  overflow-x: auto;\n  border: 1px solid var(--theme-border);\n  border-radius: 0.375rem;\n  background: var(--theme-surface-strong);\n  padding: 0.85rem;\n}\n.thread-ui-shell .thread-graph-markdown-preview :where(code) {\n  font-family:\n    ui-monospace,\n    SFMono-Regular,\n    Menlo,\n    Monaco,\n    Consolas,\n    "Liberation Mono",\n    monospace;\n  font-size: 0.84em;\n}\n.thread-ui-shell .thread-graph-markdown-preview :where(:not(pre) > code) {\n  border-radius: 0.25rem;\n  background: var(--theme-surface-strong);\n  padding: 0.12rem 0.3rem;\n}\n.thread-ui-shell .thread-graph-markdown-preview :where(blockquote) {\n  border-left: 1px solid var(--theme-border-strong);\n  padding-left: 0.85rem;\n  color: var(--theme-fg-soft);\n}\n.thread-ui-shell .thread-graph-markdown-preview :where(table) {\n  display: block;\n  width: 100%;\n  overflow-x: auto;\n  border-collapse: collapse;\n}\n.thread-ui-shell .thread-graph-markdown-preview :where(th, td) {\n  border: 1px solid var(--theme-border);\n  padding: 0.45rem 0.6rem;\n  text-align: left;\n}\n.thread-ui-shell .thread-graph-markdown-view-switch {\n  border-color: var(--theme-border);\n  background: var(--theme-surface-strong);\n}\n.thread-ui-shell .thread-graph-markdown-view-switch button {\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-graph-markdown-view-switch button:hover,\n.thread-ui-shell .thread-graph-markdown-view-switch button:focus-visible {\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-markdown-view-switch button.is-active {\n  background: var(--theme-panel);\n  color: var(--theme-fg);\n  box-shadow: 0 1px 2px color-mix(in oklch, var(--theme-bg) 22%, transparent);\n}\n.thread-ui-shell .thread-tool-call {\n  background: var(--theme-panel);\n  color: var(--theme-fg);\n  overflow: hidden;\n}\n.thread-ui-shell .thread-tool-call:hover {\n  border-color: var(--theme-border-strong);\n}\n.thread-ui-shell .thread-graph-tool-call {\n  font-family:\n    Inter,\n    ui-sans-serif,\n    system-ui,\n    -apple-system,\n    BlinkMacSystemFont,\n    "Segoe UI",\n    sans-serif;\n}\n.thread-ui-shell .thread-graph-tool-call,\n.thread-ui-shell .thread-graph-tool-accordion,\n.thread-ui-shell .thread-graph-tool-trigger,\n.thread-ui-shell .thread-graph-tool-content,\n.thread-ui-shell .thread-graph-tool-json,\n.thread-ui-shell .thread-graph-tool-output {\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-tool-accordion {\n  overflow: hidden;\n  border: 1px solid var(--theme-border);\n  border-radius: 0.5rem;\n  background: var(--theme-panel);\n  box-shadow: 0 1px 2px color-mix(in oklch, var(--theme-bg) 65%, transparent);\n}\n.thread-ui-shell .thread-graph-tool-trigger {\n  display: flex;\n  width: 100%;\n  min-width: 0;\n  align-items: center;\n  justify-content: space-between;\n  gap: 0.75rem;\n  border: 0;\n  background: var(--theme-panel);\n  text-align: left;\n  transition: background 160ms ease, color 160ms ease;\n}\n.thread-ui-shell .thread-graph-tool-trigger:hover {\n  background: var(--theme-hover);\n}\n.thread-ui-shell .thread-graph-tool-trigger svg {\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-graph-tool-trigger > svg {\n  margin-left: auto;\n}\n.thread-ui-shell .thread-graph-tool-badge {\n  display: inline-flex;\n  min-height: 1.35rem;\n  shrink: 0;\n  align-items: center;\n  gap: 0.25rem;\n  border: 1px solid transparent;\n  border-radius: 999px;\n  padding: 0.1rem 0.5rem;\n  font-size: 0.75rem;\n  font-weight: 400;\n  line-height: 1rem;\n}\n.thread-ui-shell .thread-graph-tool-badge.is-completed {\n  background: oklch(0.94 0.052 155);\n  color: oklch(0.43 0.095 155);\n}\n.thread-ui-shell .thread-graph-tool-badge.is-failed {\n  background: oklch(0.94 0.04 25);\n  color: oklch(0.48 0.125 24);\n}\n.thread-ui-shell .thread-graph-tool-badge.is-pending {\n  background: oklch(0.94 0.03 235);\n  color: oklch(0.43 0.09 242);\n}\n.thread-ui-shell .thread-graph-tool-badge.is-neutral {\n  background: var(--theme-muted);\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-tool-badge.is-completed,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-tool-badge.is-completed,\n.thread-ui-shell.dark .thread-graph-tool-badge.is-completed {\n  background: oklch(0.31 0.05 155);\n  color: oklch(0.8 0.115 155);\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-tool-badge.is-failed,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-tool-badge.is-failed,\n.thread-ui-shell.dark .thread-graph-tool-badge.is-failed {\n  background: oklch(0.31 0.052 25);\n  color: oklch(0.78 0.12 25);\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-tool-badge.is-pending,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-tool-badge.is-pending,\n.thread-ui-shell.dark .thread-graph-tool-badge.is-pending {\n  background: oklch(0.3 0.042 235);\n  color: oklch(0.77 0.1 235);\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-tool-badge.is-neutral,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-tool-badge.is-neutral,\n.thread-ui-shell.dark .thread-graph-tool-badge.is-neutral {\n  background: #222733;\n  color: rgb(148 163 184);\n}\n.thread-ui-shell .thread-graph-tool-content {\n  display: grid;\n  gap: 0.75rem;\n  border-top: 0;\n  background: var(--theme-panel);\n}\n.thread-ui-shell .thread-graph-tool-content h4 {\n  margin: 0.25rem 0 0.5rem;\n  color: var(--theme-fg-muted);\n  font-size: 0.625rem;\n  font-weight: 700;\n  letter-spacing: 0.08em;\n  line-height: 1rem;\n  text-transform: uppercase;\n}\n.thread-ui-shell .thread-graph-tool-json,\n.thread-ui-shell .thread-graph-tool-output {\n  overflow-x: auto;\n  border: 1px solid var(--theme-border);\n  border-radius: 0.375rem;\n  background: var(--theme-surface-strong);\n  padding: 0.75rem;\n  font-family:\n    ui-monospace,\n    SFMono-Regular,\n    Menlo,\n    Monaco,\n    Consolas,\n    "Liberation Mono",\n    monospace;\n  font-size: 0.78rem;\n  line-height: 1.55;\n  white-space: pre-wrap;\n}\n.thread-ui-shell .thread-graph-tool-json > div {\n  padding-left: 1rem;\n}\n.thread-ui-shell .thread-graph-tool-output {\n  margin-top: 0.5rem;\n}\n.thread-ui-shell .thread-graph-tool-key {\n  color: oklch(0.58 0.18 18);\n}\n.thread-ui-shell .thread-graph-tool-string {\n  color: oklch(0.52 0.12 155);\n}\n.thread-ui-shell .thread-graph-tool-number {\n  color: oklch(0.55 0.13 235);\n}\n.thread-ui-shell .thread-graph-tool-boolean {\n  color: oklch(0.56 0.13 302);\n}\n.thread-ui-shell .thread-graph-tool-null,\n.thread-ui-shell .thread-graph-tool-punctuation,\n.thread-ui-shell .thread-graph-tool-object {\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-graph-history-tool {\n  width: 100%;\n  min-width: 0;\n  border: 0;\n  background: transparent !important;\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-history-tool-accordion {\n  background: var(--theme-panel);\n}\n.thread-ui-shell .thread-graph-history-tool-trigger {\n  min-height: 2.75rem;\n}\n.thread-ui-shell .thread-graph-history-tool-trigger > div:first-child {\n  min-width: 0;\n}\n.thread-ui-shell .thread-graph-history-tool-icon {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-graph-history-tool.is-command .thread-graph-history-tool-icon {\n  color: oklch(0.63 0.12 75);\n}\n.thread-ui-shell .thread-graph-history-tool.is-tool .thread-graph-history-tool-icon {\n  color: oklch(0.61 0.12 315);\n}\n.thread-ui-shell .thread-graph-history-tool.is-agent .thread-graph-history-tool-icon {\n  color: oklch(0.58 0.11 170);\n}\n.thread-ui-shell .thread-graph-history-tool.is-skill .thread-graph-history-tool-icon {\n  color: oklch(0.58 0.12 285);\n}\n.thread-ui-shell .thread-graph-history-tool.is-search .thread-graph-history-tool-icon {\n  color: oklch(0.58 0.12 235);\n}\n.thread-ui-shell .thread-graph-history-tool.is-file-read .thread-graph-history-tool-icon {\n  color: oklch(0.58 0.1 205);\n}\n.thread-ui-shell .thread-graph-history-tool-summary {\n  display: flex;\n  min-width: 0;\n  align-items: center;\n  gap: 0.5rem;\n  overflow: hidden;\n  border: 1px solid var(--theme-border);\n  border-radius: 0.375rem;\n  background: var(--theme-surface-strong);\n  padding: 0.65rem 0.75rem;\n  color: var(--theme-fg-soft);\n  font-size: 0.875rem;\n  line-height: 1.5;\n}\n.thread-ui-shell .thread-graph-history-tool-summary > span:first-child {\n  min-width: 0;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n.thread-ui-shell .thread-graph-history-tool-ellipsis {\n  flex: 0 0 auto;\n  color: var(--theme-fg-muted);\n  font-size: 0.75rem;\n  letter-spacing: 0.16em;\n}\n.thread-ui-shell .thread-graph-history-tool-open {\n  border-color: var(--theme-border);\n  background: var(--theme-surface);\n  color: var(--theme-fg-soft);\n}\n.thread-ui-shell .thread-graph-history-tool-open:hover {\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-history-event {\n  display: flex;\n  min-width: 0;\n  width: 100%;\n  align-items: flex-start;\n  gap: 0.625rem;\n  border: 0;\n  background: transparent !important;\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-history-event-icon {\n  display: inline-flex;\n  height: 1.75rem;\n  width: 1.75rem;\n  flex: 0 0 auto;\n  align-items: center;\n  justify-content: center;\n  border: 1px solid var(--theme-border);\n  border-radius: 999px;\n  background: var(--theme-panel);\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-graph-history-event-card {\n  min-width: 0;\n  flex: 1 1 auto;\n  overflow: hidden;\n  border: 1px solid var(--theme-border);\n  border-radius: 0.5rem;\n  background: var(--theme-panel);\n  color: var(--theme-fg);\n  box-shadow: 0 1px 2px color-mix(in oklch, var(--theme-bg) 65%, transparent);\n}\n.thread-ui-shell .thread-graph-history-event-header {\n  display: flex;\n  min-width: 0;\n  align-items: center;\n  justify-content: space-between;\n  gap: 0.75rem;\n  padding: 0.75rem 1rem;\n}\n.thread-ui-shell .thread-graph-history-event-heading {\n  flex: 1 1 auto;\n  min-width: 0;\n}\n.thread-ui-shell .thread-graph-history-event-title {\n  flex: 0 0 auto;\n  max-width: min(14rem, 36%);\n}\n.thread-ui-shell .thread-graph-history-event-actions {\n  display: inline-flex;\n  flex: 0 0 auto;\n  align-items: center;\n  gap: 0.5rem;\n}\n.thread-ui-shell .thread-graph-history-event-body {\n  display: grid;\n  gap: 0.625rem;\n  border-top: 1px solid var(--theme-border);\n  padding: 0.75rem 1rem 1rem;\n  color: var(--theme-fg-soft);\n}\n.thread-ui-shell .thread-graph-history-event-line {\n  display: flex;\n  min-width: 0;\n  align-items: center;\n  gap: 0.5rem;\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-history-event-primary {\n  min-width: 0;\n  color: var(--theme-fg);\n  font-size: 0.875rem;\n  font-weight: 500;\n  line-height: 1.5;\n}\n.thread-ui-shell .thread-graph-history-event-secondary {\n  min-width: 0;\n  color: var(--theme-fg-muted);\n  font-size: 0.75rem;\n  line-height: 1.35;\n}\n.thread-ui-shell .thread-graph-history-event-summary {\n  display: block;\n  width: 100%;\n  min-width: 0;\n  overflow: hidden;\n  border: 1px solid var(--theme-border);\n  border-radius: 0.375rem;\n  background: var(--theme-surface-strong);\n  padding: 0.65rem 0.75rem;\n  color: var(--theme-fg-soft);\n  font-size: 0.875rem;\n  line-height: 1.5;\n  text-align: left;\n}\n.thread-ui-shell .thread-graph-history-event-summary.is-clickable {\n  transition: background 160ms ease, color 160ms ease;\n}\n.thread-ui-shell .thread-graph-history-event-summary.is-clickable:hover {\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-history-event-prose {\n  color: var(--theme-fg-soft);\n}\n.thread-ui-shell .thread-graph-history-event-pre {\n  overflow-x: auto;\n  border: 1px solid var(--theme-border);\n  border-radius: 0.375rem;\n  background: var(--theme-surface-strong);\n  padding: 0.75rem;\n  color: var(--theme-fg-soft);\n  font-size: 0.8125rem;\n  line-height: 1.55;\n  white-space: pre-wrap;\n}\n.thread-ui-shell .thread-graph-history-event-action,\n.thread-ui-shell .thread-graph-history-event-pill {\n  display: inline-flex;\n  align-items: center;\n  gap: 0.375rem;\n  border: 1px solid var(--theme-border);\n  border-radius: 999px;\n  background: var(--theme-surface);\n  padding: 0.25rem 0.55rem;\n  color: var(--theme-fg-muted);\n  font-size: 0.6875rem;\n  font-weight: 500;\n  line-height: 1rem;\n  transition: background 160ms ease, color 160ms ease;\n}\n.thread-ui-shell .thread-graph-history-event-action:hover {\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-history-event-path {\n  display: block;\n  max-width: 100%;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  color: var(--theme-fg-muted);\n  font-size: 0.75rem;\n  line-height: 1.4;\n  text-align: left;\n}\n.thread-ui-shell .thread-graph-history-event-path:hover {\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-history-event-image {\n  max-height: 24rem;\n  width: 100%;\n  object-fit: contain;\n  border: 1px solid var(--theme-border);\n  border-radius: 0.5rem;\n  background: var(--theme-surface-strong);\n}\n.thread-ui-shell .thread-graph-history-event.is-plan .thread-graph-history-event-icon {\n  color: oklch(0.58 0.12 235);\n}\n.thread-ui-shell .thread-graph-history-event.is-context .thread-graph-history-event-icon {\n  color: oklch(0.58 0.11 170);\n}\n.thread-ui-shell .thread-graph-history-event.is-image .thread-graph-history-event-icon,\n.thread-ui-shell .thread-graph-history-event.is-artifact .thread-graph-history-event-icon {\n  color: oklch(0.58 0.12 285);\n}\n.thread-ui-shell .thread-graph-history-event.is-file-change .thread-graph-history-event-icon {\n  color: oklch(0.62 0.12 145);\n}\n.thread-ui-shell .thread-graph-history-event.is-hook .thread-graph-history-event-icon {\n  color: oklch(0.61 0.12 315);\n}\n@media (max-width: 639px) {\n  .thread-ui-shell .thread-graph-history-event {\n    gap: 0.5rem;\n  }\n  .thread-ui-shell .thread-graph-history-event-icon {\n    height: 1.5rem;\n    width: 1.5rem;\n  }\n  .thread-ui-shell .thread-graph-history-event-header,\n  .thread-ui-shell .thread-graph-history-event-body {\n    padding-left: 0.75rem;\n    padding-right: 0.75rem;\n  }\n}\n.thread-ui-shell .thread-graph-history-detail-row {\n  border-color: var(--theme-border);\n  background: var(--theme-surface);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-history-detail-row:hover {\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-history-detail-text {\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-event-file-change .thread-graph-history-event-card {\n  border-radius: 0.4375rem;\n}\n.thread-ui-shell .thread-graph-event-file-change .thread-graph-history-event-header {\n  min-height: 2.75rem;\n  padding-block: 0.5rem;\n}\n.thread-ui-shell .thread-graph-event-file-change .thread-graph-history-event-heading {\n  flex: 1 1 auto;\n  min-width: 0;\n  gap: 0.375rem;\n}\n.thread-ui-shell .thread-graph-event-file-change .thread-graph-history-event-title {\n  max-width: none;\n  font-size: 0.8125rem;\n}\n.thread-ui-shell .thread-graph-file-change-inline,\n.thread-ui-shell .thread-graph-file-change-inline-button {\n  min-width: 0;\n}\n.thread-ui-shell .thread-graph-file-change-inline {\n  max-width: 100%;\n  gap: 0.375rem;\n}\n.thread-ui-shell .thread-graph-file-change-inline-button {\n  display: block;\n  flex: 1 1 auto;\n  color: inherit;\n}\n.thread-ui-shell .thread-graph-file-change-inline-button:hover .thread-graph-history-detail-text {\n  color: var(--theme-fg);\n  text-decoration: underline;\n  text-decoration-thickness: 1px;\n  text-underline-offset: 2px;\n}\n.thread-ui-shell .thread-graph-history-detail-meta {\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-graph-history-delta-badge {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  border: 1px solid transparent;\n  border-radius: 999px;\n  padding: 0.125rem 0.375rem;\n  font-size: 0.6875rem;\n  font-weight: 500;\n  line-height: 1rem;\n}\n.thread-ui-shell .thread-graph-history-delta-badge.is-add {\n  border-color: rgb(52 211 153 / 0.28);\n  background: rgb(52 211 153 / 0.1);\n  color: rgb(167 243 208);\n}\n.thread-ui-shell .thread-graph-history-delta-badge.is-remove {\n  border-color: rgb(251 113 133 / 0.3);\n  background: rgb(251 113 133 / 0.1);\n  color: rgb(254 205 211);\n}\n.thread-ui-shell .thread-graph-history-delta-badge.is-neutral {\n  border-color: var(--theme-border);\n  background: var(--theme-muted);\n  color: var(--theme-fg-soft);\n}\n.thread-ui-shell[data-theme-effective=light] .thread-graph-history-delta-badge.is-add {\n  border-color: rgb(16 185 129 / 0.25);\n  background: rgb(16 185 129 / 0.1);\n  color: rgb(4 120 87);\n}\n.thread-ui-shell[data-theme-effective=light] .thread-graph-history-delta-badge.is-remove {\n  border-color: rgb(244 63 94 / 0.25);\n  background: rgb(244 63 94 / 0.1);\n  color: rgb(190 18 60);\n}\n@media (max-width: 639px) {\n  .thread-ui-shell .thread-graph-history-tool-trigger {\n    padding-left: 0.75rem;\n    padding-right: 0.75rem;\n  }\n  .thread-ui-shell .thread-graph-history-tool-trigger .thread-graph-tool-badge {\n    max-width: 7.5rem;\n  }\n  .thread-ui-shell .thread-graph-history-tool-content {\n    padding-left: 0.75rem;\n    padding-right: 0.75rem;\n  }\n}\n.thread-ui-shell .xyz-viewer-plugin {\n  border-color: var(--theme-border);\n  border-radius: 0;\n  background: var(--theme-surface);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .xyz-viewer-plugin__header,\n.thread-ui-shell .xyz-viewer-plugin__toolbar,\n.thread-ui-shell .xyz-viewer-plugin__timeline,\n.thread-ui-shell .xyz-viewer-plugin__status {\n  border-color: var(--theme-border);\n  background: var(--theme-surface);\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .xyz-viewer-plugin__header h2 {\n  color: var(--theme-fg);\n}\n.thread-ui-shell .xyz-viewer-plugin__header p,\n.thread-ui-shell .xyz-viewer-plugin__header span,\n.thread-ui-shell .xyz-viewer-plugin__tooltip span {\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .xyz-viewer-plugin__toolbar button,\n.thread-ui-shell .xyz-viewer-plugin__timeline button {\n  border-color: var(--theme-border);\n  background: var(--theme-surface-strong);\n  color: var(--theme-fg-soft);\n}\n.thread-ui-shell .xyz-viewer-plugin__toolbar button:hover,\n.thread-ui-shell .xyz-viewer-plugin__timeline button:hover {\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .xyz-viewer-plugin__toolbar-divider {\n  background: var(--theme-border);\n}\n.thread-ui-shell .xyz-viewer-plugin__stage {\n  background: var(--theme-bg);\n}\n.thread-ui-shell .xyz-viewer-plugin__tooltip {\n  border-color: var(--theme-border);\n  background: color-mix(in oklch, var(--theme-panel) 96%, transparent);\n  box-shadow: var(--theme-shadow);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .xyz-viewer-plugin__empty {\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .xyz-viewer-plugin__error {\n  background: color-mix(in oklch, oklch(0.62 0.16 25) 14%, var(--theme-panel));\n  color: oklch(0.78 0.12 25);\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-tool-key,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-tool-key,\n.thread-ui-shell.dark .thread-graph-tool-key {\n  color: oklch(0.78 0.12 18);\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-tool-string,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-tool-string,\n.thread-ui-shell.dark .thread-graph-tool-string {\n  color: oklch(0.79 0.11 155);\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-tool-number,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-tool-number,\n.thread-ui-shell.dark .thread-graph-tool-number {\n  color: oklch(0.77 0.1 235);\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-tool-boolean,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-tool-boolean,\n.thread-ui-shell.dark .thread-graph-tool-boolean {\n  color: oklch(0.79 0.1 302);\n}\n.thread-ui-shell .thread-timeline-surface,\n.thread-ui-shell .thread-scroll-container {\n  background: var(--theme-surface);\n  color: var(--theme-fg);\n  scrollbar-color: var(--theme-border-strong) transparent;\n}\n.thread-ui-shell .thread-scroll-container > div > .divide-y {\n  border-color: var(--theme-border);\n}\n.thread-ui-shell .timeline-item-frame {\n  border-color: var(--theme-border);\n  background: var(--theme-panel);\n  color: var(--theme-fg);\n  box-shadow: none;\n}\n.thread-ui-shell .timeline-agent {\n  border-color: transparent;\n  background: transparent;\n  box-shadow: none;\n}\n.thread-ui-shell .timeline-user {\n  border-color: transparent;\n  background: oklch(0.94 0.025 214);\n  color: oklch(0.24 0.027 255);\n}\n.thread-ui-shell.thread-ui-theme-dark .timeline-user,\n.thread-ui-shell[data-theme-effective=dark] .timeline-user,\n.thread-ui-shell.dark .timeline-user {\n  background: oklch(0.29 0.034 224);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .timeline-command,\n.thread-ui-shell .timeline-agent-tool,\n.thread-ui-shell .timeline-skill-tool,\n.thread-ui-shell .timeline-action,\n.thread-ui-shell .timeline-file-change,\n.thread-ui-shell .timeline-file-read,\n.thread-ui-shell .timeline-search,\n.thread-ui-shell .timeline-plan,\n.thread-ui-shell .timeline-reasoning,\n.thread-ui-shell .timeline-other,\n.thread-ui-shell .timeline-special-warning,\n.thread-ui-shell .timeline-special-info,\n.thread-ui-shell .timeline-special-file-read,\n.thread-ui-shell .timeline-special-success,\n.thread-ui-shell .timeline-mobile-dense-event,\n.thread-ui-shell .timeline-batch-inner,\n.thread-ui-shell .timeline-item-inner {\n  border-color: var(--theme-border);\n  background: var(--theme-panel);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .timeline-special-warning,\n.thread-ui-shell .timeline-special-info,\n.thread-ui-shell .timeline-special-file-read,\n.thread-ui-shell .timeline-special-success {\n  box-shadow: none;\n}\n.thread-ui-shell .timeline-mobile-dense-command,\n.thread-ui-shell .timeline-mobile-dense-search,\n.thread-ui-shell .timeline-mobile-dense-file-read,\n.thread-ui-shell .timeline-mobile-dense-file {\n  background: var(--theme-panel);\n}\n.thread-ui-shell :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(.border-stone-700, .border-stone-700\\/90, .border-stone-800, .border-stone-800\\/80) {\n  border-color: var(--theme-border) !important;\n}\n.thread-ui-shell :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(.bg-stone-800, .bg-stone-900, .bg-stone-900\\/60, .bg-stone-900\\/72, .bg-stone-900\\/80, .bg-stone-950, .bg-stone-950\\/35, .bg-stone-950\\/40, .bg-stone-950\\/60, .bg-stone-950\\/70, .bg-stone-950\\/90, .bg-stone-950\\/96) {\n  background: var(--theme-surface-strong) !important;\n}\n.thread-ui-shell :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(.text-stone-100, .text-stone-200, .text-stone-300, .text-sky-50, .text-sky-100, .text-emerald-50, .text-emerald-100, .text-amber-100) {\n  color: var(--theme-fg) !important;\n}\n.thread-ui-shell :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(.text-stone-400, .text-stone-500) {\n  color: var(--theme-fg-muted) !important;\n}\n.thread-ui-shell .timeline-kind-agent,\n.thread-ui-shell .timeline-kind-user,\n.thread-ui-shell .timeline-kind-command,\n.thread-ui-shell .timeline-kind-search,\n.thread-ui-shell .timeline-kind-file-read,\n.thread-ui-shell .timeline-kind-reasoning,\n.thread-ui-shell .timeline-kind-agent-tool,\n.thread-ui-shell .timeline-kind-skill-tool,\n.thread-ui-shell .timeline-kind-action,\n.thread-ui-shell .timeline-kind-plan,\n.thread-ui-shell .timeline-kind-file {\n  border-left-width: 1px;\n}\n.thread-ui-shell .timeline-primary-text,\n.thread-ui-shell .timeline-message-content,\n.thread-ui-shell .timeline-mobile-bubble-content,\n.thread-ui-shell .thread-message-prose,\n.thread-ui-shell .thread-message-prose :where(p, li, span, div, strong, em, code) {\n  color: var(--theme-fg);\n}\n.thread-ui-shell .timeline-user .thread-message-prose,\n.thread-ui-shell .timeline-user .thread-message-prose :where(p, li, span, div, strong, em, code) {\n  color: oklch(0.24 0.027 255);\n}\n.thread-ui-shell.thread-ui-theme-dark .timeline-user .thread-message-prose,\n.thread-ui-shell[data-theme-effective=dark] .timeline-user .thread-message-prose,\n.thread-ui-shell.dark .timeline-user .thread-message-prose,\n.thread-ui-shell.thread-ui-theme-dark .timeline-user .thread-message-prose :where(p, li, span, div, strong, em, code),\n.thread-ui-shell[data-theme-effective=dark] .timeline-user .thread-message-prose :where(p, li, span, div, strong, em, code),\n.thread-ui-shell.dark .timeline-user .thread-message-prose :where(p, li, span, div, strong, em, code) {\n  color: var(--theme-fg);\n}\n.thread-ui-shell .timeline-agent .thread-message-prose,\n.thread-ui-shell .timeline-agent .thread-message-prose :where(p, li, span, div, strong, em, code) {\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-message {\n  width: 100%;\n  min-width: 0;\n}\n.thread-ui-shell .thread-graph-message-bubble {\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-message-bubble.is-user {\n  width: 100%;\n  max-width: 100%;\n  border-radius: 0.75rem;\n  background: #eef5f9;\n  padding: 0.5rem 0.75rem;\n  color: rgb(15 23 42);\n}\n.thread-ui-shell .thread-graph-message-bubble.is-assistant {\n  width: 100%;\n  border: 0;\n  background: transparent;\n  padding: 0;\n  box-shadow: none;\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-message-bubble.is-user,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-message-bubble.is-user,\n.thread-ui-shell.dark .thread-graph-message-bubble.is-user {\n  background: #212b35;\n  color: rgb(241 245 249);\n}\n.thread-ui-shell .thread-graph-message-content.is-user,\n.thread-ui-shell .thread-graph-message-content.is-user .thread-message-prose,\n.thread-ui-shell .thread-graph-message-content.is-user .thread-graph-message-prose,\n.thread-ui-shell .thread-graph-message-content.is-user .thread-graph-markdown,\n.thread-ui-shell .thread-graph-message-content.is-user .thread-graph-plain-text,\n.thread-ui-shell .thread-graph-message-content.is-user .thread-message-prose :where(p, li, span, div, strong, em, code),\n.thread-ui-shell .thread-graph-message-content.is-user .thread-graph-message-prose :where(p, li, span, div, strong, em, code),\n.thread-ui-shell .thread-graph-message-content.is-user .thread-graph-markdown :where(p, li, span, div, strong, em, code) {\n  color: rgb(51 65 85);\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-message-content.is-user,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-message-content.is-user,\n.thread-ui-shell.dark .thread-graph-message-content.is-user,\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-message-content.is-user .thread-message-prose,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-message-content.is-user .thread-message-prose,\n.thread-ui-shell.dark .thread-graph-message-content.is-user .thread-message-prose,\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-message-content.is-user .thread-graph-message-prose,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-message-content.is-user .thread-graph-message-prose,\n.thread-ui-shell.dark .thread-graph-message-content.is-user .thread-graph-message-prose,\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-message-content.is-user .thread-graph-markdown,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-message-content.is-user .thread-graph-markdown,\n.thread-ui-shell.dark .thread-graph-message-content.is-user .thread-graph-markdown,\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-message-content.is-user .thread-graph-plain-text,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-message-content.is-user .thread-graph-plain-text,\n.thread-ui-shell.dark .thread-graph-message-content.is-user .thread-graph-plain-text,\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-message-content.is-user .thread-message-prose :where(p, li, span, div, strong, em, code),\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-message-content.is-user .thread-message-prose :where(p, li, span, div, strong, em, code),\n.thread-ui-shell.dark .thread-graph-message-content.is-user .thread-message-prose :where(p, li, span, div, strong, em, code),\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-message-content.is-user .thread-graph-message-prose :where(p, li, span, div, strong, em, code),\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-message-content.is-user .thread-graph-message-prose :where(p, li, span, div, strong, em, code),\n.thread-ui-shell.dark .thread-graph-message-content.is-user .thread-graph-message-prose :where(p, li, span, div, strong, em, code),\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-message-content.is-user .thread-graph-markdown :where(p, li, span, div, strong, em, code),\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-message-content.is-user .thread-graph-markdown :where(p, li, span, div, strong, em, code),\n.thread-ui-shell.dark .thread-graph-message-content.is-user .thread-graph-markdown :where(p, li, span, div, strong, em, code) {\n  color: rgb(226 232 240);\n}\n.thread-ui-shell .thread-graph-message-content.is-assistant,\n.thread-ui-shell .thread-graph-message-content.is-assistant .thread-graph-message-prose,\n.thread-ui-shell .thread-graph-message-content.is-assistant .thread-graph-markdown,\n.thread-ui-shell .thread-graph-message-content.is-assistant .thread-graph-plain-text,\n.thread-ui-shell .thread-graph-message-content.is-assistant .thread-graph-message-prose :where(p, li, span, div, strong, em, code) {\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-message-prose,\n.thread-ui-shell .thread-graph-markdown,\n.thread-ui-shell .thread-graph-plain-text {\n  color: inherit;\n}\n.thread-ui-shell .thread-graph-markdown {\n  max-width: none;\n  font-size: 0.875rem;\n  line-height: 1.7;\n}\n.thread-ui-shell .thread-graph-message-markdown {\n  color: inherit;\n  word-break: break-word;\n}\n.thread-ui-shell .thread-graph-show-more {\n  min-height: 1.25rem;\n  border-color: var(--theme-border);\n  background: color-mix(in oklch, var(--theme-panel) 72%, transparent);\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-graph-show-more:hover,\n.thread-ui-shell .thread-graph-show-more:focus-visible {\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-markdown :where(p, ul, ol, pre, blockquote, table, hr) {\n  margin-bottom: 0.75rem;\n}\n.thread-ui-shell .thread-graph-markdown :where(p:last-child, ul:last-child, ol:last-child, pre:last-child, blockquote:last-child, table:last-child, hr:last-child) {\n  margin-bottom: 0;\n}\n.thread-ui-shell .thread-graph-markdown :where(a) {\n  color: rgb(3 105 161);\n  text-decoration: underline;\n  text-underline-offset: 2px;\n}\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-markdown :where(a),\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-markdown :where(a),\n.thread-ui-shell.dark .thread-graph-markdown :where(a) {\n  color: rgb(125 211 252);\n}\n.thread-ui-shell .thread-graph-markdown :where(blockquote) {\n  border-left: 3px solid var(--theme-border-strong);\n  padding-left: 0.85rem;\n  color: var(--theme-fg-soft);\n}\n.thread-ui-shell .thread-graph-markdown :where(ul, ol) {\n  padding-left: 1.25rem;\n}\n.thread-ui-shell .thread-graph-markdown :where(li) {\n  margin-top: 0.25rem;\n}\n.thread-ui-shell .thread-graph-markdown :where(table) {\n  display: block;\n  width: 100%;\n  overflow-x: auto;\n  border-collapse: collapse;\n}\n.thread-ui-shell .thread-graph-markdown :where(th, td) {\n  border: 1px solid var(--theme-border);\n  padding: 0.4rem 0.55rem;\n  text-align: left;\n}\n.thread-ui-shell .thread-graph-markdown :where(th) {\n  background: var(--theme-surface-strong);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-code-block {\n  border-color: rgb(226 232 240);\n  background: rgb(248 250 252);\n  color: rgb(31 41 55);\n}\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-code-block,\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-code-block,\n.thread-ui-shell.dark .thread-graph-code-block {\n  border-color: #303642;\n  background: #11141a;\n  color: rgb(241 245 249);\n}\n.thread-ui-shell .thread-graph-code-block pre,\n.thread-ui-shell .thread-graph-code-block code {\n  margin: 0;\n  background: transparent;\n  color: inherit;\n}\n.thread-ui-shell .thread-graph-code-copy {\n  background: rgb(255 255 255 / 0.72);\n  color: rgb(51 65 85);\n  box-shadow: 0 4px 12px rgb(15 23 42 / 0.08);\n}\n.thread-ui-shell .thread-graph-code-copy:hover {\n  background: rgb(255 255 255);\n  color: rgb(15 23 42);\n}\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-code-copy,\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-code-copy,\n.thread-ui-shell.dark .thread-graph-code-copy {\n  background: rgb(34 39 51 / 0.82);\n  color: rgb(226 232 240);\n}\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-code-copy:hover,\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-code-copy:hover,\n.thread-ui-shell.dark .thread-graph-code-copy:hover {\n  background: #2b313d;\n  color: rgb(248 250 252);\n}\n.thread-ui-shell .thread-graph-inline-code {\n  background: rgb(241 245 249);\n  color: rgb(31 41 55);\n}\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-inline-code,\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-inline-code,\n.thread-ui-shell.dark .thread-graph-inline-code {\n  background: #222733;\n  color: rgb(241 245 249);\n}\n.thread-ui-shell .thread-graph-message-sender {\n  background: oklch(0.96 0.025 155);\n  color: oklch(0.42 0.11 155);\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-message-sender,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-message-sender,\n.thread-ui-shell.dark .thread-graph-message-sender {\n  background: rgb(52 211 153 / 0.1);\n  color: rgb(110 231 183);\n}\n.thread-ui-shell .thread-graph-message-copy {\n  border-color: var(--theme-border);\n  background: var(--theme-panel);\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-graph-thinking-toggle {\n  border-color: var(--theme-border);\n  background: var(--theme-panel);\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-graph-message-copy:hover,\n.thread-ui-shell .thread-graph-thinking-toggle:hover,\n.thread-ui-shell .thread-graph-thinking-toggle.is-open {\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-message-header-actions {\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-graph-message-time {\n  color: var(--theme-fg-muted);\n  white-space: nowrap;\n}\n.thread-ui-shell .thread-graph-relative-time {\n  border: 0;\n  background: transparent;\n  color: var(--theme-fg-muted);\n  font-size: 0.625rem;\n  font-weight: 400;\n  line-height: 1;\n  white-space: nowrap;\n}\n.thread-ui-shell .thread-graph-relative-time:hover {\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-history-tool-time {\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-graph-message-status {\n  box-shadow: none;\n}\n.thread-ui-shell .thread-graph-message-status-icon {\n  align-items: center;\n  justify-content: center;\n}\n@media (max-width: 639px) {\n  .thread-ui-shell .thread-graph-message-header {\n    margin-bottom: 0.375rem;\n    flex-wrap: nowrap;\n  }\n  .thread-ui-shell .thread-graph-message-sender {\n    padding: 0.1875rem 0.5rem;\n    font-size: 0.6875rem;\n    line-height: 1rem;\n  }\n  .thread-ui-shell .thread-graph-message-header-actions {\n    gap: 0.25rem;\n  }\n  .thread-ui-shell .thread-graph-message-copy {\n    height: 1.55rem;\n    width: 1.55rem;\n    border-radius: 0.45rem;\n  }\n  .thread-ui-shell .thread-graph-message-time {\n    font-size: 0.625rem;\n  }\n  .thread-ui-shell :where(.thread-graph-message-status, .thread-graph-tool-badge) .thread-graph-status-label {\n    position: absolute;\n    width: 1px;\n    height: 1px;\n    padding: 0;\n    margin: -1px;\n    overflow: hidden;\n    clip: rect(0, 0, 0, 0);\n    white-space: nowrap;\n    border: 0;\n  }\n  .thread-ui-shell :where(.thread-graph-message-status, .thread-graph-tool-badge) {\n    min-width: 1.45rem;\n    justify-content: center;\n    padding-left: 0.25rem !important;\n    padding-right: 0.25rem !important;\n  }\n}\n@media (min-width: 640px) {\n  .thread-ui-shell .thread-graph-message-bubble.is-user {\n    padding: 0.375rem 1rem;\n  }\n}\n');
+styleInject('.thread-ui-shell .thread-graph-panel-expand-fab.left-3 {\n  left: 0.75rem;\n}\n.thread-ui-shell .thread-graph-panel-expand-fab.right-3 {\n  right: 0.75rem;\n}\n.thread-ui-shell .thread-graph-panel-expand-fab:hover {\n  transform: translateY(-50%) scale(1.04);\n}\n.thread-ui-shell .thread-graph-workspace-label,\n.thread-ui-shell .thread-graph-workspace-loading,\n.thread-ui-shell .thread-graph-workspace-empty,\n.thread-ui-shell .thread-graph-file-preview-header,\n.thread-ui-shell .thread-graph-file-preview-footer {\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-graph-file-preview-header,\n.thread-ui-shell .thread-graph-file-preview-footer {\n  border-color: var(--theme-border);\n}\n.thread-ui-shell .thread-graph-file-preview-footer,\n.thread-ui-shell .thread-graph-file-preview-frame {\n  background: var(--theme-bg);\n}\n.thread-ui-shell .thread-graph-workspace-empty {\n  border-color: var(--theme-border);\n  background: var(--theme-surface-strong);\n}\n.thread-ui-shell .thread-graph-explorer button,\n.thread-ui-shell .thread-graph-viewer button {\n  color: inherit;\n}\n.thread-ui-shell .thread-graph-tree-row {\n  --thread-graph-tree-row-background: transparent;\n  color: var(--theme-fg-soft);\n}\n.thread-ui-shell .thread-graph-tree-indent-guides span {\n  border-color: color-mix(in oklch, var(--theme-border) 72%, transparent);\n}\n.thread-ui-shell .thread-graph-editor-tabs-shell,\n.thread-ui-shell .thread-graph-editor-tabs,\n.thread-ui-shell .thread-graph-editor-breadcrumbs {\n  border-color: var(--theme-border);\n  background: var(--theme-surface-strong);\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-graph-editor-tabs {\n  scrollbar-width: thin;\n}\n.thread-ui-shell .thread-graph-editor-tab {\n  position: relative;\n  border-color: var(--theme-border);\n  background: var(--theme-surface-strong);\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-graph-editor-tab::after {\n  position: absolute;\n  inset: 0 0 auto;\n  height: 1px;\n  background: transparent;\n  content: "";\n}\n.thread-ui-shell .thread-graph-editor-tab:hover {\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-editor-tab.is-active {\n  background: var(--theme-bg);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-editor-tab.is-active::after {\n  background: var(--theme-accent-solid);\n}\n.thread-ui-shell .thread-graph-editor-tab-close {\n  color: var(--theme-fg-muted);\n  opacity: 0;\n}\n.thread-ui-shell .thread-graph-editor-tab:hover .thread-graph-editor-tab-close,\n.thread-ui-shell .thread-graph-editor-tab.is-active .thread-graph-editor-tab-close,\n.thread-ui-shell .thread-graph-editor-tab-close:focus-visible {\n  opacity: 1;\n}\n.thread-ui-shell .thread-graph-editor-tab-close:hover {\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-editor-close-confirm {\n  border-color: var(--theme-border);\n  background: color-mix(in oklch, var(--theme-accent-solid) 8%, var(--theme-surface));\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-editor-breadcrumbs {\n  background: var(--theme-bg);\n}\n.thread-ui-shell .thread-graph-editor-toolbar-button,\n.thread-ui-shell .thread-graph-editor-tabs-action button {\n  border: 0;\n  background: transparent;\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-graph-editor-toolbar-button:hover:not(:disabled),\n.thread-ui-shell .thread-graph-editor-toolbar-button:focus-visible,\n.thread-ui-shell .thread-graph-editor-tabs-action button:hover,\n.thread-ui-shell .thread-graph-editor-tabs-action button:focus-visible {\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-explorer-header .thread-graph-explorer-icon-button,\n.thread-ui-shell .thread-graph-explorer-header .thread-graph-explorer-collapse-button {\n  border-color: transparent;\n  background: transparent;\n}\n.thread-ui-shell .thread-graph-right-tab {\n  position: relative;\n  border-radius: 0;\n  background: transparent;\n}\n.thread-ui-shell .thread-graph-right-tab.is-active {\n  background: transparent;\n}\n.thread-ui-shell .thread-graph-right-tab.is-active::after {\n  position: absolute;\n  right: 0.5rem;\n  bottom: 0;\n  left: 0.5rem;\n  height: 1px;\n  background: var(--theme-accent-solid);\n  content: "";\n}\n.thread-ui-shell .thread-graph-monaco-editor {\n  background: var(--theme-bg);\n}\n.thread-ui-shell .thread-graph-explorer {\n  container-type: inline-size;\n}\n.thread-ui-shell .thread-graph-tree-row:hover {\n  --thread-graph-tree-row-background: var(--theme-hover);\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-tree-row:focus-within {\n  --thread-graph-tree-row-background: var(--theme-hover);\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-tree-row.is-selected {\n  --thread-graph-tree-row-background: color-mix( in oklch, var(--theme-accent-solid) 13%, var(--theme-panel) );\n  background: var(--thread-graph-tree-row-background);\n  color: var(--theme-fg);\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-tree-row.is-selected,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-tree-row.is-selected,\n.thread-ui-shell.dark .thread-graph-tree-row.is-selected {\n  --thread-graph-tree-row-background: color-mix( in oklch, var(--theme-accent-solid) 18%, var(--theme-panel) );\n  background: var(--thread-graph-tree-row-background);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-tree-row.is-focused {\n  outline: 1px solid color-mix(in oklch, var(--theme-accent-solid) 68%, transparent);\n  outline-offset: -1px;\n}\n.thread-ui-shell .thread-graph-tree-row.is-selected svg {\n  color: currentColor;\n}\n.thread-ui-shell .thread-graph-tree-row.is-selected .thread-graph-tree-action,\n.thread-ui-shell .thread-graph-tree-action.is-selected {\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-graph-tree-row.is-selected .thread-graph-tree-action:hover,\n.thread-ui-shell .thread-graph-tree-action.is-selected:hover {\n  background: color-mix(in oklch, var(--theme-accent-solid) 12%, transparent);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-tree-action {\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-graph-tree-actions {\n  z-index: 1;\n  background: var(--thread-graph-tree-row-background);\n  opacity: 0;\n  pointer-events: none;\n  transition: opacity 160ms cubic-bezier(0.16, 1, 0.3, 1);\n}\n.thread-ui-shell .thread-graph-tree-row:hover .thread-graph-tree-actions,\n.thread-ui-shell .thread-graph-tree-row:focus-within .thread-graph-tree-actions {\n  opacity: 1;\n  pointer-events: auto;\n}\n.thread-ui-shell .thread-graph-tree-action:hover {\n  background: var(--theme-surface-strong);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-explorer-filter-mode button {\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-graph-explorer-filter-mode button:hover,\n.thread-ui-shell .thread-graph-explorer-filter-mode button:focus-visible {\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-explorer-filter-mode button.is-active {\n  background: var(--theme-panel);\n  color: var(--theme-fg);\n  box-shadow: 0 1px 2px color-mix(in oklch, var(--theme-bg) 22%, transparent);\n}\n.thread-ui-shell .thread-graph-molecule-preview {\n  background: var(--theme-surface);\n}\n.thread-ui-shell .thread-graph-molecule-viewer {\n  background: var(--theme-surface);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-molecule-header,\n.thread-ui-shell .thread-graph-molecule-controls {\n  border-color: var(--theme-border);\n  background: var(--theme-surface);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-molecule-body {\n  display: flex;\n  min-height: 0;\n  flex: 1;\n  flex-direction: column;\n  overflow: hidden;\n}\n.thread-ui-shell .thread-graph-molecule-header h2 {\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-molecule-header p,\n.thread-ui-shell .thread-graph-molecule-header span,\n.thread-ui-shell .thread-graph-molecule-trajectory {\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-graph-molecule-controls {\n  border-top: 1px solid var(--theme-border);\n  display: flex;\n  flex-direction: column;\n  gap: 0.75rem;\n  max-height: min(42%, 18rem);\n  overflow: auto;\n  padding: 0.75rem;\n}\n.thread-ui-shell .thread-graph-molecule-control-row {\n  display: flex;\n  align-items: flex-start;\n  justify-content: space-between;\n  gap: 0.75rem;\n}\n.thread-ui-shell .thread-graph-molecule-control-title {\n  color: var(--theme-fg);\n  font-size: 0.875rem;\n  font-weight: 600;\n  line-height: 1.25rem;\n}\n.thread-ui-shell .thread-graph-molecule-control-subtitle {\n  margin-top: 0.125rem;\n  color: var(--theme-fg-muted);\n  font-size: 0.6875rem;\n  line-height: 1rem;\n}\n.thread-ui-shell .thread-graph-molecule-button-group {\n  display: inline-flex;\n  align-items: center;\n  gap: 0.125rem;\n  border: 1px solid var(--theme-border);\n  border-radius: 0.5rem;\n  background: var(--theme-surface);\n  padding: 0.125rem;\n}\n.thread-ui-shell .thread-graph-molecule-button {\n  display: inline-flex;\n  min-width: 1.75rem;\n  height: 1.75rem;\n  align-items: center;\n  justify-content: center;\n  border: 1px solid transparent;\n  border-radius: 0.375rem;\n  background: transparent;\n  color: var(--theme-fg-soft);\n  transition:\n    background-color 140ms ease,\n    border-color 140ms ease,\n    color 140ms ease,\n    opacity 140ms ease;\n}\n.thread-ui-shell .thread-graph-molecule-button:hover:not(:disabled) {\n  border-color: var(--theme-border);\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-molecule-button:disabled {\n  cursor: not-allowed;\n  color: var(--theme-fg-subtle);\n  opacity: 0.45;\n}\n.thread-ui-shell .thread-graph-molecule-button-divider {\n  width: 1px;\n  align-self: stretch;\n  margin-inline: 0.25rem;\n  background: var(--theme-border);\n}\n.thread-ui-shell .thread-graph-molecule-stage {\n  background: var(--theme-bg);\n}\n.thread-ui-shell .thread-graph-molecule-error {\n  background: color-mix(in oklch, #ef4444 12%, var(--theme-surface));\n  color: var(--theme-danger);\n}\n.thread-ui-shell .thread-graph-molecule-empty {\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-graph-molecule-tooltip {\n  border-color: var(--theme-border);\n  background: color-mix(in oklch, var(--theme-surface) 96%, transparent);\n  color: var(--theme-fg);\n  box-shadow: 0 10px 28px color-mix(in oklch, var(--theme-bg) 72%, transparent);\n}\n.thread-ui-shell .thread-graph-molecule-tooltip div,\n.thread-ui-shell .thread-graph-molecule-tooltip span {\n  color: inherit;\n}\n.thread-ui-shell .thread-graph-molecule-trajectory input {\n  accent-color: var(--theme-accent-solid);\n}\n.thread-ui-shell .thread-graph-molecule-live-button {\n  display: inline-flex;\n  align-items: center;\n  gap: 0.25rem;\n  border: 1px solid var(--theme-border);\n  border-radius: 0.375rem;\n  background: var(--theme-surface);\n  padding: 0.125rem 0.5rem;\n  color: var(--theme-fg-muted);\n  transition: background-color 140ms ease, color 140ms ease;\n}\n.thread-ui-shell .thread-graph-molecule-live-button:hover {\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-molecule-camera {\n  margin-top: 0.75rem;\n  border: 1px solid var(--theme-border);\n  border-radius: 0.5rem;\n  padding: 0.5rem;\n  color: var(--theme-fg-muted);\n  font-size: 0.625rem;\n}\n.thread-ui-shell .thread-graph-molecule-camera-divider {\n  width: 100%;\n  height: 1px;\n  margin-block: 0.5rem;\n  background: var(--theme-border);\n}\n.thread-ui-shell .thread-graph-molecule-preview .xyz-viewer-plugin {\n  height: 100%;\n  min-height: 0;\n  border: 0;\n  border-radius: 0;\n  background: var(--theme-surface);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-molecule-preview .xyz-viewer-plugin__header {\n  min-height: 60px;\n  border-color: var(--theme-border);\n  background: var(--theme-surface);\n  padding: 0.75rem 1.25rem;\n}\n.thread-ui-shell .thread-graph-molecule-preview .xyz-viewer-plugin__header h2 {\n  color: var(--theme-fg);\n  font-size: 0.875rem;\n  font-weight: 650;\n}\n.thread-ui-shell .thread-graph-molecule-preview .xyz-viewer-plugin__header p,\n.thread-ui-shell .thread-graph-molecule-preview .xyz-viewer-plugin__header span {\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-graph-molecule-preview .xyz-viewer-plugin__toolbar {\n  border-color: var(--theme-border);\n  background: var(--theme-surface);\n  padding: 0.5rem 0.625rem;\n}\n.thread-ui-shell .thread-graph-molecule-preview .xyz-viewer-plugin__toolbar button,\n.thread-ui-shell .thread-graph-molecule-preview .xyz-viewer-plugin__timeline button {\n  border-color: var(--theme-border);\n  background: var(--theme-surface-strong);\n  color: var(--theme-fg-soft);\n}\n.thread-ui-shell .thread-graph-molecule-preview .xyz-viewer-plugin__toolbar button:hover,\n.thread-ui-shell .thread-graph-molecule-preview .xyz-viewer-plugin__timeline button:hover {\n  border-color: var(--theme-border-strong);\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-molecule-preview .xyz-viewer-plugin__toolbar button:disabled,\n.thread-ui-shell .thread-graph-molecule-preview .xyz-viewer-plugin__timeline button:disabled {\n  color: var(--theme-fg-subtle);\n}\n.thread-ui-shell .thread-graph-molecule-preview .xyz-viewer-plugin__toolbar-divider {\n  background: var(--theme-border);\n}\n.thread-ui-shell .thread-graph-molecule-preview .xyz-viewer-plugin__stage {\n  min-height: 0;\n  background: var(--theme-bg);\n}\n.thread-ui-shell .thread-graph-molecule-preview .xyz-viewer-plugin__error {\n  background: color-mix(in oklch, #ef4444 12%, var(--theme-surface));\n  color: var(--theme-danger);\n}\n.thread-ui-shell .thread-graph-molecule-preview .xyz-viewer-plugin__empty {\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-graph-molecule-preview .xyz-viewer-plugin__tooltip {\n  border-color: var(--theme-border);\n  background: color-mix(in oklch, var(--theme-surface) 96%, transparent);\n  color: var(--theme-fg);\n  box-shadow: 0 10px 28px color-mix(in oklch, var(--theme-bg) 72%, transparent);\n}\n.thread-ui-shell .thread-graph-molecule-preview .xyz-viewer-plugin__tooltip span {\n  color: var(--theme-fg-soft);\n}\n.thread-ui-shell .thread-graph-molecule-preview .xyz-viewer-plugin__timeline,\n.thread-ui-shell .thread-graph-molecule-preview .xyz-viewer-plugin__status {\n  border-color: var(--theme-border);\n  background: var(--theme-surface);\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-graph-molecule-preview .xyz-viewer-plugin__timeline input {\n  accent-color: var(--theme-accent-solid);\n}\n.thread-ui-shell .thread-graph-molecule-preview .xyz-viewer-plugin__timeline button.is-live {\n  color: var(--theme-danger);\n}\n.thread-ui-shell .thread-graph-file-preview-header,\n.thread-ui-shell .thread-graph-file-preview-footer {\n  border-color: var(--theme-border);\n  background: var(--theme-surface);\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-graph-load-more-button {\n  border: 1px solid var(--theme-border);\n  background: color-mix(in oklch, var(--theme-accent-solid) 8%, var(--theme-panel));\n  color: var(--theme-fg-soft);\n  transition:\n    background-color 140ms ease,\n    border-color 140ms ease,\n    color 140ms ease;\n}\n.thread-ui-shell .thread-graph-load-more-button:hover:not(:disabled) {\n  border-color: color-mix(in oklch, var(--theme-accent-solid) 28%, var(--theme-border));\n  background: color-mix(in oklch, var(--theme-accent-solid) 14%, var(--theme-panel));\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-code-preview {\n  background: var(--theme-bg);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-code-preview pre,\n.thread-ui-shell .thread-graph-code-preview code {\n  font-family:\n    ui-monospace,\n    SFMono-Regular,\n    Menlo,\n    Monaco,\n    Consolas,\n    "Liberation Mono",\n    monospace !important;\n  font-size: 0.78rem;\n  line-height: 1.55;\n}\n.thread-ui-shell .thread-graph-highlighted-code-preview pre {\n  min-height: 100%;\n  margin: 0;\n  padding: 1rem 0;\n  background: transparent !important;\n}\n.thread-ui-shell .thread-graph-highlighted-code-preview code {\n  display: block;\n  min-width: max-content;\n  counter-reset: workspace-code-line;\n}\n.thread-ui-shell .thread-graph-highlighted-code-preview .line {\n  display: block;\n  min-width: max-content;\n  padding-right: 1rem;\n  counter-increment: workspace-code-line;\n}\n.thread-ui-shell .thread-graph-highlighted-code-preview .line::before {\n  content: counter(workspace-code-line);\n  display: inline-block;\n  width: 3.5rem;\n  margin-right: 1rem;\n  border-right: 1px solid var(--theme-border);\n  padding-right: 0.75rem;\n  color: var(--theme-fg-muted);\n  text-align: right;\n  user-select: none;\n}\n.thread-ui-shell .thread-graph-plain-code-preview {\n  min-height: 100%;\n  margin: 0;\n  padding: 1rem;\n  background: transparent;\n  color: var(--theme-fg);\n  white-space: pre;\n}\n.thread-ui-shell .thread-graph-code-line {\n  display: block;\n  min-width: max-content;\n}\n.thread-ui-shell :is(.thread-graph-code-line, .thread-graph-highlighted-code-preview .line).is-focused-line {\n  background: color-mix(in oklch, var(--theme-accent-solid) 16%, transparent);\n  box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--theme-accent-solid) 28%, transparent);\n}\n.thread-ui-shell .thread-graph-code-line-number {\n  display: inline-block;\n  width: 2.5rem;\n  margin-right: 1rem;\n  border-right: 1px solid var(--theme-border);\n  padding-right: 0.75rem;\n  color: var(--theme-fg-muted);\n  text-align: right;\n  user-select: none;\n}\n.thread-ui-shell .thread-graph-markdown-preview {\n  background: var(--theme-bg);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-markdown-preview > * {\n  max-width: 74ch;\n  margin-inline: auto;\n}\n.thread-ui-shell .thread-graph-markdown-preview :where(h1, h2, h3, h4) {\n  margin: 1.4em 0 0.55em;\n  color: var(--theme-fg);\n  font-weight: 650;\n  line-height: 1.25;\n}\n.thread-ui-shell .thread-graph-markdown-preview :where(h1:first-child, h2:first-child, h3:first-child) {\n  margin-top: 0;\n}\n.thread-ui-shell .thread-graph-markdown-preview h1 {\n  font-size: 1.5rem;\n}\n.thread-ui-shell .thread-graph-markdown-preview h2 {\n  font-size: 1.2rem;\n}\n.thread-ui-shell .thread-graph-markdown-preview h3 {\n  font-size: 1rem;\n}\n.thread-ui-shell .thread-graph-markdown-preview :where(p, ul, ol, pre, blockquote, table) {\n  margin-bottom: 0.9rem;\n}\n.thread-ui-shell .thread-graph-markdown-preview :where(ul, ol) {\n  padding-left: 1.35rem;\n}\n.thread-ui-shell .thread-graph-markdown-preview :where(img) {\n  display: block;\n  max-width: 100%;\n  height: auto;\n  margin: 1rem auto;\n  border: 1px solid var(--theme-border);\n  border-radius: 0.375rem;\n  background: var(--theme-surface);\n}\n.thread-ui-shell .thread-graph-zoomable-image-trigger {\n  display: flex;\n  max-width: 100%;\n  max-height: 100%;\n  margin: 0 auto;\n  cursor: zoom-in;\n  align-items: center;\n  justify-content: center;\n  border: 0;\n  background: transparent;\n  padding: 0;\n}\n.thread-ui-shell .thread-graph-zoomable-image-trigger:focus-visible {\n  outline: 2px solid var(--theme-accent-ring);\n  outline-offset: 3px;\n}\n.thread-graph-image-lightbox {\n  position: fixed;\n  z-index: 120;\n  inset: 0;\n  overflow: hidden;\n  background: rgb(8 10 14 / 0.94);\n  color: rgb(241 245 249);\n}\n.thread-graph-image-lightbox-toolbar {\n  position: absolute;\n  z-index: 2;\n  top: max(0.75rem, env(safe-area-inset-top));\n  right: max(0.75rem, env(safe-area-inset-right));\n  display: flex;\n  height: 2.5rem;\n  align-items: center;\n  gap: 0.25rem;\n  border: 1px solid rgb(148 163 184 / 0.3);\n  border-radius: 0.5rem;\n  background: rgb(24 28 36 / 0.96);\n  padding: 0.25rem;\n  box-shadow: 0 12px 32px rgb(0 0 0 / 0.32);\n}\n.thread-graph-image-lightbox-toolbar button {\n  display: inline-flex;\n  width: 2rem;\n  height: 2rem;\n  align-items: center;\n  justify-content: center;\n  border: 0;\n  border-radius: 0.375rem;\n  background: transparent;\n  color: rgb(226 232 240);\n  transition: background-color 160ms ease-out, color 160ms ease-out;\n}\n.thread-graph-image-lightbox-toolbar button:hover:not(:disabled),\n.thread-graph-image-lightbox-toolbar button:focus-visible {\n  background: rgb(71 85 105 / 0.62);\n  color: rgb(248 250 252);\n  outline: none;\n}\n.thread-graph-image-lightbox-toolbar button:disabled {\n  cursor: not-allowed;\n  opacity: 0.35;\n}\n.thread-graph-image-lightbox-toolbar .thread-graph-image-lightbox-scale {\n  width: 4.75rem;\n  gap: 0.35rem;\n  font-variant-numeric: tabular-nums;\n  font-size: 0.75rem;\n}\n.thread-graph-image-lightbox-divider {\n  width: 1px;\n  height: 1.25rem;\n  margin: 0 0.125rem;\n  background: rgb(148 163 184 / 0.3);\n}\n.thread-graph-image-lightbox-viewport {\n  display: flex;\n  width: 100%;\n  height: 100%;\n  touch-action: none;\n  align-items: center;\n  justify-content: center;\n  overflow: hidden;\n  padding: max(4rem, calc(env(safe-area-inset-top) + 3.5rem)) 1rem max(1rem, env(safe-area-inset-bottom));\n}\n.thread-graph-image-lightbox-viewport img {\n  max-width: 100%;\n  max-height: 100%;\n  cursor: grab;\n  object-fit: contain;\n  user-select: none;\n  will-change: transform;\n}\n.thread-graph-image-lightbox-viewport img.is-dragging {\n  cursor: grabbing;\n}\n.thread-ui-shell .thread-graph-markdown-preview :where(pre) {\n  overflow-x: auto;\n  border: 1px solid var(--theme-border);\n  border-radius: 0.375rem;\n  background: var(--theme-surface-strong);\n  padding: 0.85rem;\n}\n.thread-ui-shell .thread-graph-markdown-preview :where(code) {\n  font-family:\n    ui-monospace,\n    SFMono-Regular,\n    Menlo,\n    Monaco,\n    Consolas,\n    "Liberation Mono",\n    monospace;\n  font-size: 0.84em;\n}\n.thread-ui-shell .thread-graph-markdown-preview :where(:not(pre) > code) {\n  border-radius: 0.25rem;\n  background: var(--theme-surface-strong);\n  padding: 0.12rem 0.3rem;\n}\n.thread-ui-shell .thread-graph-markdown-preview :where(blockquote) {\n  border-left: 1px solid var(--theme-border-strong);\n  padding-left: 0.85rem;\n  color: var(--theme-fg-soft);\n}\n.thread-ui-shell .thread-graph-markdown-preview :where(table) {\n  display: block;\n  width: 100%;\n  overflow-x: auto;\n  border-collapse: collapse;\n}\n.thread-ui-shell .thread-graph-markdown-preview :where(th, td) {\n  border: 1px solid var(--theme-border);\n  padding: 0.45rem 0.6rem;\n  text-align: left;\n}\n.thread-ui-shell .thread-graph-markdown-view-switch {\n  border-color: var(--theme-border);\n  background: var(--theme-surface-strong);\n}\n.thread-ui-shell .thread-graph-markdown-view-switch button {\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-graph-markdown-view-switch button:hover,\n.thread-ui-shell .thread-graph-markdown-view-switch button:focus-visible {\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-markdown-view-switch button.is-active {\n  background: var(--theme-panel);\n  color: var(--theme-fg);\n  box-shadow: 0 1px 2px color-mix(in oklch, var(--theme-bg) 22%, transparent);\n}\n.thread-ui-shell .thread-tool-call {\n  background: var(--theme-panel);\n  color: var(--theme-fg);\n  overflow: hidden;\n}\n.thread-ui-shell .thread-tool-call:hover {\n  border-color: var(--theme-border-strong);\n}\n.thread-ui-shell .thread-graph-tool-call {\n  font-family:\n    Inter,\n    ui-sans-serif,\n    system-ui,\n    -apple-system,\n    BlinkMacSystemFont,\n    "Segoe UI",\n    sans-serif;\n}\n.thread-ui-shell .thread-graph-tool-call,\n.thread-ui-shell .thread-graph-tool-accordion,\n.thread-ui-shell .thread-graph-tool-trigger,\n.thread-ui-shell .thread-graph-tool-content,\n.thread-ui-shell .thread-graph-tool-json,\n.thread-ui-shell .thread-graph-tool-output {\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-tool-accordion {\n  overflow: hidden;\n  border: 1px solid var(--theme-border);\n  border-radius: 0.5rem;\n  background: var(--theme-panel);\n  box-shadow: 0 1px 2px color-mix(in oklch, var(--theme-bg) 65%, transparent);\n}\n.thread-ui-shell .thread-graph-tool-trigger {\n  display: flex;\n  width: 100%;\n  min-width: 0;\n  align-items: center;\n  justify-content: space-between;\n  gap: 0.75rem;\n  border: 0;\n  background: var(--theme-panel);\n  text-align: left;\n  transition: background 160ms ease, color 160ms ease;\n}\n.thread-ui-shell .thread-graph-tool-trigger:hover {\n  background: var(--theme-hover);\n}\n.thread-ui-shell .thread-graph-tool-trigger svg {\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-graph-tool-trigger > svg {\n  margin-left: auto;\n}\n.thread-ui-shell .thread-graph-tool-badge {\n  display: inline-flex;\n  min-height: 1.35rem;\n  shrink: 0;\n  align-items: center;\n  gap: 0.25rem;\n  border: 1px solid transparent;\n  border-radius: 999px;\n  padding: 0.1rem 0.5rem;\n  font-size: 0.75rem;\n  font-weight: 400;\n  line-height: 1rem;\n}\n.thread-ui-shell .thread-graph-tool-badge.is-completed {\n  background: oklch(0.94 0.052 155);\n  color: oklch(0.43 0.095 155);\n}\n.thread-ui-shell .thread-graph-tool-badge.is-failed {\n  background: oklch(0.94 0.04 25);\n  color: oklch(0.48 0.125 24);\n}\n.thread-ui-shell .thread-graph-tool-badge.is-pending {\n  background: oklch(0.94 0.03 235);\n  color: oklch(0.43 0.09 242);\n}\n.thread-ui-shell .thread-graph-tool-badge.is-neutral {\n  background: var(--theme-muted);\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-tool-badge.is-completed,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-tool-badge.is-completed,\n.thread-ui-shell.dark .thread-graph-tool-badge.is-completed {\n  background: oklch(0.31 0.05 155);\n  color: oklch(0.8 0.115 155);\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-tool-badge.is-failed,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-tool-badge.is-failed,\n.thread-ui-shell.dark .thread-graph-tool-badge.is-failed {\n  background: oklch(0.31 0.052 25);\n  color: oklch(0.78 0.12 25);\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-tool-badge.is-pending,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-tool-badge.is-pending,\n.thread-ui-shell.dark .thread-graph-tool-badge.is-pending {\n  background: oklch(0.3 0.042 235);\n  color: oklch(0.77 0.1 235);\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-tool-badge.is-neutral,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-tool-badge.is-neutral,\n.thread-ui-shell.dark .thread-graph-tool-badge.is-neutral {\n  background: #222733;\n  color: rgb(148 163 184);\n}\n.thread-ui-shell .thread-graph-tool-content {\n  display: grid;\n  gap: 0.75rem;\n  border-top: 0;\n  background: var(--theme-panel);\n}\n.thread-ui-shell .thread-graph-tool-content h4 {\n  margin: 0.25rem 0 0.5rem;\n  color: var(--theme-fg-muted);\n  font-size: 0.625rem;\n  font-weight: 700;\n  letter-spacing: 0.08em;\n  line-height: 1rem;\n  text-transform: uppercase;\n}\n.thread-ui-shell .thread-graph-tool-json,\n.thread-ui-shell .thread-graph-tool-output {\n  overflow-x: auto;\n  border: 1px solid var(--theme-border);\n  border-radius: 0.375rem;\n  background: var(--theme-surface-strong);\n  padding: 0.75rem;\n  font-family:\n    ui-monospace,\n    SFMono-Regular,\n    Menlo,\n    Monaco,\n    Consolas,\n    "Liberation Mono",\n    monospace;\n  font-size: 0.78rem;\n  line-height: 1.55;\n  white-space: pre-wrap;\n}\n.thread-ui-shell .thread-graph-tool-json > div {\n  padding-left: 1rem;\n}\n.thread-ui-shell .thread-graph-tool-output {\n  margin-top: 0.5rem;\n}\n.thread-ui-shell .thread-graph-tool-key {\n  color: oklch(0.58 0.18 18);\n}\n.thread-ui-shell .thread-graph-tool-string {\n  color: oklch(0.52 0.12 155);\n}\n.thread-ui-shell .thread-graph-tool-number {\n  color: oklch(0.55 0.13 235);\n}\n.thread-ui-shell .thread-graph-tool-boolean {\n  color: oklch(0.56 0.13 302);\n}\n.thread-ui-shell .thread-graph-tool-null,\n.thread-ui-shell .thread-graph-tool-punctuation,\n.thread-ui-shell .thread-graph-tool-object {\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-graph-history-tool {\n  width: 100%;\n  min-width: 0;\n  border: 0;\n  background: transparent !important;\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-history-tool-accordion {\n  background: var(--theme-panel);\n}\n.thread-ui-shell .thread-graph-history-tool-trigger {\n  min-height: 2.75rem;\n}\n.thread-ui-shell .thread-graph-history-tool-trigger > div:first-child {\n  min-width: 0;\n}\n.thread-ui-shell .thread-graph-history-tool-icon {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-graph-history-tool.is-command .thread-graph-history-tool-icon {\n  color: oklch(0.63 0.12 75);\n}\n.thread-ui-shell .thread-graph-history-tool.is-tool .thread-graph-history-tool-icon {\n  color: oklch(0.61 0.12 315);\n}\n.thread-ui-shell .thread-graph-history-tool.is-agent .thread-graph-history-tool-icon {\n  color: oklch(0.58 0.11 170);\n}\n.thread-ui-shell .thread-graph-history-tool.is-skill .thread-graph-history-tool-icon {\n  color: oklch(0.58 0.12 285);\n}\n.thread-ui-shell .thread-graph-history-tool.is-search .thread-graph-history-tool-icon {\n  color: oklch(0.58 0.12 235);\n}\n.thread-ui-shell .thread-graph-history-tool.is-file-read .thread-graph-history-tool-icon {\n  color: oklch(0.58 0.1 205);\n}\n.thread-ui-shell .thread-graph-history-tool-summary {\n  display: flex;\n  min-width: 0;\n  align-items: center;\n  gap: 0.5rem;\n  overflow: hidden;\n  border: 1px solid var(--theme-border);\n  border-radius: 0.375rem;\n  background: var(--theme-surface-strong);\n  padding: 0.65rem 0.75rem;\n  color: var(--theme-fg-soft);\n  font-size: 0.875rem;\n  line-height: 1.5;\n}\n.thread-ui-shell .thread-graph-history-tool-summary > span:first-child {\n  min-width: 0;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n.thread-ui-shell .thread-graph-history-tool-ellipsis {\n  flex: 0 0 auto;\n  color: var(--theme-fg-muted);\n  font-size: 0.75rem;\n  letter-spacing: 0.16em;\n}\n.thread-ui-shell .thread-graph-history-tool-open {\n  border-color: var(--theme-border);\n  background: var(--theme-surface);\n  color: var(--theme-fg-soft);\n}\n.thread-ui-shell .thread-graph-history-tool-open:hover {\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-history-event {\n  display: flex;\n  min-width: 0;\n  width: 100%;\n  align-items: flex-start;\n  gap: 0.625rem;\n  border: 0;\n  background: transparent !important;\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-history-event-icon {\n  display: inline-flex;\n  height: 1.75rem;\n  width: 1.75rem;\n  flex: 0 0 auto;\n  align-items: center;\n  justify-content: center;\n  border: 1px solid var(--theme-border);\n  border-radius: 999px;\n  background: var(--theme-panel);\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-graph-history-event-card {\n  min-width: 0;\n  flex: 1 1 auto;\n  overflow: hidden;\n  border: 1px solid var(--theme-border);\n  border-radius: 0.5rem;\n  background: var(--theme-panel);\n  color: var(--theme-fg);\n  box-shadow: 0 1px 2px color-mix(in oklch, var(--theme-bg) 65%, transparent);\n}\n.thread-ui-shell .thread-graph-history-event-header {\n  display: flex;\n  min-width: 0;\n  align-items: center;\n  justify-content: space-between;\n  gap: 0.75rem;\n  padding: 0.75rem 1rem;\n}\n.thread-ui-shell .thread-graph-history-event-heading {\n  flex: 1 1 auto;\n  min-width: 0;\n}\n.thread-ui-shell .thread-graph-history-event-title {\n  flex: 0 0 auto;\n  max-width: min(14rem, 36%);\n}\n.thread-ui-shell .thread-graph-history-event-actions {\n  display: inline-flex;\n  flex: 0 0 auto;\n  align-items: center;\n  gap: 0.5rem;\n}\n.thread-ui-shell .thread-graph-history-event-body {\n  display: grid;\n  gap: 0.625rem;\n  border-top: 1px solid var(--theme-border);\n  padding: 0.75rem 1rem 1rem;\n  color: var(--theme-fg-soft);\n}\n.thread-ui-shell .thread-graph-history-event-line {\n  display: flex;\n  min-width: 0;\n  align-items: center;\n  gap: 0.5rem;\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-history-event-primary {\n  min-width: 0;\n  color: var(--theme-fg);\n  font-size: 0.875rem;\n  font-weight: 500;\n  line-height: 1.5;\n}\n.thread-ui-shell .thread-graph-history-event-secondary {\n  min-width: 0;\n  color: var(--theme-fg-muted);\n  font-size: 0.75rem;\n  line-height: 1.35;\n}\n.thread-ui-shell .thread-graph-history-event-summary {\n  display: block;\n  width: 100%;\n  min-width: 0;\n  overflow: hidden;\n  border: 1px solid var(--theme-border);\n  border-radius: 0.375rem;\n  background: var(--theme-surface-strong);\n  padding: 0.65rem 0.75rem;\n  color: var(--theme-fg-soft);\n  font-size: 0.875rem;\n  line-height: 1.5;\n  text-align: left;\n}\n.thread-ui-shell .thread-graph-history-event-summary.is-clickable {\n  transition: background 160ms ease, color 160ms ease;\n}\n.thread-ui-shell .thread-graph-history-event-summary.is-clickable:hover {\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-history-event-prose {\n  color: var(--theme-fg-soft);\n}\n.thread-ui-shell .thread-graph-history-event-pre {\n  overflow-x: auto;\n  border: 1px solid var(--theme-border);\n  border-radius: 0.375rem;\n  background: var(--theme-surface-strong);\n  padding: 0.75rem;\n  color: var(--theme-fg-soft);\n  font-size: 0.8125rem;\n  line-height: 1.55;\n  white-space: pre-wrap;\n}\n.thread-ui-shell .thread-graph-history-event-action,\n.thread-ui-shell .thread-graph-history-event-pill {\n  display: inline-flex;\n  align-items: center;\n  gap: 0.375rem;\n  border: 1px solid var(--theme-border);\n  border-radius: 999px;\n  background: var(--theme-surface);\n  padding: 0.25rem 0.55rem;\n  color: var(--theme-fg-muted);\n  font-size: 0.6875rem;\n  font-weight: 500;\n  line-height: 1rem;\n  transition: background 160ms ease, color 160ms ease;\n}\n.thread-ui-shell .thread-graph-history-event-action:hover {\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-history-event-path {\n  display: block;\n  max-width: 100%;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  color: var(--theme-fg-muted);\n  font-size: 0.75rem;\n  line-height: 1.4;\n  text-align: left;\n}\n.thread-ui-shell .thread-graph-history-event-path:hover {\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-history-event-image {\n  max-height: 24rem;\n  width: 100%;\n  object-fit: contain;\n  border: 1px solid var(--theme-border);\n  border-radius: 0.5rem;\n  background: var(--theme-surface-strong);\n}\n.thread-ui-shell .thread-graph-history-event.is-plan .thread-graph-history-event-icon {\n  color: oklch(0.58 0.12 235);\n}\n.thread-ui-shell .thread-graph-history-event.is-context .thread-graph-history-event-icon {\n  color: oklch(0.58 0.11 170);\n}\n.thread-ui-shell .thread-graph-history-event.is-image .thread-graph-history-event-icon,\n.thread-ui-shell .thread-graph-history-event.is-artifact .thread-graph-history-event-icon {\n  color: oklch(0.58 0.12 285);\n}\n.thread-ui-shell .thread-graph-history-event.is-file-change .thread-graph-history-event-icon {\n  color: oklch(0.62 0.12 145);\n}\n.thread-ui-shell .thread-graph-history-event.is-hook .thread-graph-history-event-icon {\n  color: oklch(0.61 0.12 315);\n}\n@media (max-width: 639px) {\n  .thread-ui-shell .thread-graph-history-event {\n    gap: 0.5rem;\n  }\n  .thread-ui-shell .thread-graph-history-event-icon {\n    height: 1.5rem;\n    width: 1.5rem;\n  }\n  .thread-ui-shell .thread-graph-history-event-header,\n  .thread-ui-shell .thread-graph-history-event-body {\n    padding-left: 0.75rem;\n    padding-right: 0.75rem;\n  }\n}\n.thread-ui-shell .thread-graph-history-detail-row {\n  border-color: var(--theme-border);\n  background: var(--theme-surface);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-history-detail-row:hover {\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-history-detail-text {\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-event-file-change .thread-graph-history-event-card {\n  border-radius: 0.4375rem;\n}\n.thread-ui-shell .thread-graph-event-file-change .thread-graph-history-event-header {\n  min-height: 2.75rem;\n  padding-block: 0.5rem;\n}\n.thread-ui-shell .thread-graph-event-file-change .thread-graph-history-event-heading {\n  flex: 1 1 auto;\n  min-width: 0;\n  gap: 0.375rem;\n}\n.thread-ui-shell .thread-graph-event-file-change .thread-graph-history-event-title {\n  max-width: none;\n  font-size: 0.8125rem;\n}\n.thread-ui-shell .thread-graph-file-change-inline,\n.thread-ui-shell .thread-graph-file-change-inline-button {\n  min-width: 0;\n}\n.thread-ui-shell .thread-graph-file-change-inline {\n  max-width: 100%;\n  gap: 0.375rem;\n}\n.thread-ui-shell .thread-graph-file-change-inline-button {\n  display: block;\n  flex: 1 1 auto;\n  color: inherit;\n}\n.thread-ui-shell .thread-graph-file-change-inline-button:hover .thread-graph-history-detail-text {\n  color: var(--theme-fg);\n  text-decoration: underline;\n  text-decoration-thickness: 1px;\n  text-underline-offset: 2px;\n}\n.thread-ui-shell .thread-graph-history-detail-meta {\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-graph-history-delta-badge {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  border: 1px solid transparent;\n  border-radius: 999px;\n  padding: 0.125rem 0.375rem;\n  font-size: 0.6875rem;\n  font-weight: 500;\n  line-height: 1rem;\n}\n.thread-ui-shell .thread-graph-history-delta-badge.is-add {\n  border-color: rgb(52 211 153 / 0.28);\n  background: rgb(52 211 153 / 0.1);\n  color: rgb(167 243 208);\n}\n.thread-ui-shell .thread-graph-history-delta-badge.is-remove {\n  border-color: rgb(251 113 133 / 0.3);\n  background: rgb(251 113 133 / 0.1);\n  color: rgb(254 205 211);\n}\n.thread-ui-shell .thread-graph-history-delta-badge.is-neutral {\n  border-color: var(--theme-border);\n  background: var(--theme-muted);\n  color: var(--theme-fg-soft);\n}\n.thread-ui-shell[data-theme-effective=light] .thread-graph-history-delta-badge.is-add {\n  border-color: rgb(16 185 129 / 0.25);\n  background: rgb(16 185 129 / 0.1);\n  color: rgb(4 120 87);\n}\n.thread-ui-shell[data-theme-effective=light] .thread-graph-history-delta-badge.is-remove {\n  border-color: rgb(244 63 94 / 0.25);\n  background: rgb(244 63 94 / 0.1);\n  color: rgb(190 18 60);\n}\n@media (max-width: 639px) {\n  .thread-ui-shell .thread-graph-history-tool-trigger {\n    padding-left: 0.75rem;\n    padding-right: 0.75rem;\n  }\n  .thread-ui-shell .thread-graph-history-tool-trigger .thread-graph-tool-badge {\n    max-width: 7.5rem;\n  }\n  .thread-ui-shell .thread-graph-history-tool-content {\n    padding-left: 0.75rem;\n    padding-right: 0.75rem;\n  }\n}\n.thread-ui-shell .xyz-viewer-plugin {\n  border-color: var(--theme-border);\n  border-radius: 0;\n  background: var(--theme-surface);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .xyz-viewer-plugin__header,\n.thread-ui-shell .xyz-viewer-plugin__toolbar,\n.thread-ui-shell .xyz-viewer-plugin__timeline,\n.thread-ui-shell .xyz-viewer-plugin__status {\n  border-color: var(--theme-border);\n  background: var(--theme-surface);\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .xyz-viewer-plugin__header h2 {\n  color: var(--theme-fg);\n}\n.thread-ui-shell .xyz-viewer-plugin__header p,\n.thread-ui-shell .xyz-viewer-plugin__header span,\n.thread-ui-shell .xyz-viewer-plugin__tooltip span {\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .xyz-viewer-plugin__toolbar button,\n.thread-ui-shell .xyz-viewer-plugin__timeline button {\n  border-color: var(--theme-border);\n  background: var(--theme-surface-strong);\n  color: var(--theme-fg-soft);\n}\n.thread-ui-shell .xyz-viewer-plugin__toolbar button:hover,\n.thread-ui-shell .xyz-viewer-plugin__timeline button:hover {\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .xyz-viewer-plugin__toolbar-divider {\n  background: var(--theme-border);\n}\n.thread-ui-shell .xyz-viewer-plugin__stage {\n  background: var(--theme-bg);\n}\n.thread-ui-shell .xyz-viewer-plugin__tooltip {\n  border-color: var(--theme-border);\n  background: color-mix(in oklch, var(--theme-panel) 96%, transparent);\n  box-shadow: var(--theme-shadow);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .xyz-viewer-plugin__empty {\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .xyz-viewer-plugin__error {\n  background: color-mix(in oklch, oklch(0.62 0.16 25) 14%, var(--theme-panel));\n  color: oklch(0.78 0.12 25);\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-tool-key,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-tool-key,\n.thread-ui-shell.dark .thread-graph-tool-key {\n  color: oklch(0.78 0.12 18);\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-tool-string,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-tool-string,\n.thread-ui-shell.dark .thread-graph-tool-string {\n  color: oklch(0.79 0.11 155);\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-tool-number,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-tool-number,\n.thread-ui-shell.dark .thread-graph-tool-number {\n  color: oklch(0.77 0.1 235);\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-tool-boolean,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-tool-boolean,\n.thread-ui-shell.dark .thread-graph-tool-boolean {\n  color: oklch(0.79 0.1 302);\n}\n.thread-ui-shell .thread-timeline-surface,\n.thread-ui-shell .thread-scroll-container {\n  background: var(--theme-surface);\n  color: var(--theme-fg);\n  scrollbar-color: var(--theme-border-strong) transparent;\n}\n.thread-ui-shell .thread-scroll-container > div > .divide-y {\n  border-color: var(--theme-border);\n}\n.thread-ui-shell .timeline-item-frame {\n  border-color: var(--theme-border);\n  background: var(--theme-panel);\n  color: var(--theme-fg);\n  box-shadow: none;\n}\n.thread-ui-shell .timeline-agent {\n  border-color: transparent;\n  background: transparent;\n  box-shadow: none;\n}\n.thread-ui-shell .timeline-user {\n  border-color: transparent;\n  background: oklch(0.94 0.025 214);\n  color: oklch(0.24 0.027 255);\n}\n.thread-ui-shell.thread-ui-theme-dark .timeline-user,\n.thread-ui-shell[data-theme-effective=dark] .timeline-user,\n.thread-ui-shell.dark .timeline-user {\n  background: oklch(0.29 0.034 224);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .timeline-command,\n.thread-ui-shell .timeline-agent-tool,\n.thread-ui-shell .timeline-skill-tool,\n.thread-ui-shell .timeline-action,\n.thread-ui-shell .timeline-file-change,\n.thread-ui-shell .timeline-file-read,\n.thread-ui-shell .timeline-search,\n.thread-ui-shell .timeline-plan,\n.thread-ui-shell .timeline-reasoning,\n.thread-ui-shell .timeline-other,\n.thread-ui-shell .timeline-special-warning,\n.thread-ui-shell .timeline-special-info,\n.thread-ui-shell .timeline-special-file-read,\n.thread-ui-shell .timeline-special-success,\n.thread-ui-shell .timeline-mobile-dense-event,\n.thread-ui-shell .timeline-batch-inner,\n.thread-ui-shell .timeline-item-inner {\n  border-color: var(--theme-border);\n  background: var(--theme-panel);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .timeline-special-warning,\n.thread-ui-shell .timeline-special-info,\n.thread-ui-shell .timeline-special-file-read,\n.thread-ui-shell .timeline-special-success {\n  box-shadow: none;\n}\n.thread-ui-shell .timeline-mobile-dense-command,\n.thread-ui-shell .timeline-mobile-dense-search,\n.thread-ui-shell .timeline-mobile-dense-file-read,\n.thread-ui-shell .timeline-mobile-dense-file {\n  background: var(--theme-panel);\n}\n.thread-ui-shell :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(.border-stone-700, .border-stone-700\\/90, .border-stone-800, .border-stone-800\\/80) {\n  border-color: var(--theme-border) !important;\n}\n.thread-ui-shell :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(.bg-stone-800, .bg-stone-900, .bg-stone-900\\/60, .bg-stone-900\\/72, .bg-stone-900\\/80, .bg-stone-950, .bg-stone-950\\/35, .bg-stone-950\\/40, .bg-stone-950\\/60, .bg-stone-950\\/70, .bg-stone-950\\/90, .bg-stone-950\\/96) {\n  background: var(--theme-surface-strong) !important;\n}\n.thread-ui-shell :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(.text-stone-100, .text-stone-200, .text-stone-300, .text-sky-50, .text-sky-100, .text-emerald-50, .text-emerald-100, .text-amber-100) {\n  color: var(--theme-fg) !important;\n}\n.thread-ui-shell :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(.text-stone-400, .text-stone-500) {\n  color: var(--theme-fg-muted) !important;\n}\n.thread-ui-shell .timeline-kind-agent,\n.thread-ui-shell .timeline-kind-user,\n.thread-ui-shell .timeline-kind-command,\n.thread-ui-shell .timeline-kind-search,\n.thread-ui-shell .timeline-kind-file-read,\n.thread-ui-shell .timeline-kind-reasoning,\n.thread-ui-shell .timeline-kind-agent-tool,\n.thread-ui-shell .timeline-kind-skill-tool,\n.thread-ui-shell .timeline-kind-action,\n.thread-ui-shell .timeline-kind-plan,\n.thread-ui-shell .timeline-kind-file {\n  border-left-width: 1px;\n}\n.thread-ui-shell .timeline-primary-text,\n.thread-ui-shell .timeline-message-content,\n.thread-ui-shell .timeline-mobile-bubble-content,\n.thread-ui-shell .thread-message-prose,\n.thread-ui-shell .thread-message-prose :where(p, li, span, div, strong, em, code) {\n  color: var(--theme-fg);\n}\n.thread-ui-shell .timeline-user .thread-message-prose,\n.thread-ui-shell .timeline-user .thread-message-prose :where(p, li, span, div, strong, em, code) {\n  color: oklch(0.24 0.027 255);\n}\n.thread-ui-shell.thread-ui-theme-dark .timeline-user .thread-message-prose,\n.thread-ui-shell[data-theme-effective=dark] .timeline-user .thread-message-prose,\n.thread-ui-shell.dark .timeline-user .thread-message-prose,\n.thread-ui-shell.thread-ui-theme-dark .timeline-user .thread-message-prose :where(p, li, span, div, strong, em, code),\n.thread-ui-shell[data-theme-effective=dark] .timeline-user .thread-message-prose :where(p, li, span, div, strong, em, code),\n.thread-ui-shell.dark .timeline-user .thread-message-prose :where(p, li, span, div, strong, em, code) {\n  color: var(--theme-fg);\n}\n.thread-ui-shell .timeline-agent .thread-message-prose,\n.thread-ui-shell .timeline-agent .thread-message-prose :where(p, li, span, div, strong, em, code) {\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-message {\n  width: 100%;\n  min-width: 0;\n}\n.thread-ui-shell .thread-graph-message-bubble {\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-message-bubble.is-user {\n  width: 100%;\n  max-width: 100%;\n  border-radius: 0.75rem;\n  background: #eef5f9;\n  padding: 0.5rem 0.75rem;\n  color: rgb(15 23 42);\n}\n.thread-ui-shell .thread-graph-message-bubble.is-assistant {\n  width: 100%;\n  border: 0;\n  background: transparent;\n  padding: 0;\n  box-shadow: none;\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-message-bubble.is-user,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-message-bubble.is-user,\n.thread-ui-shell.dark .thread-graph-message-bubble.is-user {\n  background: #212b35;\n  color: rgb(241 245 249);\n}\n.thread-ui-shell .thread-graph-message-content.is-user,\n.thread-ui-shell .thread-graph-message-content.is-user .thread-message-prose,\n.thread-ui-shell .thread-graph-message-content.is-user .thread-graph-message-prose,\n.thread-ui-shell .thread-graph-message-content.is-user .thread-graph-markdown,\n.thread-ui-shell .thread-graph-message-content.is-user .thread-graph-plain-text,\n.thread-ui-shell .thread-graph-message-content.is-user .thread-message-prose :where(p, li, span, div, strong, em, code),\n.thread-ui-shell .thread-graph-message-content.is-user .thread-graph-message-prose :where(p, li, span, div, strong, em, code),\n.thread-ui-shell .thread-graph-message-content.is-user .thread-graph-markdown :where(p, li, span, div, strong, em, code) {\n  color: rgb(51 65 85);\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-message-content.is-user,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-message-content.is-user,\n.thread-ui-shell.dark .thread-graph-message-content.is-user,\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-message-content.is-user .thread-message-prose,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-message-content.is-user .thread-message-prose,\n.thread-ui-shell.dark .thread-graph-message-content.is-user .thread-message-prose,\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-message-content.is-user .thread-graph-message-prose,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-message-content.is-user .thread-graph-message-prose,\n.thread-ui-shell.dark .thread-graph-message-content.is-user .thread-graph-message-prose,\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-message-content.is-user .thread-graph-markdown,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-message-content.is-user .thread-graph-markdown,\n.thread-ui-shell.dark .thread-graph-message-content.is-user .thread-graph-markdown,\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-message-content.is-user .thread-graph-plain-text,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-message-content.is-user .thread-graph-plain-text,\n.thread-ui-shell.dark .thread-graph-message-content.is-user .thread-graph-plain-text,\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-message-content.is-user .thread-message-prose :where(p, li, span, div, strong, em, code),\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-message-content.is-user .thread-message-prose :where(p, li, span, div, strong, em, code),\n.thread-ui-shell.dark .thread-graph-message-content.is-user .thread-message-prose :where(p, li, span, div, strong, em, code),\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-message-content.is-user .thread-graph-message-prose :where(p, li, span, div, strong, em, code),\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-message-content.is-user .thread-graph-message-prose :where(p, li, span, div, strong, em, code),\n.thread-ui-shell.dark .thread-graph-message-content.is-user .thread-graph-message-prose :where(p, li, span, div, strong, em, code),\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-message-content.is-user .thread-graph-markdown :where(p, li, span, div, strong, em, code),\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-message-content.is-user .thread-graph-markdown :where(p, li, span, div, strong, em, code),\n.thread-ui-shell.dark .thread-graph-message-content.is-user .thread-graph-markdown :where(p, li, span, div, strong, em, code) {\n  color: rgb(226 232 240);\n}\n.thread-ui-shell .thread-graph-message-content.is-assistant,\n.thread-ui-shell .thread-graph-message-content.is-assistant .thread-graph-message-prose,\n.thread-ui-shell .thread-graph-message-content.is-assistant .thread-graph-markdown,\n.thread-ui-shell .thread-graph-message-content.is-assistant .thread-graph-plain-text,\n.thread-ui-shell .thread-graph-message-content.is-assistant .thread-graph-message-prose :where(p, li, span, div, strong, em, code) {\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-message-prose,\n.thread-ui-shell .thread-graph-markdown,\n.thread-ui-shell .thread-graph-plain-text {\n  color: inherit;\n}\n.thread-ui-shell .thread-graph-markdown {\n  max-width: none;\n  font-size: 0.875rem;\n  line-height: 1.7;\n}\n.thread-ui-shell .thread-graph-message-markdown {\n  color: inherit;\n  word-break: break-word;\n}\n.thread-ui-shell .thread-graph-show-more {\n  min-height: 1.25rem;\n  border-color: var(--theme-border);\n  background: color-mix(in oklch, var(--theme-panel) 72%, transparent);\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-graph-show-more:hover,\n.thread-ui-shell .thread-graph-show-more:focus-visible {\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-markdown :where(p, ul, ol, pre, blockquote, table, hr) {\n  margin-bottom: 0.75rem;\n}\n.thread-ui-shell .thread-graph-markdown :where(p:last-child, ul:last-child, ol:last-child, pre:last-child, blockquote:last-child, table:last-child, hr:last-child) {\n  margin-bottom: 0;\n}\n.thread-ui-shell .thread-graph-markdown :where(a) {\n  color: rgb(3 105 161);\n  text-decoration: underline;\n  text-underline-offset: 2px;\n}\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-markdown :where(a),\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-markdown :where(a),\n.thread-ui-shell.dark .thread-graph-markdown :where(a) {\n  color: rgb(125 211 252);\n}\n.thread-ui-shell .thread-graph-markdown :where(blockquote) {\n  border-left: 3px solid var(--theme-border-strong);\n  padding-left: 0.85rem;\n  color: var(--theme-fg-soft);\n}\n.thread-ui-shell .thread-graph-markdown :where(ul, ol) {\n  padding-left: 1.25rem;\n}\n.thread-ui-shell .thread-graph-markdown :where(li) {\n  margin-top: 0.25rem;\n}\n.thread-ui-shell .thread-graph-markdown :where(table) {\n  display: block;\n  width: 100%;\n  overflow-x: auto;\n  border-collapse: collapse;\n}\n.thread-ui-shell .thread-graph-markdown :where(th, td) {\n  border: 1px solid var(--theme-border);\n  padding: 0.4rem 0.55rem;\n  text-align: left;\n}\n.thread-ui-shell .thread-graph-markdown :where(th) {\n  background: var(--theme-surface-strong);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-code-block {\n  border-color: rgb(226 232 240);\n  background: rgb(248 250 252);\n  color: rgb(31 41 55);\n}\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-code-block,\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-code-block,\n.thread-ui-shell.dark .thread-graph-code-block {\n  border-color: #303642;\n  background: #11141a;\n  color: rgb(241 245 249);\n}\n.thread-ui-shell .thread-graph-code-block pre,\n.thread-ui-shell .thread-graph-code-block code {\n  margin: 0;\n  background: transparent;\n  color: inherit;\n}\n.thread-ui-shell .thread-graph-code-copy {\n  background: rgb(255 255 255 / 0.72);\n  color: rgb(51 65 85);\n  box-shadow: 0 4px 12px rgb(15 23 42 / 0.08);\n}\n.thread-ui-shell .thread-graph-code-copy:hover {\n  background: rgb(255 255 255);\n  color: rgb(15 23 42);\n}\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-code-copy,\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-code-copy,\n.thread-ui-shell.dark .thread-graph-code-copy {\n  background: rgb(34 39 51 / 0.82);\n  color: rgb(226 232 240);\n}\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-code-copy:hover,\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-code-copy:hover,\n.thread-ui-shell.dark .thread-graph-code-copy:hover {\n  background: #2b313d;\n  color: rgb(248 250 252);\n}\n.thread-ui-shell .thread-graph-inline-code {\n  background: rgb(241 245 249);\n  color: rgb(31 41 55);\n}\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-inline-code,\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-inline-code,\n.thread-ui-shell.dark .thread-graph-inline-code {\n  background: #222733;\n  color: rgb(241 245 249);\n}\n.thread-ui-shell .thread-graph-message-sender {\n  background: oklch(0.96 0.025 155);\n  color: oklch(0.42 0.11 155);\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-message-sender,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-message-sender,\n.thread-ui-shell.dark .thread-graph-message-sender {\n  background: rgb(52 211 153 / 0.1);\n  color: rgb(110 231 183);\n}\n.thread-ui-shell .thread-graph-message-copy {\n  border-color: var(--theme-border);\n  background: var(--theme-panel);\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-graph-thinking-toggle {\n  border-color: var(--theme-border);\n  background: var(--theme-panel);\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-graph-message-copy:hover,\n.thread-ui-shell .thread-graph-thinking-toggle:hover,\n.thread-ui-shell .thread-graph-thinking-toggle.is-open {\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-message-header-actions {\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-graph-message-time {\n  color: var(--theme-fg-muted);\n  white-space: nowrap;\n}\n.thread-ui-shell .thread-graph-relative-time {\n  border: 0;\n  background: transparent;\n  color: var(--theme-fg-muted);\n  font-size: 0.625rem;\n  font-weight: 400;\n  line-height: 1;\n  white-space: nowrap;\n}\n.thread-ui-shell .thread-graph-relative-time:hover {\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-graph-history-tool-time {\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-graph-message-status {\n  box-shadow: none;\n}\n.thread-ui-shell .thread-graph-message-status-icon {\n  align-items: center;\n  justify-content: center;\n}\n@media (max-width: 639px) {\n  .thread-ui-shell .thread-graph-message-header {\n    margin-bottom: 0.375rem;\n    flex-wrap: nowrap;\n  }\n  .thread-ui-shell .thread-graph-message-sender {\n    padding: 0.1875rem 0.5rem;\n    font-size: 0.6875rem;\n    line-height: 1rem;\n  }\n  .thread-ui-shell .thread-graph-message-header-actions {\n    gap: 0.25rem;\n  }\n  .thread-ui-shell .thread-graph-message-copy {\n    height: 1.55rem;\n    width: 1.55rem;\n    border-radius: 0.45rem;\n  }\n  .thread-ui-shell .thread-graph-message-time {\n    font-size: 0.625rem;\n  }\n  .thread-ui-shell :where(.thread-graph-message-status, .thread-graph-tool-badge) .thread-graph-status-label {\n    position: absolute;\n    width: 1px;\n    height: 1px;\n    padding: 0;\n    margin: -1px;\n    overflow: hidden;\n    clip: rect(0, 0, 0, 0);\n    white-space: nowrap;\n    border: 0;\n  }\n  .thread-ui-shell :where(.thread-graph-message-status, .thread-graph-tool-badge) {\n    min-width: 1.45rem;\n    justify-content: center;\n    padding-left: 0.25rem !important;\n    padding-right: 0.25rem !important;\n  }\n}\n@media (min-width: 640px) {\n  .thread-ui-shell .thread-graph-message-bubble.is-user {\n    padding: 0.375rem 1rem;\n  }\n}\n');
 
 // src/styles/composer-plan.css
 styleInject(".thread-ui-shell .timeline-soft-text,\n.thread-ui-shell .thread-message-prose :where(blockquote) {\n  color: var(--theme-fg-soft);\n}\n.thread-ui-shell .timeline-meta-text,\n.thread-ui-shell .thread-message-prose :where(figcaption) {\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .timeline-overlay-badge,\n.thread-ui-shell .ui-status-neutral,\n.thread-ui-shell .ui-status-info,\n.thread-ui-shell .ui-status-warning,\n.thread-ui-shell .ui-status-success,\n.thread-ui-shell .ui-status-danger {\n  border-color: transparent;\n  box-shadow: none;\n}\n.thread-ui-shell .timeline-command-status-complete,\n.thread-ui-shell .timeline-command-status-pending,\n.thread-ui-shell .timeline-delta-badge,\n.thread-ui-shell .timeline-live-plan-step {\n  border-color: var(--theme-border);\n  background: var(--theme-muted);\n  color: var(--theme-fg-soft);\n}\n.thread-ui-shell .ui-status-neutral {\n  background: var(--theme-muted);\n  color: var(--theme-fg-soft);\n}\n.thread-ui-shell.thread-ui-theme-dark .ui-status-neutral,\n.thread-ui-shell[data-theme-effective=dark] .ui-status-neutral,\n.thread-ui-shell.dark .ui-status-neutral {\n  border-color: #303642;\n  background: #151923;\n  color: rgb(203 213 225);\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-room-card.is-active .ui-status-neutral,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-room-card.is-active .ui-status-neutral,\n.thread-ui-shell.dark .thread-graph-room-card.is-active .ui-status-neutral {\n  border-color: #424b5e;\n  background: #1a1f2a;\n  color: rgb(203 213 225);\n}\n.thread-ui-shell .ui-status-info {\n  background: oklch(0.94 0.03 235);\n  color: oklch(0.43 0.09 242);\n}\n.thread-ui-shell .ui-status-warning {\n  background: oklch(0.94 0.048 84);\n  color: oklch(0.46 0.08 75);\n}\n.thread-ui-shell .ui-status-success {\n  background: oklch(0.94 0.052 155);\n  color: oklch(0.43 0.095 155);\n}\n.thread-ui-shell .ui-status-danger {\n  background: oklch(0.94 0.04 25);\n  color: oklch(0.48 0.125 24);\n}\n.thread-ui-shell.thread-ui-theme-dark .ui-status-info,\n.thread-ui-shell[data-theme-effective=dark] .ui-status-info,\n.thread-ui-shell.dark .ui-status-info {\n  background: oklch(0.3 0.042 235);\n  color: oklch(0.77 0.1 235);\n}\n.thread-ui-shell.thread-ui-theme-dark .ui-status-warning,\n.thread-ui-shell[data-theme-effective=dark] .ui-status-warning,\n.thread-ui-shell.dark .ui-status-warning {\n  background: oklch(0.31 0.045 75);\n  color: oklch(0.83 0.11 80);\n}\n.thread-ui-shell.thread-ui-theme-dark .ui-status-success,\n.thread-ui-shell[data-theme-effective=dark] .ui-status-success,\n.thread-ui-shell.dark .ui-status-success {\n  background: oklch(0.31 0.05 155);\n  color: oklch(0.8 0.115 155);\n}\n.thread-ui-shell.thread-ui-theme-dark .ui-status-danger,\n.thread-ui-shell[data-theme-effective=dark] .ui-status-danger,\n.thread-ui-shell.dark .ui-status-danger {\n  background: oklch(0.31 0.052 25);\n  color: oklch(0.78 0.12 25);\n}\n.thread-ui-shell .thread-message-icon-user,\n.thread-ui-shell .thread-message-icon-agent {\n  border-color: transparent;\n  background: var(--theme-muted);\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-graph-thinking-trigger {\n  display: inline-flex;\n  align-items: center;\n  color: rgb(148 163 184);\n}\n.thread-ui-shell .thread-graph-thinking-trigger:hover,\n.thread-ui-shell .thread-graph-thinking-trigger[data-state=open] {\n  color: rgb(125 211 252);\n}\n.thread-ui-shell .thread-graph-thinking-label {\n  min-width: 0;\n}\n.thread-ui-shell .thread-graph-thinking-body {\n  border-color: rgb(42 47 58);\n  background: #1b1f29;\n  color: rgb(203 213 225);\n}\n.thread-ui-shell[data-theme-effective=light] .thread-graph-thinking-trigger {\n  color: rgb(100 116 139);\n}\n.thread-ui-shell[data-theme-effective=light] .thread-graph-thinking-trigger:hover,\n.thread-ui-shell[data-theme-effective=light] .thread-graph-thinking-trigger[data-state=open] {\n  color: rgb(3 105 161);\n}\n.thread-ui-shell[data-theme-effective=light] .thread-graph-thinking-body {\n  border-color: rgb(226 232 240);\n  background: rgb(248 250 252);\n  color: rgb(51 65 85);\n}\n.thread-ui-shell .timeline-corner-copy-visual {\n  border-color: var(--theme-border);\n  background: color-mix(in oklch, var(--theme-panel) 88%, transparent);\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-composer-form {\n  border-color: var(--theme-border);\n  background: var(--theme-surface);\n}\n.thread-ui-shell .thread-composer-toolbar,\n.thread-ui-shell .thread-composer-input,\n.thread-ui-shell .thread-composer-menu {\n  border-color: var(--theme-border);\n  background: var(--theme-panel);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-composer-toolbar {\n  border-radius: 0;\n  border: 0;\n  background: transparent;\n  box-shadow: none;\n  order: 2;\n  min-height: 2.75rem;\n  padding: 0.25rem 0.75rem 0.65rem;\n  flex-wrap: wrap;\n  align-items: center;\n}\n.thread-ui-shell .thread-composer-prompt-region {\n  order: 1;\n}\n.thread-ui-shell .thread-composer-input {\n  position: relative;\n  min-height: 5.25rem !important;\n  max-height: 12rem !important;\n  border: 0;\n  border-radius: 0;\n  background: transparent !important;\n  box-shadow: none;\n  overflow: visible;\n  padding-top: 0.7rem;\n  padding-bottom: 0.45rem;\n}\n.thread-ui-shell .thread-composer-input:focus-within {\n  border-color: transparent;\n  box-shadow: none;\n}\n.thread-ui-shell .thread-composer-input [contenteditable],\n.thread-ui-shell .thread-composer-input textarea {\n  display: block;\n  width: 100%;\n  min-width: 0;\n  background: transparent !important;\n  color: var(--theme-fg);\n  font-size: 1rem;\n  line-height: 1.55;\n}\n.thread-ui-shell .thread-composer-input [contenteditable] {\n  min-height: 4.15rem !important;\n  max-height: 9.5rem !important;\n  overflow-y: auto;\n}\n.thread-ui-shell .thread-composer-input textarea {\n  min-height: 4.15rem !important;\n  max-height: 9.5rem !important;\n  overflow-y: auto;\n  resize: none;\n}\n.thread-ui-shell .thread-composer-shell {\n  border: 1px solid var(--theme-border);\n  background: #fbfcfd;\n  box-shadow: 0 4px 18px oklch(0.22 0.024 255 / 0.04);\n}\n.thread-ui-shell .thread-composer-send-button {\n  flex: 0 0 auto;\n}\n.thread-ui-shell .thread-goal-compose-card {\n  border-color: color-mix(in oklch, var(--theme-accent-solid) 18%, var(--theme-border));\n  background: color-mix(in oklch, var(--theme-accent-solid) 7%, var(--theme-panel));\n  color: var(--theme-fg-soft);\n  box-shadow: 0 8px 18px rgb(15 23 42 / 0.05);\n}\n.thread-ui-shell .thread-goal-compose-label {\n  color: color-mix(in oklch, var(--theme-accent-solid) 68%, var(--theme-fg));\n}\n.thread-ui-shell .thread-goal-compose-field {\n  color: var(--theme-fg-soft);\n}\n.thread-ui-shell .thread-goal-compose-input {\n  border-color: color-mix(in oklch, var(--theme-accent-solid) 20%, var(--theme-border));\n  background: var(--theme-panel);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-goal-compose-input::placeholder {\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .thread-goal-compose-input:focus {\n  border-color: color-mix(in oklch, var(--theme-accent-solid) 48%, var(--theme-border));\n}\n.thread-ui-shell .thread-goal-compose-cancel {\n  border-color: var(--theme-border);\n  background: var(--theme-surface-strong);\n  color: var(--theme-fg-soft);\n}\n.thread-ui-shell .thread-goal-compose-cancel:hover {\n  background: var(--theme-hover);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .thread-goal-compose-error {\n  color: rgb(190 18 60);\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-goal-compose-card,\n.thread-ui-shell[data-theme-effective=dark] .thread-goal-compose-card,\n.thread-ui-shell.dark .thread-goal-compose-card {\n  border-color: rgb(125 211 252 / 0.25);\n  background: rgb(125 211 252 / 0.07);\n  color: rgb(226 232 240);\n  box-shadow: 0 8px 18px rgb(0 0 0 / 0.18);\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-goal-compose-label,\n.thread-ui-shell[data-theme-effective=dark] .thread-goal-compose-label,\n.thread-ui-shell.dark .thread-goal-compose-label {\n  color: rgb(224 242 254 / 0.9);\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-goal-compose-field,\n.thread-ui-shell[data-theme-effective=dark] .thread-goal-compose-field,\n.thread-ui-shell.dark .thread-goal-compose-field {\n  color: rgb(203 213 225);\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-goal-compose-input,\n.thread-ui-shell[data-theme-effective=dark] .thread-goal-compose-input,\n.thread-ui-shell.dark .thread-goal-compose-input {\n  border-color: rgb(125 211 252 / 0.25);\n  background: rgb(2 6 23 / 0.46);\n  color: rgb(241 245 249);\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-goal-compose-cancel,\n.thread-ui-shell[data-theme-effective=dark] .thread-goal-compose-cancel,\n.thread-ui-shell.dark .thread-goal-compose-cancel {\n  border-color: #343b48;\n  background: #1d222c;\n  color: rgb(203 213 225);\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-goal-compose-cancel:hover,\n.thread-ui-shell[data-theme-effective=dark] .thread-goal-compose-cancel:hover,\n.thread-ui-shell.dark .thread-goal-compose-cancel:hover {\n  background: #222733;\n  color: rgb(241 245 249);\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-goal-compose-error,\n.thread-ui-shell[data-theme-effective=dark] .thread-goal-compose-error,\n.thread-ui-shell.dark .thread-goal-compose-error {\n  color: rgb(254 205 211);\n}\n@media (min-width: 640px) {\n  .thread-ui-shell:not([data-thread-layout=mobile]) .thread-composer-shell {\n    border-radius: 16px;\n  }\n  .thread-ui-shell:not([data-thread-layout=mobile]) .thread-composer-input {\n    min-height: 5.75rem !important;\n    max-height: 12.5rem !important;\n    padding-top: 0.9rem;\n  }\n  .thread-ui-shell:not([data-thread-layout=mobile]) .thread-composer-input [contenteditable],\n  .thread-ui-shell:not([data-thread-layout=mobile]) .thread-composer-input textarea {\n    min-height: 4.5rem !important;\n    max-height: 10rem !important;\n    font-size: 0.875rem;\n  }\n}\n.thread-ui-shell:not([data-thread-layout=mobile]) .thread-composer-form {\n  padding: 0.5rem 1rem 0.75rem;\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-composer-shell,\n.thread-ui-shell[data-theme-effective=dark] .thread-composer-shell,\n.thread-ui-shell.dark .thread-composer-shell {\n  border-color: #303642;\n  background: #181b23;\n  box-shadow: 0 8px 24px oklch(0 0 0 / 0.22);\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-composer-toolbar,\n.thread-ui-shell[data-theme-effective=dark] .thread-composer-toolbar,\n.thread-ui-shell.dark .thread-composer-toolbar,\n.thread-ui-shell.thread-ui-theme-dark .thread-composer-input,\n.thread-ui-shell[data-theme-effective=dark] .thread-composer-input,\n.thread-ui-shell.dark .thread-composer-input {\n  border-color: #303642 !important;\n  background: transparent !important;\n  color: rgb(241 245 249) !important;\n  box-shadow: none !important;\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-composer-input [contenteditable],\n.thread-ui-shell[data-theme-effective=dark] .thread-composer-input [contenteditable],\n.thread-ui-shell.dark .thread-composer-input [contenteditable],\n.thread-ui-shell.thread-ui-theme-dark .thread-composer-input textarea,\n.thread-ui-shell[data-theme-effective=dark] .thread-composer-input textarea,\n.thread-ui-shell.dark .thread-composer-input textarea {\n  background: transparent !important;\n  color: rgb(241 245 249) !important;\n}\n.thread-ui-shell .thread-graph-composer-form {\n  border-color: var(--theme-border);\n  background: var(--theme-surface);\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-composer-form,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-composer-form,\n.thread-ui-shell.dark .thread-graph-composer-form {\n  border-color: var(--theme-border);\n  background: var(--theme-surface);\n}\n.thread-ui-shell .thread-graph-composer-shell {\n  border: 1px solid var(--theme-border);\n  background: var(--theme-panel);\n  box-shadow: 0 4px 18px oklch(0.22 0.024 255 / 0.04);\n  overflow: visible !important;\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-composer-shell,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-composer-shell,\n.thread-ui-shell.dark .thread-graph-composer-shell {\n  border-color: var(--theme-border-strong);\n  background: var(--theme-panel);\n  box-shadow: 0 8px 24px oklch(0 0 0 / 0.22);\n}\n.thread-ui-shell .thread-graph-composer-input-group {\n  order: 1;\n  display: flex;\n  flex-direction: column;\n  align-items: stretch;\n  height: auto;\n  min-height: 0;\n  color: rgb(30 41 59);\n  overflow: visible !important;\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-composer-input-group,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-composer-input-group,\n.thread-ui-shell.dark .thread-graph-composer-input-group {\n  color: rgb(241 245 249);\n}\n.thread-ui-shell .thread-graph-composer-prompt-region {\n  order: 1;\n}\n.thread-ui-shell .thread-graph-composer-input {\n  position: relative;\n  border: 0;\n  background: transparent;\n  color: rgb(30 41 59);\n  box-shadow: none;\n  overflow-y: auto;\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-composer-input,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-composer-input,\n.thread-ui-shell.dark .thread-graph-composer-input {\n  color: rgb(241 245 249);\n}\n.thread-ui-shell .thread-graph-composer-input [contenteditable] {\n  display: block;\n  width: 100%;\n  min-width: 0;\n  overflow-y: auto;\n  background: transparent;\n  color: inherit;\n}\n.thread-ui-shell .thread-graph-composer-input .thread-composer-attachment-chip,\n.thread-ui-shell .thread-composer-input .thread-composer-attachment-chip {\n  box-sizing: border-box;\n  flex: 0 0 auto;\n  width: max-content !important;\n  max-width: min(100%, 7.25rem) !important;\n  vertical-align: middle;\n}\n.thread-ui-shell .thread-graph-composer-input .thread-composer-attachment-chip-photo,\n.thread-ui-shell .thread-composer-input .thread-composer-attachment-chip-photo {\n  display: inline-flex !important;\n  flex-direction: column;\n  align-items: flex-start;\n  gap: 0.25rem;\n  padding: 0.35rem !important;\n}\n.thread-ui-shell .thread-graph-composer-input .thread-composer-attachment-thumb,\n.thread-ui-shell .thread-composer-input .thread-composer-attachment-thumb {\n  display: block;\n  width: 5.75rem !important;\n  height: 3.75rem !important;\n  max-width: 100%;\n  border-radius: 0.6rem !important;\n  object-fit: cover;\n}\n.thread-ui-shell .thread-graph-composer-input .thread-composer-attachment-caption,\n.thread-ui-shell .thread-composer-input .thread-composer-attachment-caption {\n  display: block !important;\n  width: 100%;\n  max-width: 5.75rem !important;\n  margin-left: 0 !important;\n  overflow: hidden;\n  color: rgb(3 105 161);\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-composer-input .thread-composer-attachment-caption,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-composer-input .thread-composer-attachment-caption,\n:root[data-theme-effective=dark] .thread-ui-shell .thread-graph-composer-input .thread-composer-attachment-caption,\n.thread-ui-shell.dark .thread-graph-composer-input .thread-composer-attachment-caption,\n.thread-ui-shell.thread-ui-theme-dark .thread-composer-input .thread-composer-attachment-caption,\n.thread-ui-shell[data-theme-effective=dark] .thread-composer-input .thread-composer-attachment-caption,\n:root[data-theme-effective=dark] .thread-ui-shell .thread-composer-input .thread-composer-attachment-caption,\n.thread-ui-shell.dark .thread-composer-input .thread-composer-attachment-caption {\n  color: rgb(125 211 252);\n}\n.thread-ui-shell .thread-graph-composer-toolbar {\n  order: 2;\n  width: 100%;\n  min-height: 2.75rem;\n  flex-wrap: wrap;\n  justify-content: flex-start;\n  gap: 0.5rem;\n  border: 0;\n  background: transparent;\n  padding: 0 0.5rem 0.5rem;\n  color: rgb(100 116 139);\n  box-shadow: none;\n  overflow: visible !important;\n}\n@media (min-width: 640px) {\n  .thread-ui-shell:not([data-thread-layout=mobile]) .thread-graph-composer-toolbar {\n    flex-wrap: nowrap;\n    padding: 0 0.75rem 0.75rem;\n  }\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-composer-toolbar,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-composer-toolbar,\n.thread-ui-shell.dark .thread-graph-composer-toolbar {\n  color: rgb(148 163 184);\n}\n.thread-ui-shell .thread-graph-composer-send-button {\n  flex: 0 0 auto;\n}\n.thread-ui-shell .thread-graph-composer-stop-button {\n  border-color: rgb(244 63 94 / 0.28) !important;\n  box-shadow: 0 8px 18px rgb(15 23 42 / 0.14);\n}\n.thread-ui-shell .thread-graph-composer-prompt-region .thread-graph-composer-stop-button {\n  position: absolute;\n}\n@media (max-width: 639px) {\n  .thread-ui-shell .thread-graph-composer-form {\n    padding: 0.35rem 0.55rem calc(env(safe-area-inset-bottom) + 0.35rem) !important;\n  }\n  .thread-ui-shell .thread-graph-composer-shell {\n    border-radius: 14px !important;\n  }\n  .thread-ui-shell .thread-graph-composer-input {\n    min-height: 3.65rem !important;\n    max-height: 7.5rem !important;\n    padding: 0.65rem 0.75rem 0.2rem !important;\n  }\n  .thread-ui-shell .thread-graph-composer-input [contenteditable] {\n    min-height: 3rem !important;\n    padding-right: 2.5rem;\n  }\n  .thread-ui-shell .thread-graph-composer-toolbar {\n    min-height: 2.35rem;\n    gap: 0.3rem;\n    padding: 0 0.45rem 0.45rem;\n  }\n  .thread-ui-shell .thread-graph-composer-toolbar > .flex {\n    min-width: 0;\n    gap: 0.3rem;\n  }\n  .thread-ui-shell .thread-graph-composer-icon-button,\n  .thread-ui-shell .thread-graph-composer-send-button {\n    width: 1.95rem !important;\n    height: 1.95rem !important;\n  }\n  .thread-ui-shell .thread-graph-composer-inline-toggle {\n    height: 1.95rem;\n    max-width: 6.75rem !important;\n    padding-left: 0.5rem !important;\n    padding-right: 0.5rem !important;\n    font-size: 0.6875rem;\n  }\n  .thread-ui-shell .thread-graph-composer-stop-button {\n    top: 0.45rem !important;\n    right: 0.45rem !important;\n    width: 1.8rem !important;\n    height: 1.8rem !important;\n  }\n}\n.thread-ui-shell .thread-composer-icon-button,\n.thread-ui-shell .thread-composer-inline-toggle,\n.thread-ui-shell .thread-composer-chip-button,\n.thread-ui-shell .thread-composer-menu-item,\n.thread-ui-shell .thread-composer-panel-button,\n.thread-ui-shell .thread-graph-composer-icon-button,\n.thread-ui-shell .thread-graph-composer-inline-toggle,\n.thread-ui-shell .thread-graph-composer-chip-button,\n.thread-ui-shell .thread-graph-composer-menu-item,\n.thread-ui-shell .thread-graph-composer-panel-button {\n  border-color: var(--theme-border) !important;\n  background: transparent !important;\n  color: var(--theme-fg-soft) !important;\n}\n.thread-ui-shell .thread-composer-icon-button:hover,\n.thread-ui-shell .thread-composer-inline-toggle:hover,\n.thread-ui-shell .thread-composer-chip-button:hover,\n.thread-ui-shell .thread-composer-menu-item:hover,\n.thread-ui-shell .thread-composer-panel-button:hover,\n.thread-ui-shell .thread-graph-composer-icon-button:hover,\n.thread-ui-shell .thread-graph-composer-inline-toggle:hover,\n.thread-ui-shell .thread-graph-composer-chip-button:hover,\n.thread-ui-shell .thread-graph-composer-menu-item:hover,\n.thread-ui-shell .thread-graph-composer-panel-button:hover {\n  background: var(--theme-hover) !important;\n  color: var(--theme-fg) !important;\n}\n.thread-ui-shell .thread-composer-icon-button,\n.thread-ui-shell .thread-graph-composer-icon-button {\n  background: var(--theme-muted) !important;\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-composer-icon-button,\n.thread-ui-shell[data-theme-effective=dark] .thread-composer-icon-button,\n.thread-ui-shell.dark .thread-composer-icon-button,\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-composer-icon-button,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-composer-icon-button,\n.thread-ui-shell.dark .thread-graph-composer-icon-button {\n  border-color: #303642 !important;\n  background: #222733 !important;\n  color: rgb(203 213 225) !important;\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-composer-icon-button:hover,\n.thread-ui-shell[data-theme-effective=dark] .thread-composer-icon-button:hover,\n.thread-ui-shell.dark .thread-composer-icon-button:hover,\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-composer-icon-button:hover,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-composer-icon-button:hover,\n.thread-ui-shell.dark .thread-graph-composer-icon-button:hover {\n  background: #2b313d !important;\n  color: rgb(241 245 249) !important;\n}\n.thread-ui-shell .thread-composer-menu,\n.thread-ui-shell .thread-graph-composer-menu {\n  border-radius: 12px;\n  border-color: var(--theme-border) !important;\n  background: color-mix(in oklch, var(--theme-panel) 96%, transparent) !important;\n  color: var(--theme-fg) !important;\n  box-shadow: 0 16px 38px oklch(0.22 0.024 255 / 0.16);\n  z-index: 80;\n}\n.thread-ui-shell [data-composer-menu-surface=true] {\n  border-color: var(--theme-border) !important;\n  background: color-mix(in oklch, var(--theme-panel) 96%, transparent) !important;\n  color: var(--theme-fg) !important;\n  box-shadow: 0 16px 38px oklch(0.22 0.024 255 / 0.16) !important;\n}\n.thread-ui-shell .thread-graph-composer-menu {\n  max-height: min(27rem, calc(100svh - 8rem));\n  overflow: auto !important;\n}\n.thread-ui-shell :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(input, textarea, select) {\n  border-color: var(--theme-border) !important;\n  background: var(--theme-panel) !important;\n  color: var(--theme-fg) !important;\n}\n.thread-ui-shell :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(input, textarea)::placeholder {\n  color: var(--theme-fg-muted) !important;\n}\n.thread-ui-shell :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(input, textarea, select):focus {\n  border-color: color-mix(in oklch, var(--theme-accent-solid) 38%, var(--theme-border)) !important;\n}\n.thread-ui-shell :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(.border-sky-300\\/35, .border-emerald-400\\/45) {\n  border-color: color-mix(in oklch, var(--theme-accent-solid) 24%, var(--theme-border)) !important;\n}\n.thread-ui-shell :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(.bg-sky-300\\/10, .bg-sky-300\\/12, .bg-emerald-400\\/12) {\n  background: color-mix(in oklch, var(--theme-accent-solid) 8%, var(--theme-panel)) !important;\n}\n.thread-ui-shell :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(.text-rose-100\\/90, .text-rose-200) {\n  color: rgb(190 18 60) !important;\n}\n.thread-ui-shell :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(.text-amber-100\\/85, .text-amber-100\\/60) {\n  color: rgb(146 64 14) !important;\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-composer-menu,\n.thread-ui-shell[data-theme-effective=dark] .thread-composer-menu,\n:root[data-theme-effective=dark] .thread-ui-shell .thread-composer-menu,\n.thread-ui-shell.dark .thread-composer-menu,\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-composer-menu,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-composer-menu,\n:root[data-theme-effective=dark] .thread-ui-shell .thread-graph-composer-menu,\n.thread-ui-shell.dark .thread-graph-composer-menu,\n.thread-ui-shell.thread-ui-theme-dark [data-composer-menu-surface=true],\n.thread-ui-shell[data-theme-effective=dark] [data-composer-menu-surface=true],\n:root[data-theme-effective=dark] .thread-ui-shell [data-composer-menu-surface=true],\n.thread-ui-shell.dark [data-composer-menu-surface=true] {\n  border-color: #303642 !important;\n  background: rgb(23 26 34 / 0.96) !important;\n  color: rgb(241 245 249) !important;\n  box-shadow: 0 18px 48px rgb(0 0 0 / 0.28) !important;\n}\n.thread-ui-shell.thread-ui-theme-dark :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(input, textarea, select),\n.thread-ui-shell[data-theme-effective=dark] :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(input, textarea, select),\n:root[data-theme-effective=dark] .thread-ui-shell :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(input, textarea, select),\n.thread-ui-shell.dark :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(input, textarea, select) {\n  border-color: #303642 !important;\n  background: #11141a !important;\n  color: rgb(241 245 249) !important;\n}\n.thread-ui-shell.thread-ui-theme-dark :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(.text-rose-100\\/90, .text-rose-200),\n.thread-ui-shell[data-theme-effective=dark] :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(.text-rose-100\\/90, .text-rose-200),\n:root[data-theme-effective=dark] .thread-ui-shell :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(.text-rose-100\\/90, .text-rose-200),\n.thread-ui-shell.dark :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(.text-rose-100\\/90, .text-rose-200) {\n  color: rgb(254 205 211) !important;\n}\n.thread-ui-shell.thread-ui-theme-dark :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(.text-amber-100\\/85, .text-amber-100\\/60),\n.thread-ui-shell[data-theme-effective=dark] :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(.text-amber-100\\/85, .text-amber-100\\/60),\n:root[data-theme-effective=dark] .thread-ui-shell :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(.text-amber-100\\/85, .text-amber-100\\/60),\n.thread-ui-shell.dark :where(.thread-composer-menu, .thread-graph-composer-menu, [data-composer-menu-surface=true]) :where(.text-amber-100\\/85, .text-amber-100\\/60) {\n  color: rgb(253 230 138) !important;\n}\n.thread-ui-shell .thread-composer-plan-toggle-active,\n.thread-ui-shell .thread-graph-composer-plan-toggle-active {\n  border-color: oklch(0.76 0.17 88 / 0.72) !important;\n  background:\n    linear-gradient(\n      135deg,\n      oklch(0.78 0.16 86 / 0.26),\n      oklch(0.64 0.12 190 / 0.2)),\n    var(--theme-accent-soft) !important;\n  color: oklch(0.92 0.09 92) !important;\n  box-shadow:\n    0 0 0 1px oklch(0.78 0.16 86 / 0.22),\n    0 0 18px oklch(0.78 0.16 86 / 0.28),\n    inset 0 0 0 1px oklch(0.95 0.04 90 / 0.16) !important;\n}\n.thread-ui-shell .thread-jump-latest-badge {\n  border-color: var(--theme-border);\n  background: var(--theme-panel);\n  color: var(--theme-fg-muted);\n}\n.thread-ui-shell .ui-action-primary {\n  background: var(--theme-accent-solid);\n  color: var(--theme-accent-solid-fg);\n}\n.thread-ui-shell .ui-action-primary:hover {\n  background: var(--theme-accent-solid-hover);\n}\n.thread-ui-shell .ui-action-info {\n  background: oklch(0.46 0.1 235);\n  color: oklch(0.98 0.005 235);\n}\n.thread-ui-shell .ui-action-danger {\n  background: oklch(0.56 0.16 25);\n  color: oklch(0.98 0.005 25);\n}\n.thread-ui-shell .thread-composer-send-button.ui-action-danger,\n.thread-ui-shell .thread-graph-composer-send-button.ui-action-danger {\n  border: 1px solid var(--theme-border) !important;\n  background: var(--theme-muted) !important;\n  color: var(--theme-fg-soft) !important;\n}\n.thread-ui-shell.thread-ui-theme-dark .thread-composer-send-button.ui-action-danger,\n.thread-ui-shell[data-theme-effective=dark] .thread-composer-send-button.ui-action-danger,\n.thread-ui-shell.dark .thread-composer-send-button.ui-action-danger,\n.thread-ui-shell.thread-ui-theme-dark .thread-graph-composer-send-button.ui-action-danger,\n.thread-ui-shell[data-theme-effective=dark] .thread-graph-composer-send-button.ui-action-danger,\n.thread-ui-shell.dark .thread-graph-composer-send-button.ui-action-danger {\n  border-color: #303642 !important;\n  background: #222733 !important;\n  color: rgb(241 245 249) !important;\n}\n.thread-ui-shell .thread-composer-send-button.ui-action-danger:hover,\n.thread-ui-shell .thread-graph-composer-send-button.ui-action-danger:hover {\n  background: var(--theme-hover) !important;\n  color: var(--theme-fg) !important;\n}\n.thread-ui-shell .thread-empty-surface,\n.thread-ui-shell .timeline-pending-card,\n.thread-ui-shell .timeline-note-card,\n.thread-ui-shell .timeline-activity-card,\n.thread-ui-shell .timeline-live-plan-card,\n.thread-ui-shell .timeline-question-section,\n.thread-ui-shell .timeline-live-plan-step,\n.thread-ui-shell .timeline-detail-row {\n  border-color: var(--theme-border);\n  background: var(--theme-panel);\n  color: var(--theme-fg);\n}\n.thread-ui-shell .prose,\n.thread-ui-shell .prose :where(p, li, strong, code, pre, blockquote) {\n  color: inherit;\n}\n.thread-ui-shell .prose img {\n  max-width: min(28rem, 100%);\n  height: auto;\n  border-radius: 10px;\n  border: 1px solid var(--theme-border);\n  box-shadow: 0 12px 35px oklch(0.22 0.024 255 / 0.14);\n  margin-top: 0.75rem;\n  margin-bottom: 0.75rem;\n}\n.thread-ui-shell .thread-graph-plan-card {\n  border-color: rgb(42 47 58);\n  background: #1b1f29;\n  color: rgb(241 245 249);\n  box-shadow: none;\n}\n.thread-ui-shell .thread-graph-plan-step {\n  border-color: rgb(48 54 66);\n  background: #181b23;\n  color: rgb(241 245 249);\n}\n.thread-ui-shell .thread-graph-plan-explanation {\n  color: rgb(148 163 184);\n}\n.thread-ui-shell .thread-graph-plan-badge {\n  border-color: transparent;\n  background: rgb(56 189 248 / 0.12);\n  color: rgb(186 230 253);\n  box-shadow: none;\n  text-transform: uppercase;\n  letter-spacing: 0.16em;\n}\n.thread-ui-shell .thread-graph-plan-status {\n  height: 1.75rem;\n  min-width: 1.75rem;\n  padding: 0;\n  border-color: transparent;\n  box-shadow: none;\n}\n.thread-ui-shell .thread-graph-plan-status.is-completed {\n  background: rgb(52 211 153 / 0.14);\n  color: rgb(167 243 208);\n}\n.thread-ui-shell .thread-graph-plan-status.is-running {\n  background: rgb(56 189 248 / 0.14);\n  color: rgb(186 230 253);\n}\n.thread-ui-shell .thread-graph-plan-status.is-pending,\n.thread-ui-shell .thread-graph-plan-status.is-unknown {\n  background: #2b313d;\n  color: rgb(203 213 225);\n}\n.thread-ui-shell .thread-graph-plan-status.is-failed {\n  background: rgb(251 113 133 / 0.14);\n  color: rgb(254 205 211);\n}\n.thread-ui-shell[data-theme-effective=light] .thread-graph-plan-card {\n  border-color: rgb(226 232 240);\n  background: rgb(248 250 252);\n  color: rgb(15 23 42);\n}\n.thread-ui-shell[data-theme-effective=light] .thread-graph-plan-step {\n  border-color: rgb(226 232 240);\n  background: rgb(255 255 255);\n  color: rgb(15 23 42);\n}\n.thread-ui-shell[data-theme-effective=light] .thread-graph-plan-explanation {\n  color: rgb(100 116 139);\n}\n.thread-ui-shell[data-theme-effective=light] .thread-graph-plan-badge {\n  background: rgb(14 165 233 / 0.1);\n  color: rgb(3 105 161);\n}\n.thread-ui-shell[data-theme-effective=light] .thread-graph-plan-status.is-completed {\n  background: rgb(16 185 129 / 0.12);\n  color: rgb(4 120 87);\n}\n.thread-ui-shell[data-theme-effective=light] .thread-graph-plan-status.is-running {\n  background: rgb(14 165 233 / 0.12);\n  color: rgb(3 105 161);\n}\n.thread-ui-shell[data-theme-effective=light] .thread-graph-plan-status.is-pending,\n.thread-ui-shell[data-theme-effective=light] .thread-graph-plan-status.is-unknown {\n  background: rgb(226 232 240);\n  color: rgb(71 85 105);\n}\n.thread-ui-shell[data-theme-effective=light] .thread-graph-plan-status.is-failed {\n  background: rgb(244 63 94 / 0.12);\n  color: rgb(190 18 60);\n}\n.thread-ui-shell .thread-graph-event {\n  background: transparent !important;\n  color: var(--theme-fg) !important;\n}\n.thread-ui-shell .thread-graph-event-card {\n  background: var(--theme-surface) !important;\n  color: var(--theme-fg) !important;\n}\n.thread-ui-shell .thread-graph-plan-card,\n.thread-ui-shell .thread-graph-plan-step,\n.thread-ui-shell .thread-graph-plan-step-text {\n  color: rgb(241 245 249) !important;\n}\n.thread-ui-shell[data-theme-effective=light] .thread-graph-plan-card,\n.thread-ui-shell[data-theme-effective=light] .thread-graph-plan-step,\n.thread-ui-shell[data-theme-effective=light] .thread-graph-plan-step-text {\n  color: rgb(15 23 42) !important;\n}\n");
@@ -6020,12 +1050,10 @@ function restoreSelectionAfterInsertedAttachments(editor, insertedClientIds) {
 }
 
 // src/components/graph-ui/InputGroup.tsx
-init_Button();
-init_utils();
-import { cva as cva2 } from "class-variance-authority";
-import { jsx as jsx3 } from "react/jsx-runtime";
+import { cva } from "class-variance-authority";
+import { jsx as jsx2 } from "react/jsx-runtime";
 function InputGroup({ className, ...props }) {
-  return /* @__PURE__ */ jsx3(
+  return /* @__PURE__ */ jsx2(
     "div",
     {
       "data-slot": "input-group",
@@ -6041,7 +1069,7 @@ function InputGroup({ className, ...props }) {
     }
   );
 }
-var inputGroupAddonVariants = cva2(
+var inputGroupAddonVariants = cva(
   "flex h-auto cursor-text items-center justify-center gap-2 py-1.5 text-sm font-medium select-none [&>svg:not([class*=size-])]:size-4",
   {
     variants: {
@@ -6062,7 +1090,7 @@ function InputGroupAddon({
   align = "inline-start",
   ...props
 }) {
-  return /* @__PURE__ */ jsx3(
+  return /* @__PURE__ */ jsx2(
     "div",
     {
       role: "group",
@@ -6082,7 +1110,7 @@ function InputGroupAddon({
     }
   );
 }
-var inputGroupButtonVariants = cva2("flex items-center gap-2 text-sm shadow-none", {
+var inputGroupButtonVariants = cva("flex items-center gap-2 text-sm shadow-none", {
   variants: {
     size: {
       xs: "h-6 gap-1 rounded-[calc(var(--radius)-5px)] px-2 has-[>svg]:px-2 [&>svg:not([class*=size-])]:size-3.5",
@@ -6102,7 +1130,7 @@ function InputGroupButton({
   size = "xs",
   ...props
 }) {
-  return /* @__PURE__ */ jsx3(
+  return /* @__PURE__ */ jsx2(
     Button,
     {
       type,
@@ -6114,7 +1142,7 @@ function InputGroupButton({
   );
 }
 function InputGroupText({ className, ...props }) {
-  return /* @__PURE__ */ jsx3(
+  return /* @__PURE__ */ jsx2(
     "span",
     {
       className: cn(
@@ -6127,7 +1155,7 @@ function InputGroupText({ className, ...props }) {
 }
 
 // src/components/composer/ComposerHiddenAttachmentInputs.tsx
-import { Fragment, jsx as jsx4, jsxs as jsxs2 } from "react/jsx-runtime";
+import { Fragment, jsx as jsx3, jsxs as jsxs2 } from "react/jsx-runtime";
 function ComposerHiddenAttachmentInputs({
   photoInputRef,
   fileInputRef,
@@ -6138,7 +1166,7 @@ function ComposerHiddenAttachmentInputs({
     event.target.value = "";
   }
   return /* @__PURE__ */ jsxs2(Fragment, { children: [
-    /* @__PURE__ */ jsx4(
+    /* @__PURE__ */ jsx3(
       "input",
       {
         ref: photoInputRef,
@@ -6150,7 +1178,7 @@ function ComposerHiddenAttachmentInputs({
         onChange: (event) => handleInputChange(event, "photo")
       }
     ),
-    /* @__PURE__ */ jsx4(
+    /* @__PURE__ */ jsx3(
       "input",
       {
         ref: fileInputRef,
@@ -6166,7 +1194,7 @@ function ComposerHiddenAttachmentInputs({
 
 // src/components/composer/ComposerSubscriptionUsage.tsx
 import { useState } from "react";
-import { jsx as jsx5, jsxs as jsxs3 } from "react/jsx-runtime";
+import { jsx as jsx4, jsxs as jsxs3 } from "react/jsx-runtime";
 function resetLabel(value) {
   if (!value) return "reset time unavailable";
   const date = new Date(value);
@@ -6197,13 +1225,13 @@ function ComposerSubscriptionUsage({
           const remaining = Math.max(0, Math.min(100, 100 - window2.usedPercent));
           const hue = Math.round(18 + remaining / 100 * 190);
           return /* @__PURE__ */ jsxs3("span", { className: "inline-flex items-center gap-0.5", children: [
-            /* @__PURE__ */ jsx5("span", { className: "font-normal tracking-[-0.01em]", children: window2.label }),
-            /* @__PURE__ */ jsx5(
+            /* @__PURE__ */ jsx4("span", { className: "font-normal tracking-[-0.01em]", children: window2.label }),
+            /* @__PURE__ */ jsx4(
               "span",
               {
                 "data-subscription-window-track": "true",
                 className: "h-0.5 w-7 overflow-hidden rounded-full bg-stone-600/55 sm:w-9",
-                children: /* @__PURE__ */ jsx5(
+                children: /* @__PURE__ */ jsx4(
                   "span",
                   {
                     className: "block h-full rounded-full transition-[width] duration-500 ease-out",
@@ -6240,7 +1268,7 @@ function ComposerSubscriptionUsage({
 }
 
 // src/components/composer/ComposerJumpLatestButton.tsx
-import { jsx as jsx6, jsxs as jsxs4 } from "react/jsx-runtime";
+import { jsx as jsx5, jsxs as jsxs4 } from "react/jsx-runtime";
 function ComposerJumpLatestButton({
   activeView,
   followTail,
@@ -6262,7 +1290,7 @@ function ComposerJumpLatestButton({
         "aria-label": "Timeline navigation",
         className: `thread-jump-latest-badge pointer-events-auto absolute bottom-1 left-1/2 inline-flex h-5 min-w-[7.5rem] -translate-x-1/2 overflow-hidden rounded-[0.7rem] border shadow-sm transition ${followTail ? "is-active border-sky-300/36 bg-sky-300/[0.03] text-sky-100/86" : "border-stone-500/70 bg-stone-950/[0.08] text-stone-200/86"}`,
         children: [
-          /* @__PURE__ */ jsx6(
+          /* @__PURE__ */ jsx5(
             "button",
             {
               type: "button",
@@ -6271,11 +1299,11 @@ function ComposerJumpLatestButton({
               disabled: !canJumpToPreviousTurn,
               onClick: () => onJumpToPreviousTurn?.(),
               className: "inline-flex w-10 items-center justify-center transition hover:bg-sky-300/10 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-inset focus-visible:ring-sky-200/70 disabled:cursor-default disabled:opacity-35",
-              children: /* @__PURE__ */ jsx6("svg", { "aria-hidden": "true", viewBox: "0 0 16 16", className: "h-3.5 w-3.5 fill-none stroke-current", strokeWidth: "1.5", strokeLinecap: "round", strokeLinejoin: "round", children: /* @__PURE__ */ jsx6("path", { d: "M3.5 12h9M8 10V5M6 7l2-2 2 2" }) })
+              children: /* @__PURE__ */ jsx5("svg", { "aria-hidden": "true", viewBox: "0 0 16 16", className: "h-3.5 w-3.5 fill-none stroke-current", strokeWidth: "1.5", strokeLinecap: "round", strokeLinejoin: "round", children: /* @__PURE__ */ jsx5("path", { d: "M3.5 12h9M8 10V5M6 7l2-2 2 2" }) })
             }
           ),
-          /* @__PURE__ */ jsx6("span", { "aria-hidden": "true", className: "w-px bg-current opacity-20" }),
-          /* @__PURE__ */ jsx6(
+          /* @__PURE__ */ jsx5("span", { "aria-hidden": "true", className: "w-px bg-current opacity-20" }),
+          /* @__PURE__ */ jsx5(
             "button",
             {
               type: "button",
@@ -6283,7 +1311,7 @@ function ComposerJumpLatestButton({
               title: followTail ? "Latest messages are in view" : "Jump to the bottom",
               onClick: () => onToggleFollow?.(),
               className: "inline-flex w-10 items-center justify-center transition hover:bg-sky-300/10 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-inset focus-visible:ring-sky-200/70",
-              children: /* @__PURE__ */ jsx6(
+              children: /* @__PURE__ */ jsx5(
                 "svg",
                 {
                   "aria-hidden": "true",
@@ -6292,13 +1320,13 @@ function ComposerJumpLatestButton({
                   strokeWidth: "1.5",
                   strokeLinecap: "round",
                   strokeLinejoin: "round",
-                  children: /* @__PURE__ */ jsx6("path", { d: "m4 5.5 4 4 4-4M3.5 12.5h9" })
+                  children: /* @__PURE__ */ jsx5("path", { d: "m4 5.5 4 4 4-4M3.5 12.5h9" })
                 }
               )
             }
           ),
-          /* @__PURE__ */ jsx6("span", { "aria-hidden": "true", className: "w-px bg-current opacity-20" }),
-          /* @__PURE__ */ jsx6(
+          /* @__PURE__ */ jsx5("span", { "aria-hidden": "true", className: "w-px bg-current opacity-20" }),
+          /* @__PURE__ */ jsx5(
             "button",
             {
               type: "button",
@@ -6307,18 +1335,18 @@ function ComposerJumpLatestButton({
               disabled: !canJumpToNextTurn,
               onClick: () => onJumpToNextTurn?.(),
               className: "inline-flex w-10 items-center justify-center transition hover:bg-sky-300/10 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-inset focus-visible:ring-sky-200/70 disabled:cursor-default disabled:opacity-35",
-              children: /* @__PURE__ */ jsx6("svg", { "aria-hidden": "true", viewBox: "0 0 16 16", className: "h-3.5 w-3.5 fill-none stroke-current", strokeWidth: "1.5", strokeLinecap: "round", strokeLinejoin: "round", children: /* @__PURE__ */ jsx6("path", { d: "M3.5 4h9M8 6v5m-2-2 2 2 2-2" }) })
+              children: /* @__PURE__ */ jsx5("svg", { "aria-hidden": "true", viewBox: "0 0 16 16", className: "h-3.5 w-3.5 fill-none stroke-current", strokeWidth: "1.5", strokeLinecap: "round", strokeLinejoin: "round", children: /* @__PURE__ */ jsx5("path", { d: "M3.5 4h9M8 6v5m-2-2 2 2 2-2" }) })
             }
           )
         ]
       }
     ),
-    /* @__PURE__ */ jsx6(ComposerSubscriptionUsage, { usage: subscriptionUsage })
+    /* @__PURE__ */ jsx5(ComposerSubscriptionUsage, { usage: subscriptionUsage })
   ] });
 }
 
 // src/components/composer/ComposerFrame.tsx
-import { jsx as jsx7, jsxs as jsxs5 } from "react/jsx-runtime";
+import { jsx as jsx6, jsxs as jsxs5 } from "react/jsx-runtime";
 function ComposerFrame({
   activeView,
   layerClassName,
@@ -6345,7 +1373,7 @@ function ComposerFrame({
   shellPromptSlot
 }) {
   return /* @__PURE__ */ jsxs5("div", { className: layerClassName, children: [
-    /* @__PURE__ */ jsx7(
+    /* @__PURE__ */ jsx6(
       ComposerHiddenAttachmentInputs,
       {
         photoInputRef,
@@ -6353,7 +1381,7 @@ function ComposerFrame({
         onAppendAttachments
       }
     ),
-    /* @__PURE__ */ jsx7(
+    /* @__PURE__ */ jsx6(
       ComposerJumpLatestButton,
       {
         activeView,
@@ -6389,7 +1417,7 @@ function ComposerFrame({
               ]
             }
           ),
-          error ? /* @__PURE__ */ jsx7("div", { className: "mt-2 rounded-2xl border border-rose-500/40 bg-rose-500/10 px-4 py-3 text-sm text-rose-200", children: error }) : null
+          error ? /* @__PURE__ */ jsx6("div", { className: "mt-2 rounded-2xl border border-rose-500/40 bg-rose-500/10 px-4 py-3 text-sm text-rose-200", children: error }) : null
         ]
       }
     )
@@ -6399,7 +1427,7 @@ function ComposerFrame({
 // src/components/composer/ComposerPendingQueue.tsx
 import { CornerUpRight, Loader2, X } from "lucide-react";
 import { useState as useState2 } from "react";
-import { Fragment as Fragment2, jsx as jsx8, jsxs as jsxs6 } from "react/jsx-runtime";
+import { Fragment as Fragment2, jsx as jsx7, jsxs as jsxs6 } from "react/jsx-runtime";
 function ComposerPendingQueue({
   prompts,
   onSteer,
@@ -6429,17 +1457,17 @@ function ComposerPendingQueue({
       className: "thread-composer-pending-queue mx-auto mb-2 w-full max-w-4xl overflow-hidden rounded-xl border",
       children: [
         /* @__PURE__ */ jsxs6("div", { className: "flex items-center justify-between px-3 py-1.5 text-[11px] font-medium text-[var(--theme-fg-muted)]", children: [
-          /* @__PURE__ */ jsx8("span", { children: "Queued" }),
-          /* @__PURE__ */ jsx8("span", { children: prompts.length })
+          /* @__PURE__ */ jsx7("span", { children: "Queued" }),
+          /* @__PURE__ */ jsx7("span", { children: prompts.length })
         ] }),
-        /* @__PURE__ */ jsx8("div", { className: "max-h-36 overflow-y-auto", children: prompts.map((prompt) => {
+        /* @__PURE__ */ jsx7("div", { className: "max-h-36 overflow-y-auto", children: prompts.map((prompt) => {
           const busy = busyIds.has(prompt.id);
           return /* @__PURE__ */ jsxs6(
             "div",
             {
               className: "thread-composer-pending-row flex min-h-10 items-center gap-2 border-t px-3 py-2",
               children: [
-                /* @__PURE__ */ jsx8(
+                /* @__PURE__ */ jsx7(
                   "p",
                   {
                     className: "min-w-0 flex-1 truncate text-sm text-[var(--theme-fg)]",
@@ -6448,7 +1476,7 @@ function ComposerPendingQueue({
                   }
                 ),
                 prompt.optimistic ? /* @__PURE__ */ jsxs6("span", { className: "inline-flex h-8 items-center gap-1.5 px-1.5 text-xs text-[var(--theme-fg-muted)]", children: [
-                  /* @__PURE__ */ jsx8(
+                  /* @__PURE__ */ jsx7(
                     Loader2,
                     {
                       className: "h-3.5 w-3.5 animate-spin",
@@ -6465,13 +1493,13 @@ function ComposerPendingQueue({
                       onClick: () => void runAction(prompt.id, onSteer),
                       className: "thread-composer-steer-button inline-flex h-8 items-center gap-1.5 rounded-lg border px-2.5 text-xs font-medium transition disabled:cursor-wait disabled:opacity-60",
                       children: [
-                        busy ? /* @__PURE__ */ jsx8(
+                        busy ? /* @__PURE__ */ jsx7(
                           Loader2,
                           {
                             className: "h-3.5 w-3.5 animate-spin",
                             "aria-hidden": "true"
                           }
-                        ) : /* @__PURE__ */ jsx8(
+                        ) : /* @__PURE__ */ jsx7(
                           CornerUpRight,
                           {
                             className: "h-3.5 w-3.5",
@@ -6482,7 +1510,7 @@ function ComposerPendingQueue({
                       ]
                     }
                   ) : null,
-                  onCancel ? /* @__PURE__ */ jsx8(
+                  onCancel ? /* @__PURE__ */ jsx7(
                     "button",
                     {
                       type: "button",
@@ -6491,7 +1519,7 @@ function ComposerPendingQueue({
                       title: "Remove from queue",
                       onClick: () => void runAction(prompt.id, onCancel),
                       className: "thread-composer-queue-remove inline-flex h-8 w-8 items-center justify-center rounded-lg transition disabled:cursor-wait disabled:opacity-60",
-                      children: /* @__PURE__ */ jsx8(X, { className: "h-4 w-4", "aria-hidden": "true" })
+                      children: /* @__PURE__ */ jsx7(X, { className: "h-4 w-4", "aria-hidden": "true" })
                     }
                   ) : null
                 ] })
@@ -6506,7 +1534,7 @@ function ComposerPendingQueue({
 }
 
 // src/components/composer/ComposerAttachmentMenu.tsx
-import { jsx as jsx9, jsxs as jsxs7 } from "react/jsx-runtime";
+import { jsx as jsx8, jsxs as jsxs7 } from "react/jsx-runtime";
 function ComposerAttachmentMenu({
   open,
   iconButtonClassName,
@@ -6517,7 +1545,7 @@ function ComposerAttachmentMenu({
   onPickFile
 }) {
   return /* @__PURE__ */ jsxs7("div", { className: "relative", children: [
-    /* @__PURE__ */ jsx9(
+    /* @__PURE__ */ jsx8(
       InputGroupButton,
       {
         type: "button",
@@ -6528,16 +1556,16 @@ function ComposerAttachmentMenu({
         title: "Add attachment",
         onClick: onToggle,
         className: `${iconButtonClassName} h-9 w-9 rounded-full sm:h-8 sm:w-8`,
-        children: /* @__PURE__ */ jsx9(PlusIcon, {})
+        children: /* @__PURE__ */ jsx8(PlusIcon, {})
       }
     ),
-    open && /* @__PURE__ */ jsx9(
+    open && /* @__PURE__ */ jsx8(
       "div",
       {
         "data-composer-menu-surface": "true",
         className: `${menuClassName} absolute bottom-full left-0 mb-2 w-32 overflow-hidden rounded-2xl border bg-stone-900/72 shadow-2xl shadow-stone-950/20`,
         children: /* @__PURE__ */ jsxs7("div", { className: "p-2", children: [
-          /* @__PURE__ */ jsx9(
+          /* @__PURE__ */ jsx8(
             "button",
             {
               type: "button",
@@ -6546,7 +1574,7 @@ function ComposerAttachmentMenu({
               children: "Photo"
             }
           ),
-          /* @__PURE__ */ jsx9(
+          /* @__PURE__ */ jsx8(
             "button",
             {
               type: "button",
@@ -6564,7 +1592,7 @@ function ComposerAttachmentMenu({
 // src/components/composer/ComposerSettingsToolbar.tsx
 import { Check, ChevronRight } from "lucide-react";
 import { useState as useState3 } from "react";
-import { Fragment as Fragment3, jsx as jsx10, jsxs as jsxs8 } from "react/jsx-runtime";
+import { Fragment as Fragment3, jsx as jsx9, jsxs as jsxs8 } from "react/jsx-runtime";
 var sandboxOptions = [
   { mode: "read-only", label: "Read only" },
   { mode: "workspace-write", label: "Workspace write" },
@@ -6619,7 +1647,7 @@ function ComposerSettingsToolbar({
   const [settingsSection, setSettingsSection] = useState3(null);
   const selectedModelLabel = (modelOptions.find((entry) => entry.model === model)?.displayName || model || "Select model").replace(/\s+\([^)]+\)\s*$/, "");
   return /* @__PURE__ */ jsxs8(Fragment3, { children: [
-    agentLabel ? /* @__PURE__ */ jsx10(
+    agentLabel ? /* @__PURE__ */ jsx9(
       InputGroupButton,
       {
         type: "button",
@@ -6629,11 +1657,11 @@ function ComposerSettingsToolbar({
         "aria-label": `Agent: ${agentLabel}`,
         title: `${agentLabel} is fixed for this thread`,
         className: `${inlineToggleClassName} max-w-[7.5rem] cursor-default rounded-full px-2.5 text-stone-500 disabled:opacity-100 sm:max-w-[9rem]`,
-        children: /* @__PURE__ */ jsx10("span", { className: "block min-w-0 truncate whitespace-nowrap", children: agentLabel })
+        children: /* @__PURE__ */ jsx9("span", { className: "block min-w-0 truncate whitespace-nowrap", children: agentLabel })
       }
     ) : null,
     /* @__PURE__ */ jsxs8("div", { className: "relative min-w-0", children: [
-      /* @__PURE__ */ jsx10(
+      /* @__PURE__ */ jsx9(
         InputGroupButton,
         {
           type: "button",
@@ -6659,7 +1687,7 @@ function ComposerSettingsToolbar({
           ] })
         }
       ),
-      model ? /* @__PURE__ */ jsx10(ContextProgressBar, { contextUsage }) : null,
+      model ? /* @__PURE__ */ jsx9(ContextProgressBar, { contextUsage }) : null,
       openMenu === "model" && /* @__PURE__ */ jsxs8(
         "div",
         {
@@ -6673,10 +1701,10 @@ function ComposerSettingsToolbar({
                 onClick: () => setSettingsSection("model"),
                 className: `${menuItemClassName2} flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-stone-300`,
                 children: [
-                  /* @__PURE__ */ jsx10("span", { children: "Model" }),
+                  /* @__PURE__ */ jsx9("span", { children: "Model" }),
                   /* @__PURE__ */ jsxs8("span", { className: "flex min-w-0 items-center gap-1 text-stone-500", children: [
-                    /* @__PURE__ */ jsx10("span", { className: "max-w-[7rem] truncate", children: selectedModelLabel }),
-                    /* @__PURE__ */ jsx10(ChevronRight, { className: "h-3.5 w-3.5 shrink-0" })
+                    /* @__PURE__ */ jsx9("span", { className: "max-w-[7rem] truncate", children: selectedModelLabel }),
+                    /* @__PURE__ */ jsx9(ChevronRight, { className: "h-3.5 w-3.5 shrink-0" })
                   ] })
                 ]
               }
@@ -6690,17 +1718,17 @@ function ComposerSettingsToolbar({
                 onClick: () => setSettingsSection("effort"),
                 className: `${menuItemClassName2} flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-stone-300 disabled:cursor-not-allowed disabled:text-stone-600`,
                 children: [
-                  /* @__PURE__ */ jsx10("span", { children: "Effort" }),
+                  /* @__PURE__ */ jsx9("span", { children: "Effort" }),
                   /* @__PURE__ */ jsxs8("span", { className: "flex items-center gap-1 text-stone-500", children: [
                     formatReasoningEffortLabel(reasoningEffort),
-                    /* @__PURE__ */ jsx10(ChevronRight, { className: "h-3.5 w-3.5" })
+                    /* @__PURE__ */ jsx9(ChevronRight, { className: "h-3.5 w-3.5" })
                   ] })
                 ]
               }
             ),
             settingsSection === "model" ? /* @__PURE__ */ jsxs8("div", { className: "mt-1 w-full overflow-hidden border-t border-stone-700 bg-stone-900 p-1.5 sm:absolute sm:bottom-0 sm:left-[calc(100%+0.5rem)] sm:mt-0 sm:w-[13rem] sm:rounded-xl sm:border sm:shadow-2xl sm:shadow-stone-950/40", children: [
-              /* @__PURE__ */ jsx10("p", { className: "px-3 py-1.5 text-xs text-stone-500", children: "Model" }),
-              /* @__PURE__ */ jsx10("div", { className: "max-h-72 overflow-auto", children: modelOptions.map((entry) => {
+              /* @__PURE__ */ jsx9("p", { className: "px-3 py-1.5 text-xs text-stone-500", children: "Model" }),
+              /* @__PURE__ */ jsx9("div", { className: "max-h-72 overflow-auto", children: modelOptions.map((entry) => {
                 const selected = entry.model === model;
                 return /* @__PURE__ */ jsxs8(
                   "button",
@@ -6718,8 +1746,8 @@ function ComposerSettingsToolbar({
                     },
                     className: `${menuItemClassName2} flex w-full items-center justify-between rounded-lg px-3 py-2 text-left ${selected ? "ui-status-warning" : "text-stone-300"}`,
                     children: [
-                      /* @__PURE__ */ jsx10("span", { className: "truncate text-sm font-medium", children: entry.displayName || entry.model }),
-                      selected ? /* @__PURE__ */ jsx10(Check, { className: "h-3.5 w-3.5 shrink-0" }) : null
+                      /* @__PURE__ */ jsx9("span", { className: "truncate text-sm font-medium", children: entry.displayName || entry.model }),
+                      selected ? /* @__PURE__ */ jsx9(Check, { className: "h-3.5 w-3.5 shrink-0" }) : null
                     ]
                   },
                   entry.id
@@ -6727,7 +1755,7 @@ function ComposerSettingsToolbar({
               }) })
             ] }) : null,
             settingsSection === "effort" ? /* @__PURE__ */ jsxs8("div", { className: "mt-1 w-full overflow-hidden border-t border-stone-700 bg-stone-900 p-1.5 sm:absolute sm:bottom-0 sm:left-[calc(100%+0.5rem)] sm:mt-0 sm:w-[11rem] sm:rounded-xl sm:border sm:shadow-2xl sm:shadow-stone-950/40", children: [
-              /* @__PURE__ */ jsx10("p", { className: "px-3 py-1.5 text-xs text-stone-500", children: "Effort" }),
+              /* @__PURE__ */ jsx9("p", { className: "px-3 py-1.5 text-xs text-stone-500", children: "Effort" }),
               supportedEfforts.map((entry) => {
                 const selected = entry.reasoningEffort === reasoningEffort;
                 return /* @__PURE__ */ jsxs8(
@@ -6740,21 +1768,21 @@ function ComposerSettingsToolbar({
                     },
                     className: `${menuItemClassName2} flex w-full items-center justify-between rounded-lg px-3 py-2 text-left ${selected ? "ui-status-warning" : "text-stone-300"}`,
                     children: [
-                      /* @__PURE__ */ jsx10("span", { className: "text-sm font-medium", children: formatReasoningEffortLabel(entry.reasoningEffort) }),
-                      selected ? /* @__PURE__ */ jsx10(Check, { className: "h-3.5 w-3.5" }) : null
+                      /* @__PURE__ */ jsx9("span", { className: "text-sm font-medium", children: formatReasoningEffortLabel(entry.reasoningEffort) }),
+                      selected ? /* @__PURE__ */ jsx9(Check, { className: "h-3.5 w-3.5" }) : null
                     ]
                   },
                   entry.reasoningEffort
                 );
               }),
-              supportedEfforts.some((entry) => entry.reasoningEffort === "ultra") ? /* @__PURE__ */ jsx10("p", { className: "px-3 pb-1 pt-2 text-xs leading-4 text-stone-500", children: "Higher effort can consume usage limits faster." }) : null
+              supportedEfforts.some((entry) => entry.reasoningEffort === "ultra") ? /* @__PURE__ */ jsx9("p", { className: "px-3 pb-1 pt-2 text-xs leading-4 text-stone-500", children: "Higher effort can consume usage limits faster." }) : null
             ] }) : null
           ]
         }
       )
     ] }),
     sandboxModeAvailable && /* @__PURE__ */ jsxs8("div", { className: "relative", children: [
-      /* @__PURE__ */ jsx10(
+      /* @__PURE__ */ jsx9(
         InputGroupButton,
         {
           type: "button",
@@ -6773,12 +1801,12 @@ function ComposerSettingsToolbar({
           children: formatSandboxModeCompactLabel(sandboxMode)
         }
       ),
-      openMenu === "sandbox" && /* @__PURE__ */ jsx10(
+      openMenu === "sandbox" && /* @__PURE__ */ jsx9(
         "div",
         {
           "data-composer-menu-surface": "true",
           className: "absolute bottom-full left-0 mb-2 w-max min-w-[9rem] max-w-[13rem] overflow-hidden rounded-2xl border border-stone-700 bg-stone-900 shadow-2xl shadow-stone-950/40",
-          children: /* @__PURE__ */ jsx10("div", { className: "max-h-72 overflow-auto p-2", children: sandboxOptions.map((entry) => /* @__PURE__ */ jsx10(
+          children: /* @__PURE__ */ jsx9("div", { className: "max-h-72 overflow-auto p-2", children: sandboxOptions.map((entry) => /* @__PURE__ */ jsx9(
             "button",
             {
               type: "button",
@@ -6786,14 +1814,14 @@ function ComposerSettingsToolbar({
                 sandboxMode: entry.mode
               }),
               className: `block w-full rounded-xl px-3 py-2 text-left transition ${entry.mode === sandboxMode ? "ui-status-warning" : `${menuItemClassName2} text-stone-300`}`,
-              children: /* @__PURE__ */ jsx10("p", { className: "text-sm font-medium", children: entry.label })
+              children: /* @__PURE__ */ jsx9("p", { className: "text-sm font-medium", children: entry.label })
             },
             entry.mode
           )) })
         }
       )
     ] }),
-    planModeAvailable && /* @__PURE__ */ jsx10(
+    planModeAvailable && /* @__PURE__ */ jsx9(
       InputGroupButton,
       {
         type: "button",
@@ -6808,7 +1836,7 @@ function ComposerSettingsToolbar({
         children: "Plan"
       }
     ),
-    /* @__PURE__ */ jsx10(
+    /* @__PURE__ */ jsx9(
       InputGroupButton,
       {
         type: "submit",
@@ -6828,8 +1856,8 @@ function ComposerSettingsToolbar({
             strokeLinecap: "round",
             strokeLinejoin: "round",
             children: [
-              /* @__PURE__ */ jsx10("path", { d: "M8 13V3" }),
-              /* @__PURE__ */ jsx10("path", { d: "m4 7 4-4 4 4" })
+              /* @__PURE__ */ jsx9("path", { d: "M8 13V3" }),
+              /* @__PURE__ */ jsx9("path", { d: "m4 7 4-4 4 4" })
             ]
           }
         )
@@ -6839,7 +1867,7 @@ function ComposerSettingsToolbar({
 }
 
 // src/components/composer/ComposerShellToolsPanel.tsx
-import { jsx as jsx11, jsxs as jsxs9 } from "react/jsx-runtime";
+import { jsx as jsx10, jsxs as jsxs9 } from "react/jsx-runtime";
 function ComposerShellToolsPanel({
   busy,
   shellControlState,
@@ -6850,7 +1878,7 @@ function ComposerShellToolsPanel({
 }) {
   const shellInputEnabled = Boolean(shellControlState?.shellInputEnabled);
   const commandRunning = Boolean(shellControlState?.isCommandRunning);
-  return /* @__PURE__ */ jsx11(
+  return /* @__PURE__ */ jsx10(
     "div",
     {
       "data-composer-menu-surface": "true",
@@ -6865,98 +1893,98 @@ function ComposerShellToolsPanel({
         event.stopPropagation();
       },
       children: /* @__PURE__ */ jsxs9("div", { className: "grid grid-cols-2 gap-2", children: [
-        /* @__PURE__ */ jsx11(
+        /* @__PURE__ */ jsx10(
           "button",
           {
             type: "button",
             onClick: onPaste,
             className: "inline-flex items-center justify-center rounded-full border border-sky-300/35 bg-sky-300/12 px-2 py-2 text-sky-50",
             children: /* @__PURE__ */ jsxs9("span", { className: "inline-flex items-center gap-1.5", children: [
-              /* @__PURE__ */ jsx11(ClipboardIcon, {}),
-              /* @__PURE__ */ jsx11("span", { className: "text-[10px] font-medium tracking-[0.12em]", children: "Paste" })
+              /* @__PURE__ */ jsx10(ClipboardIcon, {}),
+              /* @__PURE__ */ jsx10("span", { className: "text-[10px] font-medium tracking-[0.12em]", children: "Paste" })
             ] })
           }
         ),
-        /* @__PURE__ */ jsx11(
+        /* @__PURE__ */ jsx10(
           "button",
           {
             type: "button",
             onClick: onCopy,
             className: "inline-flex items-center justify-center rounded-full border border-stone-700/90 bg-stone-900/80 px-2 py-2 text-stone-100",
             children: /* @__PURE__ */ jsxs9("span", { className: "inline-flex items-center gap-1.5", children: [
-              /* @__PURE__ */ jsx11(ClipboardIcon, {}),
-              /* @__PURE__ */ jsx11("span", { className: "text-[10px] font-medium tracking-[0.12em]", children: "Copy" })
+              /* @__PURE__ */ jsx10(ClipboardIcon, {}),
+              /* @__PURE__ */ jsx10("span", { className: "text-[10px] font-medium tracking-[0.12em]", children: "Copy" })
             ] })
           }
         ),
-        /* @__PURE__ */ jsx11(
+        /* @__PURE__ */ jsx10(
           "button",
           {
             type: "button",
             disabled: busy,
             onClick: onClear,
             className: "disabled:cursor-not-allowed disabled:opacity-45",
-            children: /* @__PURE__ */ jsx11(ToolPill, { label: "CLEAR", tone: "sky" })
+            children: /* @__PURE__ */ jsx10(ToolPill, { label: "CLEAR", tone: "sky" })
           }
         ),
-        /* @__PURE__ */ jsx11(
+        /* @__PURE__ */ jsx10(
           "button",
           {
             type: "button",
             disabled: !shellInputEnabled || !commandRunning,
             onClick: () => onShellControl("ctrl_c"),
             className: "disabled:cursor-not-allowed disabled:opacity-45",
-            children: /* @__PURE__ */ jsx11(ToolPill, { label: "CTRL-C", tone: "rose" })
+            children: /* @__PURE__ */ jsx10(ToolPill, { label: "CTRL-C", tone: "rose" })
           }
         ),
-        /* @__PURE__ */ jsx11(
+        /* @__PURE__ */ jsx10(
           "button",
           {
             type: "button",
             disabled: !shellInputEnabled,
             onClick: () => onShellControl("ctrl_d"),
             className: "disabled:cursor-not-allowed disabled:opacity-45",
-            children: /* @__PURE__ */ jsx11(ToolPill, { label: "CTRL-D" })
+            children: /* @__PURE__ */ jsx10(ToolPill, { label: "CTRL-D" })
           }
         ),
-        /* @__PURE__ */ jsx11(
+        /* @__PURE__ */ jsx10(
           "button",
           {
             type: "button",
             disabled: !shellInputEnabled,
             onClick: () => onShellControl("esc"),
             className: "disabled:cursor-not-allowed disabled:opacity-45",
-            children: /* @__PURE__ */ jsx11(ToolPill, { label: "ESC" })
+            children: /* @__PURE__ */ jsx10(ToolPill, { label: "ESC" })
           }
         ),
-        /* @__PURE__ */ jsx11(
+        /* @__PURE__ */ jsx10(
           "button",
           {
             type: "button",
             disabled: !shellInputEnabled,
             onClick: () => onShellControl("tab"),
             className: "disabled:cursor-not-allowed disabled:opacity-45",
-            children: /* @__PURE__ */ jsx11(ToolPill, { label: "TAB" })
+            children: /* @__PURE__ */ jsx10(ToolPill, { label: "TAB" })
           }
         ),
-        /* @__PURE__ */ jsx11(
+        /* @__PURE__ */ jsx10(
           "button",
           {
             type: "button",
             disabled: !shellInputEnabled,
             onClick: () => onShellControl("up"),
             className: "disabled:cursor-not-allowed disabled:opacity-45",
-            children: /* @__PURE__ */ jsx11(ToolPill, { label: "UP" })
+            children: /* @__PURE__ */ jsx10(ToolPill, { label: "UP" })
           }
         ),
-        /* @__PURE__ */ jsx11(
+        /* @__PURE__ */ jsx10(
           "button",
           {
             type: "button",
             disabled: !shellInputEnabled,
             onClick: () => onShellControl("down"),
             className: "disabled:cursor-not-allowed disabled:opacity-45",
-            children: /* @__PURE__ */ jsx11(ToolPill, { label: "DOWN" })
+            children: /* @__PURE__ */ jsx10(ToolPill, { label: "DOWN" })
           }
         )
       ] })
@@ -6965,7 +1993,7 @@ function ComposerShellToolsPanel({
 }
 
 // src/components/composer/ComposerForkPanels.tsx
-import { jsx as jsx12, jsxs as jsxs10 } from "react/jsx-runtime";
+import { jsx as jsx11, jsxs as jsxs10 } from "react/jsx-runtime";
 function ComposerForkPanel({
   busy,
   forkBusy,
@@ -6974,7 +2002,7 @@ function ComposerForkPanel({
   onSelectForkTurnPanel
 }) {
   return /* @__PURE__ */ jsxs10("div", { className: "p-2", children: [
-    /* @__PURE__ */ jsx12(
+    /* @__PURE__ */ jsx11(
       "button",
       {
         type: "button",
@@ -6982,12 +2010,12 @@ function ComposerForkPanel({
         onClick: () => void onForkLatest(),
         className: `${composerMenuItemClassName} block w-full rounded-xl px-3 py-2 text-left text-sm transition disabled:cursor-not-allowed disabled:opacity-60`,
         children: /* @__PURE__ */ jsxs10("div", { className: "flex items-center justify-between gap-3", children: [
-          /* @__PURE__ */ jsx12("span", { children: "Fork from latest" }),
-          /* @__PURE__ */ jsx12("span", { className: "text-[11px] uppercase tracking-[0.16em] text-stone-400", children: forkBusy ? "Forking" : "Run" })
+          /* @__PURE__ */ jsx11("span", { children: "Fork from latest" }),
+          /* @__PURE__ */ jsx11("span", { className: "text-[11px] uppercase tracking-[0.16em] text-stone-400", children: forkBusy ? "Forking" : "Run" })
         ] })
       }
     ),
-    /* @__PURE__ */ jsx12(
+    /* @__PURE__ */ jsx11(
       "button",
       {
         type: "button",
@@ -6998,12 +2026,12 @@ function ComposerForkPanel({
         },
         className: `${composerMenuItemClassName} mt-1 block w-full rounded-xl px-3 py-2 text-left text-sm transition disabled:cursor-not-allowed disabled:opacity-60`,
         children: /* @__PURE__ */ jsxs10("div", { className: "flex items-center justify-between gap-3", children: [
-          /* @__PURE__ */ jsx12("span", { children: "Fork from selected turn" }),
-          /* @__PURE__ */ jsx12("span", { className: "text-[11px] uppercase tracking-[0.16em] text-stone-400", children: "Pick" })
+          /* @__PURE__ */ jsx11("span", { children: "Fork from selected turn" }),
+          /* @__PURE__ */ jsx11("span", { className: "text-[11px] uppercase tracking-[0.16em] text-stone-400", children: "Pick" })
         ] })
       }
     ),
-    busy ? /* @__PURE__ */ jsx12("p", { className: "mt-2 rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-3 text-sm text-stone-400", children: "Fork is only available while the thread is idle." }) : null
+    busy ? /* @__PURE__ */ jsx11("p", { className: "mt-2 rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-3 text-sm text-stone-400", children: "Fork is only available while the thread is idle." }) : null
   ] });
 }
 function ComposerForkTurnsPanel({
@@ -7013,9 +2041,9 @@ function ComposerForkTurnsPanel({
   onForkTurn
 }) {
   return /* @__PURE__ */ jsxs10("div", { className: "p-2", children: [
-    forkTurnOptionsState.status === "loading" && !forkTurnOptionsState.data ? /* @__PURE__ */ jsx12("p", { className: "rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-3 text-sm text-stone-400", children: "Loading turns..." }) : null,
-    forkTurnOptionsState.error ? /* @__PURE__ */ jsx12("p", { className: "mb-2 rounded-xl border border-rose-500/35 bg-rose-500/10 px-3 py-3 text-sm text-rose-100/90", children: forkTurnOptionsState.error }) : null,
-    forkTurnOptionsState.data?.length ? /* @__PURE__ */ jsx12("div", { className: "space-y-2", children: forkTurnOptionsState.data.map((turn) => /* @__PURE__ */ jsx12(
+    forkTurnOptionsState.status === "loading" && !forkTurnOptionsState.data ? /* @__PURE__ */ jsx11("p", { className: "rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-3 text-sm text-stone-400", children: "Loading turns..." }) : null,
+    forkTurnOptionsState.error ? /* @__PURE__ */ jsx11("p", { className: "mb-2 rounded-xl border border-rose-500/35 bg-rose-500/10 px-3 py-3 text-sm text-rose-100/90", children: forkTurnOptionsState.error }) : null,
+    forkTurnOptionsState.data?.length ? /* @__PURE__ */ jsx11("div", { className: "space-y-2", children: forkTurnOptionsState.data.map((turn) => /* @__PURE__ */ jsx11(
       "button",
       {
         type: "button",
@@ -7027,17 +2055,17 @@ function ComposerForkTurnsPanel({
             "Turn ",
             turn.turnIndex
           ] }),
-          /* @__PURE__ */ jsx12("span", { className: "text-[11px] uppercase tracking-[0.16em] text-stone-500", children: forkBusy ? "Forking" : turn.status })
+          /* @__PURE__ */ jsx11("span", { className: "text-[11px] uppercase tracking-[0.16em] text-stone-500", children: forkBusy ? "Forking" : turn.status })
         ] })
       },
       turn.turnId
     )) }) : null,
-    forkTurnOptionsState.status !== "loading" && !forkTurnOptionsState.error && (forkTurnOptionsState.data?.length ?? 0) === 0 ? /* @__PURE__ */ jsx12("p", { className: "rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-3 text-sm text-stone-400", children: "No turns available to fork yet." }) : null
+    forkTurnOptionsState.status !== "loading" && !forkTurnOptionsState.error && (forkTurnOptionsState.data?.length ?? 0) === 0 ? /* @__PURE__ */ jsx11("p", { className: "rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-3 text-sm text-stone-400", children: "No turns available to fork yet." }) : null
   ] });
 }
 
 // src/components/composer/ComposerHooksPanel.tsx
-import { jsx as jsx13, jsxs as jsxs11 } from "react/jsx-runtime";
+import { jsx as jsx12, jsxs as jsxs11 } from "react/jsx-runtime";
 function ComposerHooksPanel({
   hooksPanelMode,
   hooksState,
@@ -7072,10 +2100,10 @@ function ComposerHooksPanel({
   return /* @__PURE__ */ jsxs11("div", { className: "p-2", children: [
     /* @__PURE__ */ jsxs11("div", { className: "mb-2 flex items-center justify-between gap-2", children: [
       /* @__PURE__ */ jsxs11("div", { className: "min-w-0", children: [
-        /* @__PURE__ */ jsx13("p", { className: "text-xs text-stone-400", children: "Hook config sources" }),
-        /* @__PURE__ */ jsx13("p", { className: "truncate text-[11px] text-stone-500", children: hooksState.data?.projectHooksPath ?? "<workspace hooks config>" })
+        /* @__PURE__ */ jsx12("p", { className: "text-xs text-stone-400", children: "Hook config sources" }),
+        /* @__PURE__ */ jsx12("p", { className: "truncate text-[11px] text-stone-500", children: hooksState.data?.projectHooksPath ?? "<workspace hooks config>" })
       ] }),
-      hooksPanelMode === "list" && hostConfigFilesAvailable ? /* @__PURE__ */ jsx13(
+      hooksPanelMode === "list" && hostConfigFilesAvailable ? /* @__PURE__ */ jsx12(
         "button",
         {
           type: "button",
@@ -7090,10 +2118,10 @@ function ComposerHooksPanel({
         }
       ) : null
     ] }),
-    hooksState.status === "loading" && !hooksState.data ? /* @__PURE__ */ jsx13("p", { className: "rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-3 text-sm text-stone-400", children: "Loading hooks..." }) : null,
-    hooksState.error ? /* @__PURE__ */ jsx13("p", { className: "mb-2 rounded-xl border border-rose-500/35 bg-rose-500/10 px-3 py-3 text-sm text-rose-100/90", children: hooksState.error }) : null,
-    hookConfigError ? /* @__PURE__ */ jsx13("p", { className: "mb-2 rounded-xl border border-rose-500/35 bg-rose-500/10 px-3 py-3 text-sm text-rose-100/90", children: hookConfigError }) : null,
-    hookConfigSuccess ? /* @__PURE__ */ jsx13("p", { className: "mb-2 rounded-xl border border-emerald-500/35 bg-emerald-500/10 px-3 py-3 text-sm text-emerald-100/90", children: hookConfigSuccess }) : null,
+    hooksState.status === "loading" && !hooksState.data ? /* @__PURE__ */ jsx12("p", { className: "rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-3 text-sm text-stone-400", children: "Loading hooks..." }) : null,
+    hooksState.error ? /* @__PURE__ */ jsx12("p", { className: "mb-2 rounded-xl border border-rose-500/35 bg-rose-500/10 px-3 py-3 text-sm text-rose-100/90", children: hooksState.error }) : null,
+    hookConfigError ? /* @__PURE__ */ jsx12("p", { className: "mb-2 rounded-xl border border-rose-500/35 bg-rose-500/10 px-3 py-3 text-sm text-rose-100/90", children: hookConfigError }) : null,
+    hookConfigSuccess ? /* @__PURE__ */ jsx12("p", { className: "mb-2 rounded-xl border border-emerald-500/35 bg-emerald-500/10 px-3 py-3 text-sm text-emerald-100/90", children: hookConfigSuccess }) : null,
     hooksPanelMode === "add" || hooksPanelMode === "edit" ? /* @__PURE__ */ jsxs11("div", { className: "space-y-2 rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-3", children: [
       hooksPanelMode === "edit" ? /* @__PURE__ */ jsxs11("p", { className: "rounded-lg border border-stone-800 bg-stone-950 px-3 py-2 text-[11px] text-stone-400", children: [
         "Editing",
@@ -7117,29 +2145,29 @@ function ComposerHooksPanel({
               disabled: hooksPanelMode === "edit",
               className: "mt-1 w-full rounded-lg border border-stone-700 bg-stone-950 px-2.5 py-2 text-sm text-stone-100 outline-none focus:border-sky-300/50",
               children: [
-                /* @__PURE__ */ jsx13("option", { value: "project", children: "Project" }),
-                /* @__PURE__ */ jsx13("option", { value: "global", children: "Global" })
+                /* @__PURE__ */ jsx12("option", { value: "project", children: "Project" }),
+                /* @__PURE__ */ jsx12("option", { value: "global", children: "Global" })
               ]
             }
           )
         ] }),
         /* @__PURE__ */ jsxs11("label", { className: "block text-xs text-stone-400", children: [
           "Event",
-          /* @__PURE__ */ jsx13(
+          /* @__PURE__ */ jsx12(
             "select",
             {
               "aria-label": "Hook event",
               value: hookEventName,
               onChange: (event) => onSetHookEventName(event.target.value),
               className: "mt-1 w-full rounded-lg border border-stone-700 bg-stone-950 px-2.5 py-2 text-sm text-stone-100 outline-none focus:border-sky-300/50",
-              children: HOOK_EVENT_OPTIONS.map((eventOption) => /* @__PURE__ */ jsx13("option", { value: eventOption.value, children: eventOption.label }, eventOption.value))
+              children: HOOK_EVENT_OPTIONS.map((eventOption) => /* @__PURE__ */ jsx12("option", { value: eventOption.value, children: eventOption.label }, eventOption.value))
             }
           )
         ] })
       ] }),
       /* @__PURE__ */ jsxs11("div", { children: [
-        /* @__PURE__ */ jsx13("label", { className: "mb-1 block text-xs text-stone-400", children: "Matcher" }),
-        /* @__PURE__ */ jsx13(
+        /* @__PURE__ */ jsx12("label", { className: "mb-1 block text-xs text-stone-400", children: "Matcher" }),
+        /* @__PURE__ */ jsx12(
           "input",
           {
             "aria-label": "Hook matcher",
@@ -7151,8 +2179,8 @@ function ComposerHooksPanel({
         )
       ] }),
       /* @__PURE__ */ jsxs11("div", { children: [
-        /* @__PURE__ */ jsx13("label", { className: "mb-1 block text-xs text-stone-400", children: "Command" }),
-        /* @__PURE__ */ jsx13(
+        /* @__PURE__ */ jsx12("label", { className: "mb-1 block text-xs text-stone-400", children: "Command" }),
+        /* @__PURE__ */ jsx12(
           "textarea",
           {
             "aria-label": "Hook command",
@@ -7166,7 +2194,7 @@ function ComposerHooksPanel({
       /* @__PURE__ */ jsxs11("div", { className: "grid grid-cols-2 gap-2", children: [
         /* @__PURE__ */ jsxs11("label", { className: "block text-xs text-stone-400", children: [
           "Timeout",
-          /* @__PURE__ */ jsx13(
+          /* @__PURE__ */ jsx12(
             "input",
             {
               "aria-label": "Hook timeout seconds",
@@ -7179,7 +2207,7 @@ function ComposerHooksPanel({
         ] }),
         /* @__PURE__ */ jsxs11("label", { className: "block text-xs text-stone-400", children: [
           "Status message",
-          /* @__PURE__ */ jsx13(
+          /* @__PURE__ */ jsx12(
             "input",
             {
               "aria-label": "Hook status message",
@@ -7191,7 +2219,7 @@ function ComposerHooksPanel({
         ] })
       ] }),
       /* @__PURE__ */ jsxs11("div", { className: "flex items-center justify-between gap-2 pt-1", children: [
-        /* @__PURE__ */ jsx13(
+        /* @__PURE__ */ jsx12(
           "button",
           {
             type: "button",
@@ -7203,7 +2231,7 @@ function ComposerHooksPanel({
             children: "Back"
           }
         ),
-        /* @__PURE__ */ jsx13(
+        /* @__PURE__ */ jsx12(
           "button",
           {
             type: "button",
@@ -7215,7 +2243,7 @@ function ComposerHooksPanel({
         )
       ] })
     ] }) : null,
-    hooksPanelMode === "list" && hooksState.data?.warnings.length ? /* @__PURE__ */ jsx13("div", { className: "mb-2 space-y-2", children: hooksState.data.warnings.map((warning) => /* @__PURE__ */ jsx13(
+    hooksPanelMode === "list" && hooksState.data?.warnings.length ? /* @__PURE__ */ jsx12("div", { className: "mb-2 space-y-2", children: hooksState.data.warnings.map((warning) => /* @__PURE__ */ jsx12(
       "p",
       {
         className: "rounded-xl border border-amber-500/25 bg-amber-500/10 px-3 py-2 text-xs text-amber-100/85",
@@ -7223,18 +2251,18 @@ function ComposerHooksPanel({
       },
       warning
     )) }) : null,
-    hooksPanelMode === "list" && hooksState.data?.errors.length ? /* @__PURE__ */ jsx13("div", { className: "mb-2 space-y-2", children: hooksState.data.errors.map((entry) => /* @__PURE__ */ jsxs11(
+    hooksPanelMode === "list" && hooksState.data?.errors.length ? /* @__PURE__ */ jsx12("div", { className: "mb-2 space-y-2", children: hooksState.data.errors.map((entry) => /* @__PURE__ */ jsxs11(
       "div",
       {
         className: "rounded-xl border border-rose-500/35 bg-rose-500/10 px-3 py-2 text-xs text-rose-100/90",
         children: [
-          /* @__PURE__ */ jsx13("p", { className: "font-medium", children: entry.message }),
-          /* @__PURE__ */ jsx13("p", { className: "mt-1 break-all text-rose-100/60", children: entry.path })
+          /* @__PURE__ */ jsx12("p", { className: "font-medium", children: entry.message }),
+          /* @__PURE__ */ jsx12("p", { className: "mt-1 break-all text-rose-100/60", children: entry.path })
         ]
       },
       `${entry.path}:${entry.message}`
     )) }) : null,
-    hooksPanelMode === "list" && hooksState.data?.hooks.length ? /* @__PURE__ */ jsx13("div", { className: "space-y-2", children: hooksState.data.hooks.map((hook) => /* @__PURE__ */ jsxs11(
+    hooksPanelMode === "list" && hooksState.data?.hooks.length ? /* @__PURE__ */ jsx12("div", { className: "space-y-2", children: hooksState.data.hooks.map((hook) => /* @__PURE__ */ jsxs11(
       "div",
       {
         className: "rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-2.5",
@@ -7244,11 +2272,11 @@ function ComposerHooksPanel({
               hookEventLabel(hook.eventName),
               hook.matcher ? ` \xB7 ${hook.matcher}` : ""
             ] }),
-            /* @__PURE__ */ jsx13("p", { className: "mt-0.5 truncate font-mono text-[11px] text-stone-400", children: hook.command ?? hook.handlerType }),
-            hook.statusMessage ? /* @__PURE__ */ jsx13("p", { className: "mt-1 truncate text-[11px] text-stone-500", children: hook.statusMessage }) : null
+            /* @__PURE__ */ jsx12("p", { className: "mt-0.5 truncate font-mono text-[11px] text-stone-400", children: hook.command ?? hook.handlerType }),
+            hook.statusMessage ? /* @__PURE__ */ jsx12("p", { className: "mt-1 truncate text-[11px] text-stone-500", children: hook.statusMessage }) : null
           ] }),
           /* @__PURE__ */ jsxs11("div", { className: "mt-2 flex flex-wrap items-center gap-1.5 text-[10px] uppercase tracking-[0.08em] text-stone-500", children: [
-            editableHookTarget(hook) ? /* @__PURE__ */ jsx13(
+            editableHookTarget(hook) ? /* @__PURE__ */ jsx12(
               "button",
               {
                 type: "button",
@@ -7260,7 +2288,7 @@ function ComposerHooksPanel({
                 children: "Edit"
               }
             ) : null,
-            hookTrustAvailable && hook.trustStatus === "trusted" && !hook.isManaged ? /* @__PURE__ */ jsx13(
+            hookTrustAvailable && hook.trustStatus === "trusted" && !hook.isManaged ? /* @__PURE__ */ jsx12(
               "button",
               {
                 type: "button",
@@ -7273,7 +2301,7 @@ function ComposerHooksPanel({
                 children: "Untrust"
               }
             ) : null,
-            (hook.trustStatus === "untrusted" || hook.trustStatus === "modified") && !hook.isManaged && hookTrustAvailable ? /* @__PURE__ */ jsx13(
+            (hook.trustStatus === "untrusted" || hook.trustStatus === "modified") && !hook.isManaged && hookTrustAvailable ? /* @__PURE__ */ jsx12(
               "button",
               {
                 type: "button",
@@ -7286,11 +2314,11 @@ function ComposerHooksPanel({
                 children: "Trust"
               }
             ) : null,
-            /* @__PURE__ */ jsx13("span", { className: "rounded-full border border-stone-700 px-2 py-0.5 text-stone-300", children: hookTrustLabel(hook.trustStatus) })
+            /* @__PURE__ */ jsx12("span", { className: "rounded-full border border-stone-700 px-2 py-0.5 text-stone-300", children: hookTrustLabel(hook.trustStatus) })
           ] }),
           /* @__PURE__ */ jsxs11("div", { className: "mt-2 flex flex-wrap items-center gap-1.5 text-[10px] uppercase tracking-[0.14em] text-stone-500", children: [
-            /* @__PURE__ */ jsx13("span", { className: "rounded-full border border-stone-700 px-2 py-1", children: hookSourceLabel(hook.source) }),
-            /* @__PURE__ */ jsx13("span", { className: "rounded-full border border-stone-700 px-2 py-1", children: hook.enabled ? "Enabled" : "Disabled" }),
+            /* @__PURE__ */ jsx12("span", { className: "rounded-full border border-stone-700 px-2 py-1", children: hookSourceLabel(hook.source) }),
+            /* @__PURE__ */ jsx12("span", { className: "rounded-full border border-stone-700 px-2 py-1", children: hook.enabled ? "Enabled" : "Disabled" }),
             /* @__PURE__ */ jsxs11("span", { className: "rounded-full border border-stone-700 px-2 py-1", children: [
               hook.timeoutSec,
               "s"
@@ -7300,12 +2328,12 @@ function ComposerHooksPanel({
       },
       hook.key
     )) }) : null,
-    hooksPanelMode === "list" && hooksState.status !== "loading" && !hooksState.error && (hooksState.data?.hooks.length ?? 0) === 0 ? /* @__PURE__ */ jsx13("p", { className: "rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-3 text-sm text-stone-400", children: "No hooks configured for this workspace." }) : null
+    hooksPanelMode === "list" && hooksState.status !== "loading" && !hooksState.error && (hooksState.data?.hooks.length ?? 0) === 0 ? /* @__PURE__ */ jsx12("p", { className: "rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-3 text-sm text-stone-400", children: "No hooks configured for this workspace." }) : null
   ] });
 }
 
 // src/components/composer/ComposerGoalsPanel.tsx
-import { jsx as jsx14, jsxs as jsxs12 } from "react/jsx-runtime";
+import { jsx as jsx13, jsxs as jsxs12 } from "react/jsx-runtime";
 function goalKey(goal) {
   return goal.localGoalId ?? `${goal.createdAt}:${goal.objective}`;
 }
@@ -7356,7 +2384,7 @@ function ComposerGoalsPanel({
   const currentGoalKey = goalState.data ? goalKey(goalState.data) : null;
   return /* @__PURE__ */ jsxs12("div", { className: "min-w-0", children: [
     /* @__PURE__ */ jsxs12("div", { className: "flex min-h-11 items-center justify-between gap-3 border-b border-[var(--theme-border)] px-3 py-2", children: [
-      /* @__PURE__ */ jsx14(
+      /* @__PURE__ */ jsx13(
         "button",
         {
           type: "button",
@@ -7365,18 +2393,18 @@ function ComposerGoalsPanel({
           children: "Back"
         }
       ),
-      /* @__PURE__ */ jsx14("span", { className: "text-xs font-semibold text-[var(--theme-fg)]", children: "Goals" })
+      /* @__PURE__ */ jsx13("span", { className: "text-xs font-semibold text-[var(--theme-fg)]", children: "Goals" })
     ] }),
-    goalState.error ? /* @__PURE__ */ jsx14("p", { className: "m-3 rounded-lg border border-[var(--status-danger-border)] bg-[var(--status-danger-bg)] px-3 py-2 text-xs text-[var(--status-danger-fg)]", children: goalState.error }) : null,
+    goalState.error ? /* @__PURE__ */ jsx13("p", { className: "m-3 rounded-lg border border-[var(--status-danger-border)] bg-[var(--status-danger-bg)] px-3 py-2 text-xs text-[var(--status-danger-fg)]", children: goalState.error }) : null,
     goalState.status === "loading" && goals.length === 0 ? /* @__PURE__ */ jsxs12("div", { className: "space-y-2 p-3", role: "status", "aria-label": "Loading goals", children: [
-      /* @__PURE__ */ jsx14("div", { className: "h-12 animate-pulse rounded-lg bg-[var(--theme-muted)] motion-reduce:animate-none" }),
-      /* @__PURE__ */ jsx14("div", { className: "h-12 animate-pulse rounded-lg bg-[var(--theme-muted)] motion-reduce:animate-none" })
-    ] }) : goals.length === 0 ? /* @__PURE__ */ jsx14("p", { className: "px-4 py-5 text-center text-sm text-[var(--theme-fg-muted)]", children: "No goals in this thread yet." }) : /* @__PURE__ */ jsx14("div", { className: "max-h-72 divide-y divide-[var(--theme-border)] overflow-y-auto", children: goals.map((goal) => {
+      /* @__PURE__ */ jsx13("div", { className: "h-12 animate-pulse rounded-lg bg-[var(--theme-muted)] motion-reduce:animate-none" }),
+      /* @__PURE__ */ jsx13("div", { className: "h-12 animate-pulse rounded-lg bg-[var(--theme-muted)] motion-reduce:animate-none" })
+    ] }) : goals.length === 0 ? /* @__PURE__ */ jsx13("p", { className: "px-4 py-5 text-center text-sm text-[var(--theme-fg-muted)]", children: "No goals in this thread yet." }) : /* @__PURE__ */ jsx13("div", { className: "max-h-72 divide-y divide-[var(--theme-border)] overflow-y-auto", children: goals.map((goal) => {
       const actionable = goalKey(goal) === currentGoalKey && ["active", "paused", "budgetLimited"].includes(goal.status);
       return /* @__PURE__ */ jsxs12("div", { className: "px-3 py-3", children: [
         /* @__PURE__ */ jsxs12("div", { className: "flex items-start justify-between gap-3", children: [
-          /* @__PURE__ */ jsx14("p", { className: "min-w-0 flex-1 text-sm font-medium leading-5 text-[var(--theme-fg)]", children: goal.objective }),
-          /* @__PURE__ */ jsx14("span", { className: "shrink-0 rounded-full border border-[var(--theme-border)] px-2 py-1 text-[10px] font-medium text-[var(--theme-fg-muted)]", children: statusLabel(goal.status) })
+          /* @__PURE__ */ jsx13("p", { className: "min-w-0 flex-1 text-sm font-medium leading-5 text-[var(--theme-fg)]", children: goal.objective }),
+          /* @__PURE__ */ jsx13("span", { className: "shrink-0 rounded-full border border-[var(--theme-border)] px-2 py-1 text-[10px] font-medium text-[var(--theme-fg-muted)]", children: statusLabel(goal.status) })
         ] }),
         /* @__PURE__ */ jsxs12("p", { className: "mt-1.5 text-[11px] text-[var(--theme-fg-muted)]", children: [
           elapsedLabel(goal.timeUsedSeconds),
@@ -7385,7 +2413,7 @@ function ComposerGoalsPanel({
           " tokens"
         ] }),
         actionable && onUpdateGoal ? /* @__PURE__ */ jsxs12("div", { className: "mt-2 flex flex-wrap gap-1.5", children: [
-          /* @__PURE__ */ jsx14(
+          /* @__PURE__ */ jsx13(
             "button",
             {
               type: "button",
@@ -7395,7 +2423,7 @@ function ComposerGoalsPanel({
               children: "Continue"
             }
           ),
-          /* @__PURE__ */ jsx14(
+          /* @__PURE__ */ jsx13(
             "button",
             {
               type: "button",
@@ -7405,7 +2433,7 @@ function ComposerGoalsPanel({
               children: "Pause"
             }
           ),
-          /* @__PURE__ */ jsx14(
+          /* @__PURE__ */ jsx13(
             "button",
             {
               type: "button",
@@ -7422,7 +2450,7 @@ function ComposerGoalsPanel({
 }
 
 // src/components/composer/ComposerMcpPanel.tsx
-import { jsx as jsx15, jsxs as jsxs13 } from "react/jsx-runtime";
+import { jsx as jsx14, jsxs as jsxs13 } from "react/jsx-runtime";
 function ComposerMcpPanel({
   mcpPanelMode,
   mcpState,
@@ -7448,10 +2476,10 @@ function ComposerMcpPanel({
   return /* @__PURE__ */ jsxs13("div", { className: "p-2", children: [
     /* @__PURE__ */ jsxs13("div", { className: "mb-2 flex items-center justify-between gap-2", children: [
       /* @__PURE__ */ jsxs13("div", { className: "min-w-0", children: [
-        /* @__PURE__ */ jsx15("p", { className: "text-xs text-stone-400", children: "MCP config source" }),
-        /* @__PURE__ */ jsx15("p", { className: "truncate text-[11px] text-stone-500", children: mcpConfigPath ?? "<provider config>" })
+        /* @__PURE__ */ jsx14("p", { className: "text-xs text-stone-400", children: "MCP config source" }),
+        /* @__PURE__ */ jsx14("p", { className: "truncate text-[11px] text-stone-500", children: mcpConfigPath ?? "<provider config>" })
       ] }),
-      mcpPanelMode === "list" && mcpConfigEditing ? /* @__PURE__ */ jsx15(
+      mcpPanelMode === "list" && mcpConfigEditing ? /* @__PURE__ */ jsx14(
         "button",
         {
           type: "button",
@@ -7465,10 +2493,10 @@ function ComposerMcpPanel({
         }
       ) : null
     ] }),
-    mcpState.status === "loading" && !mcpState.data ? /* @__PURE__ */ jsx15("p", { className: "rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-3 text-sm text-stone-400", children: "Loading MCP servers..." }) : null,
-    mcpState.error ? /* @__PURE__ */ jsx15("p", { className: "mb-2 rounded-xl border border-rose-500/35 bg-rose-500/10 px-3 py-3 text-sm text-rose-100/90", children: mcpState.error }) : null,
-    mcpConfigError ? /* @__PURE__ */ jsx15("p", { className: "mb-2 rounded-xl border border-rose-500/35 bg-rose-500/10 px-3 py-3 text-sm text-rose-100/90", children: mcpConfigError }) : null,
-    mcpConfigSuccess ? /* @__PURE__ */ jsx15("p", { className: "mb-2 rounded-xl border border-emerald-500/35 bg-emerald-500/10 px-3 py-3 text-sm text-emerald-100/90", children: mcpConfigSuccess }) : null,
+    mcpState.status === "loading" && !mcpState.data ? /* @__PURE__ */ jsx14("p", { className: "rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-3 text-sm text-stone-400", children: "Loading MCP servers..." }) : null,
+    mcpState.error ? /* @__PURE__ */ jsx14("p", { className: "mb-2 rounded-xl border border-rose-500/35 bg-rose-500/10 px-3 py-3 text-sm text-rose-100/90", children: mcpState.error }) : null,
+    mcpConfigError ? /* @__PURE__ */ jsx14("p", { className: "mb-2 rounded-xl border border-rose-500/35 bg-rose-500/10 px-3 py-3 text-sm text-rose-100/90", children: mcpConfigError }) : null,
+    mcpConfigSuccess ? /* @__PURE__ */ jsx14("p", { className: "mb-2 rounded-xl border border-emerald-500/35 bg-emerald-500/10 px-3 py-3 text-sm text-emerald-100/90", children: mcpConfigSuccess }) : null,
     mcpPanelMode === "add" ? /* @__PURE__ */ jsxs13("div", { className: "space-y-2", children: [
       /* @__PURE__ */ jsxs13(
         "button",
@@ -7482,10 +2510,10 @@ function ComposerMcpPanel({
           className: `${composerPanelButtonClassName} block w-full rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-3 text-left transition`,
           children: [
             /* @__PURE__ */ jsxs13("div", { className: "flex items-center justify-between gap-3", children: [
-              /* @__PURE__ */ jsx15("span", { className: "text-sm text-stone-100", children: "HTTP / Streamable HTTP" }),
-              /* @__PURE__ */ jsx15("span", { className: "text-[11px] uppercase tracking-[0.16em] text-stone-500", children: "Form" })
+              /* @__PURE__ */ jsx14("span", { className: "text-sm text-stone-100", children: "HTTP / Streamable HTTP" }),
+              /* @__PURE__ */ jsx14("span", { className: "text-[11px] uppercase tracking-[0.16em] text-stone-500", children: "Form" })
             ] }),
-            /* @__PURE__ */ jsx15("p", { className: "mt-1 text-xs text-stone-400", children: "Add an MCP server with a name and URL, then write the matching block into provider config." })
+            /* @__PURE__ */ jsx14("p", { className: "mt-1 text-xs text-stone-400", children: "Add an MCP server with a name and URL, then write the matching block into provider config." })
           ]
         }
       ),
@@ -7500,18 +2528,18 @@ function ComposerMcpPanel({
           className: `${composerPanelButtonClassName} block w-full rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-3 text-left transition`,
           children: [
             /* @__PURE__ */ jsxs13("div", { className: "flex items-center justify-between gap-3", children: [
-              /* @__PURE__ */ jsx15("span", { className: "text-sm text-stone-100", children: "stdio / raw block" }),
-              /* @__PURE__ */ jsx15("span", { className: "text-[11px] uppercase tracking-[0.16em] text-stone-500", children: "TOML" })
+              /* @__PURE__ */ jsx14("span", { className: "text-sm text-stone-100", children: "stdio / raw block" }),
+              /* @__PURE__ */ jsx14("span", { className: "text-[11px] uppercase tracking-[0.16em] text-stone-500", children: "TOML" })
             ] }),
-            /* @__PURE__ */ jsx15("p", { className: "mt-1 text-xs text-stone-400", children: "Write a single `[mcp_servers.name]` block, then save it back into provider config." })
+            /* @__PURE__ */ jsx14("p", { className: "mt-1 text-xs text-stone-400", children: "Write a single `[mcp_servers.name]` block, then save it back into provider config." })
           ]
         }
       )
     ] }) : null,
     mcpPanelMode === "http" ? /* @__PURE__ */ jsxs13("div", { className: "space-y-2 rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-3", children: [
       /* @__PURE__ */ jsxs13("div", { children: [
-        /* @__PURE__ */ jsx15("label", { className: "mb-1 block text-xs text-stone-400", children: "MCP name" }),
-        /* @__PURE__ */ jsx15(
+        /* @__PURE__ */ jsx14("label", { className: "mb-1 block text-xs text-stone-400", children: "MCP name" }),
+        /* @__PURE__ */ jsx14(
           "input",
           {
             "aria-label": "MCP name",
@@ -7523,8 +2551,8 @@ function ComposerMcpPanel({
         )
       ] }),
       /* @__PURE__ */ jsxs13("div", { children: [
-        /* @__PURE__ */ jsx15("label", { className: "mb-1 block text-xs text-stone-400", children: "URL" }),
-        /* @__PURE__ */ jsx15(
+        /* @__PURE__ */ jsx14("label", { className: "mb-1 block text-xs text-stone-400", children: "URL" }),
+        /* @__PURE__ */ jsx14(
           "input",
           {
             "aria-label": "URL",
@@ -7536,7 +2564,7 @@ function ComposerMcpPanel({
         )
       ] }),
       /* @__PURE__ */ jsxs13("div", { className: "flex items-center justify-between gap-2 pt-1", children: [
-        /* @__PURE__ */ jsx15(
+        /* @__PURE__ */ jsx14(
           "button",
           {
             type: "button",
@@ -7545,7 +2573,7 @@ function ComposerMcpPanel({
             children: "Back"
           }
         ),
-        /* @__PURE__ */ jsx15(
+        /* @__PURE__ */ jsx14(
           "button",
           {
             type: "button",
@@ -7558,8 +2586,8 @@ function ComposerMcpPanel({
       ] })
     ] }) : null,
     mcpPanelMode === "stdio" ? /* @__PURE__ */ jsxs13("div", { className: "space-y-2 rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-3", children: [
-      /* @__PURE__ */ jsx15("label", { className: "block text-xs text-stone-400", children: "MCP block for provider config" }),
-      /* @__PURE__ */ jsx15(
+      /* @__PURE__ */ jsx14("label", { className: "block text-xs text-stone-400", children: "MCP block for provider config" }),
+      /* @__PURE__ */ jsx14(
         "textarea",
         {
           "aria-label": "MCP block for provider config",
@@ -7570,7 +2598,7 @@ function ComposerMcpPanel({
         }
       ),
       /* @__PURE__ */ jsxs13("div", { className: "flex items-center justify-between gap-2 pt-1", children: [
-        /* @__PURE__ */ jsx15(
+        /* @__PURE__ */ jsx14(
           "button",
           {
             type: "button",
@@ -7579,7 +2607,7 @@ function ComposerMcpPanel({
             children: "Back"
           }
         ),
-        /* @__PURE__ */ jsx15(
+        /* @__PURE__ */ jsx14(
           "button",
           {
             type: "button",
@@ -7591,14 +2619,14 @@ function ComposerMcpPanel({
         )
       ] })
     ] }) : null,
-    mcpPanelMode === "list" && mcpState.data?.servers.length ? /* @__PURE__ */ jsx15("div", { className: "space-y-2", children: mcpState.data.servers.map((server) => /* @__PURE__ */ jsxs13(
+    mcpPanelMode === "list" && mcpState.data?.servers.length ? /* @__PURE__ */ jsx14("div", { className: "space-y-2", children: mcpState.data.servers.map((server) => /* @__PURE__ */ jsxs13(
       "div",
       {
         className: "rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-2.5",
         children: [
           /* @__PURE__ */ jsxs13("div", { className: "flex items-start justify-between gap-3", children: [
             /* @__PURE__ */ jsxs13("div", { className: "min-w-0", children: [
-              /* @__PURE__ */ jsx15("p", { className: "truncate text-sm font-medium text-stone-100", children: server.name }),
+              /* @__PURE__ */ jsx14("p", { className: "truncate text-sm font-medium text-stone-100", children: server.name }),
               /* @__PURE__ */ jsxs13("p", { className: "mt-0.5 text-xs text-stone-400", children: [
                 server.tools.length,
                 " tools \xB7 ",
@@ -7609,19 +2637,19 @@ function ComposerMcpPanel({
                 " templates"
               ] })
             ] }),
-            /* @__PURE__ */ jsx15("span", { className: "shrink-0 rounded-full border border-stone-700 px-2 py-1 text-[10px] uppercase tracking-[0.14em] text-stone-300", children: authStatusLabel(server.authStatus) })
+            /* @__PURE__ */ jsx14("span", { className: "shrink-0 rounded-full border border-stone-700 px-2 py-1 text-[10px] uppercase tracking-[0.14em] text-stone-300", children: authStatusLabel(server.authStatus) })
           ] }),
-          server.tools.length > 0 ? /* @__PURE__ */ jsx15("p", { className: "mt-2 line-clamp-2 text-xs text-stone-500", children: server.tools.slice(0, 4).map((tool) => tool.title ?? tool.name).join(" \xB7 ") }) : null
+          server.tools.length > 0 ? /* @__PURE__ */ jsx14("p", { className: "mt-2 line-clamp-2 text-xs text-stone-500", children: server.tools.slice(0, 4).map((tool) => tool.title ?? tool.name).join(" \xB7 ") }) : null
         ]
       },
       server.name
     )) }) : null,
-    mcpPanelMode === "list" && mcpState.status !== "loading" && !mcpState.error && (mcpState.data?.servers.length ?? 0) === 0 ? /* @__PURE__ */ jsx15("p", { className: "rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-3 text-sm text-stone-400", children: "No MCP servers available right now." }) : null
+    mcpPanelMode === "list" && mcpState.status !== "loading" && !mcpState.error && (mcpState.data?.servers.length ?? 0) === 0 ? /* @__PURE__ */ jsx14("p", { className: "rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-3 text-sm text-stone-400", children: "No MCP servers available right now." }) : null
   ] });
 }
 
 // src/components/composer/ComposerSkillsPanel.tsx
-import { jsx as jsx16, jsxs as jsxs14 } from "react/jsx-runtime";
+import { jsx as jsx15, jsxs as jsxs14 } from "react/jsx-runtime";
 function ComposerSkillsPanel({
   skillsState,
   copiedSkillName,
@@ -7629,16 +2657,16 @@ function ComposerSkillsPanel({
   onCopySkillInvokeName
 }) {
   return /* @__PURE__ */ jsxs14("div", { className: "p-2", children: [
-    skillsState.status === "loading" && !skillsState.data ? /* @__PURE__ */ jsx16("p", { className: "rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-3 text-sm text-stone-400", children: "Loading skills..." }) : null,
-    skillsState.error ? /* @__PURE__ */ jsx16("p", { className: "mb-2 rounded-xl border border-rose-500/35 bg-rose-500/10 px-3 py-3 text-sm text-rose-100/90", children: skillsState.error }) : null,
-    skillsState.data?.skills.length ? /* @__PURE__ */ jsx16("div", { className: "space-y-2", children: skillsState.data.skills.map((skill) => /* @__PURE__ */ jsx16(
+    skillsState.status === "loading" && !skillsState.data ? /* @__PURE__ */ jsx15("p", { className: "rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-3 text-sm text-stone-400", children: "Loading skills..." }) : null,
+    skillsState.error ? /* @__PURE__ */ jsx15("p", { className: "mb-2 rounded-xl border border-rose-500/35 bg-rose-500/10 px-3 py-3 text-sm text-rose-100/90", children: skillsState.error }) : null,
+    skillsState.data?.skills.length ? /* @__PURE__ */ jsx15("div", { className: "space-y-2", children: skillsState.data.skills.map((skill) => /* @__PURE__ */ jsx15(
       "div",
       {
         className: "rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-2.5",
         children: /* @__PURE__ */ jsxs14("div", { className: "space-y-2", children: [
-          /* @__PURE__ */ jsx16("p", { className: "truncate text-sm font-medium text-stone-100", children: skill.interface?.displayName ?? skill.name }),
+          /* @__PURE__ */ jsx15("p", { className: "truncate text-sm font-medium text-stone-100", children: skill.interface?.displayName ?? skill.name }),
           /* @__PURE__ */ jsxs14("div", { className: "flex flex-wrap items-center gap-1.5 text-[10px] uppercase tracking-[0.14em]", children: [
-            /* @__PURE__ */ jsx16("span", { className: "rounded-full border border-stone-700 px-2 py-1 text-stone-400", children: skillScopeLabel(skill.scope) }),
+            /* @__PURE__ */ jsx15("span", { className: "rounded-full border border-stone-700 px-2 py-1 text-stone-400", children: skillScopeLabel(skill.scope) }),
             /* @__PURE__ */ jsxs14(
               "button",
               {
@@ -7648,35 +2676,35 @@ function ComposerSkillsPanel({
                 title: `Copy $${skill.name}`,
                 "aria-label": `Copy $${skill.name}`,
                 children: [
-                  /* @__PURE__ */ jsx16(ClipboardIcon, {}),
+                  /* @__PURE__ */ jsx15(ClipboardIcon, {}),
                   "$",
                   skill.name
                 ]
               }
             )
           ] }),
-          /* @__PURE__ */ jsx16("p", { className: "text-xs leading-5 text-stone-400", children: skill.interface?.shortDescription ?? skill.shortDescription ?? skill.description })
+          /* @__PURE__ */ jsx15("p", { className: "text-xs leading-5 text-stone-400", children: skill.interface?.shortDescription ?? skill.shortDescription ?? skill.description })
         ] })
       },
       skill.path
     )) }) : null,
-    skillsState.data?.errors.length ? /* @__PURE__ */ jsx16("div", { className: "mt-2 space-y-2", children: skillsState.data.errors.map((entry) => /* @__PURE__ */ jsxs14(
+    skillsState.data?.errors.length ? /* @__PURE__ */ jsx15("div", { className: "mt-2 space-y-2", children: skillsState.data.errors.map((entry) => /* @__PURE__ */ jsxs14(
       "div",
       {
         className: "rounded-xl border border-amber-500/25 bg-amber-500/10 px-3 py-2 text-xs text-amber-100/85",
         children: [
-          /* @__PURE__ */ jsx16("p", { className: "font-medium", children: entry.message }),
-          /* @__PURE__ */ jsx16("p", { className: "mt-1 break-all text-amber-100/60", children: entry.path })
+          /* @__PURE__ */ jsx15("p", { className: "font-medium", children: entry.message }),
+          /* @__PURE__ */ jsx15("p", { className: "mt-1 break-all text-amber-100/60", children: entry.path })
         ]
       },
       `${entry.path}:${entry.message}`
     )) }) : null,
-    skillsState.status !== "loading" && !skillsState.error && (skillsState.data?.skills.length ?? 0) === 0 && (skillsState.data?.errors.length ?? 0) === 0 ? /* @__PURE__ */ jsx16("p", { className: "rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-3 text-sm text-stone-400", children: "No skills available right now." }) : null
+    skillsState.status !== "loading" && !skillsState.error && (skillsState.data?.skills.length ?? 0) === 0 && (skillsState.data?.errors.length ?? 0) === 0 ? /* @__PURE__ */ jsx15("p", { className: "rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-3 text-sm text-stone-400", children: "No skills available right now." }) : null
   ] });
 }
 
 // src/components/composer/ComposerSlashToolboxMenu.tsx
-import { jsx as jsx17, jsxs as jsxs15 } from "react/jsx-runtime";
+import { jsx as jsx16, jsxs as jsxs15 } from "react/jsx-runtime";
 function ComposerSlashToolboxMenu({
   open,
   slashPanelView,
@@ -7754,7 +2782,7 @@ function ComposerSlashToolboxMenu({
   onSaveRawMcpBlock
 }) {
   return /* @__PURE__ */ jsxs15("div", { className: "relative", children: [
-    /* @__PURE__ */ jsx17(
+    /* @__PURE__ */ jsx16(
       InputGroupButton,
       {
         type: "button",
@@ -7765,10 +2793,10 @@ function ComposerSlashToolboxMenu({
         title: "Open slash toolbox",
         onClick: onToggle,
         className: `${iconButtonClassName} h-9 w-9 rounded-full sm:h-8 sm:w-8`,
-        children: /* @__PURE__ */ jsx17(SlashIcon, {})
+        children: /* @__PURE__ */ jsx16(SlashIcon, {})
       }
     ),
-    open && /* @__PURE__ */ jsx17(
+    open && /* @__PURE__ */ jsx16(
       "div",
       {
         "data-composer-menu-surface": "true",
@@ -7792,7 +2820,7 @@ function ComposerSlashToolboxMenu({
               className: `mt-1 flex min-h-11 overflow-hidden rounded-xl border border-[var(--theme-border)] ${index === 0 ? "mt-0" : ""}`,
               title: item.description ?? item.label,
               children: [
-                /* @__PURE__ */ jsx17(
+                /* @__PURE__ */ jsx16(
                   "button",
                   {
                     type: "button",
@@ -7803,10 +2831,10 @@ function ComposerSlashToolboxMenu({
                     },
                     className: "min-w-0 flex-1 px-3 py-2.5 text-left text-sm text-[var(--theme-fg)] transition hover:bg-[var(--theme-hover)] focus-visible:z-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--theme-accent-border)] disabled:cursor-not-allowed disabled:opacity-45",
                     "aria-label": "View goals",
-                    children: /* @__PURE__ */ jsx17("span", { children: item.command })
+                    children: /* @__PURE__ */ jsx16("span", { children: item.command })
                   }
                 ),
-                /* @__PURE__ */ jsx17(
+                /* @__PURE__ */ jsx16(
                   "button",
                   {
                     type: "button",
@@ -7820,7 +2848,7 @@ function ComposerSlashToolboxMenu({
               ]
             },
             `${item.action}:${item.command}`
-          ) : /* @__PURE__ */ jsx17(
+          ) : /* @__PURE__ */ jsx16(
             "button",
             {
               type: "button",
@@ -7829,14 +2857,14 @@ function ComposerSlashToolboxMenu({
               className: `${toolboxItemClassName2(item)} ${index === 0 ? "mt-0" : ""}`,
               title: item.description ?? item.label,
               children: /* @__PURE__ */ jsxs15("div", { className: "flex items-center justify-between gap-3", children: [
-                /* @__PURE__ */ jsx17("span", { children: item.command }),
-                /* @__PURE__ */ jsx17("span", { className: "text-[11px] uppercase tracking-[0.16em] text-stone-400", children: toolboxItemStatus2(item) })
+                /* @__PURE__ */ jsx16("span", { children: item.command }),
+                /* @__PURE__ */ jsx16("span", { className: "text-[11px] uppercase tracking-[0.16em] text-stone-400", children: toolboxItemStatus2(item) })
               ] })
             },
             `${item.action}:${item.command}`
           )),
-          availableToolboxItems.length === 0 ? /* @__PURE__ */ jsx17("p", { className: "px-3 py-2 text-sm text-stone-400", children: "No backend tools are available for this thread." }) : null
-        ] }) : /* @__PURE__ */ jsx17("div", { className: "max-h-80 overflow-auto", children: slashPanelView === "goals" ? /* @__PURE__ */ jsx17(
+          availableToolboxItems.length === 0 ? /* @__PURE__ */ jsx16("p", { className: "px-3 py-2 text-sm text-stone-400", children: "No backend tools are available for this thread." }) : null
+        ] }) : /* @__PURE__ */ jsx16("div", { className: "max-h-80 overflow-auto", children: slashPanelView === "goals" ? /* @__PURE__ */ jsx16(
           ComposerGoalsPanel,
           {
             goalState,
@@ -7845,7 +2873,7 @@ function ComposerSlashToolboxMenu({
             onBack: () => onSetSlashPanelView("root"),
             onUpdateGoal
           }
-        ) : slashPanelView === "fork" ? /* @__PURE__ */ jsx17(
+        ) : slashPanelView === "fork" ? /* @__PURE__ */ jsx16(
           ComposerForkPanel,
           {
             busy,
@@ -7857,7 +2885,7 @@ function ComposerSlashToolboxMenu({
               return onOpenForkTurns();
             }
           }
-        ) : slashPanelView === "forkTurns" ? /* @__PURE__ */ jsx17(
+        ) : slashPanelView === "forkTurns" ? /* @__PURE__ */ jsx16(
           ComposerForkTurnsPanel,
           {
             forkTurnOptionsState,
@@ -7865,7 +2893,7 @@ function ComposerSlashToolboxMenu({
             composerPanelButtonClassName: panelButtonClassName,
             onForkTurn
           }
-        ) : slashPanelView === "skills" ? /* @__PURE__ */ jsx17(
+        ) : slashPanelView === "skills" ? /* @__PURE__ */ jsx16(
           ComposerSkillsPanel,
           {
             skillsState,
@@ -7873,7 +2901,7 @@ function ComposerSlashToolboxMenu({
             composerChipButtonClassName: chipButtonClassName,
             onCopySkillInvokeName
           }
-        ) : slashPanelView === "hooks" ? /* @__PURE__ */ jsx17(
+        ) : slashPanelView === "hooks" ? /* @__PURE__ */ jsx16(
           ComposerHooksPanel,
           {
             hooksPanelMode,
@@ -7906,7 +2934,7 @@ function ComposerSlashToolboxMenu({
             onTrustHook,
             onUntrustHook
           }
-        ) : /* @__PURE__ */ jsx17(
+        ) : /* @__PURE__ */ jsx16(
           ComposerMcpPanel,
           {
             mcpPanelMode,
@@ -7937,7 +2965,7 @@ function ComposerSlashToolboxMenu({
 }
 
 // src/components/composer/ComposerToolbar.tsx
-import { jsx as jsx18, jsxs as jsxs16 } from "react/jsx-runtime";
+import { jsx as jsx17, jsxs as jsxs16 } from "react/jsx-runtime";
 function ComposerToolbar({
   isShellView,
   canToggleShellView,
@@ -7961,9 +2989,9 @@ function ComposerToolbar({
       className: `${toolbarClassName} relative z-30 mb-0 flex items-center gap-2 text-xs`,
       children: [
         /* @__PURE__ */ jsxs16("div", { className: "flex shrink-0 items-center gap-1.5", children: [
-          !isShellView && slashToolboxProps ? /* @__PURE__ */ jsx18(ComposerSlashToolboxMenu, { ...slashToolboxProps }) : null,
-          !isShellView && attachmentMenuProps ? /* @__PURE__ */ jsx18(ComposerAttachmentMenu, { ...attachmentMenuProps }) : null,
-          canToggleShellView && /* @__PURE__ */ jsx18(
+          !isShellView && slashToolboxProps ? /* @__PURE__ */ jsx17(ComposerSlashToolboxMenu, { ...slashToolboxProps }) : null,
+          !isShellView && attachmentMenuProps ? /* @__PURE__ */ jsx17(ComposerAttachmentMenu, { ...attachmentMenuProps }) : null,
+          canToggleShellView && /* @__PURE__ */ jsx17(
             InputGroupButton,
             {
               type: "button",
@@ -7973,13 +3001,13 @@ function ComposerToolbar({
               title: isShellView ? "Switch to chat" : "Switch to shell",
               onClick: () => onToggleView?.(),
               className: `${iconButtonClassName} h-9 w-9 rounded-full sm:h-8 sm:w-8`,
-              children: isShellView ? /* @__PURE__ */ jsx18(ChatIcon, {}) : /* @__PURE__ */ jsx18(TerminalIcon, {})
+              children: isShellView ? /* @__PURE__ */ jsx17(ChatIcon, {}) : /* @__PURE__ */ jsx17(TerminalIcon, {})
             }
           )
         ] }),
         /* @__PURE__ */ jsxs16("div", { className: "flex min-w-0 flex-1 flex-wrap items-center justify-end gap-1.5", children: [
-          !isShellView && settingsToolbarProps ? /* @__PURE__ */ jsx18(ComposerSettingsToolbar, { ...settingsToolbarProps }) : null,
-          isShellView && shellPromptLabel ? /* @__PURE__ */ jsx18(
+          !isShellView && settingsToolbarProps ? /* @__PURE__ */ jsx17(ComposerSettingsToolbar, { ...settingsToolbarProps }) : null,
+          isShellView && shellPromptLabel ? /* @__PURE__ */ jsx17(
             InputGroupText,
             {
               className: "min-w-0 max-w-[12rem] truncate rounded-full px-1.5 py-1 text-stone-400",
@@ -7988,7 +3016,7 @@ function ComposerToolbar({
             }
           ) : null,
           isMobileShell && /* @__PURE__ */ jsxs16("div", { className: "relative", children: [
-            /* @__PURE__ */ jsx18(
+            /* @__PURE__ */ jsx17(
               "button",
               {
                 type: "button",
@@ -8004,10 +3032,10 @@ function ComposerToolbar({
                   );
                 },
                 className: "inline-flex h-7 w-7 items-center justify-center rounded-full border border-stone-700 bg-stone-900/92 text-stone-200 transition hover:bg-stone-800",
-                children: /* @__PURE__ */ jsx18(WrenchScrewdriverIcon, {})
+                children: /* @__PURE__ */ jsx17(WrenchScrewdriverIcon, {})
               }
             ),
-            openMenu === "shellTools" && shellToolsPanelProps ? /* @__PURE__ */ jsx18(ComposerShellToolsPanel, { ...shellToolsPanelProps }) : null
+            openMenu === "shellTools" && shellToolsPanelProps ? /* @__PURE__ */ jsx17(ComposerShellToolsPanel, { ...shellToolsPanelProps }) : null
           ] })
         ] })
       ]
@@ -9050,7 +4078,7 @@ function useComposerPromptDomSync({
 }
 
 // src/components/composer/ComposerGoalComposeCard.tsx
-import { jsx as jsx19, jsxs as jsxs17 } from "react/jsx-runtime";
+import { jsx as jsx18, jsxs as jsxs17 } from "react/jsx-runtime";
 function ComposerGoalComposeCard({
   tokenBudget,
   error,
@@ -9058,10 +4086,10 @@ function ComposerGoalComposeCard({
   onCancel
 }) {
   return /* @__PURE__ */ jsxs17("div", { className: "thread-goal-compose-card relative z-20 mb-1.5 flex flex-wrap items-center gap-2 rounded-2xl border px-3 py-2 text-xs shadow-sm", children: [
-    /* @__PURE__ */ jsx19("span", { className: "thread-goal-compose-label font-medium uppercase tracking-[0.16em]", children: "Goal" }),
+    /* @__PURE__ */ jsx18("span", { className: "thread-goal-compose-label font-medium uppercase tracking-[0.16em]", children: "Goal" }),
     /* @__PURE__ */ jsxs17("label", { className: "thread-goal-compose-field flex items-center gap-2", children: [
-      /* @__PURE__ */ jsx19("span", { children: "Max tokens (k)" }),
-      /* @__PURE__ */ jsx19(
+      /* @__PURE__ */ jsx18("span", { children: "Max tokens (k)" }),
+      /* @__PURE__ */ jsx18(
         "input",
         {
           "aria-label": "Goal token budget",
@@ -9073,8 +4101,8 @@ function ComposerGoalComposeCard({
         }
       )
     ] }),
-    error ? /* @__PURE__ */ jsx19("span", { className: "thread-goal-compose-error min-w-0 flex-1", children: error }) : null,
-    /* @__PURE__ */ jsx19(
+    error ? /* @__PURE__ */ jsx18("span", { className: "thread-goal-compose-error min-w-0 flex-1", children: error }) : null,
+    /* @__PURE__ */ jsx18(
       "button",
       {
         type: "button",
@@ -9087,7 +4115,7 @@ function ComposerGoalComposeCard({
 }
 
 // src/components/composer/ComposerPromptEditor.tsx
-import { jsx as jsx20, jsxs as jsxs18 } from "react/jsx-runtime";
+import { jsx as jsx19, jsxs as jsxs18 } from "react/jsx-runtime";
 function hasIOSNativeBridge() {
   const nativeWindow = window;
   return Boolean(nativeWindow.webkit?.messageHandlers?.remoteCodex);
@@ -9121,14 +4149,14 @@ function ComposerPromptEditor({
       className: `${composerPromptRegionClassName} relative w-full ${canInterrupt ? "z-[90]" : ""}`,
       children: [
         /* @__PURE__ */ jsxs18("div", { className: graphChatInputClassName, children: [
-          prompt.length === 0 && /* @__PURE__ */ jsx20(
+          prompt.length === 0 && /* @__PURE__ */ jsx19(
             "span",
             {
               className: `pointer-events-none absolute left-3 top-3 truncate text-slate-500 sm:left-4 sm:top-4 dark:text-slate-400 ${canInterrupt ? "right-12" : "right-3 sm:right-4"}`,
               children: promptPlaceholder
             }
           ),
-          /* @__PURE__ */ jsx20(
+          /* @__PURE__ */ jsx19(
             "div",
             {
               ref: promptRef,
@@ -9158,7 +4186,7 @@ function ComposerPromptEditor({
             }
           )
         ] }),
-        canInterrupt ? /* @__PURE__ */ jsx20(
+        canInterrupt ? /* @__PURE__ */ jsx19(
           InputGroupButton,
           {
             type: "button",
@@ -9171,7 +4199,7 @@ function ComposerPromptEditor({
               void onInterrupt?.();
             },
             className: "thread-graph-composer-stop-button ui-action-danger absolute right-2 top-2 z-[90] h-8 w-8 rounded-full text-sm font-medium pointer-events-auto",
-            children: /* @__PURE__ */ jsx20(
+            children: /* @__PURE__ */ jsx19(
               "span",
               {
                 "aria-hidden": "true",
@@ -9186,7 +4214,7 @@ function ComposerPromptEditor({
 }
 
 // src/components/composer/ComposerShellPromptInput.tsx
-import { jsx as jsx21, jsxs as jsxs19 } from "react/jsx-runtime";
+import { jsx as jsx20, jsxs as jsxs19 } from "react/jsx-runtime";
 function ComposerShellPromptInput({
   prompt,
   promptPlaceholder,
@@ -9202,7 +4230,7 @@ function ComposerShellPromptInput({
   onInterrupt
 }) {
   return /* @__PURE__ */ jsxs19("div", { className: `${promptRegionClassName} relative`, children: [
-    /* @__PURE__ */ jsx21(
+    /* @__PURE__ */ jsx20(
       "textarea",
       {
         "aria-label": "Prompt",
@@ -9215,7 +4243,7 @@ function ComposerShellPromptInput({
         className: `${promptInputClassName} resize-y pb-10`
       }
     ),
-    /* @__PURE__ */ jsx21(
+    /* @__PURE__ */ jsx20(
       "button",
       {
         type: "button",
@@ -9224,7 +4252,7 @@ function ComposerShellPromptInput({
         onClick: () => void onInterrupt?.(),
         disabled: !canInterrupt,
         className: `absolute right-2.5 top-2.5 inline-flex h-8 w-8 items-center justify-center rounded-full border transition ${canInterrupt ? "border-rose-300/55 bg-rose-300/[0.14] text-rose-50 shadow-lg shadow-rose-950/20 hover:bg-rose-300/[0.22]" : "cursor-not-allowed border-stone-700/30 bg-stone-400/[0.02] text-stone-500/55 opacity-55"}`,
-        children: /* @__PURE__ */ jsx21(
+        children: /* @__PURE__ */ jsx20(
           "span",
           {
             "aria-hidden": "true",
@@ -9233,7 +4261,7 @@ function ComposerShellPromptInput({
         )
       }
     ),
-    /* @__PURE__ */ jsx21(
+    /* @__PURE__ */ jsx20(
       "button",
       {
         type: "submit",
@@ -9256,7 +4284,7 @@ function ComposerShellPromptInput({
 }
 
 // src/components/composer/useComposerPromptSlots.tsx
-import { jsx as jsx22 } from "react/jsx-runtime";
+import { jsx as jsx21 } from "react/jsx-runtime";
 function useComposerPromptSlots({
   isShellView,
   promptRef,
@@ -9291,7 +4319,7 @@ function useComposerPromptSlots({
   onShellPromptChange
 }) {
   return {
-    promptSlot: !isShellView ? /* @__PURE__ */ jsx22(
+    promptSlot: !isShellView ? /* @__PURE__ */ jsx21(
       ComposerPromptEditor,
       {
         promptRef,
@@ -9315,7 +4343,7 @@ function useComposerPromptSlots({
         onDrop: onPromptDrop
       }
     ) : null,
-    goalSlot: goalComposeMode && !isShellView ? /* @__PURE__ */ jsx22(
+    goalSlot: goalComposeMode && !isShellView ? /* @__PURE__ */ jsx21(
       ComposerGoalComposeCard,
       {
         tokenBudget: goalTokenBudget,
@@ -9324,7 +4352,7 @@ function useComposerPromptSlots({
         onCancel: onCancelGoal
       }
     ) : null,
-    shellPromptSlot: isShellView ? /* @__PURE__ */ jsx22(
+    shellPromptSlot: isShellView ? /* @__PURE__ */ jsx21(
       ComposerShellPromptInput,
       {
         prompt,
@@ -9660,7 +4688,7 @@ function useComposerToolbarProps({
 }
 
 // src/components/ThreadComposer.tsx
-import { jsx as jsx23 } from "react/jsx-runtime";
+import { jsx as jsx22 } from "react/jsx-runtime";
 function ThreadComposer({
   activeView,
   edgeToEdgeMobile = false,
@@ -10451,7 +5479,7 @@ function ThreadComposer({
     onCancelGoal: exitGoalComposeMode,
     onShellPromptChange: setPrompt
   });
-  return /* @__PURE__ */ jsx23(
+  return /* @__PURE__ */ jsx22(
     ComposerFrame,
     {
       activeView,
@@ -10473,7 +5501,7 @@ function ThreadComposer({
       onSubmit: handleSubmit,
       formRef: menuRef,
       promptSlot,
-      pendingQueueSlot: !isShellView && pendingPrompts.length > 0 ? /* @__PURE__ */ jsx23(
+      pendingQueueSlot: !isShellView && pendingPrompts.length > 0 ? /* @__PURE__ */ jsx22(
         ComposerPendingQueue,
         {
           prompts: pendingPrompts,
@@ -10481,7 +5509,7 @@ function ThreadComposer({
           onCancel: onCancelPendingPrompt
         }
       ) : null,
-      toolbarSlot: /* @__PURE__ */ jsx23(ComposerToolbar, { ...toolbarProps }),
+      toolbarSlot: /* @__PURE__ */ jsx22(ComposerToolbar, { ...toolbarProps }),
       goalSlot,
       shellPromptSlot
     }
@@ -10661,7 +5689,7 @@ function historyItemLabel(kind) {
 // src/components/RenameDialog.tsx
 import { useEffect as useEffect7 } from "react";
 import { createPortal } from "react-dom";
-import { jsx as jsx24, jsxs as jsxs20 } from "react/jsx-runtime";
+import { jsx as jsx23, jsxs as jsxs20 } from "react/jsx-runtime";
 function RenameDialog({
   open,
   title,
@@ -10695,7 +5723,7 @@ function RenameDialog({
   }
   return createPortal(
     /* @__PURE__ */ jsxs20("div", { className: "fixed inset-0 z-[95] flex items-center justify-center p-4 sm:p-6", children: [
-      /* @__PURE__ */ jsx24(
+      /* @__PURE__ */ jsx23(
         "button",
         {
           type: "button",
@@ -10716,10 +5744,10 @@ function RenameDialog({
           children: [
             /* @__PURE__ */ jsxs20("div", { className: "flex items-start justify-between gap-3", children: [
               /* @__PURE__ */ jsxs20("div", { className: "min-w-0 flex-1", children: [
-                /* @__PURE__ */ jsx24("p", { className: "text-sm font-medium text-stone-100", children: title }),
-                /* @__PURE__ */ jsx24("p", { className: "mt-1 text-sm text-stone-500", children: "Changes are saved only after confirmation." })
+                /* @__PURE__ */ jsx23("p", { className: "text-sm font-medium text-stone-100", children: title }),
+                /* @__PURE__ */ jsx23("p", { className: "mt-1 text-sm text-stone-500", children: "Changes are saved only after confirmation." })
               ] }),
-              /* @__PURE__ */ jsx24(
+              /* @__PURE__ */ jsx23(
                 "button",
                 {
                   type: "button",
@@ -10727,13 +5755,13 @@ function RenameDialog({
                   onClick: onCancel,
                   disabled: busy,
                   className: "inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-stone-700 text-stone-300 transition hover:bg-stone-800 disabled:cursor-not-allowed disabled:opacity-60",
-                  children: /* @__PURE__ */ jsx24("svg", { "aria-hidden": "true", viewBox: "0 0 16 16", className: "h-4 w-4 fill-current", children: /* @__PURE__ */ jsx24("path", { d: "M3.22 2.47 8 7.25l4.78-4.78 1.06 1.06L9.06 8.31l4.78 4.78-1.06 1.06L8 9.37l-4.78 4.78-1.06-1.06 4.78-4.78-4.78-4.78 1.06-1.06Z" }) })
+                  children: /* @__PURE__ */ jsx23("svg", { "aria-hidden": "true", viewBox: "0 0 16 16", className: "h-4 w-4 fill-current", children: /* @__PURE__ */ jsx23("path", { d: "M3.22 2.47 8 7.25l4.78-4.78 1.06 1.06L9.06 8.31l4.78 4.78-1.06 1.06L8 9.37l-4.78 4.78-1.06-1.06 4.78-4.78-4.78-4.78 1.06-1.06Z" }) })
                 }
               )
             ] }),
             /* @__PURE__ */ jsxs20("div", { className: "mt-5", children: [
-              /* @__PURE__ */ jsx24("label", { htmlFor: "rename-dialog-input", className: "text-sm font-medium text-stone-200", children: label }),
-              /* @__PURE__ */ jsx24(
+              /* @__PURE__ */ jsx23("label", { htmlFor: "rename-dialog-input", className: "text-sm font-medium text-stone-200", children: label }),
+              /* @__PURE__ */ jsx23(
                 "input",
                 {
                   id: "rename-dialog-input",
@@ -10746,7 +5774,7 @@ function RenameDialog({
               )
             ] }),
             /* @__PURE__ */ jsxs20("div", { className: "mt-5 flex items-center justify-end gap-2", children: [
-              /* @__PURE__ */ jsx24(
+              /* @__PURE__ */ jsx23(
                 "button",
                 {
                   type: "button",
@@ -10756,7 +5784,7 @@ function RenameDialog({
                   children: "Cancel"
                 }
               ),
-              /* @__PURE__ */ jsx24(
+              /* @__PURE__ */ jsx23(
                 "button",
                 {
                   type: "submit",
@@ -10775,7 +5803,7 @@ function RenameDialog({
 }
 
 // src/components/graph-chat/GraphChatShellLayout.tsx
-import { jsx as jsx25 } from "react/jsx-runtime";
+import { jsx as jsx24 } from "react/jsx-runtime";
 function GraphChatShellRoot({
   children,
   effectiveTheme,
@@ -10783,7 +5811,7 @@ function GraphChatShellRoot({
   themeMode,
   viewportConstrained
 }) {
-  return /* @__PURE__ */ jsx25(
+  return /* @__PURE__ */ jsx24(
     "div",
     {
       className: `thread-ui-shell ${effectiveTheme === "dark" ? "thread-ui-theme-dark dark" : ""} ${viewportConstrained ? "thread-ui-viewport-constrained" : ""} ${viewportConstrained ? "h-[100svh] max-h-[100svh] min-h-0 overflow-hidden overscroll-none" : "min-h-[100svh] overflow-hidden"} bg-[#f6f8fb] text-slate-900 transition-colors duration-200 sm:p-2`,
@@ -10799,7 +5827,7 @@ function GraphChatShellFrame({
   roomsRailCollapsed,
   hideRoomsRail = false
 }) {
-  return /* @__PURE__ */ jsx25(
+  return /* @__PURE__ */ jsx24(
     "div",
     {
       className: `thread-shell-frame relative h-full min-h-0 ${hideRoomsRail ? "is-rail-hidden sm:grid-cols-[minmax(0,1fr)]" : roomsRailCollapsed ? "is-rail-collapsed sm:grid-cols-[56px_minmax(0,1fr)]" : "sm:grid-cols-[264px_minmax(0,1fr)]"}`,
@@ -10814,7 +5842,7 @@ function GraphChatMobileScrim({
   if (!open) {
     return null;
   }
-  return /* @__PURE__ */ jsx25(
+  return /* @__PURE__ */ jsx24(
     "button",
     {
       type: "button",
@@ -10830,7 +5858,7 @@ function GraphChatRoomsRailShell({
   collapsed,
   mobileOpen
 }) {
-  return /* @__PURE__ */ jsx25(
+  return /* @__PURE__ */ jsx24(
     "aside",
     {
       className: `thread-graph-rooms-surface thread-rooms-rail fixed inset-y-0 left-0 z-50 flex min-h-0 min-w-0 w-[min(20rem,calc(100vw-2rem))] flex-col overflow-x-hidden border-r border-slate-200/80 bg-white shadow-[0_20px_50px_rgba(15,23,42,0.18)] transition-transform duration-200 ease-out sm:static sm:z-auto sm:w-auto sm:translate-x-0 sm:rounded-[12px] sm:border sm:shadow-[0_10px_30px_rgba(15,23,42,0.04)] ${mobileOpen ? "translate-x-0" : "pointer-events-none -translate-x-full sm:pointer-events-auto"} ${collapsed ? "thread-ui-rail-collapsed sm:items-center" : ""}`,
@@ -10840,41 +5868,37 @@ function GraphChatRoomsRailShell({
   );
 }
 function GraphChatMainShell({ children }) {
-  return /* @__PURE__ */ jsx25("main", { className: "thread-shell-main h-full min-h-0 min-w-0 overflow-hidden", children: /* @__PURE__ */ jsx25("div", { className: "thread-main-panel thread-shell-card flex h-full min-h-0 flex-col overflow-hidden bg-white shadow-[0_10px_30px_rgba(15,23,42,0.04)] sm:rounded-[12px] sm:border sm:border-slate-200/80", children }) });
+  return /* @__PURE__ */ jsx24("main", { className: "thread-shell-main h-full min-h-0 min-w-0 overflow-hidden", children: /* @__PURE__ */ jsx24("div", { className: "thread-main-panel thread-shell-card flex h-full min-h-0 flex-col overflow-hidden bg-white shadow-[0_10px_30px_rgba(15,23,42,0.04)] sm:rounded-[12px] sm:border sm:border-slate-200/80", children }) });
 }
 function GraphChatTopbarShell({ children }) {
-  return /* @__PURE__ */ jsx25("div", { className: "thread-topbar-surface flex shrink-0 flex-col border-b border-slate-200 bg-white pt-[env(safe-area-inset-top)] sm:pt-0", children });
+  return /* @__PURE__ */ jsx24("div", { className: "thread-topbar-surface flex shrink-0 flex-col border-b border-slate-200 bg-white pt-[env(safe-area-inset-top)] sm:pt-0", children });
 }
 function GraphChatSplitRegion({ children }) {
-  return /* @__PURE__ */ jsx25("div", { className: "thread-split-region min-h-0 flex-1 overflow-hidden p-0 sm:p-2", children });
+  return /* @__PURE__ */ jsx24("div", { className: "thread-split-region min-h-0 flex-1 overflow-hidden p-0 sm:p-2", children });
 }
 
-// src/components/ThreadWorkspaceLayout.tsx
-init_GraphResizablePanels();
-
 // src/components/graph-ui/Dialog.tsx
-init_utils();
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { XIcon } from "lucide-react";
-import { jsx as jsx27, jsxs as jsxs21 } from "react/jsx-runtime";
+import { jsx as jsx25, jsxs as jsxs21 } from "react/jsx-runtime";
 function Dialog({ ...props }) {
-  return /* @__PURE__ */ jsx27(DialogPrimitive.Root, { "data-slot": "dialog", ...props });
+  return /* @__PURE__ */ jsx25(DialogPrimitive.Root, { "data-slot": "dialog", ...props });
 }
 function DialogTrigger({
   ...props
 }) {
-  return /* @__PURE__ */ jsx27(DialogPrimitive.Trigger, { "data-slot": "dialog-trigger", ...props });
+  return /* @__PURE__ */ jsx25(DialogPrimitive.Trigger, { "data-slot": "dialog-trigger", ...props });
 }
 function DialogPortal({
   ...props
 }) {
-  return /* @__PURE__ */ jsx27(DialogPrimitive.Portal, { "data-slot": "dialog-portal", ...props });
+  return /* @__PURE__ */ jsx25(DialogPrimitive.Portal, { "data-slot": "dialog-portal", ...props });
 }
 function DialogOverlay({
   className,
   ...props
 }) {
-  return /* @__PURE__ */ jsx27(
+  return /* @__PURE__ */ jsx25(
     DialogPrimitive.Overlay,
     {
       "data-slot": "dialog-overlay",
@@ -10893,7 +5917,7 @@ function DialogContent({
   ...props
 }) {
   return /* @__PURE__ */ jsxs21(DialogPortal, { "data-slot": "dialog-portal", children: [
-    /* @__PURE__ */ jsx27(DialogOverlay, {}),
+    /* @__PURE__ */ jsx25(DialogOverlay, {}),
     /* @__PURE__ */ jsxs21(
       DialogPrimitive.Content,
       {
@@ -10911,8 +5935,8 @@ function DialogContent({
               "data-slot": "dialog-close",
               className: "absolute right-4 top-4 rounded-xs opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-hidden focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
               children: [
-                /* @__PURE__ */ jsx27(XIcon, {}),
-                /* @__PURE__ */ jsx27("span", { className: "sr-only", children: "Close" })
+                /* @__PURE__ */ jsx25(XIcon, {}),
+                /* @__PURE__ */ jsx25("span", { className: "sr-only", children: "Close" })
               ]
             }
           ) : null
@@ -10922,7 +5946,7 @@ function DialogContent({
   ] });
 }
 function DialogHeader({ className, ...props }) {
-  return /* @__PURE__ */ jsx27(
+  return /* @__PURE__ */ jsx25(
     "div",
     {
       "data-slot": "dialog-header",
@@ -10935,7 +5959,7 @@ function DialogTitle({
   className,
   ...props
 }) {
-  return /* @__PURE__ */ jsx27(
+  return /* @__PURE__ */ jsx25(
     DialogPrimitive.Title,
     {
       "data-slot": "dialog-title",
@@ -10948,7 +5972,7 @@ function DialogDescription({
   className,
   ...props
 }) {
-  return /* @__PURE__ */ jsx27(
+  return /* @__PURE__ */ jsx25(
     DialogPrimitive.Description,
     {
       "data-slot": "dialog-description",
@@ -10959,7 +5983,7 @@ function DialogDescription({
 }
 
 // src/components/ThreadWorkspaceLayout.tsx
-import { Fragment as Fragment4, jsx as jsx28, jsxs as jsxs22 } from "react/jsx-runtime";
+import { Fragment as Fragment4, jsx as jsx26, jsxs as jsxs22 } from "react/jsx-runtime";
 var THEME_MODE_OPTIONS = [
   { value: "system", label: "Follow system", icon: Monitor },
   { value: "dark", label: "Dark", icon: Moon },
@@ -11022,11 +6046,11 @@ function ThreadCard({
   const openThread = () => onOpenThread(thread.id);
   const cardClassName = `thread-graph-room-card group flex w-full items-center gap-3 rounded-xl border text-left transition ${isCurrentThread ? "is-active" : ""} ${collapsed ? "justify-center px-2 py-2" : "px-3 py-2.5"}`;
   const cardContent = /* @__PURE__ */ jsxs22(Fragment4, { children: [
-    /* @__PURE__ */ jsx28(
+    /* @__PURE__ */ jsx26(
       "div",
       {
         className: `thread-graph-room-card-icon flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${isCurrentThread ? "is-active" : ""}`,
-        children: /* @__PURE__ */ jsx28(MessageSquare, { className: "h-4 w-4" })
+        children: /* @__PURE__ */ jsx26(MessageSquare, { className: "h-4 w-4" })
       }
     ),
     /* @__PURE__ */ jsxs22(
@@ -11035,7 +6059,7 @@ function ThreadCard({
         className: `min-w-0 flex-1 ${collapsed ? "thread-desktop-collapsed-hidden" : ""}`,
         children: [
           /* @__PURE__ */ jsxs22("div", { className: "flex min-w-0 items-center gap-1", children: [
-            /* @__PURE__ */ jsx28(
+            /* @__PURE__ */ jsx26(
               "p",
               {
                 className: "thread-graph-room-card-title min-w-0 flex-1 truncate text-sm font-medium",
@@ -11043,7 +6067,7 @@ function ThreadCard({
                 children: thread.title
               }
             ),
-            onBeginRenameThread && !collapsed ? /* @__PURE__ */ jsx28(
+            onBeginRenameThread && !collapsed ? /* @__PURE__ */ jsx26(
               "button",
               {
                 type: "button",
@@ -11055,10 +6079,10 @@ function ThreadCard({
                 "aria-label": `Rename thread ${thread.title}`,
                 title: "Rename thread",
                 className: "thread-card-quiet-button inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full transition",
-                children: /* @__PURE__ */ jsx28(Pencil, { className: "h-3 w-3" })
+                children: /* @__PURE__ */ jsx26(Pencil, { className: "h-3 w-3" })
               }
             ) : null,
-            showSessionCopyButton && thread.providerSessionId ? /* @__PURE__ */ jsx28(
+            showSessionCopyButton && thread.providerSessionId ? /* @__PURE__ */ jsx26(
               "button",
               {
                 type: "button",
@@ -11070,27 +6094,27 @@ function ThreadCard({
                   void handleCopySessionId();
                 },
                 className: "thread-card-quiet-button thread-card-session-copy-button inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full transition",
-                children: copyState === "copied" ? /* @__PURE__ */ jsx28(Check2, { className: "h-3.5 w-3.5" }) : /* @__PURE__ */ jsx28(Copy, { className: "h-3.5 w-3.5" })
+                children: copyState === "copied" ? /* @__PURE__ */ jsx26(Check2, { className: "h-3.5 w-3.5" }) : /* @__PURE__ */ jsx26(Copy, { className: "h-3.5 w-3.5" })
               }
             ) : null
           ] }),
           /* @__PURE__ */ jsxs22("div", { className: "mt-1 flex min-w-0 items-center gap-2", children: [
-            roomMetaLabel ? /* @__PURE__ */ jsx28(
+            roomMetaLabel ? /* @__PURE__ */ jsx26(
               "p",
               {
                 className: "thread-graph-room-card-meta min-w-0 flex-1 truncate text-[11px] text-[var(--theme-fg-muted)]",
                 title: roomMetaLabel,
                 children: roomMetaLabel
               }
-            ) : /* @__PURE__ */ jsx28("span", { className: "min-w-0 flex-1", "aria-hidden": "true" }),
-            /* @__PURE__ */ jsx28(
+            ) : /* @__PURE__ */ jsx26("span", { className: "min-w-0 flex-1", "aria-hidden": "true" }),
+            /* @__PURE__ */ jsx26(
               "span",
               {
                 className: `shrink-0 rounded-full border px-1.5 py-0.5 text-[9px] uppercase tracking-normal ${threadStatusClassName(thread.status)}`,
                 children: threadStatusLabel(thread.status)
               }
             ),
-            /* @__PURE__ */ jsx28(
+            /* @__PURE__ */ jsx26(
               "time",
               {
                 className: "shrink-0 text-[11px] text-[var(--theme-fg-muted)]",
@@ -11102,7 +6126,7 @@ function ThreadCard({
         ]
       }
     ),
-    showDeleteButton && onDeleteThread && !collapsed ? /* @__PURE__ */ jsx28(
+    showDeleteButton && onDeleteThread && !collapsed ? /* @__PURE__ */ jsx26(
       "button",
       {
         type: "button",
@@ -11114,13 +6138,13 @@ function ThreadCard({
         "aria-label": `Delete thread ${thread.title}`,
         className: "thread-card-danger-button shrink-0 rounded-full p-1 transition",
         title: "Delete thread",
-        children: /* @__PURE__ */ jsx28(Trash2, { className: "h-3.5 w-3.5" })
+        children: /* @__PURE__ */ jsx26(Trash2, { className: "h-3.5 w-3.5" })
       }
     ) : null
   ] });
   const href = getThreadHref?.(thread.id);
   if (renderThreadLink) {
-    return /* @__PURE__ */ jsx28(Fragment4, { children: renderThreadLink({
+    return /* @__PURE__ */ jsx26(Fragment4, { children: renderThreadLink({
       thread,
       children: cardContent,
       className: cardClassName,
@@ -11128,7 +6152,7 @@ function ThreadCard({
     }) });
   }
   if (href) {
-    return /* @__PURE__ */ jsx28(
+    return /* @__PURE__ */ jsx26(
       "a",
       {
         href,
@@ -11142,7 +6166,7 @@ function ThreadCard({
       }
     );
   }
-  return /* @__PURE__ */ jsx28(
+  return /* @__PURE__ */ jsx26(
     "div",
     {
       role: "link",
@@ -11177,7 +6201,7 @@ function ThreadCards({
   collapsed = false
 }) {
   const containerClassName = scrollable ? `min-h-0 min-w-0 overflow-x-hidden overflow-y-auto overscroll-contain pr-1 ${maxHeightClassName}` : "";
-  return /* @__PURE__ */ jsx28("div", { className: containerClassName, children: /* @__PURE__ */ jsx28("div", { className: "min-w-0 space-y-1", children: threads.map((thread) => /* @__PURE__ */ jsx28(
+  return /* @__PURE__ */ jsx26("div", { className: containerClassName, children: /* @__PURE__ */ jsx26("div", { className: "min-w-0 space-y-1", children: threads.map((thread) => /* @__PURE__ */ jsx26(
     ThreadCard,
     {
       thread,
@@ -11245,6 +6269,7 @@ function ThreadWorkspaceLayout({
 }) {
   const shellNav = useAppShellNav();
   const initialShellMobileViewport = typeof window !== "undefined" ? window.matchMedia("(max-width: 639px)").matches : layoutMode === "mobile";
+  const initialWorkspaceFocusViewport = typeof window !== "undefined" ? window.matchMedia("(max-width: 1023px)").matches : layoutMode === "mobile";
   const [systemPrefersDark, setSystemPrefersDark] = useState13(
     () => typeof window !== "undefined" ? window.matchMedia("(prefers-color-scheme: dark)").matches : false
   );
@@ -11253,10 +6278,13 @@ function ThreadWorkspaceLayout({
   const [mobileRoomsOpen, setMobileRoomsOpen] = useState13(false);
   const [roomsRailCollapsed, setRoomsRailCollapsed] = useState13(false);
   const [workspaceCollapsed, setWorkspaceCollapsed] = useState13(
-    !initialShellMobileViewport
+    !initialWorkspaceFocusViewport
   );
   const [isShellMobileViewport, setIsShellMobileViewport] = useState13(
     initialShellMobileViewport
+  );
+  const [isWorkspaceFocusViewport, setIsWorkspaceFocusViewport] = useState13(
+    initialWorkspaceFocusViewport
   );
   const [mobileWorkspace, setMobileWorkspace] = useState13(
     "chat"
@@ -11285,6 +6313,20 @@ function ThreadWorkspaceLayout({
     const mediaQuery = window.matchMedia("(max-width: 639px)");
     const handleViewportChange = () => {
       setIsShellMobileViewport(mediaQuery.matches);
+    };
+    handleViewportChange();
+    mediaQuery.addEventListener("change", handleViewportChange);
+    return () => {
+      mediaQuery.removeEventListener("change", handleViewportChange);
+    };
+  }, []);
+  useEffect8(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+    const mediaQuery = window.matchMedia("(max-width: 1023px)");
+    const handleViewportChange = () => {
+      setIsWorkspaceFocusViewport(mediaQuery.matches);
     };
     handleViewportChange();
     mediaQuery.addEventListener("change", handleViewportChange);
@@ -11407,11 +6449,11 @@ function ThreadWorkspaceLayout({
   }
   function renderNewThreadDialogButton(className, compact = false) {
     const content = compact ? /* @__PURE__ */ jsxs22(Fragment4, { children: [
-      /* @__PURE__ */ jsx28(Plus, { className: "h-4 w-4" }),
-      /* @__PURE__ */ jsx28("span", { className: "sr-only", children: newThreadLabel })
+      /* @__PURE__ */ jsx26(Plus, { className: "h-4 w-4" }),
+      /* @__PURE__ */ jsx26("span", { className: "sr-only", children: newThreadLabel })
     ] }) : /* @__PURE__ */ jsxs22(Fragment4, { children: [
-      /* @__PURE__ */ jsx28(Plus, { className: "h-4 w-4" }),
-      /* @__PURE__ */ jsx28("span", { children: newThreadLabel })
+      /* @__PURE__ */ jsx26(Plus, { className: "h-4 w-4" }),
+      /* @__PURE__ */ jsx26("span", { children: newThreadLabel })
     ] });
     return /* @__PURE__ */ jsxs22(
       Dialog,
@@ -11423,7 +6465,7 @@ function ThreadWorkspaceLayout({
           }
         },
         children: [
-          /* @__PURE__ */ jsx28(DialogTrigger, { asChild: true, children: /* @__PURE__ */ jsx28(
+          /* @__PURE__ */ jsx26(DialogTrigger, { asChild: true, children: /* @__PURE__ */ jsx26(
             "button",
             {
               type: "button",
@@ -11433,7 +6475,7 @@ function ThreadWorkspaceLayout({
               children: content
             }
           ) }),
-          /* @__PURE__ */ jsx28(
+          /* @__PURE__ */ jsx26(
             DialogContent,
             {
               "data-testid": "create-thread-dialog",
@@ -11446,11 +6488,11 @@ function ThreadWorkspaceLayout({
                 currentWorkspaceId
               }) : /* @__PURE__ */ jsxs22(Fragment4, { children: [
                 /* @__PURE__ */ jsxs22(DialogHeader, { children: [
-                  /* @__PURE__ */ jsx28(DialogTitle, { children: "Create New Chat" }),
-                  /* @__PURE__ */ jsx28(DialogDescription, { children: "Name the room so it is easy to find later." })
+                  /* @__PURE__ */ jsx26(DialogTitle, { children: "Create New Chat" }),
+                  /* @__PURE__ */ jsx26(DialogDescription, { children: "Name the room so it is easy to find later." })
                 ] }),
                 /* @__PURE__ */ jsxs22("div", { className: "grid gap-3", children: [
-                  /* @__PURE__ */ jsx28(
+                  /* @__PURE__ */ jsx26(
                     "input",
                     {
                       id: "thread-graph-create-thread-title",
@@ -11469,7 +6511,7 @@ function ThreadWorkspaceLayout({
                       className: "thread-graph-create-thread-input h-10 rounded-md border px-3 text-sm outline-none transition"
                     }
                   ),
-                  /* @__PURE__ */ jsx28(
+                  /* @__PURE__ */ jsx26(
                     "button",
                     {
                       type: "button",
@@ -11501,14 +6543,14 @@ function ThreadWorkspaceLayout({
         ...settingsDialogOpen !== void 0 ? { open: settingsDialogOpen } : {},
         ...onSettingsDialogOpenChange ? { onOpenChange: onSettingsDialogOpenChange } : {},
         children: [
-          /* @__PURE__ */ jsx28(DialogTrigger, { asChild: true, children: /* @__PURE__ */ jsx28(
+          /* @__PURE__ */ jsx26(DialogTrigger, { asChild: true, children: /* @__PURE__ */ jsx26(
             "button",
             {
               type: "button",
               "aria-label": "Open settings",
               title: "Settings",
               className: "thread-icon-button inline-flex h-10 w-10 items-center justify-center rounded-full sm:h-9 sm:w-9",
-              children: /* @__PURE__ */ jsx28(Settings, { className: "h-4 w-4" })
+              children: /* @__PURE__ */ jsx26(Settings, { className: "h-4 w-4" })
             }
           ) }),
           /* @__PURE__ */ jsxs22(
@@ -11520,18 +6562,18 @@ function ThreadWorkspaceLayout({
               className: "thread-graph-settings-dialog thread-graph-dialog",
               children: [
                 /* @__PURE__ */ jsxs22(DialogHeader, { children: [
-                  /* @__PURE__ */ jsx28(DialogTitle, { children: "Settings" }),
-                  /* @__PURE__ */ jsx28(DialogDescription, { children: "Manage this session and host-wide preferences." })
+                  /* @__PURE__ */ jsx26(DialogTitle, { children: "Settings" }),
+                  /* @__PURE__ */ jsx26(DialogDescription, { children: "Manage this session and host-wide preferences." })
                 ] }),
-                canUpdateThemeMode ? /* @__PURE__ */ jsx28("div", { className: "thread-graph-settings-card rounded-lg border p-3", children: /* @__PURE__ */ jsxs22("div", { className: "flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between", children: [
+                canUpdateThemeMode ? /* @__PURE__ */ jsx26("div", { className: "thread-graph-settings-card rounded-lg border p-3", children: /* @__PURE__ */ jsxs22("div", { className: "flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between", children: [
                   /* @__PURE__ */ jsxs22("div", { className: "min-w-0", children: [
-                    /* @__PURE__ */ jsx28("p", { className: "font-medium text-[var(--theme-fg)]", children: "Appearance" }),
+                    /* @__PURE__ */ jsx26("p", { className: "font-medium text-[var(--theme-fg)]", children: "Appearance" }),
                     /* @__PURE__ */ jsxs22("p", { className: "mt-1 text-xs leading-5 text-[var(--theme-fg-muted)]", children: [
                       "Current theme: ",
                       effectiveTheme
                     ] })
                   ] }),
-                  /* @__PURE__ */ jsx28(
+                  /* @__PURE__ */ jsx26(
                     "div",
                     {
                       className: "thread-graph-theme-mode-group grid grid-cols-3 gap-1 rounded-lg border p-1",
@@ -11550,8 +6592,8 @@ function ThreadWorkspaceLayout({
                             onClick: () => setThemeMode?.(option.value),
                             className: `thread-graph-theme-mode-button inline-flex min-h-9 items-center justify-center gap-1.5 rounded-md px-2 text-xs font-medium transition ${isSelected ? "is-selected" : ""}`,
                             children: [
-                              /* @__PURE__ */ jsx28(Icon, { className: "h-3.5 w-3.5" }),
-                              /* @__PURE__ */ jsx28("span", { className: "truncate", children: option.label })
+                              /* @__PURE__ */ jsx26(Icon, { className: "h-3.5 w-3.5" }),
+                              /* @__PURE__ */ jsx26("span", { className: "truncate", children: option.label })
                             ]
                           },
                           option.value
@@ -11561,7 +6603,7 @@ function ThreadWorkspaceLayout({
                   )
                 ] }) }) : null,
                 showSettingsTabs ? /* @__PURE__ */ jsxs22("div", { className: "thread-graph-settings-tabs grid grid-cols-2 gap-1 rounded-lg border p-1", children: [
-                  /* @__PURE__ */ jsx28(
+                  /* @__PURE__ */ jsx26(
                     "button",
                     {
                       type: "button",
@@ -11571,7 +6613,7 @@ function ThreadWorkspaceLayout({
                       children: "Session"
                     }
                   ),
-                  /* @__PURE__ */ jsx28(
+                  /* @__PURE__ */ jsx26(
                     "button",
                     {
                       type: "button",
@@ -11582,11 +6624,11 @@ function ThreadWorkspaceLayout({
                     }
                   )
                 ] }) : null,
-                /* @__PURE__ */ jsx28("div", { className: "thread-graph-settings-body mt-4 min-h-0 overflow-y-auto pr-1 text-sm", children: activeSettingsTab === "session" ? /* @__PURE__ */ jsxs22("div", { className: "grid gap-4", children: [
-                  settingsContent ? /* @__PURE__ */ jsx28("div", { className: "thread-graph-settings-card rounded-lg border p-3", children: settingsContent }) : null,
-                  metaContent ? /* @__PURE__ */ jsx28("div", { className: "thread-graph-settings-card rounded-lg border p-3", children: metaContent }) : null,
-                  !hasSessionSettings ? /* @__PURE__ */ jsx28("div", { className: "thread-graph-settings-card rounded-lg border p-3 text-[var(--theme-fg-muted)]", children: "No session settings are available." }) : null
-                ] }) : /* @__PURE__ */ jsx28("div", { className: "thread-graph-settings-global-content", children: globalSettingsContent }) })
+                /* @__PURE__ */ jsx26("div", { className: "thread-graph-settings-body mt-4 min-h-0 overflow-y-auto pr-1 text-sm", children: activeSettingsTab === "session" ? /* @__PURE__ */ jsxs22("div", { className: "grid gap-4", children: [
+                  settingsContent ? /* @__PURE__ */ jsx26("div", { className: "thread-graph-settings-card rounded-lg border p-3", children: settingsContent }) : null,
+                  metaContent ? /* @__PURE__ */ jsx26("div", { className: "thread-graph-settings-card rounded-lg border p-3", children: metaContent }) : null,
+                  !hasSessionSettings ? /* @__PURE__ */ jsx26("div", { className: "thread-graph-settings-card rounded-lg border p-3 text-[var(--theme-fg-muted)]", children: "No session settings are available." }) : null
+                ] }) : /* @__PURE__ */ jsx26("div", { className: "thread-graph-settings-global-content", children: globalSettingsContent }) })
               ]
             }
           )
@@ -11595,22 +6637,22 @@ function ThreadWorkspaceLayout({
     );
   }
   function renderRoomsRailContent(collapsed = false) {
-    return /* @__PURE__ */ jsx28("div", { className: "flex min-h-0 flex-1 flex-col", children: /* @__PURE__ */ jsxs22("section", { className: "flex min-h-0 flex-1 flex-col", children: [
+    return /* @__PURE__ */ jsx26("div", { className: "flex min-h-0 flex-1 flex-col", children: /* @__PURE__ */ jsxs22("section", { className: "flex min-h-0 flex-1 flex-col", children: [
       /* @__PURE__ */ jsxs22(
         "div",
         {
           className: `mb-3 flex items-center gap-2 px-2 text-xs font-medium tracking-normal text-[var(--theme-fg-muted)] ${collapsed ? "justify-center" : ""}`,
           children: [
-            /* @__PURE__ */ jsx28(Rows3, { className: "h-3.5 w-3.5" }),
-            /* @__PURE__ */ jsx28("span", { className: collapsed ? "sr-only" : "", children: "Rooms" }),
-            !collapsed && loading ? /* @__PURE__ */ jsx28("span", { className: "ml-auto text-xs text-[var(--theme-fg-muted)]", children: "Refreshing..." }) : null
+            /* @__PURE__ */ jsx26(Rows3, { className: "h-3.5 w-3.5" }),
+            /* @__PURE__ */ jsx26("span", { className: collapsed ? "sr-only" : "", children: "Rooms" }),
+            !collapsed && loading ? /* @__PURE__ */ jsx26("span", { className: "ml-auto text-xs text-[var(--theme-fg-muted)]", children: "Refreshing..." }) : null
           ]
         }
       ),
       /* @__PURE__ */ jsxs22("div", { className: "min-h-0 min-w-0 flex-1 overflow-x-hidden overflow-y-auto px-1", children: [
-        error ? /* @__PURE__ */ jsx28("div", { className: "rounded-xl border border-rose-500/30 bg-rose-500/10 px-3 py-3 text-sm text-rose-900 dark:text-rose-100", children: error }) : null,
-        !error && visibleThreads.length === 0 && !loading ? /* @__PURE__ */ jsx28("div", { className: "rounded-xl border border-dashed border-[var(--theme-border)] bg-[var(--theme-surface)] px-4 py-6 text-sm text-[var(--theme-fg-muted)]", children: "No threads available in this view." }) : null,
-        visibleThreads.length > 0 ? /* @__PURE__ */ jsx28(
+        error ? /* @__PURE__ */ jsx26("div", { className: "rounded-xl border border-rose-500/30 bg-rose-500/10 px-3 py-3 text-sm text-rose-900 dark:text-rose-100", children: error }) : null,
+        !error && visibleThreads.length === 0 && !loading ? /* @__PURE__ */ jsx26("div", { className: "rounded-xl border border-dashed border-[var(--theme-border)] bg-[var(--theme-surface)] px-4 py-6 text-sm text-[var(--theme-fg-muted)]", children: "No threads available in this view." }) : null,
+        visibleThreads.length > 0 ? /* @__PURE__ */ jsx26(
           ThreadCards,
           {
             threads: visibleThreads,
@@ -11632,7 +6674,7 @@ function ThreadWorkspaceLayout({
   function renderWorkspacePanel() {
     if (workspaceContent) {
       return /* @__PURE__ */ jsxs22("div", { className: "thread-workspace-panel relative flex h-full min-h-0 flex-col overflow-hidden rounded-[12px] border", children: [
-        /* @__PURE__ */ jsx28(
+        /* @__PURE__ */ jsx26(
           "button",
           {
             type: "button",
@@ -11640,22 +6682,22 @@ function ThreadWorkspaceLayout({
             className: "thread-workspace-collapse-tab thread-desktop-only-inline-flex",
             title: "Collapse workspace",
             "aria-label": "Collapse workspace",
-            children: /* @__PURE__ */ jsx28(ChevronsRight, { className: "h-4 w-4" })
+            children: /* @__PURE__ */ jsx26(ChevronsRight, { className: "h-4 w-4" })
           }
         ),
-        workspaceActions ? /* @__PURE__ */ jsx28("div", { className: "pointer-events-none absolute right-12 top-2 z-20 flex items-center gap-1", children: /* @__PURE__ */ jsx28("div", { className: "pointer-events-auto", children: workspaceActions }) }) : null,
-        /* @__PURE__ */ jsx28("div", { className: "min-h-0 flex-1 overflow-hidden", children: workspaceContent })
+        workspaceActions ? /* @__PURE__ */ jsx26("div", { className: "pointer-events-none absolute right-12 top-2 z-20 flex items-center gap-1", children: /* @__PURE__ */ jsx26("div", { className: "pointer-events-auto", children: workspaceActions }) }) : null,
+        /* @__PURE__ */ jsx26("div", { className: "min-h-0 flex-1 overflow-hidden", children: workspaceContent })
       ] });
     }
     return /* @__PURE__ */ jsxs22("div", { className: "thread-workspace-panel flex h-full min-h-0 flex-col overflow-hidden rounded-[12px] border", children: [
       /* @__PURE__ */ jsxs22("div", { className: "thread-workspace-panel-header flex h-12 shrink-0 items-center justify-between gap-3 border-b border-[var(--theme-border)] px-3 sm:h-[60px] sm:px-4", children: [
         /* @__PURE__ */ jsxs22("div", { className: "min-w-0", children: [
-          /* @__PURE__ */ jsx28("p", { className: "truncate text-base font-semibold text-[var(--theme-fg)] sm:text-[18px]", children: workspaceTitle }),
-          /* @__PURE__ */ jsx28("p", { className: "truncate text-xs text-[var(--theme-fg-muted)]", children: currentWorkspaceLabel ?? currentWorkspaceId ?? "Current context" })
+          /* @__PURE__ */ jsx26("p", { className: "truncate text-base font-semibold text-[var(--theme-fg)] sm:text-[18px]", children: workspaceTitle }),
+          /* @__PURE__ */ jsx26("p", { className: "truncate text-xs text-[var(--theme-fg-muted)]", children: currentWorkspaceLabel ?? currentWorkspaceId ?? "Current context" })
         ] }),
         /* @__PURE__ */ jsxs22("div", { className: "flex shrink-0 items-center gap-1", children: [
           workspaceActions,
-          /* @__PURE__ */ jsx28(
+          /* @__PURE__ */ jsx26(
             "button",
             {
               type: "button",
@@ -11663,31 +6705,32 @@ function ThreadWorkspaceLayout({
               className: "thread-workspace-small-toggle thread-desktop-only-inline-flex",
               title: "Collapse workspace",
               "aria-label": "Collapse workspace",
-              children: /* @__PURE__ */ jsx28(ChevronsRight, { className: "h-4 w-4" })
+              children: /* @__PURE__ */ jsx26(ChevronsRight, { className: "h-4 w-4" })
             }
           )
         ] })
       ] }),
-      /* @__PURE__ */ jsx28("div", { className: "min-h-0 flex-1 overflow-hidden", children: workspaceContent ?? /* @__PURE__ */ jsxs22("div", { className: "grid h-full min-h-0 gap-3 overflow-y-auto p-3 text-sm text-[var(--theme-fg-soft)]", children: [
+      /* @__PURE__ */ jsx26("div", { className: "min-h-0 flex-1 overflow-hidden", children: workspaceContent ?? /* @__PURE__ */ jsxs22("div", { className: "grid h-full min-h-0 gap-3 overflow-y-auto p-3 text-sm text-[var(--theme-fg-soft)]", children: [
         /* @__PURE__ */ jsxs22("div", { className: "thread-workspace-card rounded-lg border p-3", children: [
-          /* @__PURE__ */ jsx28("p", { className: "text-xs font-medium uppercase tracking-[0.14em] text-[var(--theme-fg-muted)]", children: "Runtime" }),
-          /* @__PURE__ */ jsx28("p", { className: "mt-2 text-[var(--theme-fg)]", children: status?.state ?? "unknown" })
+          /* @__PURE__ */ jsx26("p", { className: "text-xs font-medium uppercase tracking-[0.14em] text-[var(--theme-fg-muted)]", children: "Runtime" }),
+          /* @__PURE__ */ jsx26("p", { className: "mt-2 text-[var(--theme-fg)]", children: status?.state ?? "unknown" })
         ] }),
         /* @__PURE__ */ jsxs22("div", { className: "thread-workspace-card rounded-lg border p-3", children: [
-          /* @__PURE__ */ jsx28("p", { className: "text-xs font-medium uppercase tracking-[0.14em] text-[var(--theme-fg-muted)]", children: "Workspace" }),
-          /* @__PURE__ */ jsx28("p", { className: "mt-2 break-words text-[var(--theme-fg)]", children: currentWorkspaceLabel ?? currentWorkspaceId ?? "All threads" })
+          /* @__PURE__ */ jsx26("p", { className: "text-xs font-medium uppercase tracking-[0.14em] text-[var(--theme-fg-muted)]", children: "Workspace" }),
+          /* @__PURE__ */ jsx26("p", { className: "mt-2 break-words text-[var(--theme-fg)]", children: currentWorkspaceLabel ?? currentWorkspaceId ?? "All threads" })
         ] })
       ] }) })
     ] });
   }
   const hasWorkspace = Boolean(workspaceContent);
   const renderMobileWorkspaceSplit = layoutMode === "mobile" || layoutMode === "responsive" && isShellMobileViewport;
+  const renderWorkspaceFocusSplit = layoutMode === "mobile" || layoutMode === "responsive" && isWorkspaceFocusViewport;
   const renderMobileTopbarControls = renderMobileWorkspaceSplit;
   const shouldShowMobileRoomsButton = renderMobileTopbarControls && !mobileRoomsOpen;
   const canReturnToWorkspace = Boolean(
     workspaceReturnHref || onWorkspaceReturn
   );
-  const workspaceReturnControl = canReturnToWorkspace ? /* @__PURE__ */ jsx28(
+  const workspaceReturnControl = canReturnToWorkspace ? /* @__PURE__ */ jsx26(
     "a",
     {
       href: workspaceReturnHref ?? "#",
@@ -11700,11 +6743,11 @@ function ThreadWorkspaceLayout({
       className: "thread-icon-button inline-flex h-10 w-10 items-center justify-center rounded-full sm:h-9 sm:w-9",
       title: "Back to workspace",
       "aria-label": "Back to workspace",
-      children: /* @__PURE__ */ jsx28(ArrowLeft, { className: "h-4 w-4" })
+      children: /* @__PURE__ */ jsx26(ArrowLeft, { className: "h-4 w-4" })
     }
   ) : null;
   return /* @__PURE__ */ jsxs22(Fragment4, { children: [
-    /* @__PURE__ */ jsx28(
+    /* @__PURE__ */ jsx26(
       GraphChatShellRoot,
       {
         effectiveTheme,
@@ -11717,7 +6760,7 @@ function ThreadWorkspaceLayout({
             roomsRailCollapsed,
             hideRoomsRail,
             children: [
-              !hideRoomsRail ? /* @__PURE__ */ jsx28(
+              !hideRoomsRail ? /* @__PURE__ */ jsx26(
                 GraphChatMobileScrim,
                 {
                   open: mobileRoomsOpen,
@@ -11730,7 +6773,7 @@ function ThreadWorkspaceLayout({
                   collapsed: roomsRailCollapsed,
                   mobileOpen: mobileRoomsOpen,
                   children: [
-                    /* @__PURE__ */ jsx28(
+                    /* @__PURE__ */ jsx26(
                       "div",
                       {
                         className: `thread-rooms-rail-header flex h-[calc(3rem+env(safe-area-inset-top))] shrink-0 items-end border-b border-[var(--theme-border)] px-4 pb-2 sm:h-16 sm:items-center sm:pb-0 ${roomsRailCollapsed ? "sm:w-full sm:justify-center sm:px-2" : ""}`,
@@ -11740,7 +6783,7 @@ function ThreadWorkspaceLayout({
                             className: `flex w-full items-center gap-3 ${roomsRailCollapsed ? "sm:justify-center" : "justify-between"}`,
                             children: [
                               /* @__PURE__ */ jsxs22("div", { className: "flex min-w-0 items-center gap-3", children: [
-                                /* @__PURE__ */ jsx28(
+                                /* @__PURE__ */ jsx26(
                                   "button",
                                   {
                                     type: "button",
@@ -11748,10 +6791,10 @@ function ThreadWorkspaceLayout({
                                     className: "thread-icon-button thread-desktop-only-flex h-9 w-9 shrink-0 items-center justify-center rounded-full",
                                     title: roomsRailCollapsed ? "Expand rooms" : "Collapse rooms",
                                     "aria-label": roomsRailCollapsed ? "Expand rooms" : "Collapse rooms",
-                                    children: roomsRailCollapsed ? /* @__PURE__ */ jsx28(PanelLeftOpen, { className: "h-4 w-4" }) : /* @__PURE__ */ jsx28(PanelLeftClose, { className: "h-4 w-4" })
+                                    children: roomsRailCollapsed ? /* @__PURE__ */ jsx26(PanelLeftOpen, { className: "h-4 w-4" }) : /* @__PURE__ */ jsx26(PanelLeftClose, { className: "h-4 w-4" })
                                   }
                                 ),
-                                /* @__PURE__ */ jsx28(
+                                /* @__PURE__ */ jsx26(
                                   "div",
                                   {
                                     className: `flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[var(--theme-accent-solid)] text-sm font-semibold text-[var(--theme-accent-solid-fg)] ${roomsRailCollapsed ? "thread-desktop-collapsed-hidden" : ""}`,
@@ -11763,8 +6806,8 @@ function ThreadWorkspaceLayout({
                                   {
                                     className: `min-w-0 ${roomsRailCollapsed ? "thread-desktop-collapsed-hidden" : ""}`,
                                     children: [
-                                      /* @__PURE__ */ jsx28("p", { className: "truncate text-sm font-semibold text-[var(--theme-fg)]", children: currentWorkspaceLabel ?? "Remote Codex" }),
-                                      /* @__PURE__ */ jsx28("p", { className: "truncate text-xs text-[var(--theme-fg-muted)]", children: currentWorkspaceId ?? "Thread workspace" })
+                                      /* @__PURE__ */ jsx26("p", { className: "truncate text-sm font-semibold text-[var(--theme-fg)]", children: currentWorkspaceLabel ?? "Remote Codex" }),
+                                      /* @__PURE__ */ jsx26("p", { className: "truncate text-xs text-[var(--theme-fg-muted)]", children: currentWorkspaceId ?? "Thread workspace" })
                                     ]
                                   }
                                 )
@@ -11776,7 +6819,7 @@ function ThreadWorkspaceLayout({
                                   children: [
                                     renderSettingsDialog(),
                                     workspaceReturnControl,
-                                    /* @__PURE__ */ jsx28(
+                                    /* @__PURE__ */ jsx26(
                                       "button",
                                       {
                                         type: "button",
@@ -11784,7 +6827,7 @@ function ThreadWorkspaceLayout({
                                         "aria-label": "Close rooms",
                                         title: "Close rooms",
                                         className: "thread-icon-button thread-mobile-only-inline-flex h-10 w-10 items-center justify-center rounded-full",
-                                        children: /* @__PURE__ */ jsx28(X2, { className: "h-4 w-4" })
+                                        children: /* @__PURE__ */ jsx26(X2, { className: "h-4 w-4" })
                                       }
                                     )
                                   ]
@@ -11795,7 +6838,7 @@ function ThreadWorkspaceLayout({
                         )
                       }
                     ),
-                    /* @__PURE__ */ jsx28(
+                    /* @__PURE__ */ jsx26(
                       "div",
                       {
                         className: `thread-graph-new-room-strip flex shrink-0 items-center border-b ${roomsRailCollapsed ? "h-12 w-full justify-center px-2 sm:h-12" : "h-[68px] px-4"}`,
@@ -11805,7 +6848,7 @@ function ThreadWorkspaceLayout({
                         )
                       }
                     ),
-                    /* @__PURE__ */ jsx28(
+                    /* @__PURE__ */ jsx26(
                       "div",
                       {
                         className: `flex min-h-0 flex-1 flex-col ${roomsRailCollapsed ? "w-full px-2 py-2" : "px-3 py-3"}`,
@@ -11816,9 +6859,9 @@ function ThreadWorkspaceLayout({
                 }
               ) : null,
               /* @__PURE__ */ jsxs22(GraphChatMainShell, { children: [
-                /* @__PURE__ */ jsx28(GraphChatTopbarShell, { children: /* @__PURE__ */ jsx28("div", { className: "thread-topbar-row flex min-h-12 items-center px-3 py-1.5 sm:min-h-12 sm:px-4", children: /* @__PURE__ */ jsxs22("div", { className: "flex w-full items-center justify-between gap-3 sm:gap-4", children: [
+                /* @__PURE__ */ jsx26(GraphChatTopbarShell, { children: /* @__PURE__ */ jsx26("div", { className: "thread-topbar-row flex min-h-12 items-center px-3 py-1.5 sm:min-h-12 sm:px-4", children: /* @__PURE__ */ jsxs22("div", { className: "flex w-full items-center justify-between gap-3 sm:gap-4", children: [
                   /* @__PURE__ */ jsxs22("div", { className: "flex min-w-0 flex-1 items-center gap-2 sm:gap-3", children: [
-                    shouldShowMobileRoomsButton && !hideRoomsRail ? /* @__PURE__ */ jsx28(
+                    shouldShowMobileRoomsButton && !hideRoomsRail ? /* @__PURE__ */ jsx26(
                       "button",
                       {
                         type: "button",
@@ -11826,11 +6869,11 @@ function ThreadWorkspaceLayout({
                         "aria-label": "Open rooms",
                         title: "Open rooms",
                         className: "thread-icon-button thread-mobile-only-inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full",
-                        children: /* @__PURE__ */ jsx28(Menu, { className: "h-4 w-4" })
+                        children: /* @__PURE__ */ jsx26(Menu, { className: "h-4 w-4" })
                       }
                     ) : null,
                     /* @__PURE__ */ jsxs22("div", { className: "min-w-0", children: [
-                      /* @__PURE__ */ jsx28(
+                      /* @__PURE__ */ jsx26(
                         "h1",
                         {
                           className: "min-w-0 truncate text-sm font-semibold leading-tight text-[var(--theme-fg)] sm:text-base",
@@ -11851,8 +6894,8 @@ function ThreadWorkspaceLayout({
                             className: "thread-topbar-meta-row flex min-w-0 max-w-full items-center gap-1 text-left text-[11px] leading-none sm:text-xs",
                             title: "Session and usage",
                             children: [
-                              /* @__PURE__ */ jsx28("span", { className: "shrink-0", children: "Room" }),
-                              /* @__PURE__ */ jsx28("span", { className: "truncate font-mono", children: topbarRoomLabel })
+                              /* @__PURE__ */ jsx26("span", { className: "shrink-0", children: "Room" }),
+                              /* @__PURE__ */ jsx26("span", { className: "truncate font-mono", children: topbarRoomLabel })
                             ]
                           }
                         ),
@@ -11878,8 +6921,8 @@ function ThreadWorkspaceLayout({
                                   className: "thread-topbar-meta-row flex min-w-0 max-w-full items-center gap-2 text-left text-xs leading-5",
                                   title: "Copy session ID",
                                   children: [
-                                    /* @__PURE__ */ jsx28("span", { className: "w-14 shrink-0", children: "Session" }),
-                                    /* @__PURE__ */ jsx28("span", { className: "truncate font-mono", children: topbarSessionLabel })
+                                    /* @__PURE__ */ jsx26("span", { className: "w-14 shrink-0", children: "Session" }),
+                                    /* @__PURE__ */ jsx26("span", { className: "truncate font-mono", children: topbarSessionLabel })
                                   ]
                                 }
                               ),
@@ -11889,8 +6932,8 @@ function ThreadWorkspaceLayout({
                                   className: "thread-topbar-meta-row mt-1 flex min-w-0 max-w-full items-start gap-2 text-xs leading-5",
                                   title: "Session token usage and estimated cost",
                                   children: [
-                                    /* @__PURE__ */ jsx28("span", { className: "w-14 shrink-0", children: "Usage" }),
-                                    /* @__PURE__ */ jsx28("span", { className: "min-w-0 whitespace-normal break-words font-mono", children: topbarUsageLabel })
+                                    /* @__PURE__ */ jsx26("span", { className: "w-14 shrink-0", children: "Usage" }),
+                                    /* @__PURE__ */ jsx26("span", { className: "min-w-0 whitespace-normal break-words font-mono", children: topbarUsageLabel })
                                   ]
                                 }
                               )
@@ -11905,18 +6948,21 @@ function ThreadWorkspaceLayout({
                       threadActionsButton,
                       topbarActions
                     ] }) : null,
-                    renderMobileTopbarControls && threadActionsButton ? /* @__PURE__ */ jsx28("div", { className: "thread-mobile-only-inline-flex", children: threadActionsButton }) : null,
-                    renderMobileTopbarControls && hasWorkspace ? /* @__PURE__ */ jsx28(
+                    renderMobileTopbarControls && threadActionsButton ? /* @__PURE__ */ jsx26("div", { className: "thread-mobile-only-inline-flex", children: threadActionsButton }) : null,
+                    renderWorkspaceFocusSplit && hasWorkspace ? /* @__PURE__ */ jsx26(
                       "button",
                       {
                         type: "button",
-                        onClick: () => setMobileWorkspace(
-                          (current) => current === "workspace" ? "chat" : "workspace"
-                        ),
+                        onClick: () => {
+                          setWorkspaceCollapsed(false);
+                          setMobileWorkspace(
+                            (current) => current === "workspace" ? "chat" : "workspace"
+                          );
+                        },
                         "aria-label": mobileWorkspace === "workspace" ? "Show chat" : "Show workspace",
                         title: mobileWorkspace === "workspace" ? "Show chat" : "Show workspace",
-                        className: "thread-icon-button thread-mobile-only-inline-flex h-10 w-10 items-center justify-center rounded-full",
-                        children: mobileWorkspace === "workspace" ? /* @__PURE__ */ jsx28(MessageSquare, { className: "h-4 w-4" }) : /* @__PURE__ */ jsx28(Folder, { className: "h-4 w-4" })
+                        className: "thread-icon-button inline-flex h-10 w-10 items-center justify-center rounded-full",
+                        children: mobileWorkspace === "workspace" ? /* @__PURE__ */ jsx26(MessageSquare, { className: "h-4 w-4" }) : /* @__PURE__ */ jsx26(Folder, { className: "h-4 w-4" })
                       }
                     ) : null,
                     renderMobileTopbarControls ? mobileHeaderAction : null,
@@ -11925,18 +6971,18 @@ function ThreadWorkspaceLayout({
                     ) : null
                   ] })
                 ] }) }) }),
-                /* @__PURE__ */ jsx28(GraphChatSplitRegion, { children: hasWorkspace && !workspaceCollapsed ? renderMobileWorkspaceSplit ? /* @__PURE__ */ jsxs22("div", { className: "thread-split-container thread-graph-shell-mobile-split h-full min-h-0 overflow-hidden", children: [
-                  /* @__PURE__ */ jsx28(
+                /* @__PURE__ */ jsx26(GraphChatSplitRegion, { children: hasWorkspace && !workspaceCollapsed ? renderWorkspaceFocusSplit ? /* @__PURE__ */ jsxs22("div", { className: "thread-split-container h-full min-h-0 overflow-hidden", children: [
+                  /* @__PURE__ */ jsx26(
                     "div",
                     {
-                      className: `h-full min-h-0 overflow-hidden ${mobileWorkspace === "chat" ? "block" : "thread-mobile-chat-hidden"}`,
+                      className: `h-full min-h-0 overflow-hidden ${mobileWorkspace === "chat" ? "block" : renderMobileWorkspaceSplit ? "thread-mobile-chat-hidden" : "hidden"}`,
                       children
                     }
                   ),
-                  /* @__PURE__ */ jsx28(
+                  /* @__PURE__ */ jsx26(
                     "div",
                     {
-                      className: `h-full min-h-0 overflow-hidden ${mobileWorkspace === "workspace" ? "block" : "thread-mobile-workspace-hidden"}`,
+                      className: `h-full min-h-0 overflow-hidden ${mobileWorkspace === "workspace" ? "block" : renderMobileWorkspaceSplit ? "thread-mobile-workspace-hidden" : "hidden"}`,
                       children: renderWorkspacePanel()
                     }
                   )
@@ -11946,7 +6992,7 @@ function ThreadWorkspaceLayout({
                     direction: "horizontal",
                     className: "thread-split-container thread-graph-shell-resizable thread-graph-shell-desktop-split h-full min-h-0 overflow-hidden",
                     children: [
-                      /* @__PURE__ */ jsx28(
+                      /* @__PURE__ */ jsx26(
                         ResizablePanel,
                         {
                           defaultSize: 47,
@@ -11956,8 +7002,8 @@ function ThreadWorkspaceLayout({
                           children
                         }
                       ),
-                      /* @__PURE__ */ jsx28(ResizableHandle, { className: "thread-resize-handle w-2 bg-transparent after:w-px after:bg-slate-200/80 after:transition-colors hover:after:bg-slate-300 dark:after:bg-[#303642] dark:hover:after:bg-[#475063]" }),
-                      /* @__PURE__ */ jsx28(
+                      /* @__PURE__ */ jsx26(ResizableHandle, { className: "thread-resize-handle w-2 bg-transparent after:w-px after:bg-slate-200/80 after:transition-colors hover:after:bg-slate-300 dark:after:bg-[#303642] dark:hover:after:bg-[#475063]" }),
+                      /* @__PURE__ */ jsx26(
                         ResizablePanel,
                         {
                           defaultSize: 53,
@@ -11970,7 +7016,7 @@ function ThreadWorkspaceLayout({
                     ]
                   }
                 ) : /* @__PURE__ */ jsxs22("div", { className: "thread-split-container relative h-full min-h-0 overflow-hidden", children: [
-                  hasWorkspace && workspaceCollapsed ? /* @__PURE__ */ jsx28(
+                  hasWorkspace && workspaceCollapsed ? /* @__PURE__ */ jsx26(
                     "button",
                     {
                       type: "button",
@@ -11978,7 +7024,7 @@ function ThreadWorkspaceLayout({
                       className: "thread-workspace-expand-fab thread-desktop-only-inline-flex",
                       title: "Expand workspace",
                       "aria-label": "Expand workspace",
-                      children: /* @__PURE__ */ jsx28(ChevronsLeft, { className: "h-4 w-4" })
+                      children: /* @__PURE__ */ jsx26(ChevronsLeft, { className: "h-4 w-4" })
                     }
                   ) : null,
                   children
@@ -11989,7 +7035,7 @@ function ThreadWorkspaceLayout({
         )
       }
     ),
-    /* @__PURE__ */ jsx28(
+    /* @__PURE__ */ jsx26(
       RenameDialog,
       {
         open: editingThreadId !== null,
@@ -12011,7 +7057,7 @@ import { memo as memo6, useCallback as useCallback14, useEffect as useEffect17, 
 // src/components/LongTextDialog.tsx
 import { useEffect as useEffect9 } from "react";
 import { createPortal as createPortal2 } from "react-dom";
-import { jsx as jsx29, jsxs as jsxs23 } from "react/jsx-runtime";
+import { jsx as jsx27, jsxs as jsxs23 } from "react/jsx-runtime";
 function LongTextDialog({
   open,
   title,
@@ -12037,7 +7083,7 @@ function LongTextDialog({
   }
   return createPortal2(
     /* @__PURE__ */ jsxs23("div", { className: "fixed inset-0 z-[90] flex items-center justify-center p-4 sm:p-6", children: [
-      /* @__PURE__ */ jsx29(
+      /* @__PURE__ */ jsx27(
         "button",
         {
           type: "button",
@@ -12055,27 +7101,27 @@ function LongTextDialog({
           className: "relative z-[1] flex max-h-[min(82vh,52rem)] w-full max-w-4xl flex-col overflow-hidden rounded-[1.8rem] border border-stone-700 bg-stone-900 shadow-2xl shadow-stone-950/40",
           children: [
             /* @__PURE__ */ jsxs23("div", { className: "flex items-center justify-between gap-3 border-b border-stone-800 px-4 py-3 sm:px-5", children: [
-              /* @__PURE__ */ jsx29("p", { className: "truncate text-sm font-medium text-stone-100", children: title }),
-              /* @__PURE__ */ jsx29(
+              /* @__PURE__ */ jsx27("p", { className: "truncate text-sm font-medium text-stone-100", children: title }),
+              /* @__PURE__ */ jsx27(
                 "button",
                 {
                   type: "button",
                   "aria-label": "Close dialog",
                   onClick: onClose,
                   className: "inline-flex h-9 w-9 items-center justify-center rounded-full border border-stone-700 text-stone-300 transition hover:bg-stone-800",
-                  children: /* @__PURE__ */ jsx29(
+                  children: /* @__PURE__ */ jsx27(
                     "svg",
                     {
                       "aria-hidden": "true",
                       viewBox: "0 0 16 16",
                       className: "h-4 w-4 fill-current",
-                      children: /* @__PURE__ */ jsx29("path", { d: "M3.22 2.47 8 7.25l4.78-4.78 1.06 1.06L9.06 8.31l4.78 4.78-1.06 1.06L8 9.37l-4.78 4.78-1.06-1.06 4.78-4.78-4.78-4.78 1.06-1.06Z" })
+                      children: /* @__PURE__ */ jsx27("path", { d: "M3.22 2.47 8 7.25l4.78-4.78 1.06 1.06L9.06 8.31l4.78 4.78-1.06 1.06L8 9.37l-4.78 4.78-1.06-1.06 4.78-4.78-4.78-4.78 1.06-1.06Z" })
                     }
                   )
                 }
               )
             ] }),
-            /* @__PURE__ */ jsx29("div", { className: "min-h-0 flex-1 overflow-auto px-4 py-4 sm:px-5", children: /* @__PURE__ */ jsx29("pre", { className: "whitespace-pre-wrap break-words text-sm leading-6 text-stone-200", children: text }) })
+            /* @__PURE__ */ jsx27("div", { className: "min-h-0 flex-1 overflow-auto px-4 py-4 sm:px-5", children: /* @__PURE__ */ jsx27("pre", { className: "whitespace-pre-wrap break-words text-sm leading-6 text-stone-200", children: text }) })
           ]
         }
       )
@@ -12128,7 +7174,6 @@ function hasLikelyMarkdownSyntax(text) {
 }
 
 // src/components/graph-chat/GraphChatMessageContent.tsx
-init_Button();
 import {
   memo,
   useEffect as useEffect11,
@@ -12218,7 +7263,6 @@ function usePlugins() {
 }
 
 // src/components/graph-chat/GraphChatToolCall.tsx
-init_GraphAccordion();
 import { useEffect as useEffect10, useMemo as useMemo4, useState as useState14 } from "react";
 import {
   CheckCircle2,
@@ -12226,7 +7270,71 @@ import {
   Wrench,
   XCircle
 } from "lucide-react";
-import { jsx as jsx31, jsxs as jsxs25 } from "react/jsx-runtime";
+
+// src/components/graph-workspace/GraphAccordion.tsx
+import * as AccordionPrimitive from "@radix-ui/react-accordion";
+import { ChevronDownIcon } from "lucide-react";
+import { jsx as jsx28, jsxs as jsxs24 } from "react/jsx-runtime";
+function classNames(...values) {
+  return values.filter(Boolean).join(" ");
+}
+function Accordion({
+  ...props
+}) {
+  return /* @__PURE__ */ jsx28(AccordionPrimitive.Root, { "data-slot": "accordion", ...props });
+}
+function AccordionItem({
+  className,
+  ...props
+}) {
+  return /* @__PURE__ */ jsx28(
+    AccordionPrimitive.Item,
+    {
+      "data-slot": "accordion-item",
+      className: classNames("border-b last:border-b-0", className),
+      ...props
+    }
+  );
+}
+function AccordionTrigger({
+  className,
+  children,
+  ...props
+}) {
+  return /* @__PURE__ */ jsx28(AccordionPrimitive.Header, { className: "flex", children: /* @__PURE__ */ jsxs24(
+    AccordionPrimitive.Trigger,
+    {
+      "data-slot": "accordion-trigger",
+      className: classNames(
+        "flex flex-1 items-start justify-between gap-4 rounded-md py-4 text-left text-sm font-medium outline-none transition-all hover:underline disabled:pointer-events-none disabled:opacity-50 [&[data-state=open]>svg]:rotate-180",
+        className
+      ),
+      ...props,
+      children: [
+        children,
+        /* @__PURE__ */ jsx28(ChevronDownIcon, { className: "pointer-events-none size-4 shrink-0 translate-y-0.5 text-[var(--theme-fg-muted)] transition-transform duration-200" })
+      ]
+    }
+  ) });
+}
+function AccordionContent({
+  className,
+  children,
+  ...props
+}) {
+  return /* @__PURE__ */ jsx28(
+    AccordionPrimitive.Content,
+    {
+      "data-slot": "accordion-content",
+      className: "overflow-hidden text-sm data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down",
+      ...props,
+      children: /* @__PURE__ */ jsx28("div", { className: classNames("pb-4 pt-0", className), children })
+    }
+  );
+}
+
+// src/components/graph-chat/GraphChatToolCall.tsx
+import { jsx as jsx29, jsxs as jsxs25 } from "react/jsx-runtime";
 function isRecord(value) {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
@@ -12248,25 +7356,25 @@ function formatPrimitiveValue(value) {
     ] });
   }
   if (typeof value === "number") {
-    return /* @__PURE__ */ jsx31("span", { className: "thread-graph-tool-number", children: value });
+    return /* @__PURE__ */ jsx29("span", { className: "thread-graph-tool-number", children: value });
   }
   if (typeof value === "boolean") {
-    return /* @__PURE__ */ jsx31("span", { className: "thread-graph-tool-boolean", children: String(value) });
+    return /* @__PURE__ */ jsx29("span", { className: "thread-graph-tool-boolean", children: String(value) });
   }
   if (value === null) {
-    return /* @__PURE__ */ jsx31("span", { className: "thread-graph-tool-null", children: "null" });
+    return /* @__PURE__ */ jsx29("span", { className: "thread-graph-tool-null", children: "null" });
   }
   if (typeof value === "object") {
-    return /* @__PURE__ */ jsx31("span", { className: "thread-graph-tool-object", children: JSON.stringify(value) });
+    return /* @__PURE__ */ jsx29("span", { className: "thread-graph-tool-object", children: JSON.stringify(value) });
   }
-  return /* @__PURE__ */ jsx31("span", { children: String(value) });
+  return /* @__PURE__ */ jsx29("span", { children: String(value) });
 }
 function renderResultValue(key, value) {
   if (typeof value === "string" && (key === "stdout" || key === "stderr" || key === "result")) {
-    return /* @__PURE__ */ jsx31("pre", { className: "thread-graph-tool-output", children: value || "(empty)" });
+    return /* @__PURE__ */ jsx29("pre", { className: "thread-graph-tool-output", children: value || "(empty)" });
   }
   if (typeof value === "object" && value !== null) {
-    return /* @__PURE__ */ jsx31("pre", { className: "thread-graph-tool-output", children: JSON.stringify(value, null, 2) });
+    return /* @__PURE__ */ jsx29("pre", { className: "thread-graph-tool-output", children: JSON.stringify(value, null, 2) });
   }
   return formatPrimitiveValue(value);
 }
@@ -12282,19 +7390,19 @@ function GraphChatToolCall({
       case "completed":
         return {
           className: "is-completed",
-          icon: /* @__PURE__ */ jsx31(CheckCircle2, { className: "h-3.5 w-3.5" }),
+          icon: /* @__PURE__ */ jsx29(CheckCircle2, { className: "h-3.5 w-3.5" }),
           label: "Completed"
         };
       case "failed":
         return {
           className: "is-failed",
-          icon: /* @__PURE__ */ jsx31(XCircle, { className: "h-3.5 w-3.5" }),
+          icon: /* @__PURE__ */ jsx29(XCircle, { className: "h-3.5 w-3.5" }),
           label: "Failed"
         };
       default:
         return {
           className: "is-pending",
-          icon: /* @__PURE__ */ jsx31(Loader22, { className: "h-3.5 w-3.5 animate-spin" }),
+          icon: /* @__PURE__ */ jsx29(Loader22, { className: "h-3.5 w-3.5 animate-spin" }),
           label: "Running"
         };
     }
@@ -12325,7 +7433,7 @@ function GraphChatToolCall({
       setOpenItem("item-1");
     }
   }, [callId, shouldAutoOpen]);
-  return /* @__PURE__ */ jsx31("div", { className: "thread-graph-tool-call my-2 w-full font-sans not-prose", children: /* @__PURE__ */ jsx31(
+  return /* @__PURE__ */ jsx29("div", { className: "thread-graph-tool-call my-2 w-full font-sans not-prose", children: /* @__PURE__ */ jsx29(
     Accordion,
     {
       type: "single",
@@ -12334,13 +7442,13 @@ function GraphChatToolCall({
       className: "thread-graph-tool-accordion w-full overflow-hidden rounded-lg border",
       ...openItem !== void 0 ? { value: openItem } : {},
       children: /* @__PURE__ */ jsxs25(AccordionItem, { value: "item-1", className: "border-0", children: [
-        /* @__PURE__ */ jsx31(
+        /* @__PURE__ */ jsx29(
           AccordionTrigger,
           {
             className: "thread-graph-tool-trigger px-4 py-3 hover:no-underline",
             children: /* @__PURE__ */ jsxs25("div", { className: "flex min-w-0 items-center gap-2", children: [
-              /* @__PURE__ */ jsx31(Wrench, { className: "h-4 w-4 shrink-0" }),
-              /* @__PURE__ */ jsx31("span", { className: "min-w-0 truncate font-mono text-sm font-semibold", children: toolName }),
+              /* @__PURE__ */ jsx29(Wrench, { className: "h-4 w-4 shrink-0" }),
+              /* @__PURE__ */ jsx29("span", { className: "min-w-0 truncate font-mono text-sm font-semibold", children: toolName }),
               /* @__PURE__ */ jsxs25(
                 "span",
                 {
@@ -12349,7 +7457,7 @@ function GraphChatToolCall({
                   "aria-label": `Status: ${statusConfig.label}`,
                   children: [
                     statusConfig.icon,
-                    /* @__PURE__ */ jsx31("span", { className: "thread-graph-status-label", children: statusConfig.label })
+                    /* @__PURE__ */ jsx29("span", { className: "thread-graph-status-label", children: statusConfig.label })
                   ]
                 }
               )
@@ -12358,37 +7466,37 @@ function GraphChatToolCall({
         ),
         /* @__PURE__ */ jsxs25(AccordionContent, { className: "thread-graph-tool-content px-4 pb-4 pt-1", children: [
           /* @__PURE__ */ jsxs25("section", { children: [
-            /* @__PURE__ */ jsx31("h4", { children: "Parameters" }),
+            /* @__PURE__ */ jsx29("h4", { children: "Parameters" }),
             /* @__PURE__ */ jsxs25("div", { className: "thread-graph-tool-json", children: [
               "{",
-              /* @__PURE__ */ jsx31("br", {}),
+              /* @__PURE__ */ jsx29("br", {}),
               parameterEntries.length > 0 ? parameterEntries.map(([key, value], index) => /* @__PURE__ */ jsxs25("div", { children: [
                 /* @__PURE__ */ jsxs25("span", { className: "thread-graph-tool-key", children: [
                   '"',
                   key,
                   '"'
                 ] }),
-                /* @__PURE__ */ jsx31("span", { className: "thread-graph-tool-punctuation", children: ": " }),
+                /* @__PURE__ */ jsx29("span", { className: "thread-graph-tool-punctuation", children: ": " }),
                 formatPrimitiveValue(value),
-                index < parameterEntries.length - 1 ? /* @__PURE__ */ jsx31("span", { className: "thread-graph-tool-punctuation", children: "," }) : null
-              ] }, key)) : /* @__PURE__ */ jsx31("div", { children: /* @__PURE__ */ jsx31("span", { className: "thread-graph-tool-null", children: "empty" }) }),
+                index < parameterEntries.length - 1 ? /* @__PURE__ */ jsx29("span", { className: "thread-graph-tool-punctuation", children: "," }) : null
+              ] }, key)) : /* @__PURE__ */ jsx29("div", { children: /* @__PURE__ */ jsx29("span", { className: "thread-graph-tool-null", children: "empty" }) }),
               "}"
             ] })
           ] }),
           resultEntries.length > 0 ? /* @__PURE__ */ jsxs25("section", { children: [
-            /* @__PURE__ */ jsx31("h4", { children: "Result" }),
+            /* @__PURE__ */ jsx29("h4", { children: "Result" }),
             /* @__PURE__ */ jsxs25("div", { className: "thread-graph-tool-json", children: [
               "{",
-              /* @__PURE__ */ jsx31("br", {}),
+              /* @__PURE__ */ jsx29("br", {}),
               resultEntries.map(([key, value], index) => /* @__PURE__ */ jsxs25("div", { children: [
                 /* @__PURE__ */ jsxs25("span", { className: "thread-graph-tool-key", children: [
                   '"',
                   key,
                   '"'
                 ] }),
-                /* @__PURE__ */ jsx31("span", { className: "thread-graph-tool-punctuation", children: ": " }),
+                /* @__PURE__ */ jsx29("span", { className: "thread-graph-tool-punctuation", children: ": " }),
                 renderResultValue(key, value),
-                index < resultEntries.length - 1 ? /* @__PURE__ */ jsx31("span", { className: "thread-graph-tool-punctuation", children: "," }) : null
+                index < resultEntries.length - 1 ? /* @__PURE__ */ jsx29("span", { className: "thread-graph-tool-punctuation", children: "," }) : null
               ] }, key)),
               "}"
             ] })
@@ -12398,9 +7506,6 @@ function GraphChatToolCall({
     }
   ) });
 }
-
-// src/components/graph-chat/GraphChatMessageContent.tsx
-init_graphChatShiki();
 
 // src/components/graph-chat/graphChatToolBlocks.ts
 function isRecord2(value) {
@@ -12537,7 +7642,7 @@ ${mergedPayload}
 }
 
 // src/components/graph-chat/GraphChatMessageContent.tsx
-import { Fragment as Fragment5, jsx as jsx32, jsxs as jsxs26 } from "react/jsx-runtime";
+import { Fragment as Fragment5, jsx as jsx30, jsxs as jsxs26 } from "react/jsx-runtime";
 var APP_LOCAL_PATH_PREFIXES = [
   "/api/",
   "/assets/",
@@ -12619,9 +7724,9 @@ function parseWorkspaceFileHref(href) {
 }
 function PreRenderer({ children, ...props }) {
   if (isToolCodeElement(children)) {
-    return /* @__PURE__ */ jsx32(Fragment5, { children });
+    return /* @__PURE__ */ jsx30(Fragment5, { children });
   }
-  return /* @__PURE__ */ jsx32("pre", { ...props, children });
+  return /* @__PURE__ */ jsx30("pre", { ...props, children });
 }
 function isToolCodeElement(value) {
   if (!value || typeof value !== "object" || !("props" in value)) {
@@ -12721,7 +7826,7 @@ var GraphChatMessageContent = memo(function GraphChatMessageContent2({
       }
       const toolName = typeof data.call.tool === "string" ? data.call.tool : "Unknown";
       const callId = typeof data.call.call_id === "string" ? data.call.call_id : void 0;
-      return /* @__PURE__ */ jsx32(
+      return /* @__PURE__ */ jsx30(
         GraphChatToolCall,
         {
           callId,
@@ -12747,7 +7852,7 @@ var GraphChatMessageContent = memo(function GraphChatMessageContent2({
       const liveResult = callId && resultMap.has(callId) ? mergeGraphChatToolResultState(
         resultMap.get(callId) ?? createEmptyGraphChatToolResultState()
       ) : void 0;
-      return /* @__PURE__ */ jsx32(
+      return /* @__PURE__ */ jsx30(
         GraphChatToolCall,
         {
           callId,
@@ -12792,7 +7897,7 @@ var GraphChatMessageContent = memo(function GraphChatMessageContent2({
         }
       }
       return /* @__PURE__ */ jsxs26("div", { className: "thread-graph-code-block not-prose relative my-3 overflow-auto rounded-xl border p-3 text-sm shadow-sm", children: [
-        /* @__PURE__ */ jsx32(
+        /* @__PURE__ */ jsx30(
           Button,
           {
             type: "button",
@@ -12802,14 +7907,14 @@ var GraphChatMessageContent = memo(function GraphChatMessageContent2({
             className: "thread-graph-code-copy absolute right-2 top-2 z-10 rounded-md p-1.5",
             title: copyState[id] === "copied" ? "Copied" : copyState[id] === "failed" ? "Copy failed" : "Copy",
             "aria-label": "Copy code",
-            children: copyState[id] === "copied" ? /* @__PURE__ */ jsx32(Check3, { className: "h-3.5 w-3.5" }) : /* @__PURE__ */ jsx32(Copy2, { className: "h-3.5 w-3.5" })
+            children: copyState[id] === "copied" ? /* @__PURE__ */ jsx30(Check3, { className: "h-3.5 w-3.5" }) : /* @__PURE__ */ jsx30(Copy2, { className: "h-3.5 w-3.5" })
           }
         ),
-        html ? /* @__PURE__ */ jsx32("div", { dangerouslySetInnerHTML: { __html: html } }) : /* @__PURE__ */ jsx32("pre", { children: /* @__PURE__ */ jsx32("code", { className: "whitespace-pre", children: textContent }) })
+        html ? /* @__PURE__ */ jsx30("div", { dangerouslySetInnerHTML: { __html: html } }) : /* @__PURE__ */ jsx30("pre", { children: /* @__PURE__ */ jsx30("code", { className: "whitespace-pre", children: textContent }) })
       ] });
     }
     const inlineDisplayText = textFromReactNode(children).replace(/`+/g, "");
-    return /* @__PURE__ */ jsx32(
+    return /* @__PURE__ */ jsx30(
       "code",
       {
         className: `thread-graph-inline-code rounded px-1 py-0.5 font-mono font-normal text-[0.9em] ${codeClassName || ""}`,
@@ -12818,7 +7923,7 @@ var GraphChatMessageContent = memo(function GraphChatMessageContent2({
       }
     );
   };
-  return /* @__PURE__ */ jsx32("div", { ref: rootRef, className: `thread-graph-message-markdown ${className}`, children: /* @__PURE__ */ jsx32(
+  return /* @__PURE__ */ jsx30("div", { ref: rootRef, className: `thread-graph-message-markdown ${className}`, children: /* @__PURE__ */ jsx30(
     ReactMarkdown,
     {
       remarkPlugins: [remarkGfm, remarkMath],
@@ -12827,7 +7932,7 @@ var GraphChatMessageContent = memo(function GraphChatMessageContent2({
         a({ href, children, ...props }) {
           const workspaceTarget = parseWorkspaceFileHref(href);
           if (workspaceTarget && onOpenWorkspaceFile) {
-            return /* @__PURE__ */ jsx32(
+            return /* @__PURE__ */ jsx30(
               "a",
               {
                 ...props,
@@ -12841,7 +7946,7 @@ var GraphChatMessageContent = memo(function GraphChatMessageContent2({
               }
             );
           }
-          return /* @__PURE__ */ jsx32(
+          return /* @__PURE__ */ jsx30(
             "a",
             {
               ...props,
@@ -12860,7 +7965,7 @@ var GraphChatMessageContent = memo(function GraphChatMessageContent2({
 });
 
 // src/components/graph-chat/GraphChatMessageBody.tsx
-import { Fragment as Fragment6, jsx as jsx33, jsxs as jsxs27 } from "react/jsx-runtime";
+import { Fragment as Fragment6, jsx as jsx31, jsxs as jsxs27 } from "react/jsx-runtime";
 var LARGE_MESSAGE_PREVIEW_CHARS = 2400;
 var PLAIN_URL_PATTERN = /\b(?:https?:\/\/|www\.)[^\s<>"'`]+/gi;
 var TRAILING_URL_PUNCTUATION_PATTERN = /[),.;:!?]+$/;
@@ -12933,7 +8038,7 @@ function GraphChatLinkifiedPlainText({ text }) {
       parts.push(text.slice(cursor, index));
     }
     parts.push(
-      /* @__PURE__ */ jsx33(
+      /* @__PURE__ */ jsx31(
         "a",
         {
           href: normalizeHref(urlText),
@@ -12953,7 +8058,7 @@ function GraphChatLinkifiedPlainText({ text }) {
   if (cursor < text.length) {
     parts.push(text.slice(cursor));
   }
-  return /* @__PURE__ */ jsx33(Fragment6, { children: parts.length > 0 ? parts : text });
+  return /* @__PURE__ */ jsx31(Fragment6, { children: parts.length > 0 ? parts : text });
 }
 var GraphChatMarkdownAwareBody = memo2(
   function GraphChatMarkdownAwareBody2({
@@ -13032,7 +8137,7 @@ var GraphChatMarkdownAwareBody = memo2(
       };
     }, [isActivated, scrollRootRef, streaming]);
     return /* @__PURE__ */ jsxs27("div", { ref: messageRef, className: containerClassName, children: [
-      isActivated && shouldRenderMarkdown ? /* @__PURE__ */ jsx33(
+      isActivated && shouldRenderMarkdown ? /* @__PURE__ */ jsx31(
         GraphChatMessageContent,
         {
           content: displayText,
@@ -13040,8 +8145,8 @@ var GraphChatMarkdownAwareBody = memo2(
           onOpenWorkspaceFile,
           resolveHref
         }
-      ) : /* @__PURE__ */ jsx33("p", { className: plainTextClassName, children: /* @__PURE__ */ jsx33(GraphChatLinkifiedPlainText, { text: displayText }) }),
-      isLargeText ? /* @__PURE__ */ jsx33(
+      ) : /* @__PURE__ */ jsx31("p", { className: plainTextClassName, children: /* @__PURE__ */ jsx31(GraphChatLinkifiedPlainText, { text: displayText }) }),
+      isLargeText ? /* @__PURE__ */ jsx31(
         "button",
         {
           type: "button",
@@ -13062,7 +8167,7 @@ var GraphChatAgentMessageBody = memo2(
     onOpenWorkspaceFile,
     resolveHref
   }) {
-    return /* @__PURE__ */ jsx33(
+    return /* @__PURE__ */ jsx31(
       GraphChatMarkdownAwareBody,
       {
         text,
@@ -13084,19 +8189,19 @@ var GraphChatUserMessageBody = memo2(
     getImageAssetUrl
   }) {
     const segments = useMemo6(() => tokenizeUserMessageText(text), [text]);
-    return /* @__PURE__ */ jsx33("div", { className: "thread-graph-message-prose whitespace-pre-wrap break-words text-[15px] leading-6", children: segments.map((segment) => {
+    return /* @__PURE__ */ jsx31("div", { className: "thread-graph-message-prose whitespace-pre-wrap break-words text-[15px] leading-6", children: segments.map((segment) => {
       if (segment.type === "text") {
-        return /* @__PURE__ */ jsx33("span", { children: segment.text }, segment.key);
+        return /* @__PURE__ */ jsx31("span", { children: segment.text }, segment.key);
       }
       if (segment.type === "photo") {
         const imageUrl = attachmentPreviewUrls?.[segment.path] ?? (threadId ? getImageAssetUrl?.({ threadId, path: segment.path }) ?? null : null);
         const label = basenameFromAssetPath(segment.path) || "Attached image";
-        return /* @__PURE__ */ jsx33(
+        return /* @__PURE__ */ jsx31(
           "span",
           {
             className: "mx-[0.14rem] inline-flex align-middle",
             children: /* @__PURE__ */ jsxs27("span", { className: "inline-flex max-w-full flex-col rounded-[1rem] border border-sky-300/28 bg-sky-300/[0.08] p-1.5 shadow-sm shadow-stone-950/20", children: [
-              imageUrl ? /* @__PURE__ */ jsx33(
+              imageUrl ? /* @__PURE__ */ jsx31(
                 "img",
                 {
                   src: imageUrl,
@@ -13104,8 +8209,8 @@ var GraphChatUserMessageBody = memo2(
                   className: "h-[4.5rem] w-[6rem] rounded-[0.75rem] bg-stone-950 object-contain",
                   loading: "lazy"
                 }
-              ) : /* @__PURE__ */ jsx33("span", { className: "inline-flex h-[4.5rem] w-[6rem] items-center justify-center rounded-[0.75rem] bg-stone-950 text-[10px] text-sky-100", children: "PHOTO" }),
-              /* @__PURE__ */ jsx33(
+              ) : /* @__PURE__ */ jsx31("span", { className: "inline-flex h-[4.5rem] w-[6rem] items-center justify-center rounded-[0.75rem] bg-stone-950 text-[10px] text-sky-100", children: "PHOTO" }),
+              /* @__PURE__ */ jsx31(
                 "span",
                 {
                   className: "mt-1 max-w-[7rem] truncate text-[10px] font-medium tracking-[0.08em] text-sky-50",
@@ -13119,7 +8224,7 @@ var GraphChatUserMessageBody = memo2(
         );
       }
       const fileName = basenameFromAssetPath(segment.path) || "Attached file";
-      return /* @__PURE__ */ jsx33(
+      return /* @__PURE__ */ jsx31(
         "span",
         {
           className: "mx-[0.14rem] inline-flex align-middle",
@@ -13129,8 +8234,8 @@ var GraphChatUserMessageBody = memo2(
               className: "inline-flex max-w-[12rem] items-center gap-2 rounded-[0.95rem] border border-emerald-300/28 bg-emerald-300/[0.08] px-2.5 py-2 text-[10px] font-medium tracking-[0.08em] text-emerald-50 shadow-sm shadow-stone-950/20",
               title: segment.path,
               children: [
-                /* @__PURE__ */ jsx33("span", { className: "inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-emerald-200/20 bg-emerald-300/12 text-[9px]", children: "FILE" }),
-                /* @__PURE__ */ jsx33("span", { className: "min-w-0 truncate", children: fileName })
+                /* @__PURE__ */ jsx31("span", { className: "inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-emerald-200/20 bg-emerald-300/12 text-[9px]", children: "FILE" }),
+                /* @__PURE__ */ jsx31("span", { className: "min-w-0 truncate", children: fileName })
               ]
             }
           )
@@ -13143,9 +8248,9 @@ var GraphChatUserMessageBody = memo2(
 
 // src/components/graph-chat/GraphChatMessageFrame.tsx
 import { CheckCircle2 as CheckCircle22, Circle, Loader2 as Loader23, XCircle as XCircle2 } from "lucide-react";
-import { jsx as jsx34, jsxs as jsxs28 } from "react/jsx-runtime";
+import { jsx as jsx32, jsxs as jsxs28 } from "react/jsx-runtime";
 function GraphChatRunningDots() {
-  return /* @__PURE__ */ jsx34("span", { className: "ml-1.5 inline-flex items-center gap-1", "aria-hidden": "true", children: [0, 1, 2].map((index) => /* @__PURE__ */ jsx34(
+  return /* @__PURE__ */ jsx32("span", { className: "ml-1.5 inline-flex items-center gap-1", "aria-hidden": "true", children: [0, 1, 2].map((index) => /* @__PURE__ */ jsx32(
     "span",
     {
       className: "h-1.5 w-1.5 animate-pulse rounded-full bg-sky-200/90",
@@ -13165,7 +8270,7 @@ function GraphChatMessageStatusBadge({
   const isFailed = normalized.includes("failed") || normalized.includes("error");
   const isCompleted = normalized.includes("accepted") || normalized.includes("complete");
   const className = isRunning ? "ui-status-warning" : isFailed ? "ui-status-danger" : isCompleted ? "ui-status-success" : "ui-status-neutral";
-  const icon = isRunning ? /* @__PURE__ */ jsx34(Loader23, { className: "h-3.5 w-3.5 animate-spin" }) : isFailed ? /* @__PURE__ */ jsx34(XCircle2, { className: "h-3.5 w-3.5" }) : isCompleted ? /* @__PURE__ */ jsx34(CheckCircle22, { className: "h-3.5 w-3.5" }) : /* @__PURE__ */ jsx34(Circle, { className: "h-3.5 w-3.5" });
+  const icon = isRunning ? /* @__PURE__ */ jsx32(Loader23, { className: "h-3.5 w-3.5 animate-spin" }) : isFailed ? /* @__PURE__ */ jsx32(XCircle2, { className: "h-3.5 w-3.5" }) : isCompleted ? /* @__PURE__ */ jsx32(CheckCircle22, { className: "h-3.5 w-3.5" }) : /* @__PURE__ */ jsx32(Circle, { className: "h-3.5 w-3.5" });
   return /* @__PURE__ */ jsxs28(
     "span",
     {
@@ -13173,8 +8278,8 @@ function GraphChatMessageStatusBadge({
       title: status,
       "aria-label": `Status: ${status}`,
       children: [
-        /* @__PURE__ */ jsx34("span", { className: "thread-graph-message-status-icon inline-flex shrink-0", children: isRunning ? /* @__PURE__ */ jsx34(GraphChatRunningDots, {}) : icon }),
-        /* @__PURE__ */ jsx34("span", { className: "thread-graph-status-label", children: status })
+        /* @__PURE__ */ jsx32("span", { className: "thread-graph-message-status-icon inline-flex shrink-0", children: isRunning ? /* @__PURE__ */ jsx32(GraphChatRunningDots, {}) : icon }),
+        /* @__PURE__ */ jsx32("span", { className: "thread-graph-status-label", children: status })
       ]
     }
   );
@@ -13190,7 +8295,7 @@ function GraphChatMessageFrame({
   timeTitle
 }) {
   const isUser = kind === "userMessage";
-  const timeNode = timeLabel ? /* @__PURE__ */ jsx34(
+  const timeNode = timeLabel ? /* @__PURE__ */ jsx32(
     "span",
     {
       title: timeTitle ?? void 0,
@@ -13198,7 +8303,7 @@ function GraphChatMessageFrame({
       children: timeLabel
     }
   ) : null;
-  return /* @__PURE__ */ jsx34(
+  return /* @__PURE__ */ jsx32(
     "div",
     {
       "data-testid": "chat-message",
@@ -13211,17 +8316,17 @@ function GraphChatMessageFrame({
           children: [
             !isUser ? /* @__PURE__ */ jsxs28("div", { className: "thread-graph-message-header mb-2 flex min-w-0 items-center justify-between gap-2", children: [
               /* @__PURE__ */ jsxs28("div", { className: "flex min-w-0 items-center gap-1.5", children: [
-                /* @__PURE__ */ jsx34("span", { className: "thread-graph-message-sender rounded-full px-2.5 py-1 text-xs font-semibold tracking-[0.02em]", children: "Assistant" }),
-                /* @__PURE__ */ jsx34(GraphChatMessageStatusBadge, { status: status ?? "Complete" })
+                /* @__PURE__ */ jsx32("span", { className: "thread-graph-message-sender rounded-full px-2.5 py-1 text-xs font-semibold tracking-[0.02em]", children: "Assistant" }),
+                /* @__PURE__ */ jsx32(GraphChatMessageStatusBadge, { status: status ?? "Complete" })
               ] }),
-              metaControl ? /* @__PURE__ */ jsx34("div", { className: "thread-graph-message-header-meta flex min-w-0 flex-1 justify-center", children: metaControl }) : null,
+              metaControl ? /* @__PURE__ */ jsx32("div", { className: "thread-graph-message-header-meta flex min-w-0 flex-1 justify-center", children: metaControl }) : null,
               copyButton || timeNode ? /* @__PURE__ */ jsxs28("div", { className: "thread-graph-message-header-actions flex shrink-0 items-center gap-1.5 sm:gap-2", children: [
                 copyButton,
                 timeNode
               ] }) : null
             ] }) : null,
             reasoning,
-            /* @__PURE__ */ jsx34(
+            /* @__PURE__ */ jsx32(
               "div",
               {
                 className: `thread-graph-message-content min-w-0 ${isUser ? "is-user" : "is-assistant"}`,
@@ -13229,7 +8334,7 @@ function GraphChatMessageFrame({
               }
             ),
             isUser && (status || timeNode) ? /* @__PURE__ */ jsxs28("div", { className: "mt-1 flex items-center justify-end gap-2", children: [
-              status ? /* @__PURE__ */ jsx34(GraphChatMessageStatusBadge, { status }) : null,
+              status ? /* @__PURE__ */ jsx32(GraphChatMessageStatusBadge, { status }) : null,
               timeNode
             ] }) : null
           ]
@@ -13240,8 +8345,7 @@ function GraphChatMessageFrame({
 }
 
 // src/components/graph-chat/GraphChatCompactMessageItem.tsx
-init_GraphAccordion();
-import { jsx as jsx35, jsxs as jsxs29 } from "react/jsx-runtime";
+import { jsx as jsx33, jsxs as jsxs29 } from "react/jsx-runtime";
 function isGraphChatRunningStatus(status) {
   if (!status) {
     return false;
@@ -13253,7 +8357,7 @@ function GraphChatRunningDots2({
   tone = "amber"
 }) {
   const dotClassName = tone === "sky" ? "bg-sky-300/90" : "bg-amber-200/90";
-  return /* @__PURE__ */ jsx35("span", { className: "ml-1.5 inline-flex items-center gap-1", "aria-hidden": "true", children: [0, 1, 2].map((index) => /* @__PURE__ */ jsx35(
+  return /* @__PURE__ */ jsx33("span", { className: "ml-1.5 inline-flex items-center gap-1", "aria-hidden": "true", children: [0, 1, 2].map((index) => /* @__PURE__ */ jsx33(
     "span",
     {
       className: `h-1.5 w-1.5 animate-pulse rounded-full ${dotClassName}`,
@@ -13314,7 +8418,7 @@ var GraphChatCompactMessageItem = memo3(
       onBeforeMessageResize?.();
       setReasoningOpen((value) => !value);
     }
-    const copyButton = item.kind === "agentMessage" ? /* @__PURE__ */ jsx35(
+    const copyButton = item.kind === "agentMessage" ? /* @__PURE__ */ jsx33(
       "button",
       {
         type: "button",
@@ -13322,7 +8426,7 @@ var GraphChatCompactMessageItem = memo3(
         title: copyState === "copied" ? "Copied" : copyState === "failed" ? "Copy failed" : "Copy agent reply",
         onClick: () => void handleCopy(),
         className: `thread-graph-message-copy inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md border transition ${copyState === "copied" ? "ui-status-info" : copyState === "failed" ? "ui-status-danger" : ""}`,
-        children: copyState === "copied" ? /* @__PURE__ */ jsx35(Check4, { className: "h-3.5 w-3.5" }) : /* @__PURE__ */ jsx35(Copy3, { className: "h-3.5 w-3.5" })
+        children: copyState === "copied" ? /* @__PURE__ */ jsx33(Check4, { className: "h-3.5 w-3.5" }) : /* @__PURE__ */ jsx33(Copy3, { className: "h-3.5 w-3.5" })
       }
     ) : null;
     const hasRunningReasoning = reasoningItems.some(
@@ -13338,18 +8442,18 @@ var GraphChatCompactMessageItem = memo3(
         onClick: toggleReasoning,
         className: `thread-graph-thinking-toggle inline-flex h-7 shrink-0 items-center gap-1.5 rounded-md border px-2 text-xs font-medium transition ${reasoningOpen ? "is-open" : ""}`,
         children: [
-          /* @__PURE__ */ jsx35(
+          /* @__PURE__ */ jsx33(
             Brain,
             {
               className: `h-3.5 w-3.5 ${hasRunningReasoning ? "animate-pulse" : ""}`
             }
           ),
-          /* @__PURE__ */ jsx35("span", { children: "CoT" }),
-          hasRunningReasoning ? /* @__PURE__ */ jsx35(GraphChatRunningDots2, { tone: "sky" }) : null
+          /* @__PURE__ */ jsx33("span", { children: "CoT" }),
+          hasRunningReasoning ? /* @__PURE__ */ jsx33(GraphChatRunningDots2, { tone: "sky" }) : null
         ]
       }
     ) : null;
-    const reasoning = item.kind === "agentMessage" && reasoningText ? /* @__PURE__ */ jsx35("div", { className: "thread-graph-message-thinking mb-3", children: /* @__PURE__ */ jsx35(
+    const reasoning = item.kind === "agentMessage" && reasoningText ? /* @__PURE__ */ jsx33("div", { className: "thread-graph-message-thinking mb-3", children: /* @__PURE__ */ jsx33(
       Accordion,
       {
         type: "single",
@@ -13357,10 +8461,10 @@ var GraphChatCompactMessageItem = memo3(
         value: reasoningOpen ? "thoughts" : "",
         className: "thread-graph-thinking-accordion w-full border-none",
         onValueChange: (value) => setReasoningOpen(Boolean(value)),
-        children: /* @__PURE__ */ jsx35(AccordionItem, { value: "thoughts", className: "border-b-0", children: /* @__PURE__ */ jsx35(AccordionContent, { className: "thread-graph-thinking-content pb-0", children: /* @__PURE__ */ jsx35("pre", { className: "thread-graph-thinking-body my-1 max-h-56 overflow-auto whitespace-pre-wrap break-words rounded-xl border p-3 text-[12px] leading-5", children: /* @__PURE__ */ jsx35(GraphChatLinkifiedPlainText, { text: reasoningText }) }) }) })
+        children: /* @__PURE__ */ jsx33(AccordionItem, { value: "thoughts", className: "border-b-0", children: /* @__PURE__ */ jsx33(AccordionContent, { className: "thread-graph-thinking-content pb-0", children: /* @__PURE__ */ jsx33("pre", { className: "thread-graph-thinking-body my-1 max-h-56 overflow-auto whitespace-pre-wrap break-words rounded-xl border p-3 text-[12px] leading-5", children: /* @__PURE__ */ jsx33(GraphChatLinkifiedPlainText, { text: reasoningText }) }) }) })
       }
     ) }) : null;
-    return /* @__PURE__ */ jsx35(
+    return /* @__PURE__ */ jsx33(
       GraphChatMessageFrame,
       {
         kind: item.kind,
@@ -13370,7 +8474,7 @@ var GraphChatCompactMessageItem = memo3(
         reasoning,
         timeLabel,
         timeTitle,
-        children: item.kind === "agentMessage" ? /* @__PURE__ */ jsx35(
+        children: item.kind === "agentMessage" ? /* @__PURE__ */ jsx33(
           GraphChatAgentMessageBody,
           {
             text: item.text,
@@ -13380,7 +8484,7 @@ var GraphChatCompactMessageItem = memo3(
             ...adapter?.onOpenWorkspaceFile ? { onOpenWorkspaceFile: adapter.onOpenWorkspaceFile } : {},
             ...adapter?.resolveHref ? { resolveHref: adapter.resolveHref } : {}
           }
-        ) : /* @__PURE__ */ jsx35(
+        ) : /* @__PURE__ */ jsx33(
           GraphChatUserMessageBody,
           {
             threadId,
@@ -13933,7 +9037,7 @@ function buildActivityNoteAnchors({
 
 // src/components/timeline/TimelineRequestCards.tsx
 import { useState as useState18 } from "react";
-import { Fragment as Fragment7, jsx as jsx36, jsxs as jsxs30 } from "react/jsx-runtime";
+import { Fragment as Fragment7, jsx as jsx34, jsxs as jsxs30 } from "react/jsx-runtime";
 function PendingRequestCard({
   request,
   busy = false,
@@ -14004,18 +9108,18 @@ function PendingRequestCard({
     });
   }
   return /* @__PURE__ */ jsxs30("div", { className: "timeline-pending-card w-full rounded-[1rem] border px-3 py-3 sm:rounded-[1.2rem] sm:px-4", children: [
-    /* @__PURE__ */ jsx36("div", { className: "flex items-center justify-between gap-3", children: /* @__PURE__ */ jsxs30("div", { children: [
-      /* @__PURE__ */ jsx36("p", { className: "timeline-primary-text text-sm font-medium", children: cardTitle }),
-      request.kind !== "planDecision" && request.description && /* @__PURE__ */ jsx36("p", { className: "timeline-soft-text mt-1 text-[13px] leading-5", children: request.description })
+    /* @__PURE__ */ jsx34("div", { className: "flex items-center justify-between gap-3", children: /* @__PURE__ */ jsxs30("div", { children: [
+      /* @__PURE__ */ jsx34("p", { className: "timeline-primary-text text-sm font-medium", children: cardTitle }),
+      request.kind !== "planDecision" && request.description && /* @__PURE__ */ jsx34("p", { className: "timeline-soft-text mt-1 text-[13px] leading-5", children: request.description })
     ] }) }),
-    /* @__PURE__ */ jsx36("div", { className: "mt-3 space-y-3", children: request.questions.map((question) => /* @__PURE__ */ jsxs30(
+    /* @__PURE__ */ jsx34("div", { className: "mt-3 space-y-3", children: request.questions.map((question) => /* @__PURE__ */ jsxs30(
       "div",
       {
         className: "timeline-question-section rounded-xl border p-2.5 sm:p-3",
         children: [
-          /* @__PURE__ */ jsx36("p", { className: "timeline-meta-text text-xs uppercase tracking-[0.2em]", children: question.header }),
-          /* @__PURE__ */ jsx36("p", { className: "timeline-primary-text mt-1 text-[13px] leading-5 sm:text-sm", children: question.question }),
-          request.kind === "planDecision" && question.options && question.options.length > 0 ? /* @__PURE__ */ jsx36("div", { className: "mt-3 flex flex-wrap gap-2", children: question.options.map((option, index) => {
+          /* @__PURE__ */ jsx34("p", { className: "timeline-meta-text text-xs uppercase tracking-[0.2em]", children: question.header }),
+          /* @__PURE__ */ jsx34("p", { className: "timeline-primary-text mt-1 text-[13px] leading-5 sm:text-sm", children: question.question }),
+          request.kind === "planDecision" && question.options && question.options.length > 0 ? /* @__PURE__ */ jsx34("div", { className: "mt-3 flex flex-wrap gap-2", children: question.options.map((option, index) => {
             const presentation = getOptionPresentation(option.label);
             const isImplement = presentation.displayLabel.toLowerCase() === "implement";
             return /* @__PURE__ */ jsxs30(
@@ -14027,7 +9131,7 @@ function PendingRequestCard({
                 className: `relative rounded-2xl border px-2.5 py-1.5 pr-6 text-[12px] leading-4 transition sm:text-[13px] ${index === 0 ? "ui-action-info" : "border-stone-700 text-stone-200 hover:bg-stone-800"} disabled:cursor-not-allowed disabled:opacity-60`,
                 title: option.description,
                 children: [
-                  presentation.recommended ? /* @__PURE__ */ jsx36(
+                  presentation.recommended ? /* @__PURE__ */ jsx34(
                     "span",
                     {
                       "aria-hidden": "true",
@@ -14057,7 +9161,7 @@ function PendingRequestCard({
                     className: `relative rounded-2xl border px-3 py-1.5 pr-6 text-[12px] leading-4 transition sm:text-[13px] ${(question.multiSelect ? Array.isArray(selectedAnswer) && selectedAnswer.includes(option.label) : selectedAnswer === option.label) ? "ui-status-warning" : "border-stone-700 text-stone-300 hover:bg-stone-800"} disabled:cursor-not-allowed disabled:opacity-60`,
                     title: option.description,
                     children: [
-                      presentation.recommended ? /* @__PURE__ */ jsx36(
+                      presentation.recommended ? /* @__PURE__ */ jsx34(
                         "span",
                         {
                           "aria-hidden": "true",
@@ -14073,7 +9177,7 @@ function PendingRequestCard({
               }),
               question.isOther && (() => {
                 const selectedAnswer = answers[question.id];
-                return /* @__PURE__ */ jsx36(
+                return /* @__PURE__ */ jsx34(
                   "button",
                   {
                     type: "button",
@@ -14094,7 +9198,7 @@ function PendingRequestCard({
             question.isOther && (() => {
               const selectedAnswer = answers[question.id];
               const showOtherInput = question.multiSelect ? Array.isArray(selectedAnswer) && selectedAnswer.includes(OTHER_SENTINEL) : selectedAnswer === OTHER_SENTINEL;
-              return showOtherInput ? /* @__PURE__ */ jsx36(
+              return showOtherInput ? /* @__PURE__ */ jsx34(
                 "input",
                 {
                   "aria-label": `${question.header} custom answer`,
@@ -14108,7 +9212,7 @@ function PendingRequestCard({
                 }
               ) : null;
             })()
-          ] }) : /* @__PURE__ */ jsx36(
+          ] }) : /* @__PURE__ */ jsx34(
             "input",
             {
               "aria-label": question.header,
@@ -14124,7 +9228,7 @@ function PendingRequestCard({
       },
       question.id
     )) }),
-    request.kind !== "planDecision" && /* @__PURE__ */ jsx36("div", { className: "mt-3 flex justify-end", children: /* @__PURE__ */ jsx36(
+    request.kind !== "planDecision" && /* @__PURE__ */ jsx34("div", { className: "mt-3 flex justify-end", children: /* @__PURE__ */ jsx34(
       "button",
       {
         type: "button",
@@ -14151,8 +9255,8 @@ function AnsweredRequestNote({
   note
 }) {
   return /* @__PURE__ */ jsxs30("div", { className: "timeline-note-card w-full rounded-2xl border px-3 py-2.5", children: [
-    /* @__PURE__ */ jsx36("p", { className: "timeline-meta-text text-[11px] uppercase tracking-[0.2em]", children: note.title }),
-    /* @__PURE__ */ jsx36("div", { className: "mt-1 space-y-1", children: note.summaryLines.map((line, index) => /* @__PURE__ */ jsxs30(
+    /* @__PURE__ */ jsx34("p", { className: "timeline-meta-text text-[11px] uppercase tracking-[0.2em]", children: note.title }),
+    /* @__PURE__ */ jsx34("div", { className: "mt-1 space-y-1", children: note.summaryLines.map((line, index) => /* @__PURE__ */ jsxs30(
       "p",
       {
         className: "timeline-primary-text text-[13px] leading-5",
@@ -14174,8 +9278,8 @@ function ActivityNoteCard({
   const body = note.kind === "forkCreated" ? `Thread forked from Turn ${note.turnIndex ?? "?"}` : note.kind === "forkSource" ? `Forked from ${note.linkedThreadTitle ?? "source thread"} at Turn ${note.turnIndex ?? "?"}` : note.text ?? "";
   return /* @__PURE__ */ jsxs30("div", { className: "timeline-activity-card w-full rounded-2xl border px-3 py-2.5", children: [
     /* @__PURE__ */ jsxs30("div", { className: "flex items-center justify-between gap-3", children: [
-      /* @__PURE__ */ jsx36("p", { className: "timeline-meta-text text-[11px] uppercase tracking-[0.2em]", children: title }),
-      /* @__PURE__ */ jsx36(
+      /* @__PURE__ */ jsx34("p", { className: "timeline-meta-text text-[11px] uppercase tracking-[0.2em]", children: title }),
+      /* @__PURE__ */ jsx34(
         "time",
         {
           dateTime: note.createdAt,
@@ -14185,8 +9289,8 @@ function ActivityNoteCard({
         }
       )
     ] }),
-    /* @__PURE__ */ jsx36("p", { className: "timeline-primary-text mt-1 text-[13px] leading-5", children: body }),
-    note.linkedThreadId ? /* @__PURE__ */ jsx36(
+    /* @__PURE__ */ jsx34("p", { className: "timeline-primary-text mt-1 text-[13px] leading-5", children: body }),
+    note.linkedThreadId ? /* @__PURE__ */ jsx34(
       "button",
       {
         type: "button",
@@ -14212,7 +9316,7 @@ function ActivityNoteSection({
   if (notes.length === 0) {
     return null;
   }
-  return /* @__PURE__ */ jsx36("div", { className: "thread-graph-message-section space-y-3 px-3 py-4 sm:px-5", children: notes.map((note) => /* @__PURE__ */ jsx36(
+  return /* @__PURE__ */ jsx34("div", { className: "thread-graph-message-section space-y-3 px-3 py-4 sm:px-5", children: notes.map((note) => /* @__PURE__ */ jsx34(
     ActivityNoteCard,
     {
       note,
@@ -14230,8 +9334,8 @@ function RequestEntrySection({
   if (entries.length === 0) {
     return null;
   }
-  return /* @__PURE__ */ jsx36("div", { className: "thread-graph-message-section space-y-3 px-3 py-4 sm:px-5", children: entries.map(
-    (entry) => entry.kind === "note" ? /* @__PURE__ */ jsx36(AnsweredRequestNote, { note: entry.note }, entry.id) : /* @__PURE__ */ jsx36(
+  return /* @__PURE__ */ jsx34("div", { className: "thread-graph-message-section space-y-3 px-3 py-4 sm:px-5", children: entries.map(
+    (entry) => entry.kind === "note" ? /* @__PURE__ */ jsx34(AnsweredRequestNote, { note: entry.note }, entry.id) : /* @__PURE__ */ jsx34(
       PendingRequestCard,
       {
         request: entry.request,
@@ -14262,7 +9366,7 @@ function RequestEntrySectionForTurn({
       request
     }))
   ].sort((left, right) => left.createdAt.localeCompare(right.createdAt));
-  return /* @__PURE__ */ jsx36(
+  return /* @__PURE__ */ jsx34(
     RequestEntrySection,
     {
       entries,
@@ -14281,8 +9385,8 @@ function ActivityRequestEntrySection({
   if (entries.length === 0) {
     return null;
   }
-  return /* @__PURE__ */ jsx36("div", { className: "thread-graph-message-section space-y-3 px-3 py-4 sm:px-5", children: [...entries].sort((left, right) => left.createdAt.localeCompare(right.createdAt)).map(
-    (entry) => entry.kind === "activity" ? /* @__PURE__ */ jsx36(
+  return /* @__PURE__ */ jsx34("div", { className: "thread-graph-message-section space-y-3 px-3 py-4 sm:px-5", children: [...entries].sort((left, right) => left.createdAt.localeCompare(right.createdAt)).map(
+    (entry) => entry.kind === "activity" ? /* @__PURE__ */ jsx34(
       ActivityNoteCard,
       {
         note: entry.note,
@@ -14290,7 +9394,7 @@ function ActivityRequestEntrySection({
         onOpenLinkedThread
       },
       entry.id
-    ) : entry.kind === "note" ? /* @__PURE__ */ jsx36(AnsweredRequestNote, { note: entry.note }, entry.id) : /* @__PURE__ */ jsx36(
+    ) : entry.kind === "note" ? /* @__PURE__ */ jsx34(AnsweredRequestNote, { note: entry.note }, entry.id) : /* @__PURE__ */ jsx34(
       PendingRequestCard,
       {
         request: entry.request,
@@ -14312,7 +9416,7 @@ import {
 import { ChevronDown, ChevronRight as ChevronRight2 } from "lucide-react";
 
 // src/components/graph-chat/GraphChatHistoryEntries.tsx
-import { Fragment as Fragment8, jsx as jsx37 } from "react/jsx-runtime";
+import { Fragment as Fragment8, jsx as jsx35 } from "react/jsx-runtime";
 function GraphChatHistoryEntries({
   entries,
   expandedGroups,
@@ -14325,7 +9429,7 @@ function GraphChatHistoryEntries({
   renderToolCallGroup,
   renderAgentActivityGroup
 }) {
-  return /* @__PURE__ */ jsx37(Fragment8, { children: entries.map((entry) => {
+  return /* @__PURE__ */ jsx35(Fragment8, { children: entries.map((entry) => {
     const expanded = expandedGroups[entry.key] ?? false;
     const onToggleExpanded = () => onToggleGroupedItem(entry.key);
     if (entry.kind === "commandGroup") {
@@ -14402,7 +9506,7 @@ import {
 } from "lucide-react";
 
 // src/components/graph-chat/GraphChatHistoryGroupFrame.tsx
-import { jsx as jsx38, jsxs as jsxs31 } from "react/jsx-runtime";
+import { jsx as jsx36, jsxs as jsxs31 } from "react/jsx-runtime";
 function GraphChatHistoryGroupFrame({
   children,
   className,
@@ -14419,7 +9523,7 @@ function GraphChatHistoryGroupFrame({
   toggleAriaLabel,
   trailingSummary
 }) {
-  return /* @__PURE__ */ jsx38(
+  return /* @__PURE__ */ jsx36(
     "div",
     {
       className: `thread-graph-history-group ${className} relative min-w-0 w-full overflow-hidden rounded-[0.9rem] border px-3 py-2.5`,
@@ -14431,7 +9535,7 @@ function GraphChatHistoryGroupFrame({
               className: `relative inline-flex h-8 w-8 items-center justify-center rounded-[0.9rem] border shadow-sm shadow-stone-950/20 ${desktopIconClassName}`,
               children: [
                 icon,
-                /* @__PURE__ */ jsx38(
+                /* @__PURE__ */ jsx36(
                   "span",
                   {
                     className: `absolute -right-1 -top-1 inline-flex min-w-[1.1rem] items-center justify-center rounded-full border bg-stone-950/90 px-1 text-[9px] font-semibold leading-4 ${countBadgeClassName}`,
@@ -14453,7 +9557,7 @@ function GraphChatHistoryGroupFrame({
               onClick: onToggleExpanded,
               className: "thread-graph-history-group-toggle flex w-full min-w-0 items-center justify-between gap-3 text-left",
               children: [
-                /* @__PURE__ */ jsx38("div", { className: "thread-graph-history-group-summary min-w-0 flex flex-1 flex-wrap items-center gap-2 pr-1", children: summary }),
+                /* @__PURE__ */ jsx36("div", { className: "thread-graph-history-group-summary min-w-0 flex flex-1 flex-wrap items-center gap-2 pr-1", children: summary }),
                 trailingSummary || timeMeta ? /* @__PURE__ */ jsxs31("div", { className: "inline-flex shrink-0 items-center gap-2", children: [
                   trailingSummary,
                   timeMeta
@@ -14461,7 +9565,7 @@ function GraphChatHistoryGroupFrame({
               ]
             }
           ),
-          expanded ? /* @__PURE__ */ jsx38(
+          expanded ? /* @__PURE__ */ jsx36(
             "div",
             {
               className: `thread-graph-history-group-list mt-3 space-y-2 border-t pt-3 ${expandedListClassName}`,
@@ -14474,15 +9578,11 @@ function GraphChatHistoryGroupFrame({
   );
 }
 
-// src/components/graph-chat/GraphChatHistoryItems.tsx
-init_GraphAccordion();
-
 // src/components/graph-ui/Badge.tsx
-init_utils();
-import { Slot as Slot2 } from "@radix-ui/react-slot";
-import { cva as cva3 } from "class-variance-authority";
-import { jsx as jsx39 } from "react/jsx-runtime";
-var badgeVariants = cva3(
+import { Slot } from "@radix-ui/react-slot";
+import { cva as cva2 } from "class-variance-authority";
+import { jsx as jsx37 } from "react/jsx-runtime";
+var badgeVariants = cva2(
   "inline-flex w-fit shrink-0 items-center justify-center gap-1 overflow-hidden whitespace-nowrap rounded-md border px-2 py-0.5 text-xs font-medium outline-none transition-[color,box-shadow] focus-visible:ring-[3px] [&>svg]:pointer-events-none [&>svg]:size-3",
   {
     variants: {
@@ -14504,8 +9604,8 @@ function Badge({
   variant,
   ...props
 }) {
-  const Comp = asChild ? Slot2 : "span";
-  return /* @__PURE__ */ jsx39(
+  const Comp = asChild ? Slot : "span";
+  return /* @__PURE__ */ jsx37(
     Comp,
     {
       "data-slot": "badge",
@@ -14516,7 +9616,7 @@ function Badge({
 }
 
 // src/components/graph-chat/GraphChatHistoryItems.tsx
-import { Fragment as Fragment9, jsx as jsx40, jsxs as jsxs32 } from "react/jsx-runtime";
+import { Fragment as Fragment9, jsx as jsx38, jsxs as jsxs32 } from "react/jsx-runtime";
 function isRunningHistoryStatus2(status) {
   if (!status) return false;
   const normalized = status.trim().toLowerCase();
@@ -14533,10 +9633,10 @@ function FileChangeIcon() {
       strokeLinecap: "round",
       strokeLinejoin: "round",
       children: [
-        /* @__PURE__ */ jsx40("path", { d: "M5 2.75h4l2 2v6.5a1.5 1.5 0 0 1-1.5 1.5h-4A1.5 1.5 0 0 1 4 11.25v-7A1.5 1.5 0 0 1 5.5 2.75Z" }),
-        /* @__PURE__ */ jsx40("path", { d: "M9 2.75v2h2" }),
-        /* @__PURE__ */ jsx40("path", { d: "M6.2 8h3.6" }),
-        /* @__PURE__ */ jsx40("path", { d: "M6.2 10h1.7" })
+        /* @__PURE__ */ jsx38("path", { d: "M5 2.75h4l2 2v6.5a1.5 1.5 0 0 1-1.5 1.5h-4A1.5 1.5 0 0 1 4 11.25v-7A1.5 1.5 0 0 1 5.5 2.75Z" }),
+        /* @__PURE__ */ jsx38("path", { d: "M9 2.75v2h2" }),
+        /* @__PURE__ */ jsx38("path", { d: "M6.2 8h3.6" }),
+        /* @__PURE__ */ jsx38("path", { d: "M6.2 10h1.7" })
       ]
     }
   );
@@ -14552,12 +9652,12 @@ function FileReadIcon() {
       strokeLinecap: "round",
       strokeLinejoin: "round",
       children: [
-        /* @__PURE__ */ jsx40("path", { d: "M5 2.75h4l2 2v6.5a1.5 1.5 0 0 1-1.5 1.5h-4A1.5 1.5 0 0 1 4 11.25v-7A1.5 1.5 0 0 1 5.5 2.75Z" }),
-        /* @__PURE__ */ jsx40("path", { d: "M9 2.75v2h2" }),
-        /* @__PURE__ */ jsx40("path", { d: "M6.15 7.25h3.7" }),
-        /* @__PURE__ */ jsx40("path", { d: "M6.15 9.25h2.8" }),
-        /* @__PURE__ */ jsx40("path", { d: "m10.4 10.7 1.2 1.2" }),
-        /* @__PURE__ */ jsx40("circle", { cx: "9.25", cy: "9.55", r: "1.45" })
+        /* @__PURE__ */ jsx38("path", { d: "M5 2.75h4l2 2v6.5a1.5 1.5 0 0 1-1.5 1.5h-4A1.5 1.5 0 0 1 4 11.25v-7A1.5 1.5 0 0 1 5.5 2.75Z" }),
+        /* @__PURE__ */ jsx38("path", { d: "M9 2.75v2h2" }),
+        /* @__PURE__ */ jsx38("path", { d: "M6.15 7.25h3.7" }),
+        /* @__PURE__ */ jsx38("path", { d: "M6.15 9.25h2.8" }),
+        /* @__PURE__ */ jsx38("path", { d: "m10.4 10.7 1.2 1.2" }),
+        /* @__PURE__ */ jsx38("circle", { cx: "9.25", cy: "9.55", r: "1.45" })
       ]
     }
   );
@@ -14573,13 +9673,13 @@ function CommandBatchIcon() {
       strokeLinecap: "round",
       strokeLinejoin: "round",
       children: [
-        /* @__PURE__ */ jsx40("rect", { x: "2.75", y: "3", width: "8.5", height: "3", rx: "1.1" }),
-        /* @__PURE__ */ jsx40("rect", { x: "4.25", y: "6.5", width: "8.5", height: "3", rx: "1.1" }),
-        /* @__PURE__ */ jsx40("rect", { x: "5.75", y: "10", width: "7.5", height: "3", rx: "1.1" }),
-        /* @__PURE__ */ jsx40("path", { d: "m6.25 4.5 1 1-1 1" }),
-        /* @__PURE__ */ jsx40("path", { d: "M7.9 5.5h1.7" }),
-        /* @__PURE__ */ jsx40("path", { d: "m7.75 8 1 1-1 1" }),
-        /* @__PURE__ */ jsx40("path", { d: "M9.4 9h1.7" })
+        /* @__PURE__ */ jsx38("rect", { x: "2.75", y: "3", width: "8.5", height: "3", rx: "1.1" }),
+        /* @__PURE__ */ jsx38("rect", { x: "4.25", y: "6.5", width: "8.5", height: "3", rx: "1.1" }),
+        /* @__PURE__ */ jsx38("rect", { x: "5.75", y: "10", width: "7.5", height: "3", rx: "1.1" }),
+        /* @__PURE__ */ jsx38("path", { d: "m6.25 4.5 1 1-1 1" }),
+        /* @__PURE__ */ jsx38("path", { d: "M7.9 5.5h1.7" }),
+        /* @__PURE__ */ jsx38("path", { d: "m7.75 8 1 1-1 1" }),
+        /* @__PURE__ */ jsx38("path", { d: "M9.4 9h1.7" })
       ]
     }
   );
@@ -14595,12 +9695,12 @@ function SearchBatchIcon() {
       strokeLinecap: "round",
       strokeLinejoin: "round",
       children: [
-        /* @__PURE__ */ jsx40("circle", { cx: "6", cy: "6", r: "2.3" }),
-        /* @__PURE__ */ jsx40("path", { d: "m8 8 1.6 1.6" }),
-        /* @__PURE__ */ jsx40("circle", { cx: "9.3", cy: "8.8", r: "2" }),
-        /* @__PURE__ */ jsx40("path", { d: "m10.75 10.25 1.65 1.65" }),
-        /* @__PURE__ */ jsx40("circle", { cx: "11.2", cy: "4.75", r: "1.8" }),
-        /* @__PURE__ */ jsx40("path", { d: "m12.45 6 1.1 1.1" })
+        /* @__PURE__ */ jsx38("circle", { cx: "6", cy: "6", r: "2.3" }),
+        /* @__PURE__ */ jsx38("path", { d: "m8 8 1.6 1.6" }),
+        /* @__PURE__ */ jsx38("circle", { cx: "9.3", cy: "8.8", r: "2" }),
+        /* @__PURE__ */ jsx38("path", { d: "m10.75 10.25 1.65 1.65" }),
+        /* @__PURE__ */ jsx38("circle", { cx: "11.2", cy: "4.75", r: "1.8" }),
+        /* @__PURE__ */ jsx38("path", { d: "m12.45 6 1.1 1.1" })
       ]
     }
   );
@@ -14693,7 +9793,7 @@ function RunningDots({
   tone = "amber"
 }) {
   const dotClassName = tone === "emerald" ? "bg-sky-200/90" : tone === "sky" ? "bg-sky-300/90" : "bg-amber-200/90";
-  return /* @__PURE__ */ jsx40("span", { className: "ml-1.5 inline-flex items-center gap-1", "aria-hidden": "true", children: [0, 1, 2].map((index) => /* @__PURE__ */ jsx40(
+  return /* @__PURE__ */ jsx38("span", { className: "ml-1.5 inline-flex items-center gap-1", "aria-hidden": "true", children: [0, 1, 2].map((index) => /* @__PURE__ */ jsx38(
     "span",
     {
       className: `h-1.5 w-1.5 animate-pulse rounded-full ${dotClassName}`,
@@ -14729,21 +9829,21 @@ function graphHistoryStatusConfig(status) {
   if (normalized === "completed" || normalized === "complete" || normalized === "success" || normalized === "succeeded") {
     return {
       className: "is-completed",
-      icon: /* @__PURE__ */ jsx40(CheckCircle23, { className: "h-3.5 w-3.5" }),
+      icon: /* @__PURE__ */ jsx38(CheckCircle23, { className: "h-3.5 w-3.5" }),
       label: "Completed"
     };
   }
   if (normalized === "failed" || normalized === "failure" || normalized === "error" || normalized === "errored") {
     return {
       className: "is-failed",
-      icon: /* @__PURE__ */ jsx40(XCircle3, { className: "h-3.5 w-3.5" }),
+      icon: /* @__PURE__ */ jsx38(XCircle3, { className: "h-3.5 w-3.5" }),
       label: "Failed"
     };
   }
   if (isRunningHistoryStatus2(status)) {
     return {
       className: "is-pending",
-      icon: /* @__PURE__ */ jsx40(Loader24, { className: "h-3.5 w-3.5 animate-spin" }),
+      icon: /* @__PURE__ */ jsx38(Loader24, { className: "h-3.5 w-3.5 animate-spin" }),
       label: status?.trim() || "Running"
     };
   }
@@ -14806,11 +9906,11 @@ function GraphChatHistoryEventFrame({
         tone
       )} ${className ?? ""}`,
       children: [
-        /* @__PURE__ */ jsx40("div", { className: "thread-graph-history-event-icon", "aria-hidden": "true", children: icon }),
+        /* @__PURE__ */ jsx38("div", { className: "thread-graph-history-event-icon", "aria-hidden": "true", children: icon }),
         /* @__PURE__ */ jsxs32("div", { className: "thread-graph-history-event-card", children: [
           /* @__PURE__ */ jsxs32("div", { className: "thread-graph-history-event-header", children: [
             /* @__PURE__ */ jsxs32("div", { className: "thread-graph-history-event-heading flex min-w-0 items-center gap-2", children: [
-              /* @__PURE__ */ jsx40("span", { className: "thread-graph-history-event-title min-w-0 truncate font-mono text-sm font-semibold", children: title }),
+              /* @__PURE__ */ jsx38("span", { className: "thread-graph-history-event-title min-w-0 truncate font-mono text-sm font-semibold", children: title }),
               item.status ? /* @__PURE__ */ jsxs32(
                 Badge,
                 {
@@ -14820,7 +9920,7 @@ function GraphChatHistoryEventFrame({
                   "aria-label": `Status: ${statusConfig.label}`,
                   children: [
                     statusConfig.icon,
-                    /* @__PURE__ */ jsx40("span", { className: "thread-graph-status-label", children: statusConfig.label })
+                    /* @__PURE__ */ jsx38("span", { className: "thread-graph-status-label", children: statusConfig.label })
                   ]
                 }
               ) : null,
@@ -14831,7 +9931,7 @@ function GraphChatHistoryEventFrame({
               timeMeta
             ] }) : null
           ] }),
-          children ? /* @__PURE__ */ jsx40("div", { className: "thread-graph-history-event-body", children }) : null
+          children ? /* @__PURE__ */ jsx38("div", { className: "thread-graph-history-event-body", children }) : null
         ] })
       ]
     }
@@ -14864,13 +9964,13 @@ function GraphChatHistoryToolFrame({
     }
     previousAutoOpenRef.current = autoOpen;
   }, [autoOpen, item.id]);
-  return /* @__PURE__ */ jsx40(
+  return /* @__PURE__ */ jsx38(
     "div",
     {
       className: `thread-graph-event thread-graph-history-tool ${graphHistoryToneClassName(
         tone
       )} ${className ?? ""}`,
-      children: /* @__PURE__ */ jsx40(
+      children: /* @__PURE__ */ jsx38(
         Accordion,
         {
           type: "single",
@@ -14888,8 +9988,8 @@ function GraphChatHistoryToolFrame({
                 className: "thread-graph-tool-trigger thread-graph-history-tool-trigger px-4 py-3 hover:no-underline",
                 children: [
                   /* @__PURE__ */ jsxs32("div", { className: "flex min-w-0 flex-1 items-center gap-2", children: [
-                    /* @__PURE__ */ jsx40("span", { className: "thread-graph-history-tool-icon shrink-0", children: icon }),
-                    /* @__PURE__ */ jsx40("span", { className: "min-w-0 truncate font-mono text-sm font-semibold", children: title }),
+                    /* @__PURE__ */ jsx38("span", { className: "thread-graph-history-tool-icon shrink-0", children: icon }),
+                    /* @__PURE__ */ jsx38("span", { className: "min-w-0 truncate font-mono text-sm font-semibold", children: title }),
                     /* @__PURE__ */ jsxs32(
                       Badge,
                       {
@@ -14899,24 +9999,24 @@ function GraphChatHistoryToolFrame({
                         "aria-label": `Status: ${statusConfig.label}`,
                         children: [
                           statusConfig.icon,
-                          /* @__PURE__ */ jsx40("span", { className: "thread-graph-status-label", children: statusConfig.label })
+                          /* @__PURE__ */ jsx38("span", { className: "thread-graph-status-label", children: statusConfig.label })
                         ]
                       }
                     )
                   ] }),
-                  timeMeta ? /* @__PURE__ */ jsx40("span", { className: "thread-graph-history-tool-time shrink-0", children: timeMeta }) : null
+                  timeMeta ? /* @__PURE__ */ jsx38("span", { className: "thread-graph-history-tool-time shrink-0", children: timeMeta }) : null
                 ]
               }
             ),
             /* @__PURE__ */ jsxs32(AccordionContent, { className: "thread-graph-tool-content thread-graph-history-tool-content px-4 pb-4 pt-1", children: [
               /* @__PURE__ */ jsxs32("section", { children: [
-                /* @__PURE__ */ jsx40("h4", { children: "Summary" }),
+                /* @__PURE__ */ jsx38("h4", { children: "Summary" }),
                 /* @__PURE__ */ jsxs32("div", { className: "thread-graph-history-tool-summary", children: [
-                  /* @__PURE__ */ jsx40(GraphChatLinkifiedPlainText, { text: preview.firstLine }),
-                  preview.showGap ? /* @__PURE__ */ jsx40("span", { className: "thread-graph-history-tool-ellipsis", children: "..." }) : null
+                  /* @__PURE__ */ jsx38(GraphChatLinkifiedPlainText, { text: preview.firstLine }),
+                  preview.showGap ? /* @__PURE__ */ jsx38("span", { className: "thread-graph-history-tool-ellipsis", children: "..." }) : null
                 ] })
               ] }),
-              details ? /* @__PURE__ */ jsx40("section", { children: details }) : null,
+              details ? /* @__PURE__ */ jsx38("section", { children: details }) : null,
               /* @__PURE__ */ jsxs32(
                 "button",
                 {
@@ -14925,7 +10025,7 @@ function GraphChatHistoryToolFrame({
                   onClick: onOpen,
                   className: "thread-graph-history-tool-open inline-flex items-center gap-2 rounded-md border px-3 py-2 text-sm font-medium transition",
                   children: [
-                    /* @__PURE__ */ jsx40(ExternalLink, { className: "h-3.5 w-3.5" }),
+                    /* @__PURE__ */ jsx38(ExternalLink, { className: "h-3.5 w-3.5" }),
                     actionTitle
                   ]
                 }
@@ -14943,16 +10043,16 @@ var GraphChatPlanHistoryItem = memo4(function GraphChatPlanHistoryItem2({
   onBeforeResize,
   timeMeta
 }) {
-  return /* @__PURE__ */ jsx40(
+  return /* @__PURE__ */ jsx38(
     GraphChatHistoryEventFrame,
     {
       className: "thread-graph-event-plan",
-      icon: /* @__PURE__ */ jsx40(ClipboardList, { className: "h-4 w-4" }),
+      icon: /* @__PURE__ */ jsx38(ClipboardList, { className: "h-4 w-4" }),
       item,
       timeMeta,
       title: "plan",
       tone: "plan",
-      children: /* @__PURE__ */ jsx40("div", { className: "thread-graph-history-event-prose", children: /* @__PURE__ */ jsx40(
+      children: /* @__PURE__ */ jsx38("div", { className: "thread-graph-history-event-prose", children: /* @__PURE__ */ jsx38(
         GraphChatMarkdownAwareBody,
         {
           text: item.text,
@@ -14977,17 +10077,17 @@ var GraphChatContextCompactionItem = memo4(
       GraphChatHistoryEventFrame,
       {
         className: "thread-graph-event-context",
-        icon: /* @__PURE__ */ jsx40(Archive, { className: "h-4 w-4" }),
+        icon: /* @__PURE__ */ jsx38(Archive, { className: "h-4 w-4" }),
         item,
         timeMeta,
         title: "context",
         tone: "context",
         children: [
           /* @__PURE__ */ jsxs32("div", { className: "thread-graph-history-event-line", children: [
-            /* @__PURE__ */ jsx40("span", { className: "thread-graph-history-event-primary", children: primaryText }),
-            isRunning ? /* @__PURE__ */ jsx40(RunningDots, { tone: "emerald" }) : null
+            /* @__PURE__ */ jsx38("span", { className: "thread-graph-history-event-primary", children: primaryText }),
+            isRunning ? /* @__PURE__ */ jsx38(RunningDots, { tone: "emerald" }) : null
           ] }),
-          secondaryText ? /* @__PURE__ */ jsx40(
+          secondaryText ? /* @__PURE__ */ jsx38(
             "p",
             {
               className: "thread-graph-history-event-secondary",
@@ -15005,16 +10105,16 @@ var GraphChatGenericHistoryItem = memo4(
     item,
     timeMeta
   }) {
-    return /* @__PURE__ */ jsx40(
+    return /* @__PURE__ */ jsx38(
       GraphChatHistoryEventFrame,
       {
         className: "thread-graph-event-generic",
-        icon: /* @__PURE__ */ jsx40(Info, { className: "h-4 w-4" }),
+        icon: /* @__PURE__ */ jsx38(Info, { className: "h-4 w-4" }),
         item,
         timeMeta,
         title: item.kind,
         tone: "generic",
-        children: /* @__PURE__ */ jsx40("pre", { className: "thread-graph-history-event-pre", children: /* @__PURE__ */ jsx40(GraphChatLinkifiedPlainText, { text: item.text }) })
+        children: /* @__PURE__ */ jsx38("pre", { className: "thread-graph-history-event-pre", children: /* @__PURE__ */ jsx38(GraphChatLinkifiedPlainText, { text: item.text }) })
       }
     );
   }
@@ -15026,14 +10126,14 @@ var GraphChatCommandItem = memo4(function GraphChatCommandItem2({
   timeMeta
 }) {
   const summary = summarizeInlinePreviewText(item.previewText ?? item.text);
-  return /* @__PURE__ */ jsx40(
+  return /* @__PURE__ */ jsx38(
     GraphChatHistoryToolFrame,
     {
       actionLabel: "Open full command",
       actionTitle: "Command Output",
       autoOpen,
       className: "thread-graph-event-command",
-      icon: /* @__PURE__ */ jsx40(Terminal, { className: "h-4 w-4" }),
+      icon: /* @__PURE__ */ jsx38(Terminal, { className: "h-4 w-4" }),
       item,
       onOpen: () => onOpen(item, "Command Output"),
       preview: summary,
@@ -15050,14 +10150,14 @@ var GraphChatToolCallItem = memo4(function GraphChatToolCallItem2({
   timeMeta
 }) {
   const summary = summarizeInlinePreviewText(item.text);
-  return /* @__PURE__ */ jsx40(
+  return /* @__PURE__ */ jsx38(
     GraphChatHistoryToolFrame,
     {
       actionLabel: "Open full tool call",
       actionTitle: "Tool Call Details",
       autoOpen,
       className: "thread-graph-event-tool",
-      icon: /* @__PURE__ */ jsx40(Wrench2, { className: "h-4 w-4" }),
+      icon: /* @__PURE__ */ jsx38(Wrench2, { className: "h-4 w-4" }),
       item,
       onOpen: () => onOpen(item, "Tool Call Details"),
       preview: summary,
@@ -15075,14 +10175,14 @@ var GraphChatAgentToolCallItem = memo4(
     timeMeta
   }) {
     const summary = summarizeInlinePreviewText(item.text);
-    return /* @__PURE__ */ jsx40(
+    return /* @__PURE__ */ jsx38(
       GraphChatHistoryToolFrame,
       {
         actionLabel: "Open agent details",
         actionTitle: "Agent Details",
         autoOpen,
         className: "thread-graph-event-agent-tool",
-        icon: /* @__PURE__ */ jsx40(Bot, { className: "h-4 w-4" }),
+        icon: /* @__PURE__ */ jsx38(Bot, { className: "h-4 w-4" }),
         item,
         onOpen: () => onOpen(item, "Agent Details"),
         preview: summary,
@@ -15101,14 +10201,14 @@ var GraphChatSkillToolCallItem = memo4(
     timeMeta
   }) {
     const summary = summarizeInlinePreviewText(item.text);
-    return /* @__PURE__ */ jsx40(
+    return /* @__PURE__ */ jsx38(
       GraphChatHistoryToolFrame,
       {
         actionLabel: "Open skill details",
         actionTitle: "Skill Details",
         autoOpen,
         className: "thread-graph-event-skill-tool",
-        icon: /* @__PURE__ */ jsx40(Sparkles, { className: "h-4 w-4" }),
+        icon: /* @__PURE__ */ jsx38(Sparkles, { className: "h-4 w-4" }),
         item,
         onOpen: () => onOpen(item, "Skill Details"),
         preview: summary,
@@ -15128,14 +10228,14 @@ var GraphChatWebSearchItem = memo4(function GraphChatWebSearchItem2({
   const previewText = item.previewText?.trim() || item.text || "Web search";
   const detailText = item.detailText?.trim() || item.text || "Web search";
   const summary = summarizeInlinePreviewText(previewText);
-  return /* @__PURE__ */ jsx40(
+  return /* @__PURE__ */ jsx38(
     GraphChatHistoryToolFrame,
     {
       actionLabel: "Open full web search",
       actionTitle: "Web Search Details",
       autoOpen,
       className: "thread-graph-event-search",
-      icon: /* @__PURE__ */ jsx40(Search, { className: "h-4 w-4" }),
+      icon: /* @__PURE__ */ jsx38(Search, { className: "h-4 w-4" }),
       item,
       onOpen: () => onOpen("Web Search Details", detailText),
       preview: summary,
@@ -15154,14 +10254,14 @@ var GraphChatFileReadItem = memo4(function GraphChatFileReadItem2({
   const previewText = item.previewText?.trim() || item.text || "File read";
   const detailText = item.detailText?.trim() || item.text || "File read";
   const summary = summarizeInlinePreviewText(previewText);
-  return /* @__PURE__ */ jsx40(
+  return /* @__PURE__ */ jsx38(
     GraphChatHistoryToolFrame,
     {
       actionLabel: "Open full file read",
       actionTitle: "File Read Details",
       autoOpen,
       className: "thread-graph-event-file-read",
-      icon: /* @__PURE__ */ jsx40(FileText, { className: "h-4 w-4" }),
+      icon: /* @__PURE__ */ jsx38(FileText, { className: "h-4 w-4" }),
       item,
       onOpen: () => onOpen("File Read Details", detailText),
       preview: summary,
@@ -15184,19 +10284,19 @@ var GraphChatImageItem = memo4(function GraphChatImageItem2({
     GraphChatHistoryEventFrame,
     {
       className: "thread-graph-event-image",
-      icon: /* @__PURE__ */ jsx40(ImageIconLucide, { className: "h-4 w-4" }),
+      icon: /* @__PURE__ */ jsx38(ImageIconLucide, { className: "h-4 w-4" }),
       item,
       timeMeta,
       title: "image",
       tone: "image",
       children: [
-        imageUrl ? /* @__PURE__ */ jsx40(
+        imageUrl ? /* @__PURE__ */ jsx38(
           "button",
           {
             type: "button",
             onClick: () => onOpen("Image Path", assetPath ?? item.text),
             className: "block w-full text-left",
-            children: /* @__PURE__ */ jsx40(
+            children: /* @__PURE__ */ jsx38(
               "img",
               {
                 src: imageUrl,
@@ -15206,8 +10306,8 @@ var GraphChatImageItem = memo4(function GraphChatImageItem2({
               }
             )
           }
-        ) : /* @__PURE__ */ jsx40("div", { className: "thread-graph-history-event-summary", children: item.text }),
-        assetPath ? /* @__PURE__ */ jsx40(
+        ) : /* @__PURE__ */ jsx38("div", { className: "thread-graph-history-event-summary", children: item.text }),
+        assetPath ? /* @__PURE__ */ jsx38(
           "button",
           {
             type: "button",
@@ -15235,7 +10335,7 @@ var GraphChatFileChangeItem = memo4(function GraphChatFileChangeItem2({
   const summarySegments = fileChangeSummarySegments(item);
   const canOpen = Boolean(detailText || item.hasDeferredDetail);
   const summaryContent = /* @__PURE__ */ jsxs32("div", { className: "thread-graph-event-line thread-graph-file-change-inline flex min-w-0 items-center gap-2", children: [
-    /* @__PURE__ */ jsx40(
+    /* @__PURE__ */ jsx38(
       "span",
       {
         className: "thread-graph-history-detail-text min-w-0 flex-1 overflow-hidden whitespace-nowrap text-clip text-sm",
@@ -15243,7 +10343,7 @@ var GraphChatFileChangeItem = memo4(function GraphChatFileChangeItem2({
         children: displayedPath
       }
     ),
-    summarySegments.length > 0 && /* @__PURE__ */ jsx40("div", { className: "inline-flex shrink-0 items-center justify-end gap-1.5 text-xs", children: summarySegments.map((segment) => /* @__PURE__ */ jsx40(
+    summarySegments.length > 0 && /* @__PURE__ */ jsx38("div", { className: "inline-flex shrink-0 items-center justify-end gap-1.5 text-xs", children: summarySegments.map((segment) => /* @__PURE__ */ jsx38(
       "span",
       {
         className: `thread-graph-history-delta-badge ${segment.startsWith("+") ? "is-add" : segment.startsWith("-") ? "is-remove" : "is-neutral"}`,
@@ -15252,7 +10352,7 @@ var GraphChatFileChangeItem = memo4(function GraphChatFileChangeItem2({
       segment
     )) })
   ] });
-  const inlineSummary = canOpen ? /* @__PURE__ */ jsx40(
+  const inlineSummary = canOpen ? /* @__PURE__ */ jsx38(
     "button",
     {
       type: "button",
@@ -15263,12 +10363,12 @@ var GraphChatFileChangeItem = memo4(function GraphChatFileChangeItem2({
       children: summaryContent
     }
   ) : summaryContent;
-  return /* @__PURE__ */ jsx40(
+  return /* @__PURE__ */ jsx38(
     GraphChatHistoryEventFrame,
     {
       className: "thread-graph-event-file-change",
       headerMeta: inlineSummary,
-      icon: /* @__PURE__ */ jsx40(FilePenLine, { className: "h-4 w-4" }),
+      icon: /* @__PURE__ */ jsx38(FilePenLine, { className: "h-4 w-4" }),
       item,
       timeMeta,
       title: "file_change",
@@ -15290,11 +10390,11 @@ var GraphChatArtifactHistoryItem = memo4(
       expanded,
       onToggleExpanded: () => setExpanded((current) => !current)
     }) : null;
-    return /* @__PURE__ */ jsx40(
+    return /* @__PURE__ */ jsx38(
       GraphChatHistoryEventFrame,
       {
         actions: /* @__PURE__ */ jsxs32("span", { className: "inline-flex items-center gap-2", children: [
-          artifact && !plugins.hasRendererForArtifact(artifact) ? /* @__PURE__ */ jsx40("span", { className: "thread-graph-history-event-secondary", children: "No renderer" }) : null,
+          artifact && !plugins.hasRendererForArtifact(artifact) ? /* @__PURE__ */ jsx38("span", { className: "thread-graph-history-event-secondary", children: "No renderer" }) : null,
           artifact && onSelect ? /* @__PURE__ */ jsxs32(
             "button",
             {
@@ -15303,14 +10403,14 @@ var GraphChatArtifactHistoryItem = memo4(
               onClick: () => onSelect(item, artifact),
               className: "thread-graph-history-event-action",
               children: [
-                /* @__PURE__ */ jsx40(PackageOpen, { className: "h-3.5 w-3.5" }),
+                /* @__PURE__ */ jsx38(PackageOpen, { className: "h-3.5 w-3.5" }),
                 "Inspect"
               ]
             }
           ) : null
         ] }),
         className: "thread-graph-event-artifact",
-        icon: /* @__PURE__ */ jsx40(PackageOpen, { className: "h-4 w-4" }),
+        icon: /* @__PURE__ */ jsx38(PackageOpen, { className: "h-4 w-4" }),
         item,
         timeMeta,
         title: artifact?.type ?? "artifact",
@@ -15324,14 +10424,14 @@ var GraphChatArtifactHistoryItem = memo4(
               className: "thread-graph-history-event-summary is-clickable flex w-full items-center justify-between gap-3 text-left",
               children: [
                 /* @__PURE__ */ jsxs32("span", { className: "min-w-0", children: [
-                  /* @__PURE__ */ jsx40("span", { className: "thread-graph-history-event-primary block truncate", children: artifact?.title ?? item.text }),
-                  /* @__PURE__ */ jsx40("span", { className: "thread-graph-history-event-secondary mt-1 block truncate", children: artifact?.summaryText ?? item.previewText ?? item.text })
+                  /* @__PURE__ */ jsx38("span", { className: "thread-graph-history-event-primary block truncate", children: artifact?.title ?? item.text }),
+                  /* @__PURE__ */ jsx38("span", { className: "thread-graph-history-event-secondary mt-1 block truncate", children: artifact?.summaryText ?? item.previewText ?? item.text })
                 ] }),
-                /* @__PURE__ */ jsx40("span", { className: "thread-graph-history-event-pill", children: expanded ? "Hide" : "Open" })
+                /* @__PURE__ */ jsx38("span", { className: "thread-graph-history-event-pill", children: expanded ? "Hide" : "Open" })
               ]
             }
           ),
-          expanded ? /* @__PURE__ */ jsx40("pre", { className: "thread-graph-history-event-pre max-h-80 overflow-auto", children: JSON.stringify(artifact?.payload ?? item, null, 2) }) : null
+          expanded ? /* @__PURE__ */ jsx38("pre", { className: "thread-graph-history-event-pre max-h-80 overflow-auto", children: JSON.stringify(artifact?.payload ?? item, null, 2) }) : null
         ] })
       }
     );
@@ -15347,26 +10447,26 @@ var GraphChatHookItem = memo4(function GraphChatHookItem2({
   const summaryText = outputText || (fallbackText && fallbackText !== hookLabel ? fallbackText : hookLabel);
   const summary = summarizeInlinePreviewText(summaryText);
   const showGap = Boolean(outputText && summary.showGap);
-  return /* @__PURE__ */ jsx40(
+  return /* @__PURE__ */ jsx38(
     GraphChatHistoryEventFrame,
     {
       className: "thread-graph-event-hook",
-      icon: /* @__PURE__ */ jsx40(Webhook, { className: "h-4 w-4" }),
+      icon: /* @__PURE__ */ jsx38(Webhook, { className: "h-4 w-4" }),
       item,
       timeMeta,
       title: item.hookEventLabel ? `${item.hookEventLabel}_hook` : "hook",
       tone: "hook",
       children: /* @__PURE__ */ jsxs32("div", { className: "thread-graph-history-event-line", children: [
-        /* @__PURE__ */ jsx40("p", { className: "thread-graph-history-detail-text min-w-0 flex-1 overflow-hidden whitespace-nowrap text-clip", children: outputText ? /* @__PURE__ */ jsxs32(Fragment9, { children: [
-          /* @__PURE__ */ jsx40("span", { className: "thread-graph-history-event-secondary mr-2 font-sans text-[11px] uppercase", children: hookLabel }),
-          /* @__PURE__ */ jsx40(GraphChatLinkifiedPlainText, { text: summary.firstLine })
-        ] }) : /* @__PURE__ */ jsx40(
+        /* @__PURE__ */ jsx38("p", { className: "thread-graph-history-detail-text min-w-0 flex-1 overflow-hidden whitespace-nowrap text-clip", children: outputText ? /* @__PURE__ */ jsxs32(Fragment9, { children: [
+          /* @__PURE__ */ jsx38("span", { className: "thread-graph-history-event-secondary mr-2 font-sans text-[11px] uppercase", children: hookLabel }),
+          /* @__PURE__ */ jsx38(GraphChatLinkifiedPlainText, { text: summary.firstLine })
+        ] }) : /* @__PURE__ */ jsx38(
           GraphChatLinkifiedPlainText,
           {
             text: summary.firstLine && summary.firstLine !== hookLabel ? `${hookLabel} \xB7 ${summary.firstLine}` : hookLabel
           }
         ) }),
-        showGap ? /* @__PURE__ */ jsx40("span", { className: "thread-graph-history-detail-meta shrink-0 text-[11px] font-medium tracking-[0.28em]", children: "..." }) : null
+        showGap ? /* @__PURE__ */ jsx38("span", { className: "thread-graph-history-detail-meta shrink-0 text-[11px] font-medium tracking-[0.28em]", children: "..." }) : null
       ] })
     }
   );
@@ -15383,7 +10483,7 @@ var GraphChatCommandGroupItem = memo4(
       (item) => isRunningHistoryStatus2(item.status)
     ).length;
     const countLabel = items.length === 1 ? "1 command" : `${items.length} commands`;
-    return /* @__PURE__ */ jsx40(
+    return /* @__PURE__ */ jsx38(
       GraphChatHistoryGroupFrame,
       {
         className: "thread-graph-history-group-command",
@@ -15392,12 +10492,12 @@ var GraphChatCommandGroupItem = memo4(
         desktopIconClassName: "border-amber-300/30 bg-amber-300/[0.14] text-amber-100",
         expanded,
         expandedListClassName: "border-amber-300/12",
-        icon: /* @__PURE__ */ jsx40(CommandBatchIcon, {}),
+        icon: /* @__PURE__ */ jsx38(CommandBatchIcon, {}),
         onToggleExpanded,
-        runningIndicator: runningCount > 0 ? /* @__PURE__ */ jsx40(RunningDots, {}) : null,
+        runningIndicator: runningCount > 0 ? /* @__PURE__ */ jsx38(RunningDots, {}) : null,
         summary: /* @__PURE__ */ jsxs32(Fragment9, { children: [
-          /* @__PURE__ */ jsx40("span", { className: "rounded-full border border-stone-700/90 bg-stone-900/80 px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.16em] text-stone-300", children: countLabel }),
-          runningCount > 0 ? /* @__PURE__ */ jsx40("span", { className: "inline-flex items-center text-xs text-amber-100/90", children: /* @__PURE__ */ jsx40(RunningDots, {}) }) : null
+          /* @__PURE__ */ jsx38("span", { className: "rounded-full border border-stone-700/90 bg-stone-900/80 px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.16em] text-stone-300", children: countLabel }),
+          runningCount > 0 ? /* @__PURE__ */ jsx38("span", { className: "inline-flex items-center text-xs text-amber-100/90", children: /* @__PURE__ */ jsx38(RunningDots, {}) }) : null
         ] }),
         timeMeta,
         toggleAriaLabel: `${expanded ? "Collapse" : "Expand"} ${items.length} command entries`,
@@ -15416,11 +10516,11 @@ var GraphChatCommandGroupItem = memo4(
                     "Step ",
                     index + 1
                   ] }),
-                  item.status && /* @__PURE__ */ jsx40("span", { className: "thread-graph-history-detail-meta text-xs", children: item.status })
+                  item.status && /* @__PURE__ */ jsx38("span", { className: "thread-graph-history-detail-meta text-xs", children: item.status })
                 ] }),
                 /* @__PURE__ */ jsxs32("div", { className: "mt-1 flex min-w-0 items-center gap-2 text-sm leading-6", children: [
-                  /* @__PURE__ */ jsx40("p", { className: "thread-graph-history-detail-text min-w-0 flex-1 overflow-hidden whitespace-nowrap text-clip", children: summary.firstLine }),
-                  summary.showGap ? /* @__PURE__ */ jsx40("span", { className: "thread-graph-history-detail-meta shrink-0 text-[11px] font-medium tracking-[0.28em]", children: "..." }) : null
+                  /* @__PURE__ */ jsx38("p", { className: "thread-graph-history-detail-text min-w-0 flex-1 overflow-hidden whitespace-nowrap text-clip", children: summary.firstLine }),
+                  summary.showGap ? /* @__PURE__ */ jsx38("span", { className: "thread-graph-history-detail-meta shrink-0 text-[11px] font-medium tracking-[0.28em]", children: "..." }) : null
                 ] })
               ]
             },
@@ -15443,7 +10543,7 @@ var GraphChatToolCallGroupItem = memo4(
     const firstKind = items[0]?.kind ?? "toolCall";
     const label = firstKind === "agentToolCall" ? "agent action" : firstKind === "skillToolCall" ? "skill call" : "tool call";
     const countLabel = items.length === 1 ? `1 ${label}` : `${items.length} ${label}s`;
-    return /* @__PURE__ */ jsx40(
+    return /* @__PURE__ */ jsx38(
       GraphChatHistoryGroupFrame,
       {
         className: "thread-graph-history-group-tool",
@@ -15452,18 +10552,18 @@ var GraphChatToolCallGroupItem = memo4(
         desktopIconClassName: "border-teal-300/30 bg-teal-300/[0.14] text-teal-100",
         expanded,
         expandedListClassName: "border-teal-300/12",
-        icon: firstKind === "agentToolCall" ? /* @__PURE__ */ jsx40(Bot, { className: "h-3.5 w-3.5" }) : /* @__PURE__ */ jsx40(Wrench2, { className: "h-3.5 w-3.5" }),
+        icon: firstKind === "agentToolCall" ? /* @__PURE__ */ jsx38(Bot, { className: "h-3.5 w-3.5" }) : /* @__PURE__ */ jsx38(Wrench2, { className: "h-3.5 w-3.5" }),
         onToggleExpanded,
-        runningIndicator: runningCount > 0 ? /* @__PURE__ */ jsx40(RunningDots, {}) : null,
+        runningIndicator: runningCount > 0 ? /* @__PURE__ */ jsx38(RunningDots, {}) : null,
         summary: /* @__PURE__ */ jsxs32(Fragment9, { children: [
-          /* @__PURE__ */ jsx40("span", { className: "rounded-full border border-teal-300/28 bg-teal-300/12 px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.24em] text-teal-100", children: "Batch" }),
-          /* @__PURE__ */ jsx40("span", { className: "rounded-full border border-stone-700/90 bg-stone-900/80 px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.16em] text-stone-300", children: countLabel })
+          /* @__PURE__ */ jsx38("span", { className: "rounded-full border border-teal-300/28 bg-teal-300/12 px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.24em] text-teal-100", children: "Batch" }),
+          /* @__PURE__ */ jsx38("span", { className: "rounded-full border border-stone-700/90 bg-stone-900/80 px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.16em] text-stone-300", children: countLabel })
         ] }),
         timeMeta,
         toggleAriaLabel: `${expanded ? "Collapse" : "Expand"} ${countLabel}`,
         children: items.map((item, index) => {
           const summary = summarizeInlinePreviewText(item.text);
-          return /* @__PURE__ */ jsx40(
+          return /* @__PURE__ */ jsx38(
             "button",
             {
               type: "button",
@@ -15471,8 +10571,8 @@ var GraphChatToolCallGroupItem = memo4(
               onClick: () => onOpen(item, `${label} ${index + 1}`),
               className: "thread-graph-history-detail-row block w-full rounded-md border px-3 py-2 text-left transition",
               children: /* @__PURE__ */ jsxs32("div", { className: "flex min-w-0 items-center gap-2 text-sm leading-6", children: [
-                /* @__PURE__ */ jsx40("p", { className: "thread-graph-history-detail-text min-w-0 flex-1 overflow-hidden whitespace-nowrap text-clip", children: summary.firstLine }),
-                item.status ? /* @__PURE__ */ jsx40("span", { className: "thread-graph-history-detail-meta shrink-0 text-xs", children: item.status }) : null
+                /* @__PURE__ */ jsx38("p", { className: "thread-graph-history-detail-text min-w-0 flex-1 overflow-hidden whitespace-nowrap text-clip", children: summary.firstLine }),
+                item.status ? /* @__PURE__ */ jsx38("span", { className: "thread-graph-history-detail-meta shrink-0 text-xs", children: item.status }) : null
               ] })
             },
             item.id
@@ -15491,7 +10591,7 @@ var GraphChatAgentActivityGroupItem = memo4(
     children
   }) {
     const countLabel = itemCount === 1 ? "1 operation" : `${itemCount} operations`;
-    return /* @__PURE__ */ jsx40(
+    return /* @__PURE__ */ jsx38(
       GraphChatHistoryGroupFrame,
       {
         className: "thread-graph-history-group-activity",
@@ -15500,11 +10600,11 @@ var GraphChatAgentActivityGroupItem = memo4(
         desktopIconClassName: "border-slate-300/30 bg-slate-300/[0.14] text-slate-100",
         expanded,
         expandedListClassName: "border-slate-300/12",
-        icon: /* @__PURE__ */ jsx40(Bot, { className: "h-3.5 w-3.5" }),
+        icon: /* @__PURE__ */ jsx38(Bot, { className: "h-3.5 w-3.5" }),
         onToggleExpanded,
         summary: /* @__PURE__ */ jsxs32(Fragment9, { children: [
-          /* @__PURE__ */ jsx40("span", { className: "text-sm font-medium text-stone-100", children: "Agent activity" }),
-          /* @__PURE__ */ jsx40("span", { className: "rounded-full border border-stone-700/90 bg-stone-900/80 px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.16em] text-stone-300", children: countLabel })
+          /* @__PURE__ */ jsx38("span", { className: "text-sm font-medium text-stone-100", children: "Agent activity" }),
+          /* @__PURE__ */ jsx38("span", { className: "rounded-full border border-stone-700/90 bg-stone-900/80 px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.16em] text-stone-300", children: countLabel })
         ] }),
         timeMeta,
         toggleAriaLabel: `${expanded ? "Collapse" : "Expand"} ${countLabel}`,
@@ -15522,7 +10622,7 @@ var GraphChatSearchGroupItem = memo4(
     timeMeta
   }) {
     const countLabel = items.length === 1 ? "1 search" : `${items.length} searches`;
-    return /* @__PURE__ */ jsx40(
+    return /* @__PURE__ */ jsx38(
       GraphChatHistoryGroupFrame,
       {
         className: "thread-graph-history-group-search",
@@ -15531,11 +10631,11 @@ var GraphChatSearchGroupItem = memo4(
         desktopIconClassName: "border-sky-300/30 bg-sky-300/[0.14] text-sky-100",
         expanded,
         expandedListClassName: "border-sky-300/12",
-        icon: /* @__PURE__ */ jsx40(SearchBatchIcon, {}),
+        icon: /* @__PURE__ */ jsx38(SearchBatchIcon, {}),
         onToggleExpanded,
         summary: /* @__PURE__ */ jsxs32(Fragment9, { children: [
-          /* @__PURE__ */ jsx40("span", { className: "rounded-full border border-sky-300/28 bg-sky-300/12 px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.24em] text-sky-100", children: "Batch" }),
-          /* @__PURE__ */ jsx40("span", { className: "rounded-full border border-stone-700/90 bg-stone-900/80 px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.16em] text-stone-300", children: countLabel })
+          /* @__PURE__ */ jsx38("span", { className: "rounded-full border border-sky-300/28 bg-sky-300/12 px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.24em] text-sky-100", children: "Batch" }),
+          /* @__PURE__ */ jsx38("span", { className: "rounded-full border border-stone-700/90 bg-stone-900/80 px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.16em] text-stone-300", children: countLabel })
         ] }),
         timeMeta,
         toggleAriaLabel: `${expanded ? "Collapse" : "Expand"} ${items.length} web search entries`,
@@ -15556,11 +10656,11 @@ var GraphChatSearchGroupItem = memo4(
                     "Search ",
                     index + 1
                   ] }),
-                  item.status && /* @__PURE__ */ jsx40("span", { className: "thread-graph-history-detail-meta text-xs", children: item.status })
+                  item.status && /* @__PURE__ */ jsx38("span", { className: "thread-graph-history-detail-meta text-xs", children: item.status })
                 ] }),
                 /* @__PURE__ */ jsxs32("div", { className: "mt-1 flex min-w-0 items-center gap-2 text-sm leading-6", children: [
-                  /* @__PURE__ */ jsx40("p", { className: "thread-graph-history-detail-text min-w-0 flex-1 overflow-hidden whitespace-nowrap text-clip", children: summary.firstLine }),
-                  summary.showGap ? /* @__PURE__ */ jsx40("span", { className: "thread-graph-history-detail-meta shrink-0 text-[11px] font-medium tracking-[0.28em]", children: "..." }) : null
+                  /* @__PURE__ */ jsx38("p", { className: "thread-graph-history-detail-text min-w-0 flex-1 overflow-hidden whitespace-nowrap text-clip", children: summary.firstLine }),
+                  summary.showGap ? /* @__PURE__ */ jsx38("span", { className: "thread-graph-history-detail-meta shrink-0 text-[11px] font-medium tracking-[0.28em]", children: "..." }) : null
                 ] })
               ]
             },
@@ -15580,7 +10680,7 @@ var GraphChatFileReadGroupItem = memo4(
     timeMeta
   }) {
     const countLabel = items.length === 1 ? "1 file read" : `${items.length} file reads`;
-    return /* @__PURE__ */ jsx40(
+    return /* @__PURE__ */ jsx38(
       GraphChatHistoryGroupFrame,
       {
         className: "thread-graph-history-group-file-read",
@@ -15589,11 +10689,11 @@ var GraphChatFileReadGroupItem = memo4(
         desktopIconClassName: "border-cyan-300/30 bg-cyan-300/[0.14] text-cyan-100",
         expanded,
         expandedListClassName: "border-cyan-300/12",
-        icon: /* @__PURE__ */ jsx40(FileReadIcon, {}),
+        icon: /* @__PURE__ */ jsx38(FileReadIcon, {}),
         onToggleExpanded,
         summary: /* @__PURE__ */ jsxs32(Fragment9, { children: [
-          /* @__PURE__ */ jsx40("span", { className: "rounded-full border border-cyan-300/28 bg-cyan-300/12 px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.24em] text-cyan-100", children: "Batch" }),
-          /* @__PURE__ */ jsx40("span", { className: "rounded-full border border-stone-700/90 bg-stone-900/80 px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.16em] text-stone-300", children: countLabel })
+          /* @__PURE__ */ jsx38("span", { className: "rounded-full border border-cyan-300/28 bg-cyan-300/12 px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.24em] text-cyan-100", children: "Batch" }),
+          /* @__PURE__ */ jsx38("span", { className: "rounded-full border border-stone-700/90 bg-stone-900/80 px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.16em] text-stone-300", children: countLabel })
         ] }),
         timeMeta,
         toggleAriaLabel: `${expanded ? "Collapse" : "Expand"} ${items.length} file read entries`,
@@ -15614,11 +10714,11 @@ var GraphChatFileReadGroupItem = memo4(
                     "Read ",
                     index + 1
                   ] }),
-                  item.status && /* @__PURE__ */ jsx40("span", { className: "thread-graph-history-detail-meta text-xs", children: item.status })
+                  item.status && /* @__PURE__ */ jsx38("span", { className: "thread-graph-history-detail-meta text-xs", children: item.status })
                 ] }),
                 /* @__PURE__ */ jsxs32("div", { className: "mt-1 flex min-w-0 items-center gap-2 text-sm leading-6", children: [
-                  /* @__PURE__ */ jsx40("p", { className: "thread-graph-history-detail-text min-w-0 flex-1 overflow-hidden whitespace-nowrap text-clip", children: summary.firstLine }),
-                  summary.showGap ? /* @__PURE__ */ jsx40("span", { className: "thread-graph-history-detail-meta shrink-0 text-[11px] font-medium tracking-[0.28em]", children: "..." }) : null
+                  /* @__PURE__ */ jsx38("p", { className: "thread-graph-history-detail-text min-w-0 flex-1 overflow-hidden whitespace-nowrap text-clip", children: summary.firstLine }),
+                  summary.showGap ? /* @__PURE__ */ jsx38("span", { className: "thread-graph-history-detail-meta shrink-0 text-[11px] font-medium tracking-[0.28em]", children: "..." }) : null
                 ] })
               ]
             },
@@ -15650,7 +10750,7 @@ var GraphChatFileChangeGroupItem = memo4(
       0
     );
     const batchLabel = items.length === 1 ? "1 file change" : `${items.length} file changes`;
-    return /* @__PURE__ */ jsx40(
+    return /* @__PURE__ */ jsx38(
       GraphChatHistoryGroupFrame,
       {
         className: "thread-graph-history-group-file-change",
@@ -15659,11 +10759,11 @@ var GraphChatFileChangeGroupItem = memo4(
         desktopIconClassName: "border-lime-300/30 bg-lime-300/[0.14] text-lime-100",
         expanded,
         expandedListClassName: "border-lime-300/12",
-        icon: /* @__PURE__ */ jsx40(FileChangeIcon, {}),
+        icon: /* @__PURE__ */ jsx38(FileChangeIcon, {}),
         onToggleExpanded,
         summary: /* @__PURE__ */ jsxs32(Fragment9, { children: [
-          /* @__PURE__ */ jsx40("span", { className: "rounded-full border border-lime-300/28 bg-lime-300/12 px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.24em] text-lime-100", children: "Batch" }),
-          /* @__PURE__ */ jsx40("span", { className: "rounded-full border border-stone-700/90 bg-stone-900/80 px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.16em] text-stone-300", children: batchLabel }),
+          /* @__PURE__ */ jsx38("span", { className: "rounded-full border border-lime-300/28 bg-lime-300/12 px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.24em] text-lime-100", children: "Batch" }),
+          /* @__PURE__ */ jsx38("span", { className: "rounded-full border border-stone-700/90 bg-stone-900/80 px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.16em] text-stone-300", children: batchLabel }),
           changedFiles > 0 ? /* @__PURE__ */ jsxs32("span", { className: "thread-graph-history-detail-meta text-xs", children: [
             changedFiles,
             " files"
@@ -15684,7 +10784,7 @@ var GraphChatFileChangeGroupItem = memo4(
         children: items.map((item, index) => {
           const detailText = item.detailText?.trim() || item.previewText?.trim() || item.text;
           const pathSummary = item.previewText?.trim() && item.text.trim() !== item.previewText.trim() ? item.text.trim() : item.previewText?.trim() || item.text;
-          return /* @__PURE__ */ jsx40(
+          return /* @__PURE__ */ jsx38(
             "button",
             {
               type: "button",
@@ -15692,7 +10792,7 @@ var GraphChatFileChangeGroupItem = memo4(
               onClick: () => onOpen(`File Change ${index + 1}`, detailText),
               className: "thread-graph-history-detail-row block w-full rounded-md border px-3 py-2 text-left transition",
               children: /* @__PURE__ */ jsxs32("div", { className: "flex min-w-0 items-center gap-2", children: [
-                /* @__PURE__ */ jsx40(
+                /* @__PURE__ */ jsx38(
                   "span",
                   {
                     className: "thread-graph-history-detail-text min-w-0 flex-1 text-sm leading-6",
@@ -15722,7 +10822,7 @@ var GraphChatFileChangeGroupItem = memo4(
 
 // src/components/graph-chat/GraphChatTurnBody.tsx
 import { CheckCircle2 as CheckCircle24, Clock3, Loader2 as Loader25, XCircle as XCircle4 } from "lucide-react";
-import { Fragment as Fragment10, jsx as jsx41, jsxs as jsxs33 } from "react/jsx-runtime";
+import { Fragment as Fragment10, jsx as jsx39, jsxs as jsxs33 } from "react/jsx-runtime";
 function normalizeGraphChatPlanStepStatus(status) {
   const normalized = status.trim().toLowerCase();
   if (normalized === "completed" || normalized === "done" || normalized === "complete") {
@@ -15743,30 +10843,30 @@ function GraphChatPlanStepStatusIcon({ status }) {
   const normalized = normalizeGraphChatPlanStepStatus(status);
   const label = normalized === "completed" ? "Plan step status: Completed" : normalized === "in_progress" ? "Plan step status: In progress" : normalized === "pending" ? "Plan step status: Pending" : normalized === "failed" ? "Plan step status: Failed" : `Plan step status: ${status}`;
   const badgeClassName = normalized === "completed" ? "thread-graph-plan-status is-completed" : normalized === "in_progress" ? "thread-graph-plan-status is-running" : normalized === "pending" ? "thread-graph-plan-status is-pending" : normalized === "failed" ? "thread-graph-plan-status is-failed" : "thread-graph-plan-status is-unknown";
-  return /* @__PURE__ */ jsx41(
+  return /* @__PURE__ */ jsx39(
     Badge,
     {
       "aria-label": label,
       title: label.replace("Plan step status: ", ""),
       className: badgeClassName,
-      children: normalized === "completed" ? /* @__PURE__ */ jsx41(CheckCircle24, { className: "h-3.5 w-3.5" }) : normalized === "in_progress" ? /* @__PURE__ */ jsx41(Loader25, { className: "h-3.5 w-3.5 animate-spin" }) : normalized === "pending" ? /* @__PURE__ */ jsx41(Clock3, { className: "h-3.5 w-3.5" }) : normalized === "failed" ? /* @__PURE__ */ jsx41(XCircle4, { className: "h-3.5 w-3.5" }) : /* @__PURE__ */ jsx41("span", { className: "text-[10px] font-semibold uppercase tracking-[0.14em]", children: "?" })
+      children: normalized === "completed" ? /* @__PURE__ */ jsx39(CheckCircle24, { className: "h-3.5 w-3.5" }) : normalized === "in_progress" ? /* @__PURE__ */ jsx39(Loader25, { className: "h-3.5 w-3.5 animate-spin" }) : normalized === "pending" ? /* @__PURE__ */ jsx39(Clock3, { className: "h-3.5 w-3.5" }) : normalized === "failed" ? /* @__PURE__ */ jsx39(XCircle4, { className: "h-3.5 w-3.5" }) : /* @__PURE__ */ jsx39("span", { className: "text-[10px] font-semibold uppercase tracking-[0.14em]", children: "?" })
     }
   );
 }
 function GraphChatLivePlanCard({ livePlan }) {
   return /* @__PURE__ */ jsxs33("div", { className: "thread-graph-plan-card rounded-xl border px-3 py-3", children: [
     /* @__PURE__ */ jsxs33("div", { className: "thread-graph-plan-header flex flex-wrap items-center justify-between gap-2", children: [
-      /* @__PURE__ */ jsx41("p", { className: "text-sm font-semibold", children: "Plan update" }),
-      /* @__PURE__ */ jsx41(Badge, { className: "thread-graph-plan-badge", children: "Live" })
+      /* @__PURE__ */ jsx39("p", { className: "text-sm font-semibold", children: "Plan update" }),
+      /* @__PURE__ */ jsx39(Badge, { className: "thread-graph-plan-badge", children: "Live" })
     ] }),
-    livePlan.explanation ? /* @__PURE__ */ jsx41("p", { className: "thread-graph-plan-explanation mt-3 text-sm", children: livePlan.explanation }) : null,
-    /* @__PURE__ */ jsx41("div", { className: "mt-3 space-y-2", children: livePlan.plan.map((step, index) => /* @__PURE__ */ jsxs33(
+    livePlan.explanation ? /* @__PURE__ */ jsx39("p", { className: "thread-graph-plan-explanation mt-3 text-sm", children: livePlan.explanation }) : null,
+    /* @__PURE__ */ jsx39("div", { className: "mt-3 space-y-2", children: livePlan.plan.map((step, index) => /* @__PURE__ */ jsxs33(
       "div",
       {
         className: "thread-graph-plan-step flex items-center justify-between gap-3 rounded-lg border px-3 py-2 text-sm",
         children: [
-          /* @__PURE__ */ jsx41("span", { className: "thread-graph-plan-step-text min-w-0 flex-1", children: step.step }),
-          /* @__PURE__ */ jsx41(GraphChatPlanStepStatusIcon, { status: step.status })
+          /* @__PURE__ */ jsx39("span", { className: "thread-graph-plan-step-text min-w-0 flex-1", children: step.step }),
+          /* @__PURE__ */ jsx39(GraphChatPlanStepStatusIcon, { status: step.status })
         ]
       },
       `${livePlan.turnId}-${index}`
@@ -15782,14 +10882,14 @@ function GraphChatTurnBody({
 }) {
   return /* @__PURE__ */ jsxs33(Fragment10, { children: [
     history,
-    livePlan ? /* @__PURE__ */ jsx41(GraphChatLivePlanCard, { livePlan }) : null,
+    livePlan ? /* @__PURE__ */ jsx39(GraphChatLivePlanCard, { livePlan }) : null,
     liveHookPrompt ?? liveOutput ?? null,
     footer
   ] });
 }
 
 // src/components/graph-chat/GraphChatTurnFrame.tsx
-import { jsx as jsx42, jsxs as jsxs34 } from "react/jsx-runtime";
+import { jsx as jsx40, jsxs as jsxs34 } from "react/jsx-runtime";
 function GraphChatTurnFrame({
   absoluteIndex,
   body,
@@ -15813,13 +10913,13 @@ function GraphChatTurnFrame({
       "data-turn-active": isActive ? "true" : "false",
       className: "thread-graph-turn px-3 py-2 sm:px-5 sm:py-3",
       children: [
-        /* @__PURE__ */ jsx42("div", { className: "thread-graph-turn-header flex items-start justify-between gap-2", children: /* @__PURE__ */ jsxs34("div", { className: "min-w-0 flex flex-1 items-start gap-1.5", children: [
+        /* @__PURE__ */ jsx40("div", { className: "thread-graph-turn-header flex items-start justify-between gap-2", children: /* @__PURE__ */ jsxs34("div", { className: "min-w-0 flex flex-1 items-start gap-1.5", children: [
           /* @__PURE__ */ jsxs34("div", { className: "min-w-0 flex flex-1 items-center gap-1.5 overflow-hidden", children: [
             /* @__PURE__ */ jsxs34("span", { className: "thread-graph-turn-index rounded-[0.6rem] border px-1.5 py-0.5 text-[10px] uppercase tracking-[0.16em]", children: [
               "Turn ",
               absoluteIndex
             ] }),
-            /* @__PURE__ */ jsx42(
+            /* @__PURE__ */ jsx40(
               "time",
               {
                 dateTime: startedAt ?? void 0,
@@ -15829,11 +10929,11 @@ function GraphChatTurnFrame({
               }
             ),
             headerStatus,
-            error ? /* @__PURE__ */ jsx42("p", { className: "hidden truncate text-[11px] text-rose-200 sm:block", children: error }) : null
+            error ? /* @__PURE__ */ jsx40("p", { className: "hidden truncate text-[11px] text-rose-200 sm:block", children: error }) : null
           ] }),
           tokenSummary
         ] }) }),
-        error ? /* @__PURE__ */ jsx42("p", { className: "mt-1 text-[11px] text-rose-200 sm:hidden", children: error }) : null,
+        error ? /* @__PURE__ */ jsx40("p", { className: "mt-1 text-[11px] text-rose-200 sm:hidden", children: error }) : null,
         /* @__PURE__ */ jsxs34("div", { className: "thread-graph-turn-body mt-2 space-y-2", children: [
           collapsed ? collapsedBody : body,
           !collapsed ? footer : null
@@ -15850,7 +10950,7 @@ import {
   useRef as useRef9,
   useState as useState20
 } from "react";
-import { Fragment as Fragment11, jsx as jsx43, jsxs as jsxs35 } from "react/jsx-runtime";
+import { Fragment as Fragment11, jsx as jsx41, jsxs as jsxs35 } from "react/jsx-runtime";
 function TokenInIcon() {
   return /* @__PURE__ */ jsxs35(
     "svg",
@@ -15862,8 +10962,8 @@ function TokenInIcon() {
       strokeLinecap: "round",
       strokeLinejoin: "round",
       children: [
-        /* @__PURE__ */ jsx43("path", { d: "M8 2.75v8" }),
-        /* @__PURE__ */ jsx43("path", { d: "m4.75 7.5 3.25 3.25L11.25 7.5" })
+        /* @__PURE__ */ jsx41("path", { d: "M8 2.75v8" }),
+        /* @__PURE__ */ jsx41("path", { d: "m4.75 7.5 3.25 3.25L11.25 7.5" })
       ]
     }
   );
@@ -15879,8 +10979,8 @@ function TokenOutIcon() {
       strokeLinecap: "round",
       strokeLinejoin: "round",
       children: [
-        /* @__PURE__ */ jsx43("path", { d: "M8 13.25v-8" }),
-        /* @__PURE__ */ jsx43("path", { d: "m11.25 8.5-3.25-3.25L4.75 8.5" })
+        /* @__PURE__ */ jsx41("path", { d: "M8 13.25v-8" }),
+        /* @__PURE__ */ jsx41("path", { d: "m11.25 8.5-3.25-3.25L4.75 8.5" })
       ]
     }
   );
@@ -15896,11 +10996,11 @@ function TokenCacheIcon() {
       strokeLinecap: "round",
       strokeLinejoin: "round",
       children: [
-        /* @__PURE__ */ jsx43("path", { d: "M3.25 5.25 8 2.75l4.75 2.5L8 7.75l-4.75-2.5Z" }),
-        /* @__PURE__ */ jsx43("path", { d: "M3.25 8 8 10.5 12.75 8" }),
-        /* @__PURE__ */ jsx43("path", { d: "M3.25 10.75 8 13.25l4.75-2.5" }),
-        /* @__PURE__ */ jsx43("path", { d: "M3.25 5.25v5.5" }),
-        /* @__PURE__ */ jsx43("path", { d: "M12.75 5.25v5.5" })
+        /* @__PURE__ */ jsx41("path", { d: "M3.25 5.25 8 2.75l4.75 2.5L8 7.75l-4.75-2.5Z" }),
+        /* @__PURE__ */ jsx41("path", { d: "M3.25 8 8 10.5 12.75 8" }),
+        /* @__PURE__ */ jsx41("path", { d: "M3.25 10.75 8 13.25l4.75-2.5" }),
+        /* @__PURE__ */ jsx41("path", { d: "M3.25 5.25v5.5" }),
+        /* @__PURE__ */ jsx41("path", { d: "M12.75 5.25v5.5" })
       ]
     }
   );
@@ -15916,10 +11016,10 @@ function TokenReasonIcon() {
       strokeLinecap: "round",
       strokeLinejoin: "round",
       children: [
-        /* @__PURE__ */ jsx43("path", { d: "M6.2 3.2a2.3 2.3 0 0 0-2.95 3.5A2.4 2.4 0 0 0 4.5 11h.2c.25 1.1 1.1 1.8 2.3 1.8h1.8c1.2 0 2.05-.7 2.3-1.8h.2A2.4 2.4 0 0 0 12.75 6.7 2.3 2.3 0 0 0 9.8 3.2" }),
-        /* @__PURE__ */ jsx43("path", { d: "M6.3 6.15c.45-.42 1.02-.65 1.7-.65s1.25.23 1.7.65" }),
-        /* @__PURE__ */ jsx43("path", { d: "M8 5.5v4.75" }),
-        /* @__PURE__ */ jsx43("path", { d: "M6.75 9.05 8 10.25l1.25-1.2" })
+        /* @__PURE__ */ jsx41("path", { d: "M6.2 3.2a2.3 2.3 0 0 0-2.95 3.5A2.4 2.4 0 0 0 4.5 11h.2c.25 1.1 1.1 1.8 2.3 1.8h1.8c1.2 0 2.05-.7 2.3-1.8h.2A2.4 2.4 0 0 0 12.75 6.7 2.3 2.3 0 0 0 9.8 3.2" }),
+        /* @__PURE__ */ jsx41("path", { d: "M6.3 6.15c.45-.42 1.02-.65 1.7-.65s1.25.23 1.7.65" }),
+        /* @__PURE__ */ jsx41("path", { d: "M8 5.5v4.75" }),
+        /* @__PURE__ */ jsx41("path", { d: "M6.75 9.05 8 10.25l1.25-1.2" })
       ]
     }
   );
@@ -16003,7 +11103,7 @@ function buildTurnTokenDetails(turn) {
       usdCompactValue: turn.priceEstimate ? formatDetailedUsd(turn.priceEstimate.inputUsd) : "--",
       usdRawValue: turn.priceEstimate?.inputUsd ?? null,
       className: "token-badge-in",
-      icon: /* @__PURE__ */ jsx43(TokenInIcon, {})
+      icon: /* @__PURE__ */ jsx41(TokenInIcon, {})
     } : null,
     cachedInputTokens > 0 ? {
       id: "cache",
@@ -16013,7 +11113,7 @@ function buildTurnTokenDetails(turn) {
       usdCompactValue: turn.priceEstimate ? formatDetailedUsd(turn.priceEstimate.cachedInputUsd) : "--",
       usdRawValue: turn.priceEstimate?.cachedInputUsd ?? null,
       className: "token-badge-cache",
-      icon: /* @__PURE__ */ jsx43(TokenCacheIcon, {})
+      icon: /* @__PURE__ */ jsx41(TokenCacheIcon, {})
     } : null,
     cacheWriteInputTokens > 0 ? {
       id: "cache-write",
@@ -16023,7 +11123,7 @@ function buildTurnTokenDetails(turn) {
       usdCompactValue: turn.priceEstimate ? formatDetailedUsd(turn.priceEstimate.cacheWriteInputUsd ?? 0) : "--",
       usdRawValue: turn.priceEstimate?.cacheWriteInputUsd ?? null,
       className: "token-badge-cache",
-      icon: /* @__PURE__ */ jsx43(TokenCacheIcon, {})
+      icon: /* @__PURE__ */ jsx41(TokenCacheIcon, {})
     } : null,
     nonReasoningOutputTokens > 0 ? {
       id: "out",
@@ -16043,7 +11143,7 @@ function buildTurnTokenDetails(turn) {
         nonReasoningOutputTokens
       ),
       className: "token-badge-out",
-      icon: /* @__PURE__ */ jsx43(TokenOutIcon, {})
+      icon: /* @__PURE__ */ jsx41(TokenOutIcon, {})
     } : null,
     reasoningOutputTokens > 0 ? {
       id: "reason",
@@ -16063,7 +11163,7 @@ function buildTurnTokenDetails(turn) {
         reasoningOutputTokens
       ),
       className: "token-badge-reason",
-      icon: /* @__PURE__ */ jsx43(TokenReasonIcon, {})
+      icon: /* @__PURE__ */ jsx41(TokenReasonIcon, {})
     } : null
   ];
   return details.filter((detail) => detail !== null);
@@ -16150,17 +11250,17 @@ function TurnTokenSummary({ turn }) {
   if (!priceBadge && details.length === 0) {
     return null;
   }
-  const renderBreakdownPopover = () => /* @__PURE__ */ jsx43("div", { className: "thread-token-popover min-w-[12rem] rounded-2xl border p-2.5 shadow-2xl shadow-black/20 backdrop-blur", children: /* @__PURE__ */ jsx43("div", { className: "space-y-1", children: details.map((detail) => /* @__PURE__ */ jsxs35(
+  const renderBreakdownPopover = () => /* @__PURE__ */ jsx41("div", { className: "thread-token-popover min-w-[12rem] rounded-2xl border p-2.5 shadow-2xl shadow-black/20 backdrop-blur", children: /* @__PURE__ */ jsx41("div", { className: "space-y-1", children: details.map((detail) => /* @__PURE__ */ jsxs35(
     "div",
     {
       className: "thread-token-popover-row flex items-center justify-between gap-3 rounded-xl border px-2.5 py-1.5 text-[11px]",
       title: `${detail.label}: ${detail.tokenRawValue} tokens`,
       children: [
         /* @__PURE__ */ jsxs35("span", { className: "thread-token-popover-text inline-flex min-w-0 items-center gap-2", children: [
-          /* @__PURE__ */ jsx43("span", { className: "inline-flex shrink-0", children: detail.icon }),
-          /* @__PURE__ */ jsx43("span", { className: "thread-token-popover-strong font-medium", children: detail.usdCompactValue })
+          /* @__PURE__ */ jsx41("span", { className: "inline-flex shrink-0", children: detail.icon }),
+          /* @__PURE__ */ jsx41("span", { className: "thread-token-popover-strong font-medium", children: detail.usdCompactValue })
         ] }),
-        /* @__PURE__ */ jsx43("span", { className: "thread-token-popover-text shrink-0 font-medium", children: detail.tokenCompactValue })
+        /* @__PURE__ */ jsx41("span", { className: "thread-token-popover-text shrink-0 font-medium", children: detail.tokenCompactValue })
       ]
     },
     detail.id
@@ -16175,7 +11275,7 @@ function TurnTokenSummary({ turn }) {
           onMouseEnter: () => setIsDesktopOpen(true),
           onMouseLeave: () => setIsDesktopOpen(false),
           children: [
-            /* @__PURE__ */ jsx43(
+            /* @__PURE__ */ jsx41(
               "button",
               {
                 type: "button",
@@ -16188,7 +11288,7 @@ function TurnTokenSummary({ turn }) {
                 children: priceBadge.label
               }
             ),
-            isDesktopOpen && details.length > 0 ? /* @__PURE__ */ jsx43("div", { className: "absolute left-1/2 top-full z-30 mt-1.5 -translate-x-1/2", children: renderBreakdownPopover() }) : null
+            isDesktopOpen && details.length > 0 ? /* @__PURE__ */ jsx41("div", { className: "absolute left-1/2 top-full z-30 mt-1.5 -translate-x-1/2", children: renderBreakdownPopover() }) : null
           ]
         }
       ) : null,
@@ -16199,14 +11299,14 @@ function TurnTokenSummary({ turn }) {
           title: `${detail.label}: ${detail.usdCompactValue}, ${detail.tokenRawValue} tokens`,
           children: [
             detail.icon,
-            /* @__PURE__ */ jsx43("span", { className: "thread-token-badge-value font-medium", children: detail.tokenCompactValue })
+            /* @__PURE__ */ jsx41("span", { className: "thread-token-badge-value font-medium", children: detail.tokenCompactValue })
           ]
         },
         detail.id
       ))
     ] }),
     /* @__PURE__ */ jsxs35("div", { ref: containerRef, className: "relative shrink-0 md:hidden", children: [
-      priceBadge ? /* @__PURE__ */ jsx43(
+      priceBadge ? /* @__PURE__ */ jsx41(
         "button",
         {
           type: "button",
@@ -16218,7 +11318,7 @@ function TurnTokenSummary({ turn }) {
           children: priceBadge.label
         }
       ) : null,
-      isMobileOpen && details.length > 0 ? /* @__PURE__ */ jsx43(
+      isMobileOpen && details.length > 0 ? /* @__PURE__ */ jsx41(
         "div",
         {
           ref: mobilePopoverRef,
@@ -16235,12 +11335,12 @@ function TurnTokenSummary({ turn }) {
 
 // src/components/timeline/turnStatus.tsx
 import { useEffect as useEffect15, useState as useState21 } from "react";
-import { jsx as jsx44, jsxs as jsxs36 } from "react/jsx-runtime";
+import { jsx as jsx42, jsxs as jsxs36 } from "react/jsx-runtime";
 function RunningDots2({
   tone = "amber"
 }) {
   const dotClassName = tone === "emerald" ? "bg-sky-200/90" : tone === "sky" ? "bg-sky-300/90" : "bg-amber-200/90";
-  return /* @__PURE__ */ jsx44("span", { className: "ml-1.5 inline-flex items-center gap-1", "aria-hidden": "true", children: [0, 1, 2].map((index) => /* @__PURE__ */ jsx44(
+  return /* @__PURE__ */ jsx42("span", { className: "ml-1.5 inline-flex items-center gap-1", "aria-hidden": "true", children: [0, 1, 2].map((index) => /* @__PURE__ */ jsx42(
     "span",
     {
       className: `h-1.5 w-1.5 rounded-full animate-pulse ${dotClassName}`,
@@ -16361,13 +11461,13 @@ function TurnStatusIndicator({
 }) {
   const label = turnStatusLabel(status);
   if (status === "completed") {
-    return /* @__PURE__ */ jsx44(
+    return /* @__PURE__ */ jsx42(
       "span",
       {
         "aria-label": label,
         title: label,
         className: "timeline-status-icon timeline-status-icon-success inline-flex h-4 w-4 items-center justify-center",
-        children: /* @__PURE__ */ jsx44(
+        children: /* @__PURE__ */ jsx42(
           "svg",
           {
             "aria-hidden": "true",
@@ -16376,20 +11476,20 @@ function TurnStatusIndicator({
             strokeWidth: "1.8",
             strokeLinecap: "round",
             strokeLinejoin: "round",
-            children: /* @__PURE__ */ jsx44("path", { d: "m3.75 8.25 2.5 2.5 6-6" })
+            children: /* @__PURE__ */ jsx42("path", { d: "m3.75 8.25 2.5 2.5 6-6" })
           }
         )
       }
     );
   }
   if (status === "failed") {
-    return /* @__PURE__ */ jsx44(
+    return /* @__PURE__ */ jsx42(
       "span",
       {
         "aria-label": label,
         title: label,
         className: "timeline-status-icon timeline-status-icon-failed inline-flex h-4 w-4 items-center justify-center",
-        children: /* @__PURE__ */ jsx44(
+        children: /* @__PURE__ */ jsx42(
           "svg",
           {
             "aria-hidden": "true",
@@ -16398,20 +11498,20 @@ function TurnStatusIndicator({
             strokeWidth: "1.7",
             strokeLinecap: "round",
             strokeLinejoin: "round",
-            children: /* @__PURE__ */ jsx44("path", { d: "m5 5 6 6M11 5l-6 6" })
+            children: /* @__PURE__ */ jsx42("path", { d: "m5 5 6 6M11 5l-6 6" })
           }
         )
       }
     );
   }
   if (status === "interrupted") {
-    return /* @__PURE__ */ jsx44(
+    return /* @__PURE__ */ jsx42(
       "span",
       {
         "aria-label": label,
         title: label,
         className: "timeline-status-icon timeline-status-icon-warning inline-flex h-4 w-4 items-center justify-center",
-        children: /* @__PURE__ */ jsx44(
+        children: /* @__PURE__ */ jsx42(
           "svg",
           {
             "aria-hidden": "true",
@@ -16420,19 +11520,19 @@ function TurnStatusIndicator({
             strokeWidth: "1.7",
             strokeLinecap: "round",
             strokeLinejoin: "round",
-            children: /* @__PURE__ */ jsx44("path", { d: "M6 4.5v7M10 4.5v7" })
+            children: /* @__PURE__ */ jsx42("path", { d: "M6 4.5v7M10 4.5v7" })
           }
         )
       }
     );
   }
-  return /* @__PURE__ */ jsx44(
+  return /* @__PURE__ */ jsx42(
     "span",
     {
       "aria-label": label,
       title: label,
       className: "inline-flex min-w-[1.25rem] items-center justify-center text-sky-200",
-      children: /* @__PURE__ */ jsx44(RunningDots2, { tone: "emerald" })
+      children: /* @__PURE__ */ jsx42(RunningDots2, { tone: "emerald" })
     }
   );
 }
@@ -16458,8 +11558,8 @@ function TurnStatusBar({
         children: [
           /* @__PURE__ */ jsxs36("div", { className: "flex w-full items-center justify-between gap-3", children: [
             /* @__PURE__ */ jsxs36("div", { className: "flex min-w-0 items-center gap-2", children: [
-              /* @__PURE__ */ jsx44(TurnStatusIndicator, { status: turn.status }),
-              /* @__PURE__ */ jsx44("span", { className: "timeline-soft-text min-w-0 truncate", children: runtimeSummary })
+              /* @__PURE__ */ jsx42(TurnStatusIndicator, { status: turn.status }),
+              /* @__PURE__ */ jsx42("span", { className: "timeline-soft-text min-w-0 truncate", children: runtimeSummary })
             ] }),
             effectiveLastActivityAt && /* @__PURE__ */ jsxs36(
               "span",
@@ -16470,7 +11570,7 @@ function TurnStatusBar({
                   elapsedLabel2 ? `Running for ${elapsedLabel2}` : null
                 ].filter(Boolean).join(" \xB7 "),
                 children: [
-                  /* @__PURE__ */ jsx44("time", { dateTime: effectiveLastActivityAt, children: formatShortTimestamp(effectiveLastActivityAt) }),
+                  /* @__PURE__ */ jsx42("time", { dateTime: effectiveLastActivityAt, children: formatShortTimestamp(effectiveLastActivityAt) }),
                   elapsedLabel2 ? /* @__PURE__ */ jsxs36("span", { "aria-label": `Running for ${elapsedLabel2}`, children: [
                     "\xB7 ",
                     elapsedLabel2
@@ -16480,7 +11580,7 @@ function TurnStatusBar({
             )
           ] }),
           (priceBadge || tokenBadges.length > 0) && /* @__PURE__ */ jsxs36("div", { className: "flex flex-wrap items-center gap-1.5 pl-6", children: [
-            priceBadge ? /* @__PURE__ */ jsx44(
+            priceBadge ? /* @__PURE__ */ jsx42(
               "span",
               {
                 className: `inline-flex items-center rounded-full border px-1.5 py-0.5 text-[10px] font-medium ${priceBadge.className}`,
@@ -16494,7 +11594,7 @@ function TurnStatusBar({
                 className: `inline-flex items-center rounded-full border px-1.5 py-0.5 text-[10px] font-medium ${badge.className}`,
                 title: badge.title,
                 children: [
-                  badge.icon ? /* @__PURE__ */ jsx44("span", { className: "mr-1", children: badge.icon }) : null,
+                  badge.icon ? /* @__PURE__ */ jsx42("span", { className: "mr-1", children: badge.icon }) : null,
                   badge.label
                 ]
               },
@@ -16512,15 +11612,15 @@ function TurnStatusBar({
       className: `inline-flex min-w-0 items-center gap-1.5 rounded-full border px-2 py-1 text-[10px] sm:text-[11px] ${toneClassName}`,
       title,
       children: [
-        /* @__PURE__ */ jsx44(TurnStatusIndicator, { status: turn.status }),
-        /* @__PURE__ */ jsx44("span", { className: "timeline-meta-text min-w-0 truncate", children: runtimeSummary })
+        /* @__PURE__ */ jsx42(TurnStatusIndicator, { status: turn.status }),
+        /* @__PURE__ */ jsx42("span", { className: "timeline-meta-text min-w-0 truncate", children: runtimeSummary })
       ]
     }
   );
 }
 
 // src/components/timeline/TimelineTurnRows.tsx
-import { Fragment as Fragment12, jsx as jsx45, jsxs as jsxs37 } from "react/jsx-runtime";
+import { Fragment as Fragment12, jsx as jsx43, jsxs as jsxs37 } from "react/jsx-runtime";
 function timestampForHistoryItem(item, fallback) {
   return item.createdAt ?? fallback;
 }
@@ -16541,7 +11641,7 @@ var HistoryItemRow = memo5(function HistoryItemRow2({
   autoOpenToolDetails = false
 }) {
   if (isCompactChatItem(item.kind)) {
-    return /* @__PURE__ */ jsx45(
+    return /* @__PURE__ */ jsx43(
       GraphChatCompactMessageItem,
       {
         threadId,
@@ -16555,7 +11655,7 @@ var HistoryItemRow = memo5(function HistoryItemRow2({
     );
   }
   if (item.kind === "reasoning") {
-    return /* @__PURE__ */ jsx45(
+    return /* @__PURE__ */ jsx43(
       GraphChatCompactMessageItem,
       {
         item: {
@@ -16571,7 +11671,7 @@ var HistoryItemRow = memo5(function HistoryItemRow2({
     );
   }
   if (item.kind === "artifact") {
-    return /* @__PURE__ */ jsx45(
+    return /* @__PURE__ */ jsx43(
       GraphChatArtifactHistoryItem,
       {
         item,
@@ -16583,7 +11683,7 @@ var HistoryItemRow = memo5(function HistoryItemRow2({
     );
   }
   if (item.kind === "commandExecution") {
-    return /* @__PURE__ */ jsx45(
+    return /* @__PURE__ */ jsx43(
       GraphChatCommandItem,
       {
         autoOpen: autoOpenToolDetails,
@@ -16594,7 +11694,7 @@ var HistoryItemRow = memo5(function HistoryItemRow2({
     );
   }
   if (item.kind === "toolCall") {
-    return /* @__PURE__ */ jsx45(
+    return /* @__PURE__ */ jsx43(
       GraphChatToolCallItem,
       {
         autoOpen: autoOpenToolDetails,
@@ -16605,7 +11705,7 @@ var HistoryItemRow = memo5(function HistoryItemRow2({
     );
   }
   if (item.kind === "agentToolCall") {
-    return /* @__PURE__ */ jsx45(
+    return /* @__PURE__ */ jsx43(
       GraphChatAgentToolCallItem,
       {
         autoOpen: autoOpenToolDetails,
@@ -16616,7 +11716,7 @@ var HistoryItemRow = memo5(function HistoryItemRow2({
     );
   }
   if (item.kind === "skillToolCall") {
-    return /* @__PURE__ */ jsx45(
+    return /* @__PURE__ */ jsx43(
       GraphChatSkillToolCallItem,
       {
         autoOpen: autoOpenToolDetails,
@@ -16629,7 +11729,7 @@ var HistoryItemRow = memo5(function HistoryItemRow2({
   if (item.kind === "webSearch") {
     const typedItem = item;
     const detailText = typedItem.detailText?.trim() || typedItem.text || "Web search";
-    return /* @__PURE__ */ jsx45(
+    return /* @__PURE__ */ jsx43(
       GraphChatWebSearchItem,
       {
         autoOpen: autoOpenToolDetails,
@@ -16648,7 +11748,7 @@ var HistoryItemRow = memo5(function HistoryItemRow2({
   if (item.kind === "fileRead") {
     const typedItem = item;
     const detailText = typedItem.detailText?.trim() || typedItem.text || "File read";
-    return /* @__PURE__ */ jsx45(
+    return /* @__PURE__ */ jsx43(
       GraphChatFileReadItem,
       {
         autoOpen: autoOpenToolDetails,
@@ -16665,7 +11765,7 @@ var HistoryItemRow = memo5(function HistoryItemRow2({
     );
   }
   if (item.kind === "image") {
-    return /* @__PURE__ */ jsx45(
+    return /* @__PURE__ */ jsx43(
       GraphChatImageItem,
       {
         threadId,
@@ -16677,7 +11777,7 @@ var HistoryItemRow = memo5(function HistoryItemRow2({
     );
   }
   if (item.kind === "plan") {
-    return /* @__PURE__ */ jsx45(
+    return /* @__PURE__ */ jsx43(
       GraphChatPlanHistoryItem,
       {
         item,
@@ -16690,7 +11790,7 @@ var HistoryItemRow = memo5(function HistoryItemRow2({
   if (item.kind === "fileChange") {
     const typedItem = item;
     const detailText = typedItem.detailText?.trim() || typedItem.text || "File change";
-    return /* @__PURE__ */ jsx45(
+    return /* @__PURE__ */ jsx43(
       GraphChatFileChangeItem,
       {
         item: typedItem,
@@ -16706,7 +11806,7 @@ var HistoryItemRow = memo5(function HistoryItemRow2({
     );
   }
   if (item.kind === "contextCompaction") {
-    return /* @__PURE__ */ jsx45(
+    return /* @__PURE__ */ jsx43(
       GraphChatContextCompactionItem,
       {
         item,
@@ -16715,7 +11815,7 @@ var HistoryItemRow = memo5(function HistoryItemRow2({
     );
   }
   if (item.kind === "hook") {
-    return /* @__PURE__ */ jsx45(
+    return /* @__PURE__ */ jsx43(
       GraphChatHookItem,
       {
         item,
@@ -16723,7 +11823,7 @@ var HistoryItemRow = memo5(function HistoryItemRow2({
       }
     );
   }
-  return /* @__PURE__ */ jsx45(GraphChatGenericHistoryItem, { item, timeMeta });
+  return /* @__PURE__ */ jsx43(GraphChatGenericHistoryItem, { item, timeMeta });
 });
 function isTerminalTurnStatus(status) {
   return status === "completed" || status === "failed" || status === "interrupted";
@@ -16800,7 +11900,7 @@ function TimelineTimeToggle({
   const absoluteTitle = formatLongTimestamp(timestamp);
   const relativeLabel = formatRelativeTurnTime(turnStartedAt, timestamp);
   const label = showAbsolute ? absoluteLabel : relativeLabel;
-  return /* @__PURE__ */ jsx45(
+  return /* @__PURE__ */ jsx43(
     "span",
     {
       role: "button",
@@ -16820,7 +11920,7 @@ function TimelineTimeToggle({
         event.stopPropagation();
         setShowAbsolute((value) => !value);
       },
-      children: /* @__PURE__ */ jsx45("time", { dateTime: timestamp, children: label })
+      children: /* @__PURE__ */ jsx43("time", { dateTime: timestamp, children: label })
     }
   );
 }
@@ -16920,7 +12020,7 @@ var ThreadTurnRow = memo5(function ThreadTurnRow2({
       [groupKey]: !current[groupKey]
     }));
   }, []);
-  const historyNode = /* @__PURE__ */ jsx45(
+  const historyNode = /* @__PURE__ */ jsx43(
     TimelineHistoryEntries,
     {
       entries: groupedItems,
@@ -16942,7 +12042,7 @@ var ThreadTurnRow = memo5(function ThreadTurnRow2({
       ...adapter ? { adapter } : {}
     }
   );
-  const liveHookPromptNode = visibleLiveHookPrompt ? /* @__PURE__ */ jsx45(
+  const liveHookPromptNode = visibleLiveHookPrompt ? /* @__PURE__ */ jsx43(
     HistoryItemRow,
     {
       threadId,
@@ -16952,7 +12052,7 @@ var ThreadTurnRow = memo5(function ThreadTurnRow2({
       onOpenCommandDetail,
       onOpenToolCallDetail,
       onOpenDeferredHistoryItemDetail,
-      timeLabel: turn.startedAt ? /* @__PURE__ */ jsx45(
+      timeLabel: turn.startedAt ? /* @__PURE__ */ jsx43(
         TimelineTimeToggle,
         {
           absoluteLabel: turnTimeLabel,
@@ -16966,7 +12066,7 @@ var ThreadTurnRow = memo5(function ThreadTurnRow2({
       ...adapter ? { adapter } : {}
     }
   ) : null;
-  const liveOutputNode = !visibleLiveHookPrompt && visibleLiveOutput ? /* @__PURE__ */ jsx45(
+  const liveOutputNode = !visibleLiveHookPrompt && visibleLiveOutput ? /* @__PURE__ */ jsx43(
     GraphChatCompactMessageItem,
     {
       item: {
@@ -16975,7 +12075,7 @@ var ThreadTurnRow = memo5(function ThreadTurnRow2({
         text: visibleLiveOutput
       },
       scrollRootRef,
-      timeLabel: turn.startedAt ? /* @__PURE__ */ jsx45(
+      timeLabel: turn.startedAt ? /* @__PURE__ */ jsx43(
         TimelineTimeToggle,
         {
           absoluteLabel: turnTimeLabel,
@@ -16988,7 +12088,7 @@ var ThreadTurnRow = memo5(function ThreadTurnRow2({
       ...onBeforeMessageResize ? { onBeforeMessageResize } : {}
     }
   ) : null;
-  const footerNode = activeForRendering ? /* @__PURE__ */ jsx45(
+  const footerNode = activeForRendering ? /* @__PURE__ */ jsx43(
     TurnStatusBar,
     {
       turn: activeFooterTurn,
@@ -17015,14 +12115,14 @@ var ThreadTurnRow = memo5(function ThreadTurnRow2({
       onClick: () => onToggleCollapse(turn.id, false),
       "aria-label": `${workedLabel}. Collapse turn ${absoluteIndex}`,
       children: [
-        /* @__PURE__ */ jsx45("span", { className: "thread-graph-worked-label shrink-0", children: workedLabel }),
-        /* @__PURE__ */ jsx45(ChevronDown, { className: "h-4 w-4 shrink-0 transition group-hover:translate-y-0.5" }),
-        /* @__PURE__ */ jsx45("span", { className: "thread-graph-worked-rule h-px min-w-0 flex-1", "aria-hidden": "true" })
+        /* @__PURE__ */ jsx43("span", { className: "thread-graph-worked-label shrink-0", children: workedLabel }),
+        /* @__PURE__ */ jsx43(ChevronDown, { className: "h-4 w-4 shrink-0 transition group-hover:translate-y-0.5" }),
+        /* @__PURE__ */ jsx43("span", { className: "thread-graph-worked-rule h-px min-w-0 flex-1", "aria-hidden": "true" })
       ]
     }
   ) : null;
   const collapsedSummaryNode = isTerminalTurnStatus(turn.status) && hasCollapsedHiddenItems ? /* @__PURE__ */ jsxs37("div", { className: "thread-graph-turn-collapsed-summary space-y-2", children: [
-    collapsedSummary.users.map((item) => /* @__PURE__ */ jsx45(
+    collapsedSummary.users.map((item) => /* @__PURE__ */ jsx43(
       GraphChatCompactMessageItem,
       {
         threadId,
@@ -17043,19 +12143,19 @@ var ThreadTurnRow = memo5(function ThreadTurnRow2({
         onClick: () => onToggleCollapse(turn.id, true),
         "aria-label": `${workedLabel}. Expand turn ${absoluteIndex}`,
         children: [
-          /* @__PURE__ */ jsx45("span", { className: "thread-graph-worked-label shrink-0", children: workedLabel }),
-          /* @__PURE__ */ jsx45(ChevronRight2, { className: "h-4 w-4 shrink-0 transition group-hover:translate-x-0.5" }),
-          /* @__PURE__ */ jsx45("span", { className: "thread-graph-worked-rule h-px min-w-0 flex-1", "aria-hidden": "true" })
+          /* @__PURE__ */ jsx43("span", { className: "thread-graph-worked-label shrink-0", children: workedLabel }),
+          /* @__PURE__ */ jsx43(ChevronRight2, { className: "h-4 w-4 shrink-0 transition group-hover:translate-x-0.5" }),
+          /* @__PURE__ */ jsx43("span", { className: "thread-graph-worked-rule h-px min-w-0 flex-1", "aria-hidden": "true" })
         ]
       }
     ),
-    collapsedSummary.finalAgent ? /* @__PURE__ */ jsx45(
+    collapsedSummary.finalAgent ? /* @__PURE__ */ jsx43(
       GraphChatCompactMessageItem,
       {
         threadId,
         item: collapsedSummary.finalAgent,
         scrollRootRef,
-        timeLabel: collapsedSummary.finalAgent.createdAt ? /* @__PURE__ */ jsx45(
+        timeLabel: collapsedSummary.finalAgent.createdAt ? /* @__PURE__ */ jsx43(
           TimelineTimeToggle,
           {
             absoluteLabel: formatShortTimestamp(collapsedSummary.finalAgent.createdAt),
@@ -17069,7 +12169,7 @@ var ThreadTurnRow = memo5(function ThreadTurnRow2({
       }
     ) : null
   ] }) : null;
-  const turnBody = /* @__PURE__ */ jsx45(
+  const turnBody = /* @__PURE__ */ jsx43(
     GraphChatTurnBody,
     {
       footer: footerNode,
@@ -17082,7 +12182,7 @@ var ThreadTurnRow = memo5(function ThreadTurnRow2({
       livePlan: displayedLivePlan
     }
   );
-  return /* @__PURE__ */ jsx45(
+  return /* @__PURE__ */ jsx43(
     GraphChatTurnFrame,
     {
       absoluteIndex,
@@ -17090,13 +12190,13 @@ var ThreadTurnRow = memo5(function ThreadTurnRow2({
       collapsed: effectiveCollapsed,
       collapsedBody: collapsedSummaryNode,
       error: turn.error,
-      headerStatus: /* @__PURE__ */ jsx45(TurnStatusBar, { turn }),
+      headerStatus: /* @__PURE__ */ jsx43(TurnStatusBar, { turn }),
       isActive: activeForRendering,
       refCallback: articleRef,
       startedAt: turn.startedAt,
       timeLabel: turnTimeLabel,
       timeTitle: turnTimeTitle,
-      tokenSummary: /* @__PURE__ */ jsx45(TurnTokenSummary, { turn })
+      tokenSummary: /* @__PURE__ */ jsx43(TurnTokenSummary, { turn })
     }
   );
 });
@@ -17121,7 +12221,7 @@ function TimelineHistoryEntries({
 }) {
   const latestEntryKey = entries.at(-1)?.key ?? null;
   const relativeTimeMeta = useCallback11(
-    (timestamp) => timestamp ? /* @__PURE__ */ jsx45(
+    (timestamp) => timestamp ? /* @__PURE__ */ jsx43(
       TimelineTimeToggle,
       {
         absoluteLabel: formatShortTimestamp(timestamp),
@@ -17131,13 +12231,13 @@ function TimelineHistoryEntries({
     ) : null,
     [fallbackTimestamp, turnStartedAt]
   );
-  return /* @__PURE__ */ jsx45(
+  return /* @__PURE__ */ jsx43(
     GraphChatHistoryEntries,
     {
       entries,
       expandedGroups,
       onToggleGroupedItem,
-      renderCommandGroup: (entry, expanded, onToggleExpanded) => /* @__PURE__ */ jsx45(
+      renderCommandGroup: (entry, expanded, onToggleExpanded) => /* @__PURE__ */ jsx43(
         GraphChatCommandGroupItem,
         {
           items: entry.items,
@@ -17148,7 +12248,7 @@ function TimelineHistoryEntries({
         },
         entry.key
       ),
-      renderFileChangeGroup: (entry, expanded, onToggleExpanded) => /* @__PURE__ */ jsx45(
+      renderFileChangeGroup: (entry, expanded, onToggleExpanded) => /* @__PURE__ */ jsx43(
         GraphChatFileChangeGroupItem,
         {
           items: entry.items,
@@ -17159,7 +12259,7 @@ function TimelineHistoryEntries({
         },
         entry.key
       ),
-      renderSearchGroup: (entry, expanded, onToggleExpanded) => /* @__PURE__ */ jsx45(
+      renderSearchGroup: (entry, expanded, onToggleExpanded) => /* @__PURE__ */ jsx43(
         GraphChatSearchGroupItem,
         {
           items: entry.items,
@@ -17170,7 +12270,7 @@ function TimelineHistoryEntries({
         },
         entry.key
       ),
-      renderFileReadGroup: (entry, expanded, onToggleExpanded) => /* @__PURE__ */ jsx45(
+      renderFileReadGroup: (entry, expanded, onToggleExpanded) => /* @__PURE__ */ jsx43(
         GraphChatFileReadGroupItem,
         {
           items: entry.items,
@@ -17181,7 +12281,7 @@ function TimelineHistoryEntries({
         },
         entry.key
       ),
-      renderToolCallGroup: (entry, expanded, onToggleExpanded) => /* @__PURE__ */ jsx45(
+      renderToolCallGroup: (entry, expanded, onToggleExpanded) => /* @__PURE__ */ jsx43(
         GraphChatToolCallGroupItem,
         {
           items: entry.items,
@@ -17192,14 +12292,14 @@ function TimelineHistoryEntries({
         },
         entry.key
       ),
-      renderAgentActivityGroup: (entry, expanded, onToggleExpanded) => /* @__PURE__ */ jsx45(
+      renderAgentActivityGroup: (entry, expanded, onToggleExpanded) => /* @__PURE__ */ jsx43(
         GraphChatAgentActivityGroupItem,
         {
           itemCount: entry.itemCount,
           expanded,
           onToggleExpanded,
           timeMeta: relativeTimeMeta(firstHistoryEntryTimestamp(entry.entries[0])),
-          children: /* @__PURE__ */ jsx45(
+          children: /* @__PURE__ */ jsx43(
             TimelineHistoryEntries,
             {
               entries: entry.entries,
@@ -17227,7 +12327,7 @@ function TimelineHistoryEntries({
       renderItem: (entry) => {
         const timestamp = timestampForHistoryItem(entry.item, fallbackTimestamp ?? null);
         const isUserMessage = entry.item.kind === "userMessage";
-        const timeLabel = isUserMessage ? entry.item.createdAt ? formatShortTimestamp(timestamp) : fallbackTimeLabel : entry.item.createdAt ? /* @__PURE__ */ jsx45(
+        const timeLabel = isUserMessage ? entry.item.createdAt ? formatShortTimestamp(timestamp) : fallbackTimeLabel : entry.item.createdAt ? /* @__PURE__ */ jsx43(
           TimelineTimeToggle,
           {
             absoluteLabel: formatShortTimestamp(timestamp),
@@ -17235,7 +12335,7 @@ function TimelineHistoryEntries({
             turnStartedAt: turnStartedAt ?? fallbackTimestamp
           }
         ) : fallbackTimeLabel;
-        return /* @__PURE__ */ jsx45(
+        return /* @__PURE__ */ jsx43(
           HistoryItemRow,
           {
             threadId,
@@ -17802,7 +12902,7 @@ function useTimelineScroll({
 }
 
 // src/components/ThreadTimeline.tsx
-import { Fragment as Fragment13, jsx as jsx46, jsxs as jsxs38 } from "react/jsx-runtime";
+import { Fragment as Fragment13, jsx as jsx44, jsxs as jsxs38 } from "react/jsx-runtime";
 function isTerminalTurnStatus2(status) {
   return status === "completed" || status === "failed" || status === "interrupted";
 }
@@ -18077,7 +13177,7 @@ function ThreadTimelineComponent({
     }
   }, [findNextTurn, nextTurnScrollRequestKey, onNextTurnAvailabilityChange, scrollContainerRef]);
   return /* @__PURE__ */ jsxs38(Fragment13, { children: [
-    /* @__PURE__ */ jsx46("section", { className: `flex min-h-0 flex-1 flex-col ${className}`.trim(), children: /* @__PURE__ */ jsx46(
+    /* @__PURE__ */ jsx44("section", { className: `flex min-h-0 flex-1 flex-col ${className}`.trim(), children: /* @__PURE__ */ jsx44(
       "div",
       {
         ref: scrollContainerRef,
@@ -18091,9 +13191,9 @@ function ThreadTimelineComponent({
         className: "thread-graph-scroll-container min-h-0 flex-1 overflow-y-auto overscroll-contain",
         style: bottomSpacer > 0 ? { paddingBottom: bottomSpacer } : void 0,
         children: /* @__PURE__ */ jsxs38("div", { ref: scrollContentRef, className: "thread-graph-scroll-content", children: [
-          /* @__PURE__ */ jsx46("div", { ref: topSentinelRef, "aria-hidden": "true", className: "h-px" }),
-          turns.length > 0 && /* @__PURE__ */ jsx46("div", { className: "thread-graph-history-control px-3 pb-1 pt-2 sm:px-5 sm:pb-1.5 sm:pt-3", children: /* @__PURE__ */ jsxs38("div", { className: "flex flex-wrap items-center gap-2.5 text-xs sm:text-sm", children: [
-            hiddenCount > 0 && /* @__PURE__ */ jsx46(
+          /* @__PURE__ */ jsx44("div", { ref: topSentinelRef, "aria-hidden": "true", className: "h-px" }),
+          turns.length > 0 && /* @__PURE__ */ jsx44("div", { className: "thread-graph-history-control px-3 pb-1 pt-2 sm:px-5 sm:pb-1.5 sm:pt-3", children: /* @__PURE__ */ jsxs38("div", { className: "flex flex-wrap items-center gap-2.5 text-xs sm:text-sm", children: [
+            hiddenCount > 0 && /* @__PURE__ */ jsx44(
               "button",
               {
                 type: "button",
@@ -18103,7 +13203,7 @@ function ThreadTimelineComponent({
                 children: loadingEarlier ? "Loading earlier..." : "Load 3 earlier"
               }
             ),
-            showLoadAll && /* @__PURE__ */ jsx46(
+            showLoadAll && /* @__PURE__ */ jsx44(
               "button",
               {
                 type: "button",
@@ -18121,9 +13221,9 @@ function ThreadTimelineComponent({
               hiddenCount > 0 ? ` \xB7 ${hiddenCount} earlier hidden${loadedHiddenCount > 0 && unloadedHiddenCount > 0 ? ` (${loadedHiddenCount} loaded)` : ""}` : ""
             ] })
           ] }) }),
-          turns.length === 0 && !liveOutput && !optimisticTurn && /* @__PURE__ */ jsx46("div", { className: "thread-graph-empty-state px-3 py-8 text-sm sm:px-5", children: "Send the first prompt to start the thread." }),
+          turns.length === 0 && !liveOutput && !optimisticTurn && /* @__PURE__ */ jsx44("div", { className: "thread-graph-empty-state px-3 py-8 text-sm sm:px-5", children: "Send the first prompt to start the thread." }),
           (visibleTurns.length > 0 || optimisticTurn || activityNoteAnchors.leading.length > 0 || activityNoteAnchors.trailing.length > 0) && /* @__PURE__ */ jsxs38("div", { className: "thread-graph-message-list", children: [
-            activityNoteAnchors.leading.length > 0 ? /* @__PURE__ */ jsx46(
+            activityNoteAnchors.leading.length > 0 ? /* @__PURE__ */ jsx44(
               ActivityNoteSection,
               {
                 notes: activityNoteAnchors.leading,
@@ -18132,7 +13232,7 @@ function ThreadTimelineComponent({
               }
             ) : null,
             visibleTurns.map((turn, visibleIndex) => /* @__PURE__ */ jsxs38("div", { "data-timeline-turn": true, "data-turn-id": turn.id, children: [
-              (activityNoteAnchors.beforeTurnId.get(turn.id)?.length ?? 0) > 0 ? /* @__PURE__ */ jsx46(
+              (activityNoteAnchors.beforeTurnId.get(turn.id)?.length ?? 0) > 0 ? /* @__PURE__ */ jsx44(
                 ActivityNoteSection,
                 {
                   notes: activityNoteAnchors.beforeTurnId.get(turn.id) ?? [],
@@ -18140,7 +13240,7 @@ function ThreadTimelineComponent({
                   onOpenLinkedThread: openLinkedThread
                 }
               ) : null,
-              (requestEntryAnchors.beforeTurnId.get(turn.id)?.length ?? 0) > 0 ? /* @__PURE__ */ jsx46(
+              (requestEntryAnchors.beforeTurnId.get(turn.id)?.length ?? 0) > 0 ? /* @__PURE__ */ jsx44(
                 RequestEntrySection,
                 {
                   entries: requestEntryAnchors.beforeTurnId.get(turn.id) ?? [],
@@ -18164,7 +13264,7 @@ function ThreadTimelineComponent({
                   forceActive: rowForceActive,
                   hasLiveActivity: rowHasLiveActivity
                 });
-                return /* @__PURE__ */ jsx46(
+                return /* @__PURE__ */ jsx44(
                   ThreadTurnRow,
                   {
                     threadId,
@@ -18189,7 +13289,7 @@ function ThreadTimelineComponent({
                   }
                 );
               })(),
-              (activityNoteAnchors.afterTurnId.get(turn.id)?.length ?? 0) > 0 ? /* @__PURE__ */ jsx46(
+              (activityNoteAnchors.afterTurnId.get(turn.id)?.length ?? 0) > 0 ? /* @__PURE__ */ jsx44(
                 ActivityNoteSection,
                 {
                   notes: activityNoteAnchors.afterTurnId.get(turn.id) ?? [],
@@ -18197,7 +13297,7 @@ function ThreadTimelineComponent({
                   onOpenLinkedThread: openLinkedThread
                 }
               ) : null,
-              requestEntryAnchors.notesByTurnId.get(turn.id)?.length || requestEntryAnchors.pendingRequestsByTurnId.get(turn.id)?.length ? /* @__PURE__ */ jsx46(
+              requestEntryAnchors.notesByTurnId.get(turn.id)?.length || requestEntryAnchors.pendingRequestsByTurnId.get(turn.id)?.length ? /* @__PURE__ */ jsx44(
                 RequestEntrySectionForTurn,
                 {
                   notes: requestEntryAnchors.notesByTurnId.get(turn.id) ?? [],
@@ -18208,7 +13308,7 @@ function ThreadTimelineComponent({
               ) : null
             ] }, turn.id)),
             optimisticTurn && visibleTurns.every((turn) => turn.id !== optimisticTurn.id) && /* @__PURE__ */ jsxs38(Fragment13, { children: [
-              (activityNoteAnchors.beforeTurnId.get(optimisticTurn.id)?.length ?? 0) > 0 ? /* @__PURE__ */ jsx46(
+              (activityNoteAnchors.beforeTurnId.get(optimisticTurn.id)?.length ?? 0) > 0 ? /* @__PURE__ */ jsx44(
                 ActivityNoteSection,
                 {
                   notes: activityNoteAnchors.beforeTurnId.get(optimisticTurn.id) ?? [],
@@ -18216,7 +13316,7 @@ function ThreadTimelineComponent({
                   onOpenLinkedThread: openLinkedThread
                 }
               ) : null,
-              (requestEntryAnchors.beforeTurnId.get(optimisticTurn.id)?.length ?? 0) > 0 ? /* @__PURE__ */ jsx46(
+              (requestEntryAnchors.beforeTurnId.get(optimisticTurn.id)?.length ?? 0) > 0 ? /* @__PURE__ */ jsx44(
                 RequestEntrySection,
                 {
                   entries: requestEntryAnchors.beforeTurnId.get(optimisticTurn.id) ?? [],
@@ -18236,7 +13336,7 @@ function ThreadTimelineComponent({
                   forceActive: rowForceActive,
                   hasLiveActivity: rowHasLiveActivity
                 });
-                return /* @__PURE__ */ jsx46(
+                return /* @__PURE__ */ jsx44(
                   ThreadTurnRow,
                   {
                     threadId,
@@ -18260,7 +13360,7 @@ function ThreadTimelineComponent({
                   }
                 );
               })(),
-              (activityNoteAnchors.afterTurnId.get(optimisticTurn.id)?.length ?? 0) > 0 ? /* @__PURE__ */ jsx46(
+              (activityNoteAnchors.afterTurnId.get(optimisticTurn.id)?.length ?? 0) > 0 ? /* @__PURE__ */ jsx44(
                 ActivityNoteSection,
                 {
                   notes: activityNoteAnchors.afterTurnId.get(optimisticTurn.id) ?? [],
@@ -18270,8 +13370,8 @@ function ThreadTimelineComponent({
               ) : null
             ] })
           ] }),
-          queuedSteers.length > 0 && /* @__PURE__ */ jsx46("div", { className: "thread-graph-message-section space-y-3 px-3 py-4 sm:px-5", children: queuedSteers.map((steer) => /* @__PURE__ */ jsxs38("div", { className: "space-y-1.5", children: [
-            /* @__PURE__ */ jsx46(
+          queuedSteers.length > 0 && /* @__PURE__ */ jsx44("div", { className: "thread-graph-message-section space-y-3 px-3 py-4 sm:px-5", children: queuedSteers.map((steer) => /* @__PURE__ */ jsxs38("div", { className: "space-y-1.5", children: [
+            /* @__PURE__ */ jsx44(
               GraphChatCompactMessageItem,
               {
                 threadId,
@@ -18286,7 +13386,7 @@ function ThreadTimelineComponent({
                 ...adapter ? { adapter } : {}
               }
             ),
-            threadId && steer.canCancel && adapter?.cancelPendingSteer ? /* @__PURE__ */ jsx46("div", { className: "flex justify-end px-1", children: /* @__PURE__ */ jsx46(
+            threadId && steer.canCancel && adapter?.cancelPendingSteer ? /* @__PURE__ */ jsx44("div", { className: "flex justify-end px-1", children: /* @__PURE__ */ jsx44(
               "button",
               {
                 type: "button",
@@ -18306,7 +13406,7 @@ function ThreadTimelineComponent({
               }
             ) }) : null
           ] }, steer.id)) }),
-          (requestEntryAnchors.trailing.length > 0 || activityNoteAnchors.trailing.length > 0) && /* @__PURE__ */ jsx46(
+          (requestEntryAnchors.trailing.length > 0 || activityNoteAnchors.trailing.length > 0) && /* @__PURE__ */ jsx44(
             ActivityRequestEntrySection,
             {
               entries: [
@@ -18324,7 +13424,7 @@ function ThreadTimelineComponent({
               onOpenLinkedThread: openLinkedThread
             }
           ),
-          ephemeralUserNote && /* @__PURE__ */ jsx46("div", { className: "thread-graph-message-section px-3 py-2.5 sm:px-5", children: /* @__PURE__ */ jsx46(
+          ephemeralUserNote && /* @__PURE__ */ jsx44("div", { className: "thread-graph-message-section px-3 py-2.5 sm:px-5", children: /* @__PURE__ */ jsx44(
             GraphChatCompactMessageItem,
             {
               threadId,
@@ -18337,7 +13437,7 @@ function ThreadTimelineComponent({
               onBeforeMessageResize: preserveScrollPositionForResize
             }
           ) }),
-          unattachedLiveTurn && unattachedLiveItems && unattachedLiveItems.length > 0 && /* @__PURE__ */ jsx46(
+          unattachedLiveTurn && unattachedLiveItems && unattachedLiveItems.length > 0 && /* @__PURE__ */ jsx44(
             ThreadTurnRow,
             {
               threadId,
@@ -18363,7 +13463,7 @@ function ThreadTimelineComponent({
               scrollRootRef: scrollContainerRef
             }
           ),
-          liveOutput && !liveOutputAttachedToVisibleTurn && !liveOutputAttachedToOptimisticTurn && !hasStructuredLiveItems && /* @__PURE__ */ jsx46("div", { className: "thread-graph-message-section px-3 py-2.5 sm:px-5", children: unattachedLiveHookPromptItem ? /* @__PURE__ */ jsx46(
+          liveOutput && !liveOutputAttachedToVisibleTurn && !liveOutputAttachedToOptimisticTurn && !hasStructuredLiveItems && /* @__PURE__ */ jsx44("div", { className: "thread-graph-message-section px-3 py-2.5 sm:px-5", children: unattachedLiveHookPromptItem ? /* @__PURE__ */ jsx44(
             HistoryItemRow,
             {
               threadId,
@@ -18377,7 +13477,7 @@ function ThreadTimelineComponent({
               ...onSelectArtifact ? { onSelectArtifact } : {},
               ...adapter ? { adapter } : {}
             }
-          ) : /* @__PURE__ */ jsx46(
+          ) : /* @__PURE__ */ jsx44(
             GraphChatCompactMessageItem,
             {
               threadId,
@@ -18392,7 +13492,7 @@ function ThreadTimelineComponent({
               ...adapter ? { adapter } : {}
             }
           ) }),
-          /* @__PURE__ */ jsx46(
+          /* @__PURE__ */ jsx44(
             "div",
             {
               ref: tailSentinelRef,
@@ -18403,7 +13503,7 @@ function ThreadTimelineComponent({
         ] })
       }
     ) }),
-    /* @__PURE__ */ jsx46(
+    /* @__PURE__ */ jsx44(
       LongTextDialog,
       {
         open: expandedText !== null,
@@ -18518,7 +13618,7 @@ function shellControlSequence(action) {
 }
 
 // src/components/shell/shellPresentation.tsx
-import { jsx as jsx47, jsxs as jsxs39 } from "react/jsx-runtime";
+import { jsx as jsx45, jsxs as jsxs39 } from "react/jsx-runtime";
 function terminalThemeFor(effectiveTheme) {
   return {
     background: effectiveTheme === "light" ? "#f2ede5" : "#0c1117",
@@ -18588,7 +13688,7 @@ function WrenchScrewdriverIcon2() {
       viewBox: "0 0 20 20",
       className: "h-4 w-4 fill-current",
       children: [
-        /* @__PURE__ */ jsx47(
+        /* @__PURE__ */ jsx45(
           "path",
           {
             fillRule: "evenodd",
@@ -18596,15 +13696,15 @@ function WrenchScrewdriverIcon2() {
             clipRule: "evenodd"
           }
         ),
-        /* @__PURE__ */ jsx47("path", { d: "M14.5 11.5C14.6731 11.5 14.8445 11.4927 15.0138 11.4783L18.7678 15.2323C19.7441 16.2086 19.7441 17.7915 18.7678 18.7678C17.7915 19.7441 16.2086 19.7441 15.2323 18.7678L10.8216 14.3571L12.9938 11.7505C13.0455 11.6885 13.1413 11.6131 13.3357 11.5552C13.5378 11.4951 13.805 11.468 14.1132 11.4877C14.2413 11.4959 14.3702 11.5 14.5 11.5Z" }),
-        /* @__PURE__ */ jsx47("path", { d: "M6.00003 4.58582L8.33056 6.91635C8.3027 6.95627 8.27496 6.98497 8.24946 7.00622L6.79994 8.21415L4.58582 6.00003H3.30905C3.11966 6.00003 2.94653 5.89303 2.86184 5.72364L1.1612 2.32237C1.06495 2.12987 1.10268 1.89739 1.25486 1.74521L1.74521 1.25486C1.89739 1.10268 2.12987 1.06495 2.32237 1.1612L5.72364 2.86184C5.89303 2.94653 6.00003 3.11966 6.00003 3.30905V4.58582Z" })
+        /* @__PURE__ */ jsx45("path", { d: "M14.5 11.5C14.6731 11.5 14.8445 11.4927 15.0138 11.4783L18.7678 15.2323C19.7441 16.2086 19.7441 17.7915 18.7678 18.7678C17.7915 19.7441 16.2086 19.7441 15.2323 18.7678L10.8216 14.3571L12.9938 11.7505C13.0455 11.6885 13.1413 11.6131 13.3357 11.5552C13.5378 11.4951 13.805 11.468 14.1132 11.4877C14.2413 11.4959 14.3702 11.5 14.5 11.5Z" }),
+        /* @__PURE__ */ jsx45("path", { d: "M6.00003 4.58582L8.33056 6.91635C8.3027 6.95627 8.27496 6.98497 8.24946 7.00622L6.79994 8.21415L4.58582 6.00003H3.30905C3.11966 6.00003 2.94653 5.89303 2.86184 5.72364L1.1612 2.32237C1.06495 2.12987 1.10268 1.89739 1.25486 1.74521L1.74521 1.25486C1.89739 1.10268 2.12987 1.06495 2.32237 1.1612L5.72364 2.86184C5.89303 2.94653 6.00003 3.11966 6.00003 3.30905V4.58582Z" })
       ]
     }
   );
 }
 function ConnectionIcon({ connected }) {
   if (!connected) {
-    return /* @__PURE__ */ jsx47(
+    return /* @__PURE__ */ jsx45(
       "svg",
       {
         "aria-hidden": "true",
@@ -18613,11 +13713,11 @@ function ConnectionIcon({ connected }) {
         strokeWidth: "1.5",
         strokeLinecap: "round",
         strokeLinejoin: "round",
-        children: /* @__PURE__ */ jsx47("path", { d: "M13.181 8.68a4.503 4.503 0 0 1 1.903 6.405m-9.768-2.782L3.56 14.06a4.5 4.5 0 0 0 6.364 6.365l3.129-3.129m5.614-5.615 1.757-1.757a4.5 4.5 0 0 0-6.364-6.365l-4.5 4.5c-.258.26-.479.541-.661.84m1.903 6.405a4.495 4.495 0 0 1-1.242-.88 4.483 4.483 0 0 1-1.062-1.683m6.587 2.345 5.907 5.907m-5.907-5.907L8.898 8.898M2.991 2.99 8.898 8.9" })
+        children: /* @__PURE__ */ jsx45("path", { d: "M13.181 8.68a4.503 4.503 0 0 1 1.903 6.405m-9.768-2.782L3.56 14.06a4.5 4.5 0 0 0 6.364 6.365l3.129-3.129m5.614-5.615 1.757-1.757a4.5 4.5 0 0 0-6.364-6.365l-4.5 4.5c-.258.26-.479.541-.661.84m1.903 6.405a4.495 4.495 0 0 1-1.242-.88 4.483 4.483 0 0 1-1.062-1.683m6.587 2.345 5.907 5.907m-5.907-5.907L8.898 8.898M2.991 2.99 8.898 8.9" })
       }
     );
   }
-  return /* @__PURE__ */ jsx47(
+  return /* @__PURE__ */ jsx45(
     "svg",
     {
       "aria-hidden": "true",
@@ -18626,7 +13726,7 @@ function ConnectionIcon({ connected }) {
       strokeWidth: "1.5",
       strokeLinecap: "round",
       strokeLinejoin: "round",
-      children: /* @__PURE__ */ jsx47("path", { d: "M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m13.35-.622 1.757-1.757a4.5 4.5 0 0 0-6.364-6.364l-4.5 4.5a4.5 4.5 0 0 0 1.242 7.244" })
+      children: /* @__PURE__ */ jsx45("path", { d: "M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m13.35-.622 1.757-1.757a4.5 4.5 0 0 0-6.364-6.364l-4.5 4.5a4.5 4.5 0 0 0 1.242 7.244" })
     }
   );
 }
@@ -18641,8 +13741,8 @@ function ClipboardIcon2() {
       strokeLinecap: "round",
       strokeLinejoin: "round",
       children: [
-        /* @__PURE__ */ jsx47("path", { d: "M5.5 3.25h5" }),
-        /* @__PURE__ */ jsx47("path", { d: "M6.4 2h3.2a.9.9 0 0 1 .9.9v.35h1.3a1.2 1.2 0 0 1 1.2 1.2v7.35a1.2 1.2 0 0 1-1.2 1.2H4.2A1.2 1.2 0 0 1 3 11.8V4.45a1.2 1.2 0 0 1 1.2-1.2h1.3V2.9a.9.9 0 0 1 .9-.9Z" })
+        /* @__PURE__ */ jsx45("path", { d: "M5.5 3.25h5" }),
+        /* @__PURE__ */ jsx45("path", { d: "M6.4 2h3.2a.9.9 0 0 1 .9.9v.35h1.3a1.2 1.2 0 0 1 1.2 1.2v7.35a1.2 1.2 0 0 1-1.2 1.2H4.2A1.2 1.2 0 0 1 3 11.8V4.45a1.2 1.2 0 0 1 1.2-1.2h1.3V2.9a.9.9 0 0 1 .9-.9Z" })
       ]
     }
   );
@@ -18652,7 +13752,7 @@ function ControlIcon({
   tone = "stone"
 }) {
   const toneClassName = tone === "rose" ? "border-rose-300/35 bg-rose-300/14 text-rose-600 dark:text-rose-50" : tone === "sky" ? "border-sky-300/35 bg-sky-300/14 text-sky-600 dark:text-sky-50" : "shell-control-chip border";
-  return /* @__PURE__ */ jsx47(
+  return /* @__PURE__ */ jsx45(
     "span",
     {
       className: `inline-flex min-w-[3.45rem] items-center justify-center rounded-full border px-2.5 py-1.5 text-[11px] font-medium tracking-[0.12em] ${toneClassName}`,
@@ -19755,7 +14855,7 @@ function useShellSocketLifecycle({
 }
 
 // src/components/shell/ShellPane.tsx
-import { jsx as jsx48, jsxs as jsxs40 } from "react/jsx-runtime";
+import { jsx as jsx46, jsxs as jsxs40 } from "react/jsx-runtime";
 function refValue2(ref) {
   return ref.current;
 }
@@ -19971,7 +15071,7 @@ var ShellPane = forwardRef(
       let cancelled = false;
       terminalInitializingRef.current = true;
       void (async () => {
-        const [{ Terminal: Terminal3 }, { FitAddon }] = await Promise.all([
+        const [{ Terminal: Terminal2 }, { FitAddon }] = await Promise.all([
           import("xterm"),
           import("@xterm/addon-fit")
         ]);
@@ -19979,7 +15079,7 @@ var ShellPane = forwardRef(
           terminalInitializingRef.current = false;
           return;
         }
-        const terminal = new Terminal3({
+        const terminal = new Terminal2({
           cursorBlink: true,
           disableStdin: isMobileShellRef.current,
           fontFamily: "IBM Plex Mono, SFMono-Regular, Menlo, monospace",
@@ -20289,7 +15389,7 @@ var ShellPane = forwardRef(
         onMouseDown: onActivate,
         "data-pane-id": paneId,
         children: [
-          /* @__PURE__ */ jsx48(
+          /* @__PURE__ */ jsx46(
             "div",
             {
               ref: setTerminalHostNode,
@@ -20300,7 +15400,7 @@ var ShellPane = forwardRef(
               }
             }
           ),
-          isActive && /* @__PURE__ */ jsx48("div", { className: "pointer-events-none absolute right-2 top-2 rounded-md border border-sky-300/30 bg-sky-300/10 px-2 py-1 text-[10px] uppercase tracking-[0.12em] text-sky-100", children: "Active" })
+          isActive && /* @__PURE__ */ jsx46("div", { className: "pointer-events-none absolute right-2 top-2 rounded-md border border-sky-300/30 bg-sky-300/10 px-2 py-1 text-[10px] uppercase tracking-[0.12em] text-sky-100", children: "Active" })
         ]
       }
     );
@@ -20308,7 +15408,7 @@ var ShellPane = forwardRef(
 );
 
 // src/components/ThreadShellPanel.tsx
-import { Fragment as Fragment14, jsx as jsx49, jsxs as jsxs41 } from "react/jsx-runtime";
+import { Fragment as Fragment14, jsx as jsx47, jsxs as jsxs41 } from "react/jsx-runtime";
 var ThreadShellPanel = forwardRef2(function ThreadShellPanel2({
   threadId,
   shellAdapter,
@@ -20824,12 +15924,12 @@ var ThreadShellPanel = forwardRef2(function ThreadShellPanel2({
     }),
     [activePaneRef, handleConnectionToggle, handleTerminateShell, splitMode]
   );
-  const renderProcessRow = (shell) => /* @__PURE__ */ jsx49(
+  const renderProcessRow = (shell) => /* @__PURE__ */ jsx47(
     "div",
     {
       className: `rounded-md border px-2 py-1.5 text-xs ${shell.id === activeShell?.id ? "border-sky-300/40 bg-sky-300/12 text-sky-50" : "border-stone-800 bg-stone-900/40 text-stone-300"}`,
       children: /* @__PURE__ */ jsxs41("div", { className: "flex items-center justify-between gap-2", children: [
-        renamingShellId === shell.id ? /* @__PURE__ */ jsx49(
+        renamingShellId === shell.id ? /* @__PURE__ */ jsx47(
           "form",
           {
             className: "min-w-0 flex-1",
@@ -20837,7 +15937,7 @@ var ThreadShellPanel = forwardRef2(function ThreadShellPanel2({
               event.preventDefault();
               void handleSubmitRenameShell();
             },
-            children: /* @__PURE__ */ jsx49(
+            children: /* @__PURE__ */ jsx47(
               "input",
               {
                 value: renameDraft,
@@ -20863,7 +15963,7 @@ var ThreadShellPanel = forwardRef2(function ThreadShellPanel2({
             className: "min-w-0 flex-1 text-left",
             title: shell.tmuxSessionName,
             children: [
-              /* @__PURE__ */ jsx49("span", { className: "block truncate", children: shellLabel(shell) }),
+              /* @__PURE__ */ jsx47("span", { className: "block truncate", children: shellLabel(shell) }),
               /* @__PURE__ */ jsxs41("span", { className: "block truncate text-[10px] text-[var(--theme-fg-muted)]", children: [
                 statusLabel2(shell.status),
                 " \xB7 ",
@@ -20874,7 +15974,7 @@ var ThreadShellPanel = forwardRef2(function ThreadShellPanel2({
         ),
         /* @__PURE__ */ jsxs41("div", { className: "flex shrink-0 items-center gap-1", children: [
           renamingShellId === shell.id ? /* @__PURE__ */ jsxs41(Fragment14, { children: [
-            /* @__PURE__ */ jsx49(
+            /* @__PURE__ */ jsx47(
               "button",
               {
                 type: "button",
@@ -20884,7 +15984,7 @@ var ThreadShellPanel = forwardRef2(function ThreadShellPanel2({
                 children: "Save"
               }
             ),
-            /* @__PURE__ */ jsx49(
+            /* @__PURE__ */ jsx47(
               "button",
               {
                 type: "button",
@@ -20894,7 +15994,7 @@ var ThreadShellPanel = forwardRef2(function ThreadShellPanel2({
                 children: "Cancel"
               }
             )
-          ] }) : /* @__PURE__ */ jsx49(
+          ] }) : /* @__PURE__ */ jsx47(
             "button",
             {
               type: "button",
@@ -20905,7 +16005,7 @@ var ThreadShellPanel = forwardRef2(function ThreadShellPanel2({
             }
           ),
           splitMode === "columns" && /* @__PURE__ */ jsxs41(Fragment14, { children: [
-            /* @__PURE__ */ jsx49(
+            /* @__PURE__ */ jsx47(
               "button",
               {
                 type: "button",
@@ -20915,7 +16015,7 @@ var ThreadShellPanel = forwardRef2(function ThreadShellPanel2({
                 children: "L"
               }
             ),
-            /* @__PURE__ */ jsx49(
+            /* @__PURE__ */ jsx47(
               "button",
               {
                 type: "button",
@@ -20926,7 +16026,7 @@ var ThreadShellPanel = forwardRef2(function ThreadShellPanel2({
               }
             )
           ] }),
-          /* @__PURE__ */ jsx49(
+          /* @__PURE__ */ jsx47(
             "button",
             {
               type: "button",
@@ -20946,11 +16046,11 @@ var ThreadShellPanel = forwardRef2(function ThreadShellPanel2({
     showHeader && /* @__PURE__ */ jsxs41("div", { className: "shell-header shrink-0 border-b px-3 py-3 sm:px-5", children: [
       /* @__PURE__ */ jsxs41("div", { className: "flex flex-wrap items-center justify-between gap-3", children: [
         /* @__PURE__ */ jsxs41("div", { className: "min-w-0", children: [
-          /* @__PURE__ */ jsx49("p", { className: "text-xs uppercase tracking-[0.24em] text-[var(--theme-fg-muted)]", children: "Shell" }),
-          /* @__PURE__ */ jsx49("p", { className: "mt-1 truncate text-sm text-[var(--theme-fg-soft)]", children: activeRuntime.promptLabel ?? activeShell?.cwd ?? "Create a terminal for this thread." })
+          /* @__PURE__ */ jsx47("p", { className: "text-xs uppercase tracking-[0.24em] text-[var(--theme-fg-muted)]", children: "Shell" }),
+          /* @__PURE__ */ jsx47("p", { className: "mt-1 truncate text-sm text-[var(--theme-fg-soft)]", children: activeRuntime.promptLabel ?? activeShell?.cwd ?? "Create a terminal for this thread." })
         ] }),
         /* @__PURE__ */ jsxs41("div", { className: "flex flex-wrap items-center gap-2", children: [
-          /* @__PURE__ */ jsx49(
+          /* @__PURE__ */ jsx47(
             "button",
             {
               type: "button",
@@ -20959,10 +16059,10 @@ var ThreadShellPanel = forwardRef2(function ThreadShellPanel2({
               disabled: connectionButtonDisabled,
               onClick: () => void handleConnectionToggle(),
               className: `inline-flex h-10 w-10 items-center justify-center rounded-full border shadow-lg shadow-stone-950/25 transition disabled:cursor-not-allowed disabled:opacity-60 ${connectionButtonClassName}`,
-              children: /* @__PURE__ */ jsx49(ConnectionIcon, { connected: activeRuntime.shellInputEnabled })
+              children: /* @__PURE__ */ jsx47(ConnectionIcon, { connected: activeRuntime.shellInputEnabled })
             }
           ),
-          activeShell && /* @__PURE__ */ jsx49(
+          activeShell && /* @__PURE__ */ jsx47(
             "button",
             {
               type: "button",
@@ -20975,23 +16075,23 @@ var ThreadShellPanel = forwardRef2(function ThreadShellPanel2({
         ] })
       ] }),
       (error || loading || workspacePathMissing) && /* @__PURE__ */ jsxs41("div", { className: "shell-banner mt-3 rounded-2xl border px-3 py-3 text-sm", children: [
-        loading && /* @__PURE__ */ jsx49("p", { className: "text-[var(--theme-fg-muted)]", children: "Loading shell state..." }),
-        !loading && workspacePathMissing && /* @__PURE__ */ jsx49("p", { className: "text-rose-600 dark:text-rose-100", children: "Workspace path is missing on this machine. Restore the path before creating a shell." }),
-        !loading && error && /* @__PURE__ */ jsx49("p", { className: "text-amber-700 dark:text-amber-100", children: error })
+        loading && /* @__PURE__ */ jsx47("p", { className: "text-[var(--theme-fg-muted)]", children: "Loading shell state..." }),
+        !loading && workspacePathMissing && /* @__PURE__ */ jsx47("p", { className: "text-rose-600 dark:text-rose-100", children: "Workspace path is missing on this machine. Restore the path before creating a shell." }),
+        !loading && error && /* @__PURE__ */ jsx47("p", { className: "text-amber-700 dark:text-amber-100", children: error })
       ] })
     ] }),
-    /* @__PURE__ */ jsx49("div", { className: "min-h-0 flex-1", children: /* @__PURE__ */ jsxs41("div", { className: "flex h-full min-h-0 flex-col", children: [
+    /* @__PURE__ */ jsx47("div", { className: "min-h-0 flex-1", children: /* @__PURE__ */ jsxs41("div", { className: "flex h-full min-h-0 flex-col", children: [
       /* @__PURE__ */ jsxs41("div", { className: "shell-terminal-bar flex shrink-0 items-center gap-2 border-b px-2 py-2", children: [
         /* @__PURE__ */ jsxs41("div", { className: "flex min-w-0 flex-1 items-center gap-2 px-1", children: [
-          /* @__PURE__ */ jsx49("span", { className: "min-w-0 truncate text-xs text-[var(--theme-fg-soft)]", children: activeShell ? shellLabel(activeShell) : "No live shell process" }),
-          activeShell && /* @__PURE__ */ jsx49("span", { className: "shrink-0 text-[10px] uppercase tracking-[0.12em] text-[var(--theme-fg-muted)]", children: statusLabel2(activeRuntime.status) })
+          /* @__PURE__ */ jsx47("span", { className: "min-w-0 truncate text-xs text-[var(--theme-fg-soft)]", children: activeShell ? shellLabel(activeShell) : "No live shell process" }),
+          activeShell && /* @__PURE__ */ jsx47("span", { className: "shrink-0 text-[10px] uppercase tracking-[0.12em] text-[var(--theme-fg-muted)]", children: statusLabel2(activeRuntime.status) })
         ] }),
         /* @__PURE__ */ jsxs41("div", { className: "flex shrink-0 items-center gap-1.5", children: [
           /* @__PURE__ */ jsxs41("span", { className: "hidden text-xs text-[var(--theme-fg-muted)] sm:inline", children: [
             "Live ",
             liveShells.length
           ] }),
-          /* @__PURE__ */ jsx49(
+          /* @__PURE__ */ jsx47(
             "button",
             {
               type: "button",
@@ -21006,7 +16106,7 @@ var ThreadShellPanel = forwardRef2(function ThreadShellPanel2({
       ] }),
       mobileProcessListOpen && /* @__PURE__ */ jsxs41("div", { className: "shrink-0 border-b border-stone-800/80 bg-stone-950/55 p-2 sm:hidden", children: [
         /* @__PURE__ */ jsxs41("div", { className: "mb-2 flex items-center justify-between gap-2", children: [
-          /* @__PURE__ */ jsx49("p", { className: "text-xs uppercase tracking-[0.16em] text-[var(--theme-fg-muted)]", children: "Processes" }),
+          /* @__PURE__ */ jsx47("p", { className: "text-xs uppercase tracking-[0.16em] text-[var(--theme-fg-muted)]", children: "Processes" }),
           /* @__PURE__ */ jsxs41("span", { className: "text-[10px] text-[var(--theme-fg-muted)]", children: [
             liveShells.length,
             " live"
@@ -21014,9 +16114,9 @@ var ThreadShellPanel = forwardRef2(function ThreadShellPanel2({
         ] }),
         /* @__PURE__ */ jsxs41("div", { className: "max-h-52 space-y-1 overflow-y-auto", children: [
           liveShells.map(renderProcessRow),
-          liveShells.length === 0 && /* @__PURE__ */ jsx49("p", { className: "px-2 py-3 text-xs text-[var(--theme-fg-muted)]", children: "No live shell processes" })
+          liveShells.length === 0 && /* @__PURE__ */ jsx47("p", { className: "px-2 py-3 text-xs text-[var(--theme-fg-muted)]", children: "No live shell processes" })
         ] }),
-        /* @__PURE__ */ jsx49("div", { className: "mt-2 flex justify-end border-t border-stone-800/80 pt-2", children: /* @__PURE__ */ jsx49(
+        /* @__PURE__ */ jsx47("div", { className: "mt-2 flex justify-end border-t border-stone-800/80 pt-2", children: /* @__PURE__ */ jsx47(
           "button",
           {
             type: "button",
@@ -21029,10 +16129,10 @@ var ThreadShellPanel = forwardRef2(function ThreadShellPanel2({
           }
         ) })
       ] }),
-      status === "not_created" || workspacePathMissing ? /* @__PURE__ */ jsx49("div", { className: "flex h-full items-center justify-center px-6 text-center", children: /* @__PURE__ */ jsxs41("div", { className: "shell-empty-state max-w-md rounded-[1.6rem] border px-6 py-8", children: [
-        /* @__PURE__ */ jsx49("p", { className: "text-base font-medium text-[var(--theme-fg)]", children: "Durable thread shell" }),
-        /* @__PURE__ */ jsx49("p", { className: "mt-3 text-sm leading-6 text-[var(--theme-fg-muted)]", children: "The shell runs under a supervisor-managed PTY and reconnects after browser disconnects. Create it explicitly when you want to inspect or take over the workspace." }),
-        !workspacePathMissing && /* @__PURE__ */ jsx49(
+      status === "not_created" || workspacePathMissing ? /* @__PURE__ */ jsx47("div", { className: "flex h-full items-center justify-center px-6 text-center", children: /* @__PURE__ */ jsxs41("div", { className: "shell-empty-state max-w-md rounded-[1.6rem] border px-6 py-8", children: [
+        /* @__PURE__ */ jsx47("p", { className: "text-base font-medium text-[var(--theme-fg)]", children: "Durable thread shell" }),
+        /* @__PURE__ */ jsx47("p", { className: "mt-3 text-sm leading-6 text-[var(--theme-fg-muted)]", children: "The shell runs under a supervisor-managed PTY and reconnects after browser disconnects. Create it explicitly when you want to inspect or take over the workspace." }),
+        !workspacePathMissing && /* @__PURE__ */ jsx47(
           "button",
           {
             type: "button",
@@ -21045,9 +16145,9 @@ var ThreadShellPanel = forwardRef2(function ThreadShellPanel2({
       ] }) }) : /* @__PURE__ */ jsxs41("div", { className: "grid h-full min-h-0 grid-cols-1 gap-2 p-2 sm:grid-cols-[minmax(0,1fr)_16rem] sm:p-3", children: [
         /* @__PURE__ */ jsxs41("div", { className: "shell-terminal-frame relative min-h-0 overflow-hidden rounded-[1.4rem] border shadow-inner", children: [
           !showHeader && (error || loading || workspacePathMissing) && /* @__PURE__ */ jsxs41("div", { className: "shell-banner absolute left-2 right-2 top-2 z-10 rounded-2xl border px-3 py-3 text-sm backdrop-blur sm:left-3 sm:right-3 sm:top-3", children: [
-            loading && /* @__PURE__ */ jsx49("p", { className: "text-[var(--theme-fg-muted)]", children: "Loading shell state..." }),
-            !loading && workspacePathMissing && /* @__PURE__ */ jsx49("p", { className: "text-rose-600 dark:text-rose-100", children: "Workspace path is missing on this machine. Restore the path before creating a shell." }),
-            !loading && error && /* @__PURE__ */ jsx49("p", { className: "text-amber-700 dark:text-amber-100", children: error })
+            loading && /* @__PURE__ */ jsx47("p", { className: "text-[var(--theme-fg-muted)]", children: "Loading shell state..." }),
+            !loading && workspacePathMissing && /* @__PURE__ */ jsx47("p", { className: "text-rose-600 dark:text-rose-100", children: "Workspace path is missing on this machine. Restore the path before creating a shell." }),
+            !loading && error && /* @__PURE__ */ jsx47("p", { className: "text-amber-700 dark:text-amber-100", children: error })
           ] }),
           /* @__PURE__ */ jsxs41(
             "div",
@@ -21060,7 +16160,7 @@ var ThreadShellPanel = forwardRef2(function ThreadShellPanel2({
               } : void 0,
               "data-shell-split-ratio": splitRatio,
               children: [
-                /* @__PURE__ */ jsx49(
+                /* @__PURE__ */ jsx47(
                   ShellPane,
                   {
                     ref: primaryPaneRef,
@@ -21078,7 +16178,7 @@ var ThreadShellPanel = forwardRef2(function ThreadShellPanel2({
                     onFeedback: setTransientToolboxFeedback
                   }
                 ),
-                splitMode === "columns" && /* @__PURE__ */ jsx49(
+                splitMode === "columns" && /* @__PURE__ */ jsx47(
                   "button",
                   {
                     type: "button",
@@ -21088,7 +16188,7 @@ var ThreadShellPanel = forwardRef2(function ThreadShellPanel2({
                     children: "Close"
                   }
                 ),
-                splitMode === "columns" && /* @__PURE__ */ jsx49(
+                splitMode === "columns" && /* @__PURE__ */ jsx47(
                   "button",
                   {
                     type: "button",
@@ -21099,7 +16199,7 @@ var ThreadShellPanel = forwardRef2(function ThreadShellPanel2({
                   }
                 ),
                 splitMode === "columns" && /* @__PURE__ */ jsxs41("div", { className: "relative min-h-0 border-t border-stone-800/80 sm:border-l sm:border-t-0", children: [
-                  /* @__PURE__ */ jsx49(
+                  /* @__PURE__ */ jsx47(
                     ShellPane,
                     {
                       ref: secondaryPaneRef,
@@ -21117,7 +16217,7 @@ var ThreadShellPanel = forwardRef2(function ThreadShellPanel2({
                       onFeedback: setTransientToolboxFeedback
                     }
                   ),
-                  /* @__PURE__ */ jsx49(
+                  /* @__PURE__ */ jsx47(
                     "button",
                     {
                       type: "button",
@@ -21132,15 +16232,15 @@ var ThreadShellPanel = forwardRef2(function ThreadShellPanel2({
             }
           ),
           showFloatingToolbox && isMobileShell && /* @__PURE__ */ jsxs41("div", { className: "pointer-events-none absolute bottom-3 right-3 z-20 flex flex-col items-end gap-2", children: [
-            toolboxFeedback && /* @__PURE__ */ jsx49(
+            toolboxFeedback && /* @__PURE__ */ jsx47(
               "div",
               {
                 className: `pointer-events-auto rounded-full border px-3 py-1.5 text-[11px] shadow-lg shadow-stone-950/30 backdrop-blur ${toolboxFeedbackToneClassName}`,
                 children: toolboxFeedback.text
               }
             ),
-            toolboxOpen && /* @__PURE__ */ jsx49("div", { className: "shell-toolbox pointer-events-auto rounded-[1.2rem] border p-2 shadow-2xl backdrop-blur", children: /* @__PURE__ */ jsxs41("div", { className: "grid grid-cols-2 gap-2", children: [
-              /* @__PURE__ */ jsx49(
+            toolboxOpen && /* @__PURE__ */ jsx47("div", { className: "shell-toolbox pointer-events-auto rounded-[1.2rem] border p-2 shadow-2xl backdrop-blur", children: /* @__PURE__ */ jsxs41("div", { className: "grid grid-cols-2 gap-2", children: [
+              /* @__PURE__ */ jsx47(
                 "button",
                 {
                   type: "button",
@@ -21149,24 +16249,24 @@ var ThreadShellPanel = forwardRef2(function ThreadShellPanel2({
                   },
                   className: "inline-flex items-center justify-center rounded-full border border-sky-300/35 bg-sky-300/12 px-2.5 py-2 text-sky-600 dark:text-sky-50",
                   children: /* @__PURE__ */ jsxs41("span", { className: "inline-flex items-center gap-1.5", children: [
-                    /* @__PURE__ */ jsx49(ClipboardIcon2, {}),
-                    /* @__PURE__ */ jsx49("span", { className: "text-[11px] font-medium tracking-[0.12em]", children: "Paste" })
+                    /* @__PURE__ */ jsx47(ClipboardIcon2, {}),
+                    /* @__PURE__ */ jsx47("span", { className: "text-[11px] font-medium tracking-[0.12em]", children: "Paste" })
                   ] })
                 }
               ),
-              /* @__PURE__ */ jsx49(
+              /* @__PURE__ */ jsx47(
                 "button",
                 {
                   type: "button",
                   onClick: () => void handleCopyVisibleShellText(),
                   className: "shell-toolbox-copy inline-flex items-center justify-center rounded-full border px-2.5 py-2",
                   children: /* @__PURE__ */ jsxs41("span", { className: "inline-flex items-center gap-1.5", children: [
-                    /* @__PURE__ */ jsx49(ClipboardIcon2, {}),
-                    /* @__PURE__ */ jsx49("span", { className: "text-[11px] font-medium tracking-[0.12em]", children: "Copy" })
+                    /* @__PURE__ */ jsx47(ClipboardIcon2, {}),
+                    /* @__PURE__ */ jsx47("span", { className: "text-[11px] font-medium tracking-[0.12em]", children: "Copy" })
                   ] })
                 }
               ),
-              /* @__PURE__ */ jsx49(
+              /* @__PURE__ */ jsx47(
                 "button",
                 {
                   type: "button",
@@ -21179,10 +16279,10 @@ var ThreadShellPanel = forwardRef2(function ThreadShellPanel2({
                     }
                   },
                   className: "disabled:opacity-45",
-                  children: /* @__PURE__ */ jsx49(ControlIcon, { label: "CLEAR", tone: "sky" })
+                  children: /* @__PURE__ */ jsx47(ControlIcon, { label: "CLEAR", tone: "sky" })
                 }
               ),
-              /* @__PURE__ */ jsx49(
+              /* @__PURE__ */ jsx47(
                 "button",
                 {
                   type: "button",
@@ -21195,10 +16295,10 @@ var ThreadShellPanel = forwardRef2(function ThreadShellPanel2({
                     }
                   },
                   className: "disabled:opacity-45",
-                  children: /* @__PURE__ */ jsx49(ControlIcon, { label: "CTRL-C", tone: "rose" })
+                  children: /* @__PURE__ */ jsx47(ControlIcon, { label: "CTRL-C", tone: "rose" })
                 }
               ),
-              ["ctrl_d", "esc", "tab", "up", "down"].map((action) => /* @__PURE__ */ jsx49(
+              ["ctrl_d", "esc", "tab", "up", "down"].map((action) => /* @__PURE__ */ jsx47(
                 "button",
                 {
                   type: "button",
@@ -21211,12 +16311,12 @@ var ThreadShellPanel = forwardRef2(function ThreadShellPanel2({
                     }
                   },
                   className: "disabled:opacity-45",
-                  children: /* @__PURE__ */ jsx49(ControlIcon, { label: action.toUpperCase().replace("_", "-"), tone: "stone" })
+                  children: /* @__PURE__ */ jsx47(ControlIcon, { label: action.toUpperCase().replace("_", "-"), tone: "stone" })
                 },
                 action
               ))
             ] }) }),
-            /* @__PURE__ */ jsx49(
+            /* @__PURE__ */ jsx47(
               "button",
               {
                 type: "button",
@@ -21224,14 +16324,14 @@ var ThreadShellPanel = forwardRef2(function ThreadShellPanel2({
                 "aria-label": toolboxOpen ? "Close shell tools" : "Open shell tools",
                 onClick: () => setToolboxOpen((current) => !current),
                 className: "shell-toolbox-trigger pointer-events-auto inline-flex h-11 w-11 items-center justify-center rounded-full border shadow-2xl backdrop-blur transition",
-                children: /* @__PURE__ */ jsx49(WrenchScrewdriverIcon2, {})
+                children: /* @__PURE__ */ jsx47(WrenchScrewdriverIcon2, {})
               }
             )
           ] })
         ] }),
         /* @__PURE__ */ jsxs41("aside", { className: "hidden min-h-0 overflow-hidden rounded-[1rem] border border-stone-800/80 bg-stone-950/30 p-2 sm:flex sm:flex-col", children: [
           /* @__PURE__ */ jsxs41("div", { className: "mb-2 flex items-center justify-between gap-2", children: [
-            /* @__PURE__ */ jsx49("p", { className: "text-xs uppercase tracking-[0.16em] text-[var(--theme-fg-muted)]", children: "Processes" }),
+            /* @__PURE__ */ jsx47("p", { className: "text-xs uppercase tracking-[0.16em] text-[var(--theme-fg-muted)]", children: "Processes" }),
             /* @__PURE__ */ jsxs41("span", { className: "text-[10px] text-[var(--theme-fg-muted)]", children: [
               liveShells.length,
               " live"
@@ -21239,9 +16339,9 @@ var ThreadShellPanel = forwardRef2(function ThreadShellPanel2({
           ] }),
           /* @__PURE__ */ jsxs41("div", { className: "min-h-0 flex-1 space-y-1 overflow-y-auto", children: [
             liveShells.map(renderProcessRow),
-            liveShells.length === 0 && /* @__PURE__ */ jsx49("p", { className: "px-2 py-3 text-xs text-[var(--theme-fg-muted)]", children: "No live shell processes" })
+            liveShells.length === 0 && /* @__PURE__ */ jsx47("p", { className: "px-2 py-3 text-xs text-[var(--theme-fg-muted)]", children: "No live shell processes" })
           ] }),
-          /* @__PURE__ */ jsx49("div", { className: "mt-2 flex justify-end border-t border-stone-800/80 pt-2", children: /* @__PURE__ */ jsx49(
+          /* @__PURE__ */ jsx47("div", { className: "mt-2 flex justify-end border-t border-stone-800/80 pt-2", children: /* @__PURE__ */ jsx47(
             "button",
             {
               type: "button",
@@ -21262,28 +16362,28 @@ var ThreadShellPanel = forwardRef2(function ThreadShellPanel2({
 // src/components/ThreadGraphWorkspacePanelLazy.tsx
 import {
   lazy,
-  memo as memo9,
+  memo as memo7,
   Suspense
 } from "react";
-import { jsx as jsx69 } from "react/jsx-runtime";
+import { jsx as jsx48 } from "react/jsx-runtime";
 var LazyThreadGraphWorkspacePanel = lazy(async () => {
-  const module = await Promise.resolve().then(() => (init_workspace_panel(), workspace_panel_exports));
+  const module = await import("./workspace-panel.js");
   return { default: module.ThreadGraphWorkspacePanel };
 });
 function ThreadGraphWorkspaceLoadingFallback() {
-  return /* @__PURE__ */ jsx69("div", { className: "flex h-full min-h-0 flex-1 items-center justify-center px-4 text-sm text-[var(--theme-fg-muted)]", children: "Loading workspace..." });
+  return /* @__PURE__ */ jsx48("div", { className: "flex h-full min-h-0 flex-1 items-center justify-center px-4 text-sm text-[var(--theme-fg-muted)]", children: "Loading workspace..." });
 }
-function ThreadGraphWorkspacePanel2(props) {
-  return /* @__PURE__ */ jsx69(Suspense, { fallback: /* @__PURE__ */ jsx69(ThreadGraphWorkspaceLoadingFallback, {}), children: /* @__PURE__ */ jsx69(LazyThreadGraphWorkspacePanel, { ...props }) });
+function ThreadGraphWorkspacePanel(props) {
+  return /* @__PURE__ */ jsx48(Suspense, { fallback: /* @__PURE__ */ jsx48(ThreadGraphWorkspaceLoadingFallback, {}), children: /* @__PURE__ */ jsx48(LazyThreadGraphWorkspacePanel, { ...props }) });
 }
-var MemoizedThreadGraphWorkspacePanel2 = memo9(
-  ThreadGraphWorkspacePanel2
+var MemoizedThreadGraphWorkspacePanel = memo7(
+  ThreadGraphWorkspacePanel
 );
 
 // src/components/ConfirmDialog.tsx
-import { useEffect as useEffect27 } from "react";
-import { createPortal as createPortal4 } from "react-dom";
-import { jsx as jsx70, jsxs as jsxs58 } from "react/jsx-runtime";
+import { useEffect as useEffect21 } from "react";
+import { createPortal as createPortal3 } from "react-dom";
+import { jsx as jsx49, jsxs as jsxs42 } from "react/jsx-runtime";
 function ConfirmDialog({
   open,
   title,
@@ -21294,7 +16394,7 @@ function ConfirmDialog({
   onCancel,
   onConfirm
 }) {
-  useEffect27(() => {
+  useEffect21(() => {
     if (!open) {
       return;
     }
@@ -21311,9 +16411,9 @@ function ConfirmDialog({
   if (!open) {
     return null;
   }
-  return createPortal4(
-    /* @__PURE__ */ jsxs58("div", { className: "fixed inset-0 z-[95] flex items-center justify-center p-4 sm:p-6", children: [
-      /* @__PURE__ */ jsx70(
+  return createPortal3(
+    /* @__PURE__ */ jsxs42("div", { className: "fixed inset-0 z-[95] flex items-center justify-center p-4 sm:p-6", children: [
+      /* @__PURE__ */ jsx49(
         "button",
         {
           type: "button",
@@ -21323,7 +16423,7 @@ function ConfirmDialog({
           className: "absolute inset-0 bg-stone-950/78 backdrop-blur-sm disabled:cursor-not-allowed"
         }
       ),
-      /* @__PURE__ */ jsxs58(
+      /* @__PURE__ */ jsxs42(
         "div",
         {
           role: "dialog",
@@ -21331,12 +16431,12 @@ function ConfirmDialog({
           "aria-label": title,
           className: "relative z-[1] w-full max-w-md rounded-[1.6rem] border border-stone-700 bg-stone-900 p-5 shadow-2xl shadow-stone-950/40 sm:p-6",
           children: [
-            /* @__PURE__ */ jsxs58("div", { className: "flex items-start justify-between gap-3", children: [
-              /* @__PURE__ */ jsxs58("div", { className: "min-w-0 flex-1", children: [
-                /* @__PURE__ */ jsx70("p", { className: "text-sm font-medium text-stone-100", children: title }),
-                /* @__PURE__ */ jsx70("p", { className: "mt-2 text-sm leading-6 text-stone-400", children: description })
+            /* @__PURE__ */ jsxs42("div", { className: "flex items-start justify-between gap-3", children: [
+              /* @__PURE__ */ jsxs42("div", { className: "min-w-0 flex-1", children: [
+                /* @__PURE__ */ jsx49("p", { className: "text-sm font-medium text-stone-100", children: title }),
+                /* @__PURE__ */ jsx49("p", { className: "mt-2 text-sm leading-6 text-stone-400", children: description })
               ] }),
-              /* @__PURE__ */ jsx70(
+              /* @__PURE__ */ jsx49(
                 "button",
                 {
                   type: "button",
@@ -21344,12 +16444,12 @@ function ConfirmDialog({
                   onClick: onCancel,
                   disabled: busy,
                   className: "inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-stone-700 text-stone-300 transition hover:bg-stone-800 disabled:cursor-not-allowed disabled:opacity-60",
-                  children: /* @__PURE__ */ jsx70("svg", { "aria-hidden": "true", viewBox: "0 0 16 16", className: "h-4 w-4 fill-current", children: /* @__PURE__ */ jsx70("path", { d: "M3.22 2.47 8 7.25l4.78-4.78 1.06 1.06L9.06 8.31l4.78 4.78-1.06 1.06L8 9.37l-4.78 4.78-1.06-1.06 4.78-4.78-4.78-4.78 1.06-1.06Z" }) })
+                  children: /* @__PURE__ */ jsx49("svg", { "aria-hidden": "true", viewBox: "0 0 16 16", className: "h-4 w-4 fill-current", children: /* @__PURE__ */ jsx49("path", { d: "M3.22 2.47 8 7.25l4.78-4.78 1.06 1.06L9.06 8.31l4.78 4.78-1.06 1.06L8 9.37l-4.78 4.78-1.06-1.06 4.78-4.78-4.78-4.78 1.06-1.06Z" }) })
                 }
               )
             ] }),
-            /* @__PURE__ */ jsxs58("div", { className: "mt-5 flex items-center justify-end gap-2", children: [
-              /* @__PURE__ */ jsx70(
+            /* @__PURE__ */ jsxs42("div", { className: "mt-5 flex items-center justify-end gap-2", children: [
+              /* @__PURE__ */ jsx49(
                 "button",
                 {
                   type: "button",
@@ -21359,7 +16459,7 @@ function ConfirmDialog({
                   children: "Cancel"
                 }
               ),
-              /* @__PURE__ */ jsx70(
+              /* @__PURE__ */ jsx49(
                 "button",
                 {
                   type: "button",
@@ -21379,9 +16479,9 @@ function ConfirmDialog({
 }
 
 // src/components/ExportTranscriptDialog.tsx
-import { useEffect as useEffect28, useMemo as useMemo17, useState as useState33 } from "react";
-import { createPortal as createPortal5 } from "react-dom";
-import { Fragment as Fragment18, jsx as jsx71, jsxs as jsxs59 } from "react/jsx-runtime";
+import { useEffect as useEffect22, useMemo as useMemo11, useState as useState28 } from "react";
+import { createPortal as createPortal4 } from "react-dom";
+import { Fragment as Fragment15, jsx as jsx50, jsxs as jsxs43 } from "react/jsx-runtime";
 function formatTurnTime(value) {
   if (!value) {
     return "No time";
@@ -21462,21 +16562,21 @@ function ThreadActionsDialog({
   onRevokeShare,
   onOpenDeviceSharing
 }) {
-  const turns = useMemo17(() => turnsState.data?.turns ?? [], [turnsState.data?.turns]);
-  const [actionMode, setActionMode] = useState33(initialMode);
-  const [turnSelection, setTurnSelection] = useState33("latest-10");
-  const [selectedTurnIds, setSelectedTurnIds] = useState33(
+  const turns = useMemo11(() => turnsState.data?.turns ?? [], [turnsState.data?.turns]);
+  const [actionMode, setActionMode] = useState28(initialMode);
+  const [turnSelection, setTurnSelection] = useState28("latest-10");
+  const [selectedTurnIds, setSelectedTurnIds] = useState28(
     () => /* @__PURE__ */ new Set()
   );
-  const [includeTokenAndPrice, setIncludeTokenAndPrice] = useState33(true);
-  const [targetIdentifier, setTargetIdentifier] = useState33("");
-  const [threadAccess, setThreadAccess] = useState33("read");
-  const [workspaceAccess, setWorkspaceAccess] = useState33("none");
-  const [shareLabel, setShareLabel] = useState33("");
-  const [effectiveTheme, setEffectiveTheme] = useState33(
+  const [includeTokenAndPrice, setIncludeTokenAndPrice] = useState28(true);
+  const [targetIdentifier, setTargetIdentifier] = useState28("");
+  const [threadAccess, setThreadAccess] = useState28("read");
+  const [workspaceAccess, setWorkspaceAccess] = useState28("none");
+  const [shareLabel, setShareLabel] = useState28("");
+  const [effectiveTheme, setEffectiveTheme] = useState28(
     () => typeof document !== "undefined" && !document.documentElement.classList.contains("dark") ? "light" : "dark"
   );
-  useEffect28(() => {
+  useEffect22(() => {
     if (!open) {
       return;
     }
@@ -21489,12 +16589,12 @@ function ThreadActionsDialog({
     setShareLabel("");
     void onLoadTurns();
   }, [initialMode, onLoadTurns, open]);
-  useEffect28(() => {
+  useEffect22(() => {
     if (open && turns.length > 0) {
       setSelectedTurnIds(new Set(turns.slice(0, 10).map((turn) => turn.turnId)));
     }
   }, [open, turns]);
-  useEffect28(() => {
+  useEffect22(() => {
     if (!open) {
       return;
     }
@@ -21506,7 +16606,7 @@ function ThreadActionsDialog({
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [busy, onCancel, open]);
-  useEffect28(() => {
+  useEffect22(() => {
     if (!open) {
       return;
     }
@@ -21577,14 +16677,14 @@ function ThreadActionsDialog({
     { mode: "html", label: "HTML" },
     { mode: "share", label: "Share" }
   ];
-  return createPortal5(
-    /* @__PURE__ */ jsxs59(
+  return createPortal4(
+    /* @__PURE__ */ jsxs43(
       "div",
       {
         className: `thread-export-dialog-root thread-ui-theme-${effectiveTheme} fixed inset-0 z-[96] flex items-end justify-center p-0 sm:items-center sm:p-6`,
         "data-theme-effective": effectiveTheme,
         children: [
-          /* @__PURE__ */ jsx71(
+          /* @__PURE__ */ jsx50(
             "button",
             {
               type: "button",
@@ -21594,7 +16694,7 @@ function ThreadActionsDialog({
               className: "thread-export-dialog-backdrop absolute inset-0 backdrop-blur-sm disabled:cursor-not-allowed"
             }
           ),
-          /* @__PURE__ */ jsxs59(
+          /* @__PURE__ */ jsxs43(
             "div",
             {
               role: "dialog",
@@ -21602,12 +16702,12 @@ function ThreadActionsDialog({
               "aria-label": "Thread actions",
               className: "thread-export-dialog-panel relative z-[1] flex max-h-[min(48rem,calc(100vh-1rem))] w-full max-w-2xl flex-col rounded-t-[1.6rem] border shadow-2xl sm:rounded-[1.6rem]",
               children: [
-                /* @__PURE__ */ jsxs59("div", { className: "thread-export-dialog-header flex items-start justify-between gap-3 border-b px-5 py-4", children: [
-                  /* @__PURE__ */ jsxs59("div", { className: "min-w-0", children: [
-                    /* @__PURE__ */ jsx71("p", { className: "thread-export-dialog-title text-sm font-semibold", children: "Thread actions" }),
-                    /* @__PURE__ */ jsx71("p", { className: "thread-export-dialog-subtitle mt-1 text-xs", children: "Export a review copy or share this thread." })
+                /* @__PURE__ */ jsxs43("div", { className: "thread-export-dialog-header flex items-start justify-between gap-3 border-b px-5 py-4", children: [
+                  /* @__PURE__ */ jsxs43("div", { className: "min-w-0", children: [
+                    /* @__PURE__ */ jsx50("p", { className: "thread-export-dialog-title text-sm font-semibold", children: "Thread actions" }),
+                    /* @__PURE__ */ jsx50("p", { className: "thread-export-dialog-subtitle mt-1 text-xs", children: "Export a review copy or share this thread." })
                   ] }),
-                  /* @__PURE__ */ jsx71(
+                  /* @__PURE__ */ jsx50(
                     "button",
                     {
                       type: "button",
@@ -21615,12 +16715,12 @@ function ThreadActionsDialog({
                       onClick: onCancel,
                       disabled: busy,
                       className: "thread-export-dialog-icon-button inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border transition disabled:cursor-not-allowed disabled:opacity-60",
-                      children: /* @__PURE__ */ jsx71("svg", { "aria-hidden": "true", viewBox: "0 0 16 16", className: "h-4 w-4 fill-current", children: /* @__PURE__ */ jsx71("path", { d: "M3.22 2.47 8 7.25l4.78-4.78 1.06 1.06L9.06 8.31l4.78 4.78-1.06 1.06L8 9.37l-4.78 4.78-1.06-1.06 4.78-4.78-4.78-4.78 1.06-1.06Z" }) })
+                      children: /* @__PURE__ */ jsx50("svg", { "aria-hidden": "true", viewBox: "0 0 16 16", className: "h-4 w-4 fill-current", children: /* @__PURE__ */ jsx50("path", { d: "M3.22 2.47 8 7.25l4.78-4.78 1.06 1.06L9.06 8.31l4.78 4.78-1.06 1.06L8 9.37l-4.78 4.78-1.06-1.06 4.78-4.78-4.78-4.78 1.06-1.06Z" }) })
                     }
                   )
                 ] }),
-                /* @__PURE__ */ jsxs59("div", { className: "min-h-0 flex-1 overflow-auto px-5 py-4", children: [
-                  /* @__PURE__ */ jsx71("div", { className: "thread-export-dialog-segment inline-flex rounded-full border p-1", children: actionTabs.map((tab) => /* @__PURE__ */ jsx71(
+                /* @__PURE__ */ jsxs43("div", { className: "min-h-0 flex-1 overflow-auto px-5 py-4", children: [
+                  /* @__PURE__ */ jsx50("div", { className: "thread-export-dialog-segment inline-flex rounded-full border p-1", children: actionTabs.map((tab) => /* @__PURE__ */ jsx50(
                     "button",
                     {
                       type: "button",
@@ -21630,14 +16730,14 @@ function ThreadActionsDialog({
                     },
                     tab.mode
                   )) }),
-                  actionMode === "share" ? /* @__PURE__ */ jsxs59("form", { id: "thread-actions-share-form", className: "mt-4 space-y-4", onSubmit: handleShare, children: [
-                    !shareAvailable ? /* @__PURE__ */ jsx71("p", { className: "thread-export-dialog-box thread-export-dialog-subtitle rounded-2xl border px-3 py-3 text-sm", children: shareUnavailableMessage }) : null,
-                    shareAvailable && onOpenDeviceSharing ? /* @__PURE__ */ jsxs59("div", { className: "thread-export-dialog-box flex flex-wrap items-center justify-between gap-3 rounded-2xl border px-3 py-3", children: [
-                      /* @__PURE__ */ jsxs59("div", { className: "min-w-0", children: [
-                        /* @__PURE__ */ jsx71("p", { className: "thread-export-dialog-strong text-sm font-medium", children: "Share this thread" }),
-                        /* @__PURE__ */ jsx71("p", { className: "thread-export-dialog-subtitle mt-1 text-xs", children: "Need broader access? Share the whole device from Relay Portal." })
+                  actionMode === "share" ? /* @__PURE__ */ jsxs43("form", { id: "thread-actions-share-form", className: "mt-4 space-y-4", onSubmit: handleShare, children: [
+                    !shareAvailable ? /* @__PURE__ */ jsx50("p", { className: "thread-export-dialog-box thread-export-dialog-subtitle rounded-2xl border px-3 py-3 text-sm", children: shareUnavailableMessage }) : null,
+                    shareAvailable && onOpenDeviceSharing ? /* @__PURE__ */ jsxs43("div", { className: "thread-export-dialog-box flex flex-wrap items-center justify-between gap-3 rounded-2xl border px-3 py-3", children: [
+                      /* @__PURE__ */ jsxs43("div", { className: "min-w-0", children: [
+                        /* @__PURE__ */ jsx50("p", { className: "thread-export-dialog-strong text-sm font-medium", children: "Share this thread" }),
+                        /* @__PURE__ */ jsx50("p", { className: "thread-export-dialog-subtitle mt-1 text-xs", children: "Need broader access? Share the whole device from Relay Portal." })
                       ] }),
-                      /* @__PURE__ */ jsx71(
+                      /* @__PURE__ */ jsx50(
                         "button",
                         {
                           type: "button",
@@ -21648,9 +16748,9 @@ function ThreadActionsDialog({
                         }
                       )
                     ] }) : null,
-                    /* @__PURE__ */ jsxs59("label", { className: "thread-export-dialog-body-text block text-sm", children: [
+                    /* @__PURE__ */ jsxs43("label", { className: "thread-export-dialog-body-text block text-sm", children: [
                       "Relay identifier",
-                      /* @__PURE__ */ jsx71(
+                      /* @__PURE__ */ jsx50(
                         "input",
                         {
                           className: "thread-export-dialog-box mt-2 w-full rounded-xl border bg-transparent px-3 py-2 outline-none",
@@ -21661,13 +16761,13 @@ function ThreadActionsDialog({
                         }
                       )
                     ] }),
-                    /* @__PURE__ */ jsxs59("fieldset", { className: "thread-export-dialog-box rounded-2xl border p-3", children: [
-                      /* @__PURE__ */ jsx71("legend", { className: "thread-export-dialog-subtitle px-1 text-xs", children: "Thread access" }),
-                      /* @__PURE__ */ jsx71("div", { className: "mt-2 grid gap-2 sm:grid-cols-2", children: [
+                    /* @__PURE__ */ jsxs43("fieldset", { className: "thread-export-dialog-box rounded-2xl border p-3", children: [
+                      /* @__PURE__ */ jsx50("legend", { className: "thread-export-dialog-subtitle px-1 text-xs", children: "Thread access" }),
+                      /* @__PURE__ */ jsx50("div", { className: "mt-2 grid gap-2 sm:grid-cols-2", children: [
                         ["read", "View only"],
                         ["control", "Collaborator"]
-                      ].map(([value, label]) => /* @__PURE__ */ jsxs59("label", { className: "thread-export-dialog-turn-row flex items-center gap-2 rounded-xl px-2.5 py-2 text-sm", children: [
-                        /* @__PURE__ */ jsx71(
+                      ].map(([value, label]) => /* @__PURE__ */ jsxs43("label", { className: "thread-export-dialog-turn-row flex items-center gap-2 rounded-xl px-2.5 py-2 text-sm", children: [
+                        /* @__PURE__ */ jsx50(
                           "input",
                           {
                             type: "radio",
@@ -21679,14 +16779,14 @@ function ThreadActionsDialog({
                         label
                       ] }, value)) })
                     ] }),
-                    /* @__PURE__ */ jsxs59("fieldset", { className: "thread-export-dialog-box rounded-2xl border p-3", children: [
-                      /* @__PURE__ */ jsx71("legend", { className: "thread-export-dialog-subtitle px-1 text-xs", children: "Workspace" }),
-                      /* @__PURE__ */ jsx71("div", { className: "mt-2 grid gap-2 sm:grid-cols-3", children: [
+                    /* @__PURE__ */ jsxs43("fieldset", { className: "thread-export-dialog-box rounded-2xl border p-3", children: [
+                      /* @__PURE__ */ jsx50("legend", { className: "thread-export-dialog-subtitle px-1 text-xs", children: "Workspace" }),
+                      /* @__PURE__ */ jsx50("div", { className: "mt-2 grid gap-2 sm:grid-cols-3", children: [
                         ["none", "No access"],
                         ["read", "Read files"],
                         ["write", "Read and edit"]
-                      ].map(([value, label]) => /* @__PURE__ */ jsxs59("label", { className: "thread-export-dialog-turn-row flex items-center gap-2 rounded-xl px-2.5 py-2 text-sm", children: [
-                        /* @__PURE__ */ jsx71(
+                      ].map(([value, label]) => /* @__PURE__ */ jsxs43("label", { className: "thread-export-dialog-turn-row flex items-center gap-2 rounded-xl px-2.5 py-2 text-sm", children: [
+                        /* @__PURE__ */ jsx50(
                           "input",
                           {
                             type: "radio",
@@ -21698,9 +16798,9 @@ function ThreadActionsDialog({
                         label
                       ] }, value)) })
                     ] }),
-                    /* @__PURE__ */ jsxs59("label", { className: "thread-export-dialog-body-text block text-sm", children: [
+                    /* @__PURE__ */ jsxs43("label", { className: "thread-export-dialog-body-text block text-sm", children: [
                       "Label",
-                      /* @__PURE__ */ jsx71(
+                      /* @__PURE__ */ jsx50(
                         "input",
                         {
                           className: "thread-export-dialog-box mt-2 w-full rounded-xl border bg-transparent px-3 py-2 outline-none",
@@ -21711,22 +16811,22 @@ function ThreadActionsDialog({
                         }
                       )
                     ] }),
-                    /* @__PURE__ */ jsxs59("div", { className: "thread-export-dialog-box rounded-2xl border", children: [
-                      /* @__PURE__ */ jsxs59("div", { className: "thread-export-dialog-box-header flex items-center justify-between border-b px-3 py-2.5", children: [
-                        /* @__PURE__ */ jsx71("p", { className: "thread-export-dialog-strong text-sm font-medium", children: "Shared by me" }),
-                        /* @__PURE__ */ jsx71("span", { className: "thread-export-dialog-status-pill rounded-full border px-2 py-0.5 text-[10px]", children: shareState?.shares.length ?? 0 })
+                    /* @__PURE__ */ jsxs43("div", { className: "thread-export-dialog-box rounded-2xl border", children: [
+                      /* @__PURE__ */ jsxs43("div", { className: "thread-export-dialog-box-header flex items-center justify-between border-b px-3 py-2.5", children: [
+                        /* @__PURE__ */ jsx50("p", { className: "thread-export-dialog-strong text-sm font-medium", children: "Shared by me" }),
+                        /* @__PURE__ */ jsx50("span", { className: "thread-export-dialog-status-pill rounded-full border px-2 py-0.5 text-[10px]", children: shareState?.shares.length ?? 0 })
                       ] }),
-                      shareState?.status === "failed" ? /* @__PURE__ */ jsx71("p", { className: "px-3 py-3 text-sm text-rose-500 dark:text-rose-200", children: shareState.error }) : shareState?.shares.length ? /* @__PURE__ */ jsx71("div", { className: "divide-y", children: shareState.shares.map((share) => /* @__PURE__ */ jsxs59("div", { className: "flex flex-wrap items-center justify-between gap-2 px-3 py-2.5 text-sm", children: [
-                        /* @__PURE__ */ jsxs59("div", { className: "min-w-0", children: [
-                          /* @__PURE__ */ jsx71("p", { className: "thread-export-dialog-strong truncate font-medium", children: share.targetUsername }),
-                          /* @__PURE__ */ jsxs59("p", { className: "thread-export-dialog-subtitle mt-0.5 text-xs", children: [
+                      shareState?.status === "failed" ? /* @__PURE__ */ jsx50("p", { className: "px-3 py-3 text-sm text-rose-500 dark:text-rose-200", children: shareState.error }) : shareState?.shares.length ? /* @__PURE__ */ jsx50("div", { className: "divide-y", children: shareState.shares.map((share) => /* @__PURE__ */ jsxs43("div", { className: "flex flex-wrap items-center justify-between gap-2 px-3 py-2.5 text-sm", children: [
+                        /* @__PURE__ */ jsxs43("div", { className: "min-w-0", children: [
+                          /* @__PURE__ */ jsx50("p", { className: "thread-export-dialog-strong truncate font-medium", children: share.targetUsername }),
+                          /* @__PURE__ */ jsxs43("p", { className: "thread-export-dialog-subtitle mt-0.5 text-xs", children: [
                             share.label ? `${share.label} \xB7 ` : "",
                             shareThreadAccessLabel(share.threadAccess),
                             " / ",
                             shareWorkspaceAccessLabel(share.workspaceAccess)
                           ] })
                         ] }),
-                        onRevokeShare ? /* @__PURE__ */ jsx71(
+                        onRevokeShare ? /* @__PURE__ */ jsx50(
                           "button",
                           {
                             type: "button",
@@ -21736,31 +16836,31 @@ function ThreadActionsDialog({
                             children: "Revoke"
                           }
                         ) : null
-                      ] }, share.id)) }) : /* @__PURE__ */ jsx71("p", { className: "thread-export-dialog-subtitle px-3 py-3 text-sm", children: "No active shares for this thread." })
+                      ] }, share.id)) }) : /* @__PURE__ */ jsx50("p", { className: "thread-export-dialog-subtitle px-3 py-3 text-sm", children: "No active shares for this thread." })
                     ] })
-                  ] }) : /* @__PURE__ */ jsxs59(Fragment18, { children: [
-                    /* @__PURE__ */ jsxs59("label", { className: "thread-export-dialog-body-text mt-4 block text-sm", children: [
+                  ] }) : /* @__PURE__ */ jsxs43(Fragment15, { children: [
+                    /* @__PURE__ */ jsxs43("label", { className: "thread-export-dialog-body-text mt-4 block text-sm", children: [
                       "Turns",
-                      /* @__PURE__ */ jsx71(
+                      /* @__PURE__ */ jsx50(
                         "select",
                         {
                           className: "thread-export-dialog-box mt-2 w-full rounded-xl border bg-transparent px-3 py-2 outline-none",
                           value: turnSelection,
                           onChange: (event) => setTurnSelection(event.target.value),
-                          children: ["latest-3", "latest-10", "latest-20", "all-loaded", "custom"].map((entry) => /* @__PURE__ */ jsx71("option", { value: entry, children: turnSelectionLabel(entry) }, entry))
+                          children: ["latest-3", "latest-10", "latest-20", "all-loaded", "custom"].map((entry) => /* @__PURE__ */ jsx50("option", { value: entry, children: turnSelectionLabel(entry) }, entry))
                         }
                       )
                     ] }),
-                    turnSelection === "custom" ? /* @__PURE__ */ jsxs59("div", { className: "thread-export-dialog-box mt-4 rounded-2xl border", children: [
-                      /* @__PURE__ */ jsxs59("div", { className: "thread-export-dialog-box-header flex flex-wrap items-center justify-between gap-2 border-b px-3 py-2.5", children: [
-                        /* @__PURE__ */ jsxs59("p", { className: "thread-export-dialog-subtitle text-xs", children: [
+                    turnSelection === "custom" ? /* @__PURE__ */ jsxs43("div", { className: "thread-export-dialog-box mt-4 rounded-2xl border", children: [
+                      /* @__PURE__ */ jsxs43("div", { className: "thread-export-dialog-box-header flex flex-wrap items-center justify-between gap-2 border-b px-3 py-2.5", children: [
+                        /* @__PURE__ */ jsxs43("p", { className: "thread-export-dialog-subtitle text-xs", children: [
                           "Selected ",
                           selectedTurnIds.size,
                           " of ",
                           turnsState.data?.totalTurnCount ?? turns.length
                         ] }),
-                        /* @__PURE__ */ jsxs59("div", { className: "flex items-center gap-2", children: [
-                          /* @__PURE__ */ jsx71(
+                        /* @__PURE__ */ jsxs43("div", { className: "flex items-center gap-2", children: [
+                          /* @__PURE__ */ jsx50(
                             "button",
                             {
                               type: "button",
@@ -21769,7 +16869,7 @@ function ThreadActionsDialog({
                               children: "Select all"
                             }
                           ),
-                          /* @__PURE__ */ jsx71(
+                          /* @__PURE__ */ jsx50(
                             "button",
                             {
                               type: "button",
@@ -21780,12 +16880,12 @@ function ThreadActionsDialog({
                           )
                         ] })
                       ] }),
-                      turnsState.status === "loading" ? /* @__PURE__ */ jsx71("p", { className: "thread-export-dialog-subtitle px-3 py-6 text-sm", children: "Loading turns..." }) : turnsState.status === "failed" ? /* @__PURE__ */ jsx71("p", { className: "px-3 py-6 text-sm text-rose-500 dark:text-rose-200", children: turnsState.error }) : /* @__PURE__ */ jsx71("div", { className: "max-h-80 overflow-auto p-2", children: turns.map((turn) => /* @__PURE__ */ jsxs59(
+                      turnsState.status === "loading" ? /* @__PURE__ */ jsx50("p", { className: "thread-export-dialog-subtitle px-3 py-6 text-sm", children: "Loading turns..." }) : turnsState.status === "failed" ? /* @__PURE__ */ jsx50("p", { className: "px-3 py-6 text-sm text-rose-500 dark:text-rose-200", children: turnsState.error }) : /* @__PURE__ */ jsx50("div", { className: "max-h-80 overflow-auto p-2", children: turns.map((turn) => /* @__PURE__ */ jsxs43(
                         "label",
                         {
                           className: "thread-export-dialog-turn-row flex cursor-pointer items-center gap-3 rounded-xl px-2.5 py-2 text-sm transition",
                           children: [
-                            /* @__PURE__ */ jsx71(
+                            /* @__PURE__ */ jsx50(
                               "input",
                               {
                                 type: "checkbox",
@@ -21794,21 +16894,21 @@ function ThreadActionsDialog({
                                 className: "thread-export-dialog-checkbox h-4 w-4"
                               }
                             ),
-                            /* @__PURE__ */ jsxs59("span", { className: "thread-export-dialog-strong shrink-0 text-xs font-medium", children: [
+                            /* @__PURE__ */ jsxs43("span", { className: "thread-export-dialog-strong shrink-0 text-xs font-medium", children: [
                               "Turn ",
                               turn.turnNumber
                             ] }),
-                            /* @__PURE__ */ jsx71("span", { className: "thread-export-dialog-subtitle shrink-0 text-xs", children: formatTurnTime(turn.startedAt) }),
-                            /* @__PURE__ */ jsx71("span", { className: "thread-export-dialog-body-text min-w-0 flex-1 truncate text-left", children: turn.userPromptPreview }),
-                            /* @__PURE__ */ jsx71("span", { className: "thread-export-dialog-status-pill hidden shrink-0 rounded-full border px-2 py-0.5 text-[10px] sm:inline", children: statusLabel3(turn.status) })
+                            /* @__PURE__ */ jsx50("span", { className: "thread-export-dialog-subtitle shrink-0 text-xs", children: formatTurnTime(turn.startedAt) }),
+                            /* @__PURE__ */ jsx50("span", { className: "thread-export-dialog-body-text min-w-0 flex-1 truncate text-left", children: turn.userPromptPreview }),
+                            /* @__PURE__ */ jsx50("span", { className: "thread-export-dialog-status-pill hidden shrink-0 rounded-full border px-2 py-0.5 text-[10px] sm:inline", children: statusLabel3(turn.status) })
                           ]
                         },
                         turn.turnId
                       )) })
                     ] }) : null,
-                    /* @__PURE__ */ jsxs59("div", { className: "thread-export-dialog-body-text mt-4 grid gap-2 text-sm sm:grid-cols-2", children: [
-                      /* @__PURE__ */ jsxs59("label", { className: "thread-export-dialog-box flex items-center gap-2 rounded-xl border px-3 py-2", children: [
-                        /* @__PURE__ */ jsx71(
+                    /* @__PURE__ */ jsxs43("div", { className: "thread-export-dialog-body-text mt-4 grid gap-2 text-sm sm:grid-cols-2", children: [
+                      /* @__PURE__ */ jsxs43("label", { className: "thread-export-dialog-box flex items-center gap-2 rounded-xl border px-3 py-2", children: [
+                        /* @__PURE__ */ jsx50(
                           "input",
                           {
                             type: "checkbox",
@@ -21819,14 +16919,14 @@ function ThreadActionsDialog({
                         ),
                         "Token and price"
                       ] }),
-                      /* @__PURE__ */ jsx71("p", { className: "thread-export-dialog-box thread-export-dialog-subtitle flex items-center rounded-xl border px-3 py-2 text-xs", children: actionMode === "html" ? "HTML keeps the chat timeline styling and omits raw command output." : "Review exports keep message text readable and omit tool activity." })
+                      /* @__PURE__ */ jsx50("p", { className: "thread-export-dialog-box thread-export-dialog-subtitle flex items-center rounded-xl border px-3 py-2 text-xs", children: actionMode === "html" ? "HTML keeps the chat timeline styling and omits raw command output." : "Review exports keep message text readable and omit tool activity." })
                     ] })
                   ] })
                 ] }),
-                /* @__PURE__ */ jsxs59("div", { className: "thread-export-dialog-footer flex items-center justify-between gap-3 border-t px-5 py-4", children: [
-                  /* @__PURE__ */ jsx71("p", { className: "thread-export-dialog-subtitle min-w-0 text-xs", children: actionMode === "share" ? shareAvailable ? "Share access is enforced by the relay server." : "Share permissions are not wired yet." : `${selectedCount} ${selectedCount === 1 ? "turn" : "turns"} selected.` }),
-                  /* @__PURE__ */ jsxs59("div", { className: "flex items-center gap-2", children: [
-                    /* @__PURE__ */ jsx71(
+                /* @__PURE__ */ jsxs43("div", { className: "thread-export-dialog-footer flex items-center justify-between gap-3 border-t px-5 py-4", children: [
+                  /* @__PURE__ */ jsx50("p", { className: "thread-export-dialog-subtitle min-w-0 text-xs", children: actionMode === "share" ? shareAvailable ? "Share access is enforced by the relay server." : "Share permissions are not wired yet." : `${selectedCount} ${selectedCount === 1 ? "turn" : "turns"} selected.` }),
+                  /* @__PURE__ */ jsxs43("div", { className: "flex items-center gap-2", children: [
+                    /* @__PURE__ */ jsx50(
                       "button",
                       {
                         type: "button",
@@ -21836,7 +16936,7 @@ function ThreadActionsDialog({
                         children: "Cancel"
                       }
                     ),
-                    actionMode === "share" ? /* @__PURE__ */ jsx71(
+                    actionMode === "share" ? /* @__PURE__ */ jsx50(
                       "button",
                       {
                         type: "submit",
@@ -21845,7 +16945,7 @@ function ThreadActionsDialog({
                         className: "ui-status-warning rounded-full px-4 py-2 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-60",
                         children: busy ? "Sharing..." : "Share this thread"
                       }
-                    ) : /* @__PURE__ */ jsx71(
+                    ) : /* @__PURE__ */ jsx50(
                       "button",
                       {
                         type: "button",
@@ -21870,19 +16970,19 @@ var ExportTranscriptDialog = ThreadActionsDialog;
 
 // src/ThreadDetailSurface.tsx
 import {
-  useMemo as useMemo19
+  useMemo as useMemo13
 } from "react";
 
 // src/components/graph-chat/GraphChatThreadChatPanel.tsx
 import {
-  useCallback as useCallback19,
-  useEffect as useEffect29,
-  useLayoutEffect as useLayoutEffect8,
-  useMemo as useMemo18,
-  useRef as useRef19,
-  useState as useState34
+  useCallback as useCallback17,
+  useEffect as useEffect23,
+  useLayoutEffect as useLayoutEffect7,
+  useMemo as useMemo12,
+  useRef as useRef15,
+  useState as useState29
 } from "react";
-import { jsx as jsx72, jsxs as jsxs60 } from "react/jsx-runtime";
+import { jsx as jsx51, jsxs as jsxs44 } from "react/jsx-runtime";
 function GraphChatThreadChatPanel({
   detail,
   adapter,
@@ -21897,15 +16997,15 @@ function GraphChatThreadChatPanel({
   floatingMobileComposerBottomOffset = 0,
   composerHostRef
 }) {
-  const [isMobileViewport, setIsMobileViewport] = useState34(false);
-  const [mobileComposerHeight, setMobileComposerHeight] = useState34(0);
-  const [mobileComposerOverlap, setMobileComposerOverlap] = useState34(0);
-  const [mobileKeyboardInset, setMobileKeyboardInset] = useState34(0);
-  const [mobilePromptFocused, setMobilePromptFocused] = useState34(false);
-  const internalComposerHostRef = useRef19(null);
+  const [isMobileViewport, setIsMobileViewport] = useState29(false);
+  const [mobileComposerHeight, setMobileComposerHeight] = useState29(0);
+  const [mobileComposerOverlap, setMobileComposerOverlap] = useState29(0);
+  const [mobileKeyboardInset, setMobileKeyboardInset] = useState29(0);
+  const [mobilePromptFocused, setMobilePromptFocused] = useState29(false);
+  const internalComposerHostRef = useRef15(null);
   const timelineTailVisibilityChange = timelineProps?.onTailVisibilityChange;
   const hasPendingRequests = detail.pendingRequests.length > 0;
-  const queuedPrompts = useMemo18(() => {
+  const queuedPrompts = useMemo12(() => {
     const pendingSteers = detail.pendingSteers ?? [];
     const materializedClientRequestIds = new Set(
       pendingSteers.map((prompt) => prompt.clientRequestId).filter((value) => Boolean(value))
@@ -21925,13 +17025,13 @@ function GraphChatThreadChatPanel({
       }))
     ];
   }, [detail.pendingSteers, timelineProps?.optimisticSteers]);
-  const steeredPrompts = useMemo18(
+  const steeredPrompts = useMemo12(
     () => (detail.pendingSteers ?? []).filter(
       (prompt) => prompt.delivery === "steer"
     ),
     [detail.pendingSteers]
   );
-  const resolvedComposerProps = useMemo18(
+  const resolvedComposerProps = useMemo12(
     () => composerProps ? {
       ...composerProps,
       pendingPrompts: queuedPrompts,
@@ -21956,13 +17056,13 @@ function GraphChatThreadChatPanel({
       queuedPrompts
     ]
   );
-  const handleTailVisibilityChange = useCallback19(
+  const handleTailVisibilityChange = useCallback17(
     (nextIsTailVisible) => {
       timelineTailVisibilityChange?.(nextIsTailVisible);
     },
     [timelineTailVisibilityChange]
   );
-  useEffect29(() => {
+  useEffect23(() => {
     if (typeof window === "undefined" || typeof window.matchMedia !== "function") {
       return;
     }
@@ -21974,7 +17074,7 @@ function GraphChatThreadChatPanel({
       mediaQuery.removeEventListener("change", updateViewport);
     };
   }, []);
-  useEffect29(() => {
+  useEffect23(() => {
     if (typeof window === "undefined") {
       return;
     }
@@ -21999,7 +17099,7 @@ function GraphChatThreadChatPanel({
       window.removeEventListener("resize", updateKeyboardInset);
     };
   }, []);
-  useLayoutEffect8(() => {
+  useLayoutEffect7(() => {
     const node = internalComposerHostRef.current;
     if (!node || !isMobileViewport) {
       setMobileComposerHeight(0);
@@ -22018,7 +17118,7 @@ function GraphChatThreadChatPanel({
       observer.disconnect();
     };
   }, [isMobileViewport, composerProps, hasPendingRequests]);
-  useLayoutEffect8(() => {
+  useLayoutEffect7(() => {
     const node = internalComposerHostRef.current;
     if (!node || !isMobileViewport) {
       setMobileComposerOverlap(0);
@@ -22052,7 +17152,7 @@ function GraphChatThreadChatPanel({
     composerProps,
     hasPendingRequests
   ]);
-  useEffect29(() => {
+  useEffect23(() => {
     if (!isMobileViewport) {
       setMobilePromptFocused(false);
       return;
@@ -22077,7 +17177,7 @@ function GraphChatThreadChatPanel({
       document.removeEventListener("focusout", handleFocusOut);
     };
   }, [isMobileViewport]);
-  const setComposerHostRefs = useCallback19(
+  const setComposerHostRefs = useCallback17(
     (node) => {
       internalComposerHostRef.current = node;
       if (composerHostRef) {
@@ -22100,9 +17200,9 @@ function GraphChatThreadChatPanel({
     bottom: `${floatingMobileComposerBottomOffset + mobileComposerBottomOffset}px`,
     paddingBottom: "max(env(safe-area-inset-bottom), var(--android-safe-area-bottom, 0px))"
   } : void 0;
-  const timelineElement = useMemo18(() => {
+  const timelineElement = useMemo12(() => {
     const threadRunning = detail.thread.status === "running" || detail.thread.activeTurnId !== null;
-    return /* @__PURE__ */ jsx72(
+    return /* @__PURE__ */ jsx51(
       TimelineComponent,
       {
         threadId: detail.thread.id,
@@ -22136,7 +17236,7 @@ function GraphChatThreadChatPanel({
     timelineProps,
     steeredPrompts
   ]);
-  return /* @__PURE__ */ jsxs60(
+  return /* @__PURE__ */ jsxs44(
     "div",
     {
       "data-testid": "chat-panel",
@@ -22145,16 +17245,16 @@ function GraphChatThreadChatPanel({
       children: [
         beforeTimelineContent,
         timelineElement,
-        /* @__PURE__ */ jsx72("div", { className: "thread-chat-usage-footer hidden shrink-0 items-center px-4 py-1 text-[10px] leading-4 sm:flex", children: /* @__PURE__ */ jsxs60("span", { className: "min-w-0", children: [
+        /* @__PURE__ */ jsx51("div", { className: "thread-chat-usage-footer hidden shrink-0 items-center px-4 py-1 text-[10px] leading-4 sm:flex", children: /* @__PURE__ */ jsxs44("span", { className: "min-w-0", children: [
           detail.turns.length,
           " turn",
           detail.turns.length !== 1 ? "s" : "",
-          /* @__PURE__ */ jsx72("span", { className: "mx-1 text-[var(--theme-border-contrast)]", children: "|" }),
+          /* @__PURE__ */ jsx51("span", { className: "mx-1 text-[var(--theme-border-contrast)]", children: "|" }),
           transcriptItemCount,
           " item",
           transcriptItemCount !== 1 ? "s" : ""
         ] }) }),
-        resolvedComposerProps ? useFloatingMobileComposer ? /* @__PURE__ */ jsx72(
+        resolvedComposerProps ? useFloatingMobileComposer ? /* @__PURE__ */ jsx51(
           "div",
           {
             ref: setComposerHostRefs,
@@ -22163,7 +17263,7 @@ function GraphChatThreadChatPanel({
               bottom: `${floatingMobileComposerBottomOffset}px`,
               paddingBottom: "max(env(safe-area-inset-bottom), var(--android-safe-area-bottom, 0px))"
             },
-            children: /* @__PURE__ */ jsx72(
+            children: /* @__PURE__ */ jsx51(
               ThreadComposer,
               {
                 ...resolvedComposerProps,
@@ -22173,12 +17273,12 @@ function GraphChatThreadChatPanel({
               }
             )
           }
-        ) : /* @__PURE__ */ jsx72(
+        ) : /* @__PURE__ */ jsx51(
           "div",
           {
             ref: setComposerHostRefs,
             className: "thread-graph-composer-host shrink-0",
-            children: /* @__PURE__ */ jsx72(
+            children: /* @__PURE__ */ jsx51(
               ThreadComposer,
               {
                 ...resolvedComposerProps,
@@ -22194,7 +17294,7 @@ function GraphChatThreadChatPanel({
 }
 
 // src/ThreadDetailSurface.tsx
-import { jsx as jsx73, jsxs as jsxs61 } from "react/jsx-runtime";
+import { jsx as jsx52, jsxs as jsxs45 } from "react/jsx-runtime";
 function summarizeThreadUsage(detail) {
   return detail.turns.reduce(
     (summary, turn) => {
@@ -22324,7 +17424,7 @@ function ThreadDetailSurface({
   loadingContent,
   emptyContent
 }) {
-  const detail = useMemo19(
+  const detail = useMemo13(
     () => rawDetail ? sanitizeThreadDetailHistory(rawDetail) : null,
     [rawDetail]
   );
@@ -22337,7 +17437,7 @@ function ThreadDetailSurface({
     openThread,
     cancelPendingSteer
   } = adapter;
-  const timelineAdapter = useMemo19(
+  const timelineAdapter = useMemo13(
     () => ({
       ...getImageAssetUrl ? {
         getImageAssetUrl: (input) => getImageAssetUrl(input.path)
@@ -22356,23 +17456,23 @@ function ThreadDetailSurface({
     ]
   );
   const terminalPanelEnabled = plugins.getThreadPanels().some((panel) => panel.kind === "terminal");
-  const threadUsageSummary = useMemo19(
+  const threadUsageSummary = useMemo13(
     () => detail ? summarizeThreadUsage(detail) : null,
     [detail]
   );
-  const topbarUsageLabel = useMemo19(
+  const topbarUsageLabel = useMemo13(
     () => formatTopbarUsageSummary(threadUsageSummary),
     [threadUsageSummary]
   );
-  const transcriptItemCount = useMemo19(
+  const transcriptItemCount = useMemo13(
     () => detail ? detail.turns.reduce(
       (count, turn) => count + turn.items.length,
       detail.liveItems?.items.length ?? 0
     ) : 0,
     [detail]
   );
-  const resolvedWorkspaceContent = workspaceContent ?? (detail ? /* @__PURE__ */ jsx73(
-    ThreadGraphWorkspacePanel2,
+  const resolvedWorkspaceContent = workspaceContent ?? (detail ? /* @__PURE__ */ jsx52(
+    ThreadGraphWorkspacePanel,
     {
       detail,
       status,
@@ -22385,18 +17485,18 @@ function ThreadDetailSurface({
       focusPathRequest: workspaceFocusPathRequest
     }
   ) : null);
-  const defaultContent = loading ? loadingContent ?? /* @__PURE__ */ jsx73("div", { className: "flex flex-1 items-center justify-center px-6 py-12 text-center text-[var(--theme-fg-muted)]", children: "Loading thread detail..." }) : detail ? /* @__PURE__ */ jsxs61("div", { className, children: [
-    floatingPanel ? /* @__PURE__ */ jsx73("div", { className: "fixed right-3 top-20 z-50 lg:absolute lg:right-4 lg:top-16", children: floatingPanel }) : null,
-    error && !loading && (errorContent ?? /* @__PURE__ */ jsx73("div", { className: "shrink-0 border-b border-rose-500/20 bg-rose-500/10 px-5 py-4 text-sm text-rose-100 sm:px-6", children: error })),
-    detail.workspacePathStatus === "missing" && (workspaceMissingContent ?? /* @__PURE__ */ jsxs61("div", { className: "shrink-0 border-b border-rose-500/20 bg-rose-500/10 px-5 py-4 text-sm text-rose-100 sm:px-6", children: [
-      /* @__PURE__ */ jsx73("p", { className: "font-medium text-rose-50", children: "Workspace path missing" }),
-      /* @__PURE__ */ jsx73("p", { className: "mt-1 break-words text-rose-100/90", children: detail.workspace.absPath })
+  const defaultContent = loading ? loadingContent ?? /* @__PURE__ */ jsx52("div", { className: "flex flex-1 items-center justify-center px-6 py-12 text-center text-[var(--theme-fg-muted)]", children: "Loading thread detail..." }) : detail ? /* @__PURE__ */ jsxs45("div", { className, children: [
+    floatingPanel ? /* @__PURE__ */ jsx52("div", { className: "fixed right-3 top-20 z-50 lg:absolute lg:right-4 lg:top-16", children: floatingPanel }) : null,
+    error && !loading && (errorContent ?? /* @__PURE__ */ jsx52("div", { className: "shrink-0 border-b border-rose-500/20 bg-rose-500/10 px-5 py-4 text-sm text-rose-100 sm:px-6", children: error })),
+    detail.workspacePathStatus === "missing" && (workspaceMissingContent ?? /* @__PURE__ */ jsxs45("div", { className: "shrink-0 border-b border-rose-500/20 bg-rose-500/10 px-5 py-4 text-sm text-rose-100 sm:px-6", children: [
+      /* @__PURE__ */ jsx52("p", { className: "font-medium text-rose-50", children: "Workspace path missing" }),
+      /* @__PURE__ */ jsx52("p", { className: "mt-1 break-words text-rose-100/90", children: detail.workspace.absPath })
     ] })),
-    /* @__PURE__ */ jsx73(
+    /* @__PURE__ */ jsx52(
       "div",
       {
         className: activeView === "chat" ? "flex min-h-0 flex-1 flex-col" : "hidden",
-        children: /* @__PURE__ */ jsx73(
+        children: /* @__PURE__ */ jsx52(
           GraphChatThreadChatPanel,
           {
             detail,
@@ -22415,12 +17515,12 @@ function ThreadDetailSurface({
         )
       }
     ),
-    /* @__PURE__ */ jsxs61(
+    /* @__PURE__ */ jsxs45(
       "div",
       {
         className: activeView === "shell" ? "flex min-h-0 flex-1 flex-col" : "hidden",
         children: [
-          shellContent ?? (detail.thread.isLoaded && terminalPanelEnabled && adapter.shell ? /* @__PURE__ */ jsx73(
+          shellContent ?? (detail.thread.isLoaded && terminalPanelEnabled && adapter.shell ? /* @__PURE__ */ jsx52(
             ShellPanelComponent,
             {
               ref: shellPanelRef,
@@ -22432,14 +17532,14 @@ function ThreadDetailSurface({
               showFloatingToolbox: false,
               ...onShellStateChange ? { onStateChange: onShellStateChange } : {}
             }
-          ) : detail.thread.isLoaded && !terminalPanelEnabled ? shellUnavailableContent ?? /* @__PURE__ */ jsx73("div", { className: "flex min-h-0 flex-1 items-center justify-center p-4 sm:p-6", children: /* @__PURE__ */ jsxs61("div", { className: "thread-empty-surface max-w-md rounded-[1.6rem] border px-6 py-8 text-center", children: [
-            /* @__PURE__ */ jsx73("p", { className: "text-base font-medium text-[var(--theme-fg)]", children: "Terminal plugin disabled" }),
-            /* @__PURE__ */ jsx73("p", { className: "mt-3 text-sm leading-6 text-[var(--theme-fg-muted)]", children: "Enable the Terminal plugin in Settings to use the shell panel." })
-          ] }) }) : shellDisconnectedContent ?? /* @__PURE__ */ jsx73("div", { className: "flex min-h-0 flex-1 items-center justify-center p-4 sm:p-6", children: /* @__PURE__ */ jsxs61("div", { className: "thread-empty-surface max-w-md rounded-[1.6rem] border px-6 py-8 text-center", children: [
-            /* @__PURE__ */ jsx73("p", { className: "text-base font-medium text-[var(--theme-fg)]", children: "Thread disconnected" }),
-            /* @__PURE__ */ jsx73("p", { className: "mt-3 text-sm leading-6 text-[var(--theme-fg-soft)]", children: "Reconnect this thread before creating or attaching a shell." })
+          ) : detail.thread.isLoaded && !terminalPanelEnabled ? shellUnavailableContent ?? /* @__PURE__ */ jsx52("div", { className: "flex min-h-0 flex-1 items-center justify-center p-4 sm:p-6", children: /* @__PURE__ */ jsxs45("div", { className: "thread-empty-surface max-w-md rounded-[1.6rem] border px-6 py-8 text-center", children: [
+            /* @__PURE__ */ jsx52("p", { className: "text-base font-medium text-[var(--theme-fg)]", children: "Terminal plugin disabled" }),
+            /* @__PURE__ */ jsx52("p", { className: "mt-3 text-sm leading-6 text-[var(--theme-fg-muted)]", children: "Enable the Terminal plugin in Settings to use the shell panel." })
+          ] }) }) : shellDisconnectedContent ?? /* @__PURE__ */ jsx52("div", { className: "flex min-h-0 flex-1 items-center justify-center p-4 sm:p-6", children: /* @__PURE__ */ jsxs45("div", { className: "thread-empty-surface max-w-md rounded-[1.6rem] border px-6 py-8 text-center", children: [
+            /* @__PURE__ */ jsx52("p", { className: "text-base font-medium text-[var(--theme-fg)]", children: "Thread disconnected" }),
+            /* @__PURE__ */ jsx52("p", { className: "mt-3 text-sm leading-6 text-[var(--theme-fg-soft)]", children: "Reconnect this thread before creating or attaching a shell." })
           ] }) })),
-          activeView === "shell" && shellComposerProps && !shellContent ? /* @__PURE__ */ jsx73(
+          activeView === "shell" && shellComposerProps && !shellContent ? /* @__PURE__ */ jsx52(
             ThreadComposer,
             {
               ...shellComposerProps,
@@ -22451,8 +17551,8 @@ function ThreadDetailSurface({
       }
     ),
     dialogs
-  ] }) : emptyContent ?? /* @__PURE__ */ jsx73("div", { className: "flex flex-1 items-center justify-center px-6 py-12 text-center text-[var(--theme-fg-muted)]", children: "Select a thread to inspect." });
-  const surface = /* @__PURE__ */ jsx73(
+  ] }) : emptyContent ?? /* @__PURE__ */ jsx52("div", { className: "flex flex-1 items-center justify-center px-6 py-12 text-center text-[var(--theme-fg-muted)]", children: "Select a thread to inspect." });
+  const surface = /* @__PURE__ */ jsx52(
     ThreadWorkspaceLayout,
     {
       threads,
@@ -22501,19 +17601,19 @@ function ThreadDetailSurface({
     }
   );
   if (providedPlugins) {
-    return /* @__PURE__ */ jsx73(PluginContext.Provider, { value: plugins, children: surface });
+    return /* @__PURE__ */ jsx52(PluginContext.Provider, { value: plugins, children: surface });
   }
   return surface;
 }
 
 // src/plugins/PluginProvider.tsx
 import {
-  useCallback as useCallback20,
-  useEffect as useEffect30,
-  useMemo as useMemo20,
-  useState as useState35
+  useCallback as useCallback18,
+  useEffect as useEffect24,
+  useMemo as useMemo14,
+  useState as useState30
 } from "react";
-import { jsx as jsx74 } from "react/jsx-runtime";
+import { jsx as jsx53 } from "react/jsx-runtime";
 var DEFAULT_PLUGIN_PROVIDER_ADAPTER = {};
 var DEFAULT_BUILTIN_PLUGINS = [];
 function PluginProvider({
@@ -22521,12 +17621,12 @@ function PluginProvider({
   builtinPlugins = DEFAULT_BUILTIN_PLUGINS,
   children
 }) {
-  const [plugins, setPlugins] = useState35(
+  const [plugins, setPlugins] = useState30(
     () => mergePluginState(builtinPlugins, [])
   );
-  const [loading, setLoading] = useState35(false);
-  const [error, setError] = useState35(null);
-  const refresh = useCallback20(async () => {
+  const [loading, setLoading] = useState30(false);
+  const [error, setError] = useState30(null);
+  const refresh = useCallback18(async () => {
     setLoading(true);
     setError(null);
     try {
@@ -22538,10 +17638,10 @@ function PluginProvider({
       setLoading(false);
     }
   }, [adapter, builtinPlugins]);
-  useEffect30(() => {
+  useEffect24(() => {
     void refresh();
   }, [refresh]);
-  const setPluginEnabled = useCallback20(
+  const setPluginEnabled = useCallback18(
     async (pluginId, enabled) => {
       if (adapter.updatePlugin) {
         const updated = await adapter.updatePlugin(pluginId, { enabled });
@@ -22558,7 +17658,7 @@ function PluginProvider({
     },
     [adapter]
   );
-  const importPluginManifest = useCallback20(
+  const importPluginManifest = useCallback18(
     async (input) => {
       if (!adapter.importPlugin) {
         throw new Error("Plugin import is not available.");
@@ -22571,7 +17671,7 @@ function PluginProvider({
     },
     [adapter]
   );
-  const uninstallPlugin = useCallback20(
+  const uninstallPlugin = useCallback18(
     async (pluginId) => {
       if (!adapter.deletePlugin) {
         throw new Error("Plugin uninstall is not available.");
@@ -22583,7 +17683,7 @@ function PluginProvider({
     },
     [adapter]
   );
-  const enabledModules = useMemo20(() => {
+  const enabledModules = useMemo14(() => {
     const enabledIds = new Set(
       plugins.filter((plugin) => plugin.enabled).map((plugin) => plugin.id)
     );
@@ -22591,7 +17691,7 @@ function PluginProvider({
       (module) => enabledIds.has(module.manifest.id)
     );
   }, [builtinPlugins, plugins]);
-  const renderArtifact = useCallback20(
+  const renderArtifact = useCallback18(
     (context) => {
       const module = enabledModules.find(
         (entry) => entry.renderArtifact && entry.manifest.capabilities.artifactTypes.some(
@@ -22602,7 +17702,7 @@ function PluginProvider({
     },
     [enabledModules]
   );
-  const renderInlineCode = useCallback20(
+  const renderInlineCode = useCallback18(
     (context) => {
       for (const module of enabledModules) {
         for (const renderer of module.inlineCodeRenderers ?? []) {
@@ -22619,7 +17719,7 @@ function PluginProvider({
     },
     [enabledModules]
   );
-  const hasRendererForArtifact = useCallback20(
+  const hasRendererForArtifact = useCallback18(
     (artifact) => enabledModules.some(
       (entry) => Boolean(entry.renderArtifact) && entry.manifest.capabilities.artifactTypes.some(
         (type) => type.type === artifact.type
@@ -22627,11 +17727,11 @@ function PluginProvider({
     ),
     [enabledModules]
   );
-  const getThreadPanels = useCallback20(
+  const getThreadPanels = useCallback18(
     () => enabledModules.flatMap((module) => module.threadPanels ?? []),
     [enabledModules]
   );
-  const value = useMemo20(
+  const value = useMemo14(
     () => ({
       plugins,
       loading,
@@ -22659,17 +17759,17 @@ function PluginProvider({
       uninstallPlugin
     ]
   );
-  return /* @__PURE__ */ jsx74(PluginContext.Provider, { value, children });
+  return /* @__PURE__ */ jsx53(PluginContext.Provider, { value, children });
 }
 
 // src/app-shell/AppShellNavigation.tsx
-import { useEffect as useEffect31, useRef as useRef20, useState as useState36 } from "react";
-import { jsx as jsx75, jsxs as jsxs62 } from "react/jsx-runtime";
+import { useEffect as useEffect25, useRef as useRef16, useState as useState31 } from "react";
+import { jsx as jsx54, jsxs as jsxs46 } from "react/jsx-runtime";
 function MenuIcon() {
-  return /* @__PURE__ */ jsx75("svg", { "aria-hidden": "true", viewBox: "0 0 16 16", className: "h-4 w-4 fill-current", children: /* @__PURE__ */ jsx75("path", { d: "M2 3.25h12v1.5H2Zm0 4h12v1.5H2Zm0 4h12v1.5H2Z" }) });
+  return /* @__PURE__ */ jsx54("svg", { "aria-hidden": "true", viewBox: "0 0 16 16", className: "h-4 w-4 fill-current", children: /* @__PURE__ */ jsx54("path", { d: "M2 3.25h12v1.5H2Zm0 4h12v1.5H2Zm0 4h12v1.5H2Z" }) });
 }
 function CloseIcon() {
-  return /* @__PURE__ */ jsx75("svg", { "aria-hidden": "true", viewBox: "0 0 16 16", className: "h-4 w-4 fill-current", children: /* @__PURE__ */ jsx75("path", { d: "M3.22 2.47 8 7.25l4.78-4.78 1.06 1.06L9.06 8.31l4.78 4.78-1.06 1.06L8 9.37l-4.78 4.78-1.06-1.06 4.78-4.78-4.78-4.78 1.06-1.06Z" }) });
+  return /* @__PURE__ */ jsx54("svg", { "aria-hidden": "true", viewBox: "0 0 16 16", className: "h-4 w-4 fill-current", children: /* @__PURE__ */ jsx54("path", { d: "M3.22 2.47 8 7.25l4.78-4.78 1.06 1.06L9.06 8.31l4.78 4.78-1.06 1.06L8 9.37l-4.78 4.78-1.06-1.06 4.78-4.78-4.78-4.78 1.06-1.06Z" }) });
 }
 function menuItemClassName(disabled = false) {
   return `flex w-full items-center rounded-[0.95rem] px-3 py-2 text-left text-sm transition ${disabled ? "cursor-not-allowed bg-[var(--theme-muted)] text-[var(--theme-fg-muted)]" : "text-[var(--theme-fg)] hover:bg-[var(--theme-hover)]"}`;
@@ -22696,7 +17796,7 @@ function AppShellMenuButton({ className = "" }) {
   if (!shellNav) {
     return null;
   }
-  return /* @__PURE__ */ jsx75(
+  return /* @__PURE__ */ jsx54(
     "button",
     {
       type: "button",
@@ -22705,7 +17805,7 @@ function AppShellMenuButton({ className = "" }) {
       "aria-controls": "app-shell-navigation-menu",
       onClick: shellNav.toggleNav,
       className: `inline-flex h-10 w-10 shrink-0 items-center justify-center text-[var(--theme-fg)] transition hover:text-[var(--theme-fg-soft)] ${className}`.trim(),
-      children: shellNav.navOpen ? /* @__PURE__ */ jsx75(CloseIcon, {}) : /* @__PURE__ */ jsx75(MenuIcon, {})
+      children: shellNav.navOpen ? /* @__PURE__ */ jsx54(CloseIcon, {}) : /* @__PURE__ */ jsx54(MenuIcon, {})
     }
   );
 }
@@ -22716,8 +17816,8 @@ function AppShellNavigationMenu({
   onNavigate
 }) {
   const shellNav = useAppShellNav();
-  const menuRef = useRef20(null);
-  useEffect31(() => {
+  const menuRef = useRef16(null);
+  useEffect25(() => {
     if (!shellNav?.navOpen) {
       return;
     }
@@ -22745,7 +17845,7 @@ function AppShellNavigationMenu({
   if (!shellNav?.navOpen) {
     return null;
   }
-  return /* @__PURE__ */ jsxs62(
+  return /* @__PURE__ */ jsxs46(
     "div",
     {
       ref: menuRef,
@@ -22755,14 +17855,14 @@ function AppShellNavigationMenu({
       onTouchStart: (event) => event.stopPropagation(),
       className: `rounded-[1.8rem] border border-[var(--theme-border)] bg-[var(--theme-panel)] p-4 shadow-2xl shadow-black/15 backdrop-blur ${className}`.trim(),
       children: [
-        /* @__PURE__ */ jsxs62("div", { children: [
-          /* @__PURE__ */ jsx75("p", { className: "text-base font-semibold tracking-wide text-[var(--theme-accent-strong)]", children: "Remote Codex" }),
-          /* @__PURE__ */ jsx75("p", { className: "mt-1 text-xs uppercase tracking-[0.24em] text-[var(--theme-fg-muted)]", children: "Navigation" })
+        /* @__PURE__ */ jsxs46("div", { children: [
+          /* @__PURE__ */ jsx54("p", { className: "text-base font-semibold tracking-wide text-[var(--theme-accent-strong)]", children: "Remote Codex" }),
+          /* @__PURE__ */ jsx54("p", { className: "mt-1 text-xs uppercase tracking-[0.24em] text-[var(--theme-fg-muted)]", children: "Navigation" })
         ] }),
-        /* @__PURE__ */ jsxs62("nav", { className: "mt-4 flex flex-col gap-1.5 text-sm", children: [
+        /* @__PURE__ */ jsxs46("nav", { className: "mt-4 flex flex-col gap-1.5 text-sm", children: [
           items.map((item) => {
             const active = currentPath === item.href;
-            return /* @__PURE__ */ jsx75(
+            return /* @__PURE__ */ jsx54(
               "button",
               {
                 type: "button",
@@ -22780,7 +17880,7 @@ function AppShellNavigationMenu({
               item.href
             );
           }),
-          /* @__PURE__ */ jsx75(
+          /* @__PURE__ */ jsx54(
             "button",
             {
               type: "button",
@@ -22808,8 +17908,8 @@ function AppShellSettingsDialog({
 } = {}) {
   const shellNav = useAppShellNav();
   const plugins = usePlugins();
-  const [pluginImportDraft, setPluginImportDraft] = useState36("");
-  const [pluginImportState, setPluginImportState] = useState36({
+  const [pluginImportDraft, setPluginImportDraft] = useState31("");
+  const [pluginImportState, setPluginImportState] = useState31({
     busy: false,
     message: null,
     error: null
@@ -22817,7 +17917,7 @@ function AppShellSettingsDialog({
   const selectedThemeMode = shellNav?.themeMode ?? "system";
   const effectiveTheme = shellNav?.effectiveTheme ?? "dark";
   const autoCollapseCompletedTurns = shellNav?.autoCollapseCompletedTurns ?? true;
-  useEffect31(() => {
+  useEffect25(() => {
     if (!shellNav?.settingsOpen) {
       return;
     }
@@ -22876,8 +17976,8 @@ function AppShellSettingsDialog({
   if (!shellNav?.settingsOpen) {
     return null;
   }
-  return /* @__PURE__ */ jsxs62("div", { className: "fixed inset-0 z-[70] flex items-start justify-center p-4 pt-[max(env(safe-area-inset-top),1rem)] sm:items-center", children: [
-    /* @__PURE__ */ jsx75(
+  return /* @__PURE__ */ jsxs46("div", { className: "fixed inset-0 z-[70] flex items-start justify-center p-4 pt-[max(env(safe-area-inset-top),1rem)] sm:items-center", children: [
+    /* @__PURE__ */ jsx54(
       "button",
       {
         type: "button",
@@ -22886,7 +17986,7 @@ function AppShellSettingsDialog({
         className: "ui-overlay-scrim absolute inset-0 backdrop-blur-sm"
       }
     ),
-    /* @__PURE__ */ jsxs62(
+    /* @__PURE__ */ jsxs46(
       "section",
       {
         role: "dialog",
@@ -22894,60 +17994,60 @@ function AppShellSettingsDialog({
         "aria-label": "Settings",
         className: "relative z-10 flex max-h-[calc(100vh-2rem)] w-full max-w-4xl flex-col overflow-hidden rounded-[1.8rem] border border-[var(--theme-border)] bg-[var(--theme-panel)] shadow-2xl shadow-black/20",
         children: [
-          /* @__PURE__ */ jsx75("div", { className: "shrink-0 p-5 pb-0", children: /* @__PURE__ */ jsxs62("div", { className: "flex items-start justify-between gap-3", children: [
-            /* @__PURE__ */ jsxs62("div", { children: [
-              /* @__PURE__ */ jsx75("p", { className: "text-xs uppercase tracking-[0.24em] text-[var(--theme-fg-muted)]", children: "Settings" }),
-              /* @__PURE__ */ jsx75("h2", { className: "mt-2 text-xl font-semibold text-[var(--theme-fg)]", children: "Settings" }),
-              /* @__PURE__ */ jsx75("p", { className: "mt-2 text-sm leading-6 text-[var(--theme-fg-soft)]", children: "Manage appearance and thread UI plugins." })
+          /* @__PURE__ */ jsx54("div", { className: "shrink-0 p-5 pb-0", children: /* @__PURE__ */ jsxs46("div", { className: "flex items-start justify-between gap-3", children: [
+            /* @__PURE__ */ jsxs46("div", { children: [
+              /* @__PURE__ */ jsx54("p", { className: "text-xs uppercase tracking-[0.24em] text-[var(--theme-fg-muted)]", children: "Settings" }),
+              /* @__PURE__ */ jsx54("h2", { className: "mt-2 text-xl font-semibold text-[var(--theme-fg)]", children: "Settings" }),
+              /* @__PURE__ */ jsx54("p", { className: "mt-2 text-sm leading-6 text-[var(--theme-fg-soft)]", children: "Manage appearance and thread UI plugins." })
             ] }),
-            /* @__PURE__ */ jsx75(
+            /* @__PURE__ */ jsx54(
               "button",
               {
                 type: "button",
                 "aria-label": "Close Settings",
                 onClick: shellNav.closeSettings,
                 className: "inline-flex h-9 w-9 items-center justify-center rounded-full border border-[var(--theme-border-strong)] bg-[var(--theme-surface-strong)] text-[var(--theme-fg)] transition hover:border-[var(--theme-border-contrast)] hover:bg-[var(--theme-hover)]",
-                children: /* @__PURE__ */ jsx75(CloseIcon, {})
+                children: /* @__PURE__ */ jsx54(CloseIcon, {})
               }
             )
           ] }) }),
-          /* @__PURE__ */ jsx75("div", { className: "min-h-0 flex-1 overflow-y-auto p-5 pt-5", children: /* @__PURE__ */ jsxs62("div", { className: "space-y-2", children: [
-            /* @__PURE__ */ jsxs62("div", { className: "rounded-[1.1rem] border border-[var(--theme-border)] bg-[var(--theme-surface)] px-3 py-3", children: [
-              /* @__PURE__ */ jsx75("div", { className: "flex items-start justify-between gap-3", children: /* @__PURE__ */ jsxs62("div", { className: "min-w-0", children: [
-                /* @__PURE__ */ jsx75("p", { className: "text-sm font-medium text-[var(--theme-fg)]", children: "Appearance" }),
-                /* @__PURE__ */ jsxs62("p", { className: "mt-1 text-xs leading-5 text-[var(--theme-fg-muted)]", children: [
+          /* @__PURE__ */ jsx54("div", { className: "min-h-0 flex-1 overflow-y-auto p-5 pt-5", children: /* @__PURE__ */ jsxs46("div", { className: "space-y-2", children: [
+            /* @__PURE__ */ jsxs46("div", { className: "rounded-[1.1rem] border border-[var(--theme-border)] bg-[var(--theme-surface)] px-3 py-3", children: [
+              /* @__PURE__ */ jsx54("div", { className: "flex items-start justify-between gap-3", children: /* @__PURE__ */ jsxs46("div", { className: "min-w-0", children: [
+                /* @__PURE__ */ jsx54("p", { className: "text-sm font-medium text-[var(--theme-fg)]", children: "Appearance" }),
+                /* @__PURE__ */ jsxs46("p", { className: "mt-1 text-xs leading-5 text-[var(--theme-fg-muted)]", children: [
                   "Choose light, dark, or follow the system setting. Active: ",
                   effectiveTheme,
                   "."
                 ] })
               ] }) }),
-              /* @__PURE__ */ jsx75("div", { className: "mt-3 grid gap-2 sm:grid-cols-3", children: themeOptions.map((option) => {
+              /* @__PURE__ */ jsx54("div", { className: "mt-3 grid gap-2 sm:grid-cols-3", children: themeOptions.map((option) => {
                 const active = selectedThemeMode === option.value;
-                return /* @__PURE__ */ jsxs62(
+                return /* @__PURE__ */ jsxs46(
                   "button",
                   {
                     type: "button",
                     onClick: () => shellNav.setThemeMode(option.value),
                     className: `block rounded-[1rem] border px-3 py-2.5 text-left transition ${active ? "border-[var(--theme-accent-border)] bg-[var(--theme-accent-soft)]" : "border-[var(--theme-border)] bg-[var(--theme-surface-strong)] hover:bg-[var(--theme-hover)]"}`,
                     children: [
-                      /* @__PURE__ */ jsxs62("div", { className: "flex items-center justify-between gap-3", children: [
-                        /* @__PURE__ */ jsx75("span", { className: "text-sm font-medium text-[var(--theme-fg)]", children: option.label }),
-                        active ? /* @__PURE__ */ jsx75("span", { className: "rounded-full border border-[var(--theme-accent-border)] bg-[var(--theme-accent-soft)] px-2 py-0.5 text-[10px] uppercase tracking-[0.18em] text-[var(--theme-accent-strong)]", children: "Active" }) : null
+                      /* @__PURE__ */ jsxs46("div", { className: "flex items-center justify-between gap-3", children: [
+                        /* @__PURE__ */ jsx54("span", { className: "text-sm font-medium text-[var(--theme-fg)]", children: option.label }),
+                        active ? /* @__PURE__ */ jsx54("span", { className: "rounded-full border border-[var(--theme-accent-border)] bg-[var(--theme-accent-soft)] px-2 py-0.5 text-[10px] uppercase tracking-[0.18em] text-[var(--theme-accent-strong)]", children: "Active" }) : null
                       ] }),
-                      /* @__PURE__ */ jsx75("p", { className: "mt-1 text-xs leading-5 text-[var(--theme-fg-muted)]", children: option.description })
+                      /* @__PURE__ */ jsx54("p", { className: "mt-1 text-xs leading-5 text-[var(--theme-fg-muted)]", children: option.description })
                     ]
                   },
                   option.value
                 );
               }) })
             ] }),
-            shellNav?.setAutoCollapseCompletedTurns ? /* @__PURE__ */ jsx75("div", { className: "rounded-[1.1rem] border border-[var(--theme-border)] bg-[var(--theme-surface)] px-3 py-3", children: /* @__PURE__ */ jsxs62("div", { className: "flex items-start justify-between gap-4", children: [
-              /* @__PURE__ */ jsxs62("div", { className: "min-w-0", children: [
-                /* @__PURE__ */ jsx75("p", { className: "text-sm font-medium text-[var(--theme-fg)]", children: "Thread timeline" }),
-                /* @__PURE__ */ jsx75("p", { className: "mt-1 text-xs leading-5 text-[var(--theme-fg-muted)]", children: "Collapse completed turns into prompt, elapsed work, and final reply." })
+            shellNav?.setAutoCollapseCompletedTurns ? /* @__PURE__ */ jsx54("div", { className: "rounded-[1.1rem] border border-[var(--theme-border)] bg-[var(--theme-surface)] px-3 py-3", children: /* @__PURE__ */ jsxs46("div", { className: "flex items-start justify-between gap-4", children: [
+              /* @__PURE__ */ jsxs46("div", { className: "min-w-0", children: [
+                /* @__PURE__ */ jsx54("p", { className: "text-sm font-medium text-[var(--theme-fg)]", children: "Thread timeline" }),
+                /* @__PURE__ */ jsx54("p", { className: "mt-1 text-xs leading-5 text-[var(--theme-fg-muted)]", children: "Collapse completed turns into prompt, elapsed work, and final reply." })
               ] }),
-              /* @__PURE__ */ jsxs62("label", { className: "inline-flex min-h-10 shrink-0 items-center gap-2 text-xs font-medium text-[var(--theme-fg-soft)]", children: [
-                /* @__PURE__ */ jsx75(
+              /* @__PURE__ */ jsxs46("label", { className: "inline-flex min-h-10 shrink-0 items-center gap-2 text-xs font-medium text-[var(--theme-fg-soft)]", children: [
+                /* @__PURE__ */ jsx54(
                   "input",
                   {
                     type: "checkbox",
@@ -22958,16 +18058,16 @@ function AppShellSettingsDialog({
                     className: "h-4 w-4 accent-[var(--theme-accent-solid)]"
                   }
                 ),
-                /* @__PURE__ */ jsx75("span", { children: "Auto collapse" })
+                /* @__PURE__ */ jsx54("span", { children: "Auto collapse" })
               ] })
             ] }) }) : null,
-            /* @__PURE__ */ jsxs62("div", { className: "rounded-[1.1rem] border border-[var(--theme-border)] bg-[var(--theme-surface)] px-3 py-3", children: [
-              /* @__PURE__ */ jsxs62("div", { className: "flex items-start justify-between gap-3", children: [
-                /* @__PURE__ */ jsxs62("div", { className: "min-w-0", children: [
-                  /* @__PURE__ */ jsx75("p", { className: "text-sm font-medium text-[var(--theme-fg)]", children: "Plugins" }),
-                  /* @__PURE__ */ jsx75("p", { className: "mt-1 text-xs leading-5 text-[var(--theme-fg-muted)]", children: "Enable renderers and thread extensions loaded by this UI." })
+            /* @__PURE__ */ jsxs46("div", { className: "rounded-[1.1rem] border border-[var(--theme-border)] bg-[var(--theme-surface)] px-3 py-3", children: [
+              /* @__PURE__ */ jsxs46("div", { className: "flex items-start justify-between gap-3", children: [
+                /* @__PURE__ */ jsxs46("div", { className: "min-w-0", children: [
+                  /* @__PURE__ */ jsx54("p", { className: "text-sm font-medium text-[var(--theme-fg)]", children: "Plugins" }),
+                  /* @__PURE__ */ jsx54("p", { className: "mt-1 text-xs leading-5 text-[var(--theme-fg-muted)]", children: "Enable renderers and thread extensions loaded by this UI." })
                 ] }),
-                /* @__PURE__ */ jsx75(
+                /* @__PURE__ */ jsx54(
                   "button",
                   {
                     type: "button",
@@ -22978,23 +18078,23 @@ function AppShellSettingsDialog({
                   }
                 )
               ] }),
-              /* @__PURE__ */ jsxs62("div", { className: "mt-3 grid gap-2", children: [
-                plugins.plugins.map((plugin) => /* @__PURE__ */ jsxs62(
+              /* @__PURE__ */ jsxs46("div", { className: "mt-3 grid gap-2", children: [
+                plugins.plugins.map((plugin) => /* @__PURE__ */ jsxs46(
                   "div",
                   {
                     className: "flex items-start justify-between gap-3 rounded-[1rem] border border-[var(--theme-border)] bg-[var(--theme-surface-strong)] px-3 py-2.5",
                     children: [
-                      /* @__PURE__ */ jsxs62("span", { className: "min-w-0", children: [
-                        /* @__PURE__ */ jsx75("span", { className: "block text-sm font-medium text-[var(--theme-fg)]", children: plugin.name }),
-                        /* @__PURE__ */ jsx75("span", { className: "mt-1 block text-xs leading-5 text-[var(--theme-fg-muted)]", children: plugin.description }),
-                        /* @__PURE__ */ jsx75("span", { className: "mt-2 block text-[10px] uppercase tracking-[0.16em] text-[var(--theme-fg-muted)]", children: [
+                      /* @__PURE__ */ jsxs46("span", { className: "min-w-0", children: [
+                        /* @__PURE__ */ jsx54("span", { className: "block text-sm font-medium text-[var(--theme-fg)]", children: plugin.name }),
+                        /* @__PURE__ */ jsx54("span", { className: "mt-1 block text-xs leading-5 text-[var(--theme-fg-muted)]", children: plugin.description }),
+                        /* @__PURE__ */ jsx54("span", { className: "mt-2 block text-[10px] uppercase tracking-[0.16em] text-[var(--theme-fg-muted)]", children: [
                           ...plugin.capabilities.artifactTypes.map((type) => type.type),
                           ...plugin.capabilities.threadPanels.map((panel) => panel.kind ?? panel.id)
                         ].join(", ") || "utility" }),
-                        /* @__PURE__ */ jsx75("span", { className: "mt-1 block text-[10px] uppercase tracking-[0.16em] text-[var(--theme-fg-muted)]", children: plugin.source === "imported" ? "Imported manifest" : "Built-in module" })
+                        /* @__PURE__ */ jsx54("span", { className: "mt-1 block text-[10px] uppercase tracking-[0.16em] text-[var(--theme-fg-muted)]", children: plugin.source === "imported" ? "Imported manifest" : "Built-in module" })
                       ] }),
-                      /* @__PURE__ */ jsxs62("span", { className: "flex shrink-0 items-center gap-2", children: [
-                        plugin.source === "imported" ? /* @__PURE__ */ jsx75(
+                      /* @__PURE__ */ jsxs46("span", { className: "flex shrink-0 items-center gap-2", children: [
+                        plugin.source === "imported" ? /* @__PURE__ */ jsx54(
                           "button",
                           {
                             type: "button",
@@ -23003,11 +18103,11 @@ function AppShellSettingsDialog({
                             children: "Uninstall"
                           }
                         ) : null,
-                        /* @__PURE__ */ jsxs62("label", { className: "sr-only", htmlFor: `plugin-toggle-${plugin.id}`, children: [
+                        /* @__PURE__ */ jsxs46("label", { className: "sr-only", htmlFor: `plugin-toggle-${plugin.id}`, children: [
                           "Toggle ",
                           plugin.name
                         ] }),
-                        /* @__PURE__ */ jsx75(
+                        /* @__PURE__ */ jsx54(
                           "input",
                           {
                             id: `plugin-toggle-${plugin.id}`,
@@ -23022,11 +18122,11 @@ function AppShellSettingsDialog({
                   },
                   plugin.id
                 )),
-                plugins.plugins.length === 0 && /* @__PURE__ */ jsx75("p", { className: "rounded-[1rem] border border-[var(--theme-border)] bg-[var(--theme-surface-strong)] px-3 py-3 text-xs text-[var(--theme-fg-muted)]", children: "No plugins are registered." })
+                plugins.plugins.length === 0 && /* @__PURE__ */ jsx54("p", { className: "rounded-[1rem] border border-[var(--theme-border)] bg-[var(--theme-surface-strong)] px-3 py-3 text-xs text-[var(--theme-fg-muted)]", children: "No plugins are registered." })
               ] }),
-              /* @__PURE__ */ jsxs62("div", { className: "mt-3 border-t border-[var(--theme-border)] pt-3", children: [
-                /* @__PURE__ */ jsx75("label", { className: "block text-xs font-medium text-[var(--theme-fg)]", children: "Import plugin" }),
-                /* @__PURE__ */ jsx75(
+              /* @__PURE__ */ jsxs46("div", { className: "mt-3 border-t border-[var(--theme-border)] pt-3", children: [
+                /* @__PURE__ */ jsx54("label", { className: "block text-xs font-medium text-[var(--theme-fg)]", children: "Import plugin" }),
+                /* @__PURE__ */ jsx54(
                   "textarea",
                   {
                     value: pluginImportDraft,
@@ -23041,9 +18141,9 @@ function AppShellSettingsDialog({
                     className: "mt-2 min-h-28 w-full resize-y rounded-[0.9rem] border border-[var(--theme-border)] bg-[var(--theme-surface-strong)] px-3 py-2 font-mono text-xs leading-5 text-[var(--theme-fg)] outline-none transition placeholder:text-[var(--theme-fg-muted)] focus:border-[var(--theme-accent-border)]"
                   }
                 ),
-                /* @__PURE__ */ jsxs62("div", { className: "mt-2 flex flex-wrap items-center justify-between gap-2", children: [
-                  /* @__PURE__ */ jsx75("p", { className: "max-w-[42rem] text-xs leading-5 text-[var(--theme-fg-muted)]", children: "Imports register manifest-declared artifact types. Rendering code still needs a trusted built-in frontend module." }),
-                  /* @__PURE__ */ jsx75(
+                /* @__PURE__ */ jsxs46("div", { className: "mt-2 flex flex-wrap items-center justify-between gap-2", children: [
+                  /* @__PURE__ */ jsx54("p", { className: "max-w-[42rem] text-xs leading-5 text-[var(--theme-fg-muted)]", children: "Imports register manifest-declared artifact types. Rendering code still needs a trusted built-in frontend module." }),
+                  /* @__PURE__ */ jsx54(
                     "button",
                     {
                       type: "button",
@@ -23054,10 +18154,10 @@ function AppShellSettingsDialog({
                     }
                   )
                 ] }),
-                pluginImportState.error && /* @__PURE__ */ jsx75("p", { className: "mt-2 text-xs text-rose-300", children: pluginImportState.error }),
-                pluginImportState.message && /* @__PURE__ */ jsx75("p", { className: "mt-2 text-xs text-emerald-300", children: pluginImportState.message })
+                pluginImportState.error && /* @__PURE__ */ jsx54("p", { className: "mt-2 text-xs text-rose-300", children: pluginImportState.error }),
+                pluginImportState.message && /* @__PURE__ */ jsx54("p", { className: "mt-2 text-xs text-emerald-300", children: pluginImportState.message })
               ] }),
-              plugins.error && /* @__PURE__ */ jsx75("p", { className: "mt-2 text-xs text-rose-300", children: plugins.error })
+              plugins.error && /* @__PURE__ */ jsx54("p", { className: "mt-2 text-xs text-rose-300", children: plugins.error })
             ] }),
             extraContent
           ] }) })
@@ -23074,14 +18174,14 @@ export {
   ConfirmDialog,
   ExportTranscriptDialog,
   LongTextDialog,
-  MemoizedThreadGraphWorkspacePanel2 as MemoizedThreadGraphWorkspacePanel,
+  MemoizedThreadGraphWorkspacePanel,
   PluginContext,
   PluginProvider,
   ThreadActionsDialog,
   ThreadCards,
   ThreadComposer,
   ThreadDetailSurface,
-  ThreadGraphWorkspacePanel2 as ThreadGraphWorkspacePanel,
+  ThreadGraphWorkspacePanel,
   ThreadShellPanel,
   ThreadTimeline,
   ThreadWorkspaceLayout,

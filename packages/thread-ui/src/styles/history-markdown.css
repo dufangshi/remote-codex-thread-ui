@@ -43,6 +43,130 @@
   color: var(--theme-fg-soft);
 }
 
+.thread-ui-shell .thread-graph-tree-indent-guides span {
+  border-color: color-mix(in oklch, var(--theme-border) 72%, transparent);
+}
+
+.thread-ui-shell .thread-graph-editor-tabs-shell,
+.thread-ui-shell .thread-graph-editor-tabs,
+.thread-ui-shell .thread-graph-editor-breadcrumbs {
+  border-color: var(--theme-border);
+  background: var(--theme-surface-strong);
+  color: var(--theme-fg-muted);
+}
+
+.thread-ui-shell .thread-graph-editor-tabs {
+  scrollbar-width: thin;
+}
+
+.thread-ui-shell .thread-graph-editor-tab {
+  position: relative;
+  border-color: var(--theme-border);
+  background: var(--theme-surface-strong);
+  color: var(--theme-fg-muted);
+}
+
+.thread-ui-shell .thread-graph-editor-tab::after {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 1px;
+  background: transparent;
+  content: '';
+}
+
+.thread-ui-shell .thread-graph-editor-tab:hover {
+  background: var(--theme-hover);
+  color: var(--theme-fg);
+}
+
+.thread-ui-shell .thread-graph-editor-tab.is-active {
+  background: var(--theme-bg);
+  color: var(--theme-fg);
+}
+
+.thread-ui-shell .thread-graph-editor-tab.is-active::after {
+  background: var(--theme-accent-solid);
+}
+
+.thread-ui-shell .thread-graph-editor-tab-close {
+  color: var(--theme-fg-muted);
+  opacity: 0;
+}
+
+.thread-ui-shell .thread-graph-editor-tab:hover .thread-graph-editor-tab-close,
+.thread-ui-shell .thread-graph-editor-tab.is-active .thread-graph-editor-tab-close,
+.thread-ui-shell .thread-graph-editor-tab-close:focus-visible {
+  opacity: 1;
+}
+
+.thread-ui-shell .thread-graph-editor-tab-close:hover {
+  background: var(--theme-hover);
+  color: var(--theme-fg);
+}
+
+.thread-ui-shell .thread-graph-editor-close-confirm {
+  border-color: var(--theme-border);
+  background: color-mix(
+    in oklch,
+    var(--theme-accent-solid) 8%,
+    var(--theme-surface)
+  );
+  color: var(--theme-fg);
+}
+
+.thread-ui-shell .thread-graph-editor-breadcrumbs {
+  background: var(--theme-bg);
+}
+
+.thread-ui-shell .thread-graph-editor-toolbar-button,
+.thread-ui-shell .thread-graph-editor-tabs-action button {
+  border: 0;
+  background: transparent;
+  color: var(--theme-fg-muted);
+}
+
+.thread-ui-shell .thread-graph-editor-toolbar-button:hover:not(:disabled),
+.thread-ui-shell .thread-graph-editor-toolbar-button:focus-visible,
+.thread-ui-shell .thread-graph-editor-tabs-action button:hover,
+.thread-ui-shell .thread-graph-editor-tabs-action button:focus-visible {
+  background: var(--theme-hover);
+  color: var(--theme-fg);
+}
+
+.thread-ui-shell .thread-graph-explorer-header .thread-graph-explorer-icon-button,
+.thread-ui-shell .thread-graph-explorer-header .thread-graph-explorer-collapse-button {
+  border-color: transparent;
+  background: transparent;
+}
+
+.thread-ui-shell .thread-graph-right-tab {
+  position: relative;
+  border-radius: 0;
+  background: transparent;
+}
+
+.thread-ui-shell .thread-graph-right-tab.is-active {
+  background: transparent;
+}
+
+.thread-ui-shell .thread-graph-right-tab.is-active::after {
+  position: absolute;
+  right: 0.5rem;
+  bottom: 0;
+  left: 0.5rem;
+  height: 1px;
+  background: var(--theme-accent-solid);
+  content: '';
+}
+
+.thread-ui-shell .thread-graph-monaco-editor {
+  background: var(--theme-bg);
+}
+
+.thread-ui-shell .thread-graph-explorer {
+  container-type: inline-size;
+}
+
 .thread-ui-shell .thread-graph-tree-row:hover {
   --thread-graph-tree-row-background: var(--theme-hover);
   background: var(--theme-hover);
@@ -63,12 +187,10 @@
   );
   background: var(--thread-graph-tree-row-background);
   color: var(--theme-fg);
-  box-shadow: inset 3px 0 0
-    color-mix(in oklch, var(--theme-accent-solid) 72%, transparent);
 }
 
 .thread-ui-shell.thread-ui-theme-dark .thread-graph-tree-row.is-selected,
-.thread-ui-shell[data-theme-effective="dark"]
+.thread-ui-shell[data-theme-effective='dark']
   .thread-graph-tree-row.is-selected,
 .thread-ui-shell.dark .thread-graph-tree-row.is-selected {
   --thread-graph-tree-row-background: color-mix(
@@ -78,8 +200,12 @@
   );
   background: var(--thread-graph-tree-row-background);
   color: var(--theme-fg);
-  box-shadow: inset 3px 0 0
-    color-mix(in oklch, var(--theme-accent-solid) 72%, transparent);
+}
+
+.thread-ui-shell .thread-graph-tree-row.is-focused {
+  outline: 1px solid
+    color-mix(in oklch, var(--theme-accent-solid) 68%, transparent);
+  outline-offset: -1px;
 }
 
 .thread-ui-shell .thread-graph-tree-row.is-selected svg {
@@ -122,6 +248,21 @@
 .thread-ui-shell .thread-graph-tree-action:hover {
   background: var(--theme-surface-strong);
   color: var(--theme-fg);
+}
+
+.thread-ui-shell .thread-graph-explorer-filter-mode button {
+  color: var(--theme-fg-muted);
+}
+
+.thread-ui-shell .thread-graph-explorer-filter-mode button:hover,
+.thread-ui-shell .thread-graph-explorer-filter-mode button:focus-visible {
+  color: var(--theme-fg);
+}
+
+.thread-ui-shell .thread-graph-explorer-filter-mode button.is-active {
+  background: var(--theme-panel);
+  color: var(--theme-fg);
+  box-shadow: 0 1px 2px color-mix(in oklch, var(--theme-bg) 22%, transparent);
 }
 
 .thread-ui-shell .thread-graph-molecule-preview {
@@ -470,7 +611,7 @@
 .thread-ui-shell .thread-graph-code-preview pre,
 .thread-ui-shell .thread-graph-code-preview code {
   font-family:
-    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono',
     monospace !important;
   font-size: 0.78rem;
   line-height: 1.55;
@@ -520,6 +661,16 @@
 .thread-ui-shell .thread-graph-code-line {
   display: block;
   min-width: max-content;
+}
+
+.thread-ui-shell
+  :is(
+    .thread-graph-code-line,
+    .thread-graph-highlighted-code-preview .line
+  ).is-focused-line {
+  background: color-mix(in oklch, var(--theme-accent-solid) 16%, transparent);
+  box-shadow: inset 0 0 0 1px
+    color-mix(in oklch, var(--theme-accent-solid) 28%, transparent);
 }
 
 .thread-ui-shell .thread-graph-code-line-number {
@@ -707,7 +858,7 @@
 
 .thread-ui-shell .thread-graph-markdown-preview :where(code) {
   font-family:
-    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono',
     monospace;
   font-size: 0.84em;
 }
@@ -774,7 +925,7 @@
     system-ui,
     -apple-system,
     BlinkMacSystemFont,
-    "Segoe UI",
+    'Segoe UI',
     sans-serif;
 }
 
@@ -857,7 +1008,7 @@
 }
 
 .thread-ui-shell.thread-ui-theme-dark .thread-graph-tool-badge.is-completed,
-.thread-ui-shell[data-theme-effective="dark"]
+.thread-ui-shell[data-theme-effective='dark']
   .thread-graph-tool-badge.is-completed,
 .thread-ui-shell.dark .thread-graph-tool-badge.is-completed {
   background: oklch(0.31 0.05 155);
@@ -865,7 +1016,7 @@
 }
 
 .thread-ui-shell.thread-ui-theme-dark .thread-graph-tool-badge.is-failed,
-.thread-ui-shell[data-theme-effective="dark"]
+.thread-ui-shell[data-theme-effective='dark']
   .thread-graph-tool-badge.is-failed,
 .thread-ui-shell.dark .thread-graph-tool-badge.is-failed {
   background: oklch(0.31 0.052 25);
@@ -873,7 +1024,7 @@
 }
 
 .thread-ui-shell.thread-ui-theme-dark .thread-graph-tool-badge.is-pending,
-.thread-ui-shell[data-theme-effective="dark"]
+.thread-ui-shell[data-theme-effective='dark']
   .thread-graph-tool-badge.is-pending,
 .thread-ui-shell.dark .thread-graph-tool-badge.is-pending {
   background: oklch(0.3 0.042 235);
@@ -881,7 +1032,7 @@
 }
 
 .thread-ui-shell.thread-ui-theme-dark .thread-graph-tool-badge.is-neutral,
-.thread-ui-shell[data-theme-effective="dark"]
+.thread-ui-shell[data-theme-effective='dark']
   .thread-graph-tool-badge.is-neutral,
 .thread-ui-shell.dark .thread-graph-tool-badge.is-neutral {
   background: #222733;
@@ -913,7 +1064,7 @@
   background: var(--theme-surface-strong);
   padding: 0.75rem;
   font-family:
-    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono',
     monospace;
   font-size: 0.78rem;
   line-height: 1.55;
@@ -1387,14 +1538,14 @@
   color: var(--theme-fg-soft);
 }
 
-.thread-ui-shell[data-theme-effective="light"]
+.thread-ui-shell[data-theme-effective='light']
   .thread-graph-history-delta-badge.is-add {
   border-color: rgb(16 185 129 / 0.25);
   background: rgb(16 185 129 / 0.1);
   color: rgb(4 120 87);
 }
 
-.thread-ui-shell[data-theme-effective="light"]
+.thread-ui-shell[data-theme-effective='light']
   .thread-graph-history-delta-badge.is-remove {
   border-color: rgb(244 63 94 / 0.25);
   background: rgb(244 63 94 / 0.1);
@@ -1481,25 +1632,25 @@
 }
 
 .thread-ui-shell.thread-ui-theme-dark .thread-graph-tool-key,
-.thread-ui-shell[data-theme-effective="dark"] .thread-graph-tool-key,
+.thread-ui-shell[data-theme-effective='dark'] .thread-graph-tool-key,
 .thread-ui-shell.dark .thread-graph-tool-key {
   color: oklch(0.78 0.12 18);
 }
 
 .thread-ui-shell.thread-ui-theme-dark .thread-graph-tool-string,
-.thread-ui-shell[data-theme-effective="dark"] .thread-graph-tool-string,
+.thread-ui-shell[data-theme-effective='dark'] .thread-graph-tool-string,
 .thread-ui-shell.dark .thread-graph-tool-string {
   color: oklch(0.79 0.11 155);
 }
 
 .thread-ui-shell.thread-ui-theme-dark .thread-graph-tool-number,
-.thread-ui-shell[data-theme-effective="dark"] .thread-graph-tool-number,
+.thread-ui-shell[data-theme-effective='dark'] .thread-graph-tool-number,
 .thread-ui-shell.dark .thread-graph-tool-number {
   color: oklch(0.77 0.1 235);
 }
 
 .thread-ui-shell.thread-ui-theme-dark .thread-graph-tool-boolean,
-.thread-ui-shell[data-theme-effective="dark"] .thread-graph-tool-boolean,
+.thread-ui-shell[data-theme-effective='dark'] .thread-graph-tool-boolean,
 .thread-ui-shell.dark .thread-graph-tool-boolean {
   color: oklch(0.79 0.1 302);
 }
@@ -1535,7 +1686,7 @@
 }
 
 .thread-ui-shell.thread-ui-theme-dark .timeline-user,
-.thread-ui-shell[data-theme-effective="dark"] .timeline-user,
+.thread-ui-shell[data-theme-effective='dark'] .timeline-user,
 .thread-ui-shell.dark .timeline-user {
   background: oklch(0.29 0.034 224);
   color: var(--theme-fg);
@@ -1581,7 +1732,7 @@
   :where(
     .thread-composer-menu,
     .thread-graph-composer-menu,
-    [data-composer-menu-surface="true"]
+    [data-composer-menu-surface='true']
   )
   :where(
     .border-stone-700,
@@ -1596,7 +1747,7 @@
   :where(
     .thread-composer-menu,
     .thread-graph-composer-menu,
-    [data-composer-menu-surface="true"]
+    [data-composer-menu-surface='true']
   )
   :where(
     .bg-stone-800,
@@ -1619,7 +1770,7 @@
   :where(
     .thread-composer-menu,
     .thread-graph-composer-menu,
-    [data-composer-menu-surface="true"]
+    [data-composer-menu-surface='true']
   )
   :where(
     .text-stone-100,
@@ -1638,7 +1789,7 @@
   :where(
     .thread-composer-menu,
     .thread-graph-composer-menu,
-    [data-composer-menu-surface="true"]
+    [data-composer-menu-surface='true']
   )
   :where(.text-stone-400, .text-stone-500) {
   color: var(--theme-fg-muted) !important;
@@ -1677,7 +1828,7 @@
 }
 
 .thread-ui-shell.thread-ui-theme-dark .timeline-user .thread-message-prose,
-.thread-ui-shell[data-theme-effective="dark"]
+.thread-ui-shell[data-theme-effective='dark']
   .timeline-user
   .thread-message-prose,
 .thread-ui-shell.dark .timeline-user .thread-message-prose,
@@ -1685,7 +1836,7 @@
   .timeline-user
   .thread-message-prose
   :where(p, li, span, div, strong, em, code),
-.thread-ui-shell[data-theme-effective="dark"]
+.thread-ui-shell[data-theme-effective='dark']
   .timeline-user
   .thread-message-prose
   :where(p, li, span, div, strong, em, code),
@@ -1731,7 +1882,7 @@
 }
 
 .thread-ui-shell.thread-ui-theme-dark .thread-graph-message-bubble.is-user,
-.thread-ui-shell[data-theme-effective="dark"]
+.thread-ui-shell[data-theme-effective='dark']
   .thread-graph-message-bubble.is-user,
 .thread-ui-shell.dark .thread-graph-message-bubble.is-user {
   background: #212b35;
@@ -1761,13 +1912,13 @@
 }
 
 .thread-ui-shell.thread-ui-theme-dark .thread-graph-message-content.is-user,
-.thread-ui-shell[data-theme-effective="dark"]
+.thread-ui-shell[data-theme-effective='dark']
   .thread-graph-message-content.is-user,
 .thread-ui-shell.dark .thread-graph-message-content.is-user,
 .thread-ui-shell.thread-ui-theme-dark
   .thread-graph-message-content.is-user
   .thread-message-prose,
-.thread-ui-shell[data-theme-effective="dark"]
+.thread-ui-shell[data-theme-effective='dark']
   .thread-graph-message-content.is-user
   .thread-message-prose,
 .thread-ui-shell.dark
@@ -1776,7 +1927,7 @@
 .thread-ui-shell.thread-ui-theme-dark
   .thread-graph-message-content.is-user
   .thread-graph-message-prose,
-.thread-ui-shell[data-theme-effective="dark"]
+.thread-ui-shell[data-theme-effective='dark']
   .thread-graph-message-content.is-user
   .thread-graph-message-prose,
 .thread-ui-shell.dark
@@ -1785,7 +1936,7 @@
 .thread-ui-shell.thread-ui-theme-dark
   .thread-graph-message-content.is-user
   .thread-graph-markdown,
-.thread-ui-shell[data-theme-effective="dark"]
+.thread-ui-shell[data-theme-effective='dark']
   .thread-graph-message-content.is-user
   .thread-graph-markdown,
 .thread-ui-shell.dark
@@ -1794,7 +1945,7 @@
 .thread-ui-shell.thread-ui-theme-dark
   .thread-graph-message-content.is-user
   .thread-graph-plain-text,
-.thread-ui-shell[data-theme-effective="dark"]
+.thread-ui-shell[data-theme-effective='dark']
   .thread-graph-message-content.is-user
   .thread-graph-plain-text,
 .thread-ui-shell.dark
@@ -1804,7 +1955,7 @@
   .thread-graph-message-content.is-user
   .thread-message-prose
   :where(p, li, span, div, strong, em, code),
-.thread-ui-shell[data-theme-effective="dark"]
+.thread-ui-shell[data-theme-effective='dark']
   .thread-graph-message-content.is-user
   .thread-message-prose
   :where(p, li, span, div, strong, em, code),
@@ -1816,7 +1967,7 @@
   .thread-graph-message-content.is-user
   .thread-graph-message-prose
   :where(p, li, span, div, strong, em, code),
-.thread-ui-shell[data-theme-effective="dark"]
+.thread-ui-shell[data-theme-effective='dark']
   .thread-graph-message-content.is-user
   .thread-graph-message-prose
   :where(p, li, span, div, strong, em, code),
@@ -1828,7 +1979,7 @@
   .thread-graph-message-content.is-user
   .thread-graph-markdown
   :where(p, li, span, div, strong, em, code),
-.thread-ui-shell[data-theme-effective="dark"]
+.thread-ui-shell[data-theme-effective='dark']
   .thread-graph-message-content.is-user
   .thread-graph-markdown
   :where(p, li, span, div, strong, em, code),
@@ -1912,7 +2063,7 @@
   text-underline-offset: 2px;
 }
 
-.thread-ui-shell[data-theme-effective="dark"] .thread-graph-markdown :where(a),
+.thread-ui-shell[data-theme-effective='dark'] .thread-graph-markdown :where(a),
 .thread-ui-shell.thread-ui-theme-dark .thread-graph-markdown :where(a),
 .thread-ui-shell.dark .thread-graph-markdown :where(a) {
   color: rgb(125 211 252);
@@ -1956,7 +2107,7 @@
   color: rgb(31 41 55);
 }
 
-.thread-ui-shell[data-theme-effective="dark"] .thread-graph-code-block,
+.thread-ui-shell[data-theme-effective='dark'] .thread-graph-code-block,
 .thread-ui-shell.thread-ui-theme-dark .thread-graph-code-block,
 .thread-ui-shell.dark .thread-graph-code-block {
   border-color: #303642;
@@ -1982,14 +2133,14 @@
   color: rgb(15 23 42);
 }
 
-.thread-ui-shell[data-theme-effective="dark"] .thread-graph-code-copy,
+.thread-ui-shell[data-theme-effective='dark'] .thread-graph-code-copy,
 .thread-ui-shell.thread-ui-theme-dark .thread-graph-code-copy,
 .thread-ui-shell.dark .thread-graph-code-copy {
   background: rgb(34 39 51 / 0.82);
   color: rgb(226 232 240);
 }
 
-.thread-ui-shell[data-theme-effective="dark"] .thread-graph-code-copy:hover,
+.thread-ui-shell[data-theme-effective='dark'] .thread-graph-code-copy:hover,
 .thread-ui-shell.thread-ui-theme-dark .thread-graph-code-copy:hover,
 .thread-ui-shell.dark .thread-graph-code-copy:hover {
   background: #2b313d;
@@ -2001,7 +2152,7 @@
   color: rgb(31 41 55);
 }
 
-.thread-ui-shell[data-theme-effective="dark"] .thread-graph-inline-code,
+.thread-ui-shell[data-theme-effective='dark'] .thread-graph-inline-code,
 .thread-ui-shell.thread-ui-theme-dark .thread-graph-inline-code,
 .thread-ui-shell.dark .thread-graph-inline-code {
   background: #222733;
@@ -2014,7 +2165,7 @@
 }
 
 .thread-ui-shell.thread-ui-theme-dark .thread-graph-message-sender,
-.thread-ui-shell[data-theme-effective="dark"] .thread-graph-message-sender,
+.thread-ui-shell[data-theme-effective='dark'] .thread-graph-message-sender,
 .thread-ui-shell.dark .thread-graph-message-sender {
   background: rgb(52 211 153 / 0.1);
   color: rgb(110 231 183);

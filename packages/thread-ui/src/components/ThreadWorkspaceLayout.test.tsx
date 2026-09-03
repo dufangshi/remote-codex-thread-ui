@@ -27,6 +27,25 @@ function mockViewport(mobile: boolean) {
   });
 }
 
+function mockViewportWidth(width: number) {
+  Object.defineProperty(window, 'matchMedia', {
+    writable: true,
+    value: vi.fn((query: string) => {
+      const maxWidth = /max-width:\s*(\d+)px/.exec(query)?.[1];
+      return {
+        matches: maxWidth ? width <= Number(maxWidth) : false,
+        media: query,
+        onchange: null,
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
+        dispatchEvent: vi.fn(),
+      };
+    }),
+  });
+}
+
 function render(node: ReactNode) {
   container = document.createElement('div');
   document.body.append(container);
@@ -163,6 +182,38 @@ describe('ThreadWorkspaceLayout', () => {
     const element = renderLayoutWithActions();
 
     expect(element.querySelector('[aria-label="Thread actions"]')).toBeTruthy();
+  });
+
+  it('uses a switchable workspace focus view at tablet widths', () => {
+    mockViewportWidth(900);
+    const element = renderLayout();
+
+    expect(element.querySelector('[data-testid="chat-content"]')).toBeTruthy();
+    expect(
+      element.querySelector('[data-testid="workspace-content"]'),
+    ).toBeTruthy();
+    expect(
+      element
+        .querySelector('[data-testid="workspace-content"]')
+        ?.closest('.hidden'),
+    ).toBeTruthy();
+
+    flushSync(() => {
+      element
+        .querySelector<HTMLButtonElement>('[aria-label="Show workspace"]')
+        ?.click();
+    });
+
+    expect(
+      element
+        .querySelector('[data-testid="workspace-content"]')
+        ?.closest('.block'),
+    ).toBeTruthy();
+    expect(
+      element
+        .querySelector('[data-testid="chat-content"]')
+        ?.closest('.hidden'),
+    ).toBeTruthy();
   });
 
   it('shows the complete usage summary without truncating it', () => {

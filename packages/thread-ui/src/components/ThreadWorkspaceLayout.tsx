@@ -469,6 +469,10 @@ export function ThreadWorkspaceLayout({
     typeof window !== "undefined"
       ? window.matchMedia("(max-width: 639px)").matches
       : layoutMode === "mobile";
+  const initialWorkspaceFocusViewport =
+    typeof window !== "undefined"
+      ? window.matchMedia("(max-width: 1023px)").matches
+      : layoutMode === "mobile";
   const [systemPrefersDark, setSystemPrefersDark] = useState(() =>
     typeof window !== "undefined"
       ? window.matchMedia("(prefers-color-scheme: dark)").matches
@@ -486,10 +490,13 @@ export function ThreadWorkspaceLayout({
   const [mobileRoomsOpen, setMobileRoomsOpen] = useState(false);
   const [roomsRailCollapsed, setRoomsRailCollapsed] = useState(false);
   const [workspaceCollapsed, setWorkspaceCollapsed] = useState(
-    !initialShellMobileViewport,
+    !initialWorkspaceFocusViewport,
   );
   const [isShellMobileViewport, setIsShellMobileViewport] = useState(
     initialShellMobileViewport,
+  );
+  const [isWorkspaceFocusViewport, setIsWorkspaceFocusViewport] = useState(
+    initialWorkspaceFocusViewport,
   );
   const [mobileWorkspace, setMobileWorkspace] = useState<"chat" | "workspace">(
     "chat",
@@ -521,6 +528,23 @@ export function ThreadWorkspaceLayout({
     const mediaQuery = window.matchMedia("(max-width: 639px)");
     const handleViewportChange = () => {
       setIsShellMobileViewport(mediaQuery.matches);
+    };
+
+    handleViewportChange();
+    mediaQuery.addEventListener("change", handleViewportChange);
+    return () => {
+      mediaQuery.removeEventListener("change", handleViewportChange);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const mediaQuery = window.matchMedia("(max-width: 1023px)");
+    const handleViewportChange = () => {
+      setIsWorkspaceFocusViewport(mediaQuery.matches);
     };
 
     handleViewportChange();
@@ -1035,6 +1059,9 @@ export function ThreadWorkspaceLayout({
   const renderMobileWorkspaceSplit =
     layoutMode === "mobile" ||
     (layoutMode === "responsive" && isShellMobileViewport);
+  const renderWorkspaceFocusSplit =
+    layoutMode === "mobile" ||
+    (layoutMode === "responsive" && isWorkspaceFocusViewport);
   const renderMobileTopbarControls = renderMobileWorkspaceSplit;
   const shouldShowMobileRoomsButton =
     renderMobileTopbarControls && !mobileRoomsOpen;
@@ -1271,14 +1298,15 @@ export function ThreadWorkspaceLayout({
                         {threadActionsButton}
                       </div>
                     ) : null}
-                    {renderMobileTopbarControls && hasWorkspace ? (
+                    {renderWorkspaceFocusSplit && hasWorkspace ? (
                       <button
                         type="button"
-                        onClick={() =>
+                        onClick={() => {
+                          setWorkspaceCollapsed(false);
                           setMobileWorkspace((current) =>
                             current === "workspace" ? "chat" : "workspace",
-                          )
-                        }
+                          );
+                        }}
                         aria-label={
                           mobileWorkspace === "workspace"
                             ? "Show chat"
@@ -1289,7 +1317,7 @@ export function ThreadWorkspaceLayout({
                             ? "Show chat"
                             : "Show workspace"
                         }
-                        className="thread-icon-button thread-mobile-only-inline-flex h-10 w-10 items-center justify-center rounded-full"
+                        className="thread-icon-button inline-flex h-10 w-10 items-center justify-center rounded-full"
                       >
                         {mobileWorkspace === "workspace" ? (
                           <MessageSquare className="h-4 w-4" />
@@ -1313,13 +1341,15 @@ export function ThreadWorkspaceLayout({
 
             <GraphChatSplitRegion>
               {hasWorkspace && !workspaceCollapsed ? (
-                renderMobileWorkspaceSplit ? (
-                  <div className="thread-split-container thread-graph-shell-mobile-split h-full min-h-0 overflow-hidden">
+                renderWorkspaceFocusSplit ? (
+                  <div className="thread-split-container h-full min-h-0 overflow-hidden">
                     <div
                       className={`h-full min-h-0 overflow-hidden ${
                         mobileWorkspace === "chat"
                           ? "block"
-                          : "thread-mobile-chat-hidden"
+                          : renderMobileWorkspaceSplit
+                            ? "thread-mobile-chat-hidden"
+                            : "hidden"
                       }`}
                     >
                       {children}
@@ -1328,7 +1358,9 @@ export function ThreadWorkspaceLayout({
                       className={`h-full min-h-0 overflow-hidden ${
                         mobileWorkspace === "workspace"
                           ? "block"
-                          : "thread-mobile-workspace-hidden"
+                          : renderMobileWorkspaceSplit
+                            ? "thread-mobile-workspace-hidden"
+                            : "hidden"
                       }`}
                     >
                       {renderWorkspacePanel()}

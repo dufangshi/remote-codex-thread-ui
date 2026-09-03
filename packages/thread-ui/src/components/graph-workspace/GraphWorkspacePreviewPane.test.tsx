@@ -229,6 +229,7 @@ describe('GraphWorkspacePreviewPane', () => {
       <GraphWorkspacePreviewPane
         plugins={createDefaultPluginContextValue()}
         selectedTarget={{ kind: 'workspace-file', node: markdownNode }}
+        focusLine={3}
         previewFile={{
           path: markdownNode.path,
           name: markdownNode.name,
@@ -241,8 +242,8 @@ describe('GraphWorkspacePreviewPane', () => {
       />,
     );
 
-    const sourceButton = [...element.querySelectorAll('button')].find(
-      (button) => button.textContent?.trim() === 'Source',
+    const sourceButton = element.querySelector<HTMLButtonElement>(
+      '[aria-label="Markdown source"]',
     );
     act(() => {
       sourceButton?.click();
@@ -254,5 +255,10 @@ describe('GraphWorkspacePreviewPane', () => {
         (line) => line.textContent,
       ),
     ).toEqual(['1', '2', '3']);
+    expect(
+      element
+        .querySelector('[data-line="3"]')
+        ?.classList.contains('is-focused-line'),
+    ).toBe(true);
   });
 });

@@ -1,5 +1,7 @@
 import {
+  lazy,
   memo,
+  Suspense,
   useEffect,
   useMemo,
   useRef,
@@ -10,10 +12,12 @@ import {
 import { createPortal } from 'react-dom';
 import {
   BookOpen,
-  ChevronsRight,
+  ChevronRight,
   Code2,
   Minus,
   Pencil,
+  PanelLeftOpen,
+  PanelRightClose,
   Plus,
   RotateCcw,
   Save,
@@ -35,6 +39,14 @@ import {
 } from './workspaceTree';
 import { WorkspaceInfoCard } from './GraphWorkspaceCards';
 import { GraphMoleculeViewer } from './GraphMoleculeViewer';
+import {
+  WorkspaceFileTabs,
+  type WorkspaceFileTab,
+} from './WorkspaceFileTabs';
+
+const GraphWorkspaceMonacoEditor = lazy(
+  () => import('./GraphWorkspaceMonacoEditor'),
+);
 
 export type GraphWorkspacePreviewTarget =
   | { kind: 'live-molecule'; node: WorkspaceTreeNode }
@@ -460,9 +472,11 @@ export function graphWorkspacePreviewTargetFromNode(
 
 const GraphWorkspaceCodePreview = memo(function GraphWorkspaceCodePreview({
   content,
+  focusLine,
   language = 'text',
 }: {
   content: string;
+  focusLine?: number | null;
   language?: string;
 }) {
   const rootRef = useRef<HTMLDivElement | null>(null);
@@ -530,6 +544,21 @@ const GraphWorkspaceCodePreview = memo(function GraphWorkspaceCodePreview({
     }
   }, [content, dark, highlighter, language]);
 
+  useEffect(() => {
+    const root = rootRef.current;
+    root
+      ?.querySelectorAll('.is-focused-line')
+      .forEach((element) => element.classList.remove('is-focused-line'));
+    if (!root || !focusLine || focusLine < 1) {
+      return;
+    }
+    const target =
+      root.querySelector<HTMLElement>(`[data-line="${focusLine}"]`) ??
+      root.querySelector<HTMLElement>(`.line:nth-child(${focusLine})`);
+    target?.classList.add('is-focused-line');
+    target?.scrollIntoView?.({ block: 'center' });
+  }, [focusLine, highlightedHtml]);
+
   const lines = content.split('\n');
   return (
     <div
@@ -547,7 +576,13 @@ const GraphWorkspaceCodePreview = memo(function GraphWorkspaceCodePreview({
         <pre className="thread-graph-plain-code-preview">
           <code>
             {lines.map((line, index) => (
-              <span className="thread-graph-code-line" key={index}>
+              <span
+                className={`thread-graph-code-line ${
+                  focusLine === index + 1 ? 'is-focused-line' : ''
+                }`}
+                data-line={index + 1}
+                key={index}
+              >
                 <span
                   className="thread-graph-code-line-number"
                   aria-hidden="true"
@@ -641,12 +676,20 @@ const GraphWorkspaceMarkdownPreview = memo(
 );
 
 export function GraphWorkspacePreviewPane({
+  activeFilePath,
+  dirtyFilePaths = new Set(),
   error,
+  fileTabs = [],
+  focusLine,
   imageUrl,
   loadingMore,
   onSaveFile,
+  onCloseFileTab,
+  onDirtyChange,
+  onExpandExplorer,
   onOpenWorkspaceFile,
   onLoadMore,
+  onSelectFileTab,
   onCollapse,
   pdfUrl,
   previewFile,
@@ -656,15 +699,23 @@ export function GraphWorkspacePreviewPane({
   selectedTarget,
   workspaceRootPath,
 }: {
+  activeFilePath?: string | null;
+  dirtyFilePaths?: ReadonlySet<string>;
   error?: string | null;
+  fileTabs?: WorkspaceFileTab[];
+  focusLine?: number | null;
   imageUrl?: string | null;
   loadingMore?: boolean;
   onSaveFile?: (input: {
     path: string;
     content: string;
   }) => Promise<void> | void;
+  onCloseFileTab?: (path: string) => void;
+  onDirtyChange?: (path: string, dirty: boolean) => void;
+  onExpandExplorer?: () => void;
   onOpenWorkspaceFile?: (path: string) => void;
   onLoadMore?: () => void;
+  onSelectFileTab?: (path: string) => void;
   onCollapse?: () => void;
   pdfUrl?: string | null;
   previewFile?: ThreadWorkspaceFilePreview | null;
@@ -674,6 +725,7 @@ export function GraphWorkspacePreviewPane({
   selectedTarget: GraphWorkspacePreviewTarget;
   workspaceRootPath?: string;
 }) {
+  const surfaceRef = useRef<HTMLElement | null>(null);
   const [editing, setEditing] = useState(false);
   const [draftContent, setDraftContent] = useState('');
   const [saveError, setSaveError] = useState<string | null>(null);
@@ -681,6 +733,13 @@ export function GraphWorkspacePreviewPane({
   const [markdownView, setMarkdownView] = useState<'preview' | 'source'>(
     'preview',
   );
+  const [compactViewer, setCompactViewer] = useState(
+    () =>
+      typeof window === 'undefined' ||
+      typeof window.matchMedia !== 'function' ||
+      window.matchMedia('(max-width: 639px)').matches,
+  );
+  const [dark, setDark] = useState(false);
   const activeNode = selectedTarget?.node ?? null;
   const renderedArtifact = activeNode?.artifact
     ? plugins.renderArtifact({
@@ -695,15 +754,45 @@ export function GraphWorkspacePreviewPane({
   const extension = previewFile ? extensionOf(previewFile.path) : '';
   const isMarkdownFile = MARKDOWN_EXTENSIONS.has(extension);
   const title = previewTargetTitle(selectedTarget);
-  const selectedFileIsMolecule =
-    previewFile !== null && MOLECULAR_EXTENSIONS.has(extension);
   const canEditFile =
     Boolean(previewFile && onSaveFile) &&
-    !selectedFileIsMolecule &&
+    !(previewFile && MOLECULAR_EXTENSIONS.has(extension)) &&
     isSmallEditableTextFile(previewFile!);
   const isLiveArtifactPreview = selectedTarget?.kind === 'live-molecule';
   const isArtifactPreview = Boolean(activeNode?.artifact && renderedArtifact);
   const isMoleculePreview = Boolean(moleculeSnapshot) || isArtifactPreview;
+
+  useEffect(() => {
+    if (typeof window.matchMedia !== 'function') {
+      return;
+    }
+    const mediaQuery = window.matchMedia('(max-width: 639px)');
+    const update = () => setCompactViewer(mediaQuery.matches);
+    update();
+    mediaQuery.addEventListener?.('change', update);
+    return () => mediaQuery.removeEventListener?.('change', update);
+  }, []);
+
+  useEffect(() => {
+    const shell = surfaceRef.current?.closest<HTMLElement>('.thread-ui-shell');
+    const update = () =>
+      setDark(
+        shell?.getAttribute('data-theme-effective') === 'dark' ||
+          shell?.classList.contains('dark') ||
+          shell?.classList.contains('thread-ui-theme-dark') ||
+          false,
+      );
+    update();
+    if (!shell) {
+      return;
+    }
+    const observer = new MutationObserver(update);
+    observer.observe(shell, {
+      attributes: true,
+      attributeFilter: ['class', 'data-theme-effective'],
+    });
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     setEditing(false);
@@ -711,6 +800,16 @@ export function GraphWorkspacePreviewPane({
     setSaveError(null);
     setMarkdownView('preview');
   }, [previewFile?.path, previewFile?.content]);
+
+  useEffect(() => {
+    if (!previewFile) {
+      return;
+    }
+    onDirtyChange?.(
+      previewFile.path,
+      editing && draftContent !== previewFile.content,
+    );
+  }, [draftContent, editing, onDirtyChange, previewFile]);
 
   async function handleSaveFile() {
     if (!previewFile || !onSaveFile) {
@@ -734,35 +833,151 @@ export function GraphWorkspacePreviewPane({
     }
   }
 
-  return (
-    <section
-      className="thread-graph-viewer flex h-full min-h-0 flex-col overflow-hidden rounded-[12px]"
-      data-preview-target-kind={selectedTarget?.kind ?? 'none'}
-    >
-      <div className="thread-graph-viewer-header flex h-12 shrink-0 items-center justify-between gap-3 border-b px-3 sm:h-[60px] sm:px-5">
-        <div className="flex min-w-0 items-center gap-3">
-          <h2 className="text-base font-semibold text-slate-900 sm:text-[18px] dark:text-slate-100">
-            Viewer
-          </h2>
-          {title ? (
-            <span className="min-w-0 truncate text-sm font-medium text-slate-500 dark:text-slate-400">
-              {title}
-            </span>
-          ) : null}
-        </div>
-        {onCollapse ? (
-          <button
-            type="button"
-            onClick={onCollapse}
-            data-testid="collapse-viewer"
-            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-[#222733] dark:hover:text-slate-100"
-            title="Collapse workspace"
-            aria-label="Collapse workspace"
+  const breadcrumbSegments = previewFile
+    ? previewFile.path
+        .replace(workspaceRootPath ?? '', '')
+        .split('/')
+        .filter(Boolean)
+    : [];
+  const fileToolbar =
+    previewFile && (isMarkdownFile || canEditFile) ? (
+      <div className="flex shrink-0 items-center gap-1">
+        {isMarkdownFile && !editing ? (
+          <div
+            className="thread-graph-markdown-view-switch inline-flex items-center rounded border p-px"
+            role="group"
+            aria-label="Markdown view"
           >
-            <ChevronsRight className="h-4 w-4" />
-          </button>
+            <button
+              type="button"
+              onClick={() => setMarkdownView('preview')}
+              className={`inline-flex h-5 w-5 items-center justify-center rounded transition ${
+                markdownView === 'preview' ? 'is-active' : ''
+              }`}
+              aria-pressed={markdownView === 'preview'}
+              title="Markdown preview"
+              aria-label="Markdown preview"
+            >
+              <BookOpen className="h-3 w-3" />
+            </button>
+            <button
+              type="button"
+              onClick={() => setMarkdownView('source')}
+              className={`inline-flex h-5 w-5 items-center justify-center rounded transition ${
+                markdownView === 'source' ? 'is-active' : ''
+              }`}
+              aria-pressed={markdownView === 'source'}
+              title="Markdown source"
+              aria-label="Markdown source"
+            >
+              <Code2 className="h-3 w-3" />
+            </button>
+          </div>
+        ) : null}
+        {canEditFile ? (
+          <div className="flex shrink-0 items-center gap-0.5">
+            {editing ? (
+              <>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setDraftContent(previewFile.content);
+                    setEditing(false);
+                    setSaveError(null);
+                  }}
+                  disabled={saving}
+                  className="thread-graph-editor-toolbar-button flex h-6 w-6 items-center justify-center rounded transition disabled:cursor-not-allowed disabled:opacity-40"
+                  title="Cancel edits"
+                  aria-label="Cancel edits"
+                >
+                  <X className="h-3.5 w-3.5" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => void handleSaveFile()}
+                  disabled={saving || draftContent === previewFile.content}
+                  className="thread-graph-editor-toolbar-button flex h-6 w-6 items-center justify-center rounded transition disabled:cursor-not-allowed disabled:opacity-40"
+                  title="Save file"
+                  aria-label="Save file"
+                >
+                  <Save className="h-3.5 w-3.5" />
+                </button>
+              </>
+            ) : (
+              <button
+                type="button"
+                onClick={() => {
+                  setDraftContent(previewFile.content);
+                  setMarkdownView('source');
+                  setEditing(true);
+                  setSaveError(null);
+                }}
+                className="thread-graph-editor-toolbar-button flex h-6 w-6 items-center justify-center rounded transition"
+                title="Edit file"
+                aria-label="Edit file"
+              >
+                <Pencil className="h-3.5 w-3.5" />
+              </button>
+            )}
+          </div>
         ) : null}
       </div>
+    ) : null;
+  const viewerPaneToggle = onExpandExplorer ? (
+    <button
+      type="button"
+      onClick={onExpandExplorer}
+      data-testid="expand-explorer"
+      className="flex h-6 w-6 shrink-0 items-center justify-center rounded text-[var(--theme-fg-muted)] transition hover:bg-[var(--theme-hover)] hover:text-[var(--theme-fg)]"
+      title="Show Explorer"
+      aria-label="Show Explorer"
+    >
+      <PanelLeftOpen className="h-3.5 w-3.5" />
+    </button>
+  ) : onCollapse ? (
+    <button
+      type="button"
+      onClick={onCollapse}
+      data-testid="collapse-viewer"
+      className="flex h-6 w-6 shrink-0 items-center justify-center rounded text-[var(--theme-fg-muted)] transition hover:bg-[var(--theme-hover)] hover:text-[var(--theme-fg)]"
+      title="Hide Editor"
+      aria-label="Hide Editor"
+    >
+      <PanelRightClose className="h-3.5 w-3.5" />
+    </button>
+  ) : null;
+
+  return (
+    <section
+      ref={surfaceRef}
+      className="thread-graph-viewer flex h-full min-h-0 flex-col overflow-hidden rounded-md"
+      data-preview-target-kind={selectedTarget?.kind ?? 'none'}
+    >
+      {selectedTarget?.kind !== 'workspace-file' ? (
+        <div className="thread-graph-viewer-header flex h-9 shrink-0 items-center justify-between gap-2 border-b px-2.5">
+          <span className="min-w-0 truncate text-xs font-medium text-[var(--theme-fg)]">
+            {title ?? 'Preview'}
+          </span>
+          {viewerPaneToggle}
+        </div>
+      ) : null}
+      {fileTabs.length > 0 && onCloseFileTab && onSelectFileTab ? (
+        <WorkspaceFileTabs
+          activePath={activeFilePath ?? null}
+          dirtyPaths={dirtyFilePaths}
+          onClose={onCloseFileTab}
+          onSelect={onSelectFileTab}
+          tabs={fileTabs}
+          trailingAction={
+            fileToolbar || viewerPaneToggle ? (
+              <>
+                {fileToolbar}
+                {viewerPaneToggle}
+              </>
+            ) : null
+          }
+        />
+      ) : null}
       <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
         {error ? (
           <div className="border-b border-rose-200 bg-rose-50 px-5 py-3 text-sm text-rose-700 dark:border-rose-400/25 dark:bg-rose-400/10 dark:text-rose-200">
@@ -806,108 +1021,42 @@ export function GraphWorkspacePreviewPane({
           </div>
         ) : selectedTarget.kind === 'workspace-file' && previewFile ? (
           <div className="flex min-h-0 flex-1 flex-col">
-            <div className="thread-graph-file-preview-header flex min-h-12 flex-wrap items-center justify-between gap-2 border-b px-4 py-2">
-              <div className="min-w-0 text-xs uppercase tracking-[0.12em]">
-                {selectedFileIsMolecule
-                  ? 'molecule'
-                  : fileLanguage || extension || 'text'}{' '}
-                | {previewFile.size.toLocaleString()} bytes
-                {previewFile.truncated ? (
-                  <span className="ml-2 text-amber-500">
-                    showing {previewFile.nextOffset.toLocaleString()} bytes
-                  </span>
-                ) : null}
-              </div>
-              {isMarkdownFile || canEditFile ? (
-                <div className="flex shrink-0 items-center gap-1.5">
-                  {isMarkdownFile && !editing ? (
-                    <div
-                      className="thread-graph-markdown-view-switch inline-flex items-center rounded-md border p-0.5"
-                      role="group"
-                      aria-label="Markdown view"
+            {breadcrumbSegments.length > 1 ||
+            (fileTabs.length === 0 && fileToolbar) ? (
+              <div className="thread-graph-editor-breadcrumbs flex h-7 shrink-0 items-center border-b px-2 text-[11px]">
+                <div className="flex min-w-0 flex-1 items-center gap-0.5 overflow-x-auto">
+                  {breadcrumbSegments.map((segment, index, segments) => (
+                    <span
+                      key={`${segment}:${index}`}
+                      className="flex shrink-0 items-center gap-0.5"
                     >
-                      <button
-                        type="button"
-                        onClick={() => setMarkdownView('preview')}
-                        className={`inline-flex h-7 items-center gap-1 rounded px-2 text-xs transition ${
-                          markdownView === 'preview' ? 'is-active' : ''
-                        }`}
-                        aria-pressed={markdownView === 'preview'}
+                      <span
+                        className={
+                          index === segments.length - 1
+                            ? 'text-[var(--theme-fg)]'
+                            : ''
+                        }
                       >
-                        <BookOpen className="h-3.5 w-3.5" />
-                        <span>Preview</span>
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setMarkdownView('source')}
-                        className={`inline-flex h-7 items-center gap-1 rounded px-2 text-xs transition ${
-                          markdownView === 'source' ? 'is-active' : ''
-                        }`}
-                        aria-pressed={markdownView === 'source'}
-                      >
-                        <Code2 className="h-3.5 w-3.5" />
-                        <span>Source</span>
-                      </button>
-                    </div>
-                  ) : null}
-                  {canEditFile ? (
-                    <div className="flex shrink-0 items-center gap-1">
-                      {editing ? (
-                        <>
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setDraftContent(previewFile.content);
-                              setEditing(false);
-                              setSaveError(null);
-                            }}
-                            disabled={saving}
-                            className="thread-graph-explorer-icon-button flex h-8 w-8 items-center justify-center rounded-lg border shadow-none transition disabled:cursor-not-allowed disabled:opacity-50"
-                            title="Cancel edits"
-                            aria-label="Cancel edits"
-                          >
-                            <X className="h-4 w-4" />
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => void handleSaveFile()}
-                            disabled={
-                              saving || draftContent === previewFile.content
-                            }
-                            className="thread-graph-explorer-icon-button flex h-8 w-8 items-center justify-center rounded-lg border shadow-none transition disabled:cursor-not-allowed disabled:opacity-50"
-                            title="Save file"
-                            aria-label="Save file"
-                          >
-                            <Save className="h-4 w-4" />
-                          </button>
-                        </>
-                      ) : (
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setDraftContent(previewFile.content);
-                            setMarkdownView('source');
-                            setEditing(true);
-                            setSaveError(null);
-                          }}
-                          className="thread-graph-explorer-icon-button flex h-8 w-8 items-center justify-center rounded-lg border shadow-none transition"
-                          title="Edit file"
-                          aria-label="Edit file"
-                        >
-                          <Pencil className="h-4 w-4" />
-                        </button>
-                      )}
-                    </div>
-                  ) : null}
+                        {segment}
+                      </span>
+                      {index < segments.length - 1 ? (
+                        <ChevronRight
+                          aria-hidden="true"
+                          className="h-3 w-3 text-[var(--theme-fg-muted)]"
+                        />
+                      ) : null}
+                    </span>
+                  ))}
                 </div>
-              ) : null}
-            </div>
+                {fileTabs.length === 0 ? fileToolbar : null}
+              </div>
+            ) : null}
             {saveError ? (
               <div className="border-b border-rose-200 bg-rose-50 px-4 py-2 text-sm text-rose-700 dark:border-rose-400/25 dark:bg-rose-400/10 dark:text-rose-200">
                 {saveError}
               </div>
             ) : null}
-            {editing ? (
+            {editing && compactViewer ? (
               <textarea
                 value={draftContent}
                 onChange={(event) => setDraftContent(event.currentTarget.value)}
@@ -915,7 +1064,7 @@ export function GraphWorkspacePreviewPane({
                 aria-label="Workspace file editor"
                 className="thread-graph-file-editor min-h-0 flex-1 resize-none border-0 bg-transparent p-4 font-mono text-[12px] leading-5 text-slate-900 outline-none dark:text-slate-100"
               />
-            ) : isMarkdownFile && markdownView === 'preview' ? (
+            ) : isMarkdownFile && markdownView === 'preview' && !editing ? (
               <GraphWorkspaceMarkdownPreview
                 content={previewFile.content}
                 markdownPath={previewFile.path}
@@ -925,11 +1074,32 @@ export function GraphWorkspacePreviewPane({
                   : {})}
                 {...(workspaceRootPath ? { workspaceRootPath } : {})}
               />
-            ) : (
+            ) : compactViewer ? (
               <GraphWorkspaceCodePreview
                 content={previewFile.content}
+                focusLine={focusLine}
                 language={fileLanguage}
               />
+            ) : (
+              <Suspense
+                fallback={
+                  <div className="flex min-h-0 flex-1 items-center justify-center text-sm text-[var(--theme-fg-muted)]">
+                    Loading editor...
+                  </div>
+                }
+              >
+                <GraphWorkspaceMonacoEditor
+                  key={previewFile.path}
+                  content={editing ? draftContent : previewFile.content}
+                  dark={dark}
+                  focusLine={focusLine}
+                  language={fileLanguage}
+                  onChange={setDraftContent}
+                  onSave={() => void handleSaveFile()}
+                  path={previewFile.path}
+                  readOnly={!editing}
+                />
+              </Suspense>
             )}
             {previewFile.truncated && onLoadMore ? (
               <div className="thread-graph-file-preview-footer flex justify-center border-t px-4 py-3">

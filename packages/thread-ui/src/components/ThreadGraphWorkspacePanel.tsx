@@ -1,7 +1,5 @@
 import { memo, useEffect, useMemo, useState, type ReactNode } from 'react';
 import {
-  BarChart2,
-  BookOpen,
   GitBranch,
   Paperclip,
   Terminal,
@@ -19,11 +17,7 @@ import type { ThreadWorkspaceAdapter } from '../adapters';
 import type { PluginContextValue } from '../plugins/plugin-context';
 import { GraphWorkspaceExplorer } from './graph-workspace/GraphWorkspaceExplorer';
 import { WorkspaceInfoCard } from './graph-workspace/GraphWorkspaceCards';
-import { GraphGuidePanel } from './graph-workspace/GraphGuidePanel';
-import {
-  GraphToolUsagePanel,
-  type GraphToolEventSummary,
-} from './graph-workspace/GraphToolUsagePanel';
+import type { GraphToolEventSummary } from './graph-workspace/GraphToolUsagePanel';
 import { collectArtifacts } from './graph-workspace/workspaceTree';
 import { GraphVisualization } from './graph-chat/GraphVisualization';
 import type { GraphChatInputNode } from './graph-chat/FloatingHelper';
@@ -48,7 +42,7 @@ export type WorkspaceTab =
   | 'extensions';
 
 type PrimaryWorkspaceTab = {
-  id: 'workspace' | 'tools' | 'guide';
+  id: 'workspace';
   label: string;
   icon: LucideIcon | null;
 };
@@ -72,8 +66,8 @@ const DEFAULT_WORKSPACE_FEATURES: Required<
   Omit<ThreadGraphWorkspaceFeatures, 'defaultTab'>
 > = {
   workspace: true,
-  toolUsage: true,
-  guide: true,
+  toolUsage: false,
+  guide: false,
   threadGraph: true,
   extensions: true,
 };
@@ -96,9 +90,9 @@ function firstEnabledWorkspaceTab(
       case 'workspace':
         return features.workspace;
       case 'tools':
-        return features.toolUsage;
+        return false;
       case 'guide':
-        return features.guide;
+        return false;
       case 'graph':
         return features.threadGraph;
       case 'extensions':
@@ -113,8 +107,6 @@ function firstEnabledWorkspaceTab(
   return (
     ([
       'workspace',
-      'tools',
-      'guide',
       'graph',
       'extensions',
     ] as WorkspaceTab[]).find(isEnabled) ?? null
@@ -129,9 +121,9 @@ function isWorkspaceTabEnabled(
     case 'workspace':
       return features.workspace;
     case 'tools':
-      return features.toolUsage;
+      return false;
     case 'guide':
-      return features.guide;
+      return false;
     case 'graph':
       return features.threadGraph;
     case 'extensions':
@@ -326,15 +318,7 @@ export function ThreadGraphWorkspacePanel({
   const [activeTab, setActiveTab] = useState<WorkspaceTab | null>(initialTab);
   const artifacts = useMemo(() => collectArtifacts(detail), [detail]);
   const toolEvents = useMemo(() => collectToolEvents(detail), [detail]);
-  const toolCounts = useMemo(() => {
-    const counts = new Map<ThreadHistoryItemDto['kind'], number>();
-    for (const event of toolEvents) {
-      counts.set(event.kind, (counts.get(event.kind) ?? 0) + 1);
-    }
-    return [...counts.entries()].sort((left, right) => right[1] - left[1]);
-  }, [toolEvents]);
   const threadPanels = plugins.getThreadPanels();
-  const maxToolCount = Math.max(...toolCounts.map(([, count]) => count), 1);
   const graphNodes = useMemo(
     () => collectGraphNodes(detail, toolEvents),
     [detail, toolEvents],
@@ -344,14 +328,8 @@ export function ThreadGraphWorkspacePanel({
     if (features.workspace) {
       tabs.push({ id: 'workspace', label: 'Workspace', icon: null });
     }
-    if (features.toolUsage) {
-      tabs.push({ id: 'tools', label: 'Tool Usage', icon: BarChart2 });
-    }
-    if (features.guide) {
-      tabs.push({ id: 'guide', label: 'Guide', icon: BookOpen });
-    }
     return tabs;
-  }, [features.guide, features.toolUsage, features.workspace]);
+  }, [features.workspace]);
   const secondaryTabs = useMemo(() => {
     const tabs: SecondaryWorkspaceTab[] = [];
     if (features.threadGraph) {
@@ -381,7 +359,7 @@ export function ThreadGraphWorkspacePanel({
 
   return (
     <div className="thread-graph-right-panel flex h-full min-h-0 flex-col overflow-hidden">
-      <div className="thread-graph-right-tabs flex shrink-0 items-center gap-1 overflow-hidden border-b px-3 py-2">
+      <div className="thread-graph-right-tabs flex h-9 shrink-0 items-center gap-0 overflow-hidden border-b px-1">
         {primaryTabs.map((tab) => {
           const Icon = tab.icon;
           return (
@@ -389,7 +367,7 @@ export function ThreadGraphWorkspacePanel({
               key={tab.id}
               type="button"
               onClick={() => setActiveTab(tab.id)}
-              className={`thread-graph-right-tab inline-flex h-8 shrink-0 items-center gap-1.5 rounded-md px-3 text-xs font-medium transition ${
+              className={`thread-graph-right-tab inline-flex h-9 shrink-0 items-center gap-1.5 px-2.5 text-xs font-medium transition ${
                 activeTab === tab.id ? 'is-active' : ''
               }`}
             >
@@ -400,7 +378,7 @@ export function ThreadGraphWorkspacePanel({
         })}
         {secondaryTabs.length ? (
           <div
-            className="thread-graph-right-tab-secondary ml-auto flex min-w-0 shrink items-center gap-1 border-l pl-2"
+            className="thread-graph-right-tab-secondary ml-auto flex h-6 min-w-0 shrink items-center gap-0.5 border-l pl-1"
             aria-label="Remote Codex workspace extensions"
           >
             {secondaryTabs.map((tab) => {
@@ -410,7 +388,7 @@ export function ThreadGraphWorkspacePanel({
                   key={tab.id}
                   type="button"
                   onClick={() => setActiveTab(tab.id)}
-                  className={`thread-graph-right-tab inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-xs font-medium transition ${
+                  className={`thread-graph-right-tab inline-flex h-8 w-8 shrink-0 items-center justify-center text-xs font-medium transition ${
                     activeTab === tab.id ? 'is-active' : ''
                   }`}
                   title={tab.label}
@@ -434,15 +412,6 @@ export function ThreadGraphWorkspacePanel({
             status={status}
             focusPathRequest={focusPathRequest}
             workspaceAdapter={workspaceAdapter ?? null}
-          />
-        ) : null}
-
-        {activeTab === 'tools' ? (
-          <GraphToolUsagePanel
-            formatToolKind={formatToolKind}
-            toolCounts={toolCounts}
-            toolEvents={toolEvents}
-            maxToolCount={maxToolCount}
           />
         ) : null}
 
@@ -526,8 +495,6 @@ export function ThreadGraphWorkspacePanel({
             </div>
           </div>
         ) : null}
-
-        {activeTab === 'guide' ? <GraphGuidePanel /> : null}
       </div>
     </div>
   );

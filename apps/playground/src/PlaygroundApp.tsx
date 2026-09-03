@@ -9,6 +9,7 @@ import type {
   ThreadDetailUiAdapter,
   ThreadShellAdapter,
   ThreadShellControlState,
+  ThreadWorkspaceAdapter,
 } from '@remote-codex/thread-ui';
 import {
   AppShellMenuButton,
@@ -81,7 +82,7 @@ const mockExportTurnsState = {
 };
 
 function mockShellState(
-  shells: typeof mockShellSession[],
+  shells: (typeof mockShellSession)[],
 ): ThreadShellStateDto {
   return {
     threadId: mockDetail.thread.id,
@@ -143,9 +144,7 @@ function createPlaygroundShellAdapter(): ThreadShellAdapter {
               const connectedEvent: ShellEventEnvelope = {
                 type: 'shell.connected',
                 shellId: mockShellSession.id,
-                timestamp: new Date(
-                  '2026-06-08T14:19:01.000Z',
-                ).toISOString(),
+                timestamp: new Date('2026-06-08T14:19:01.000Z').toISOString(),
                 payload: {
                   viewerId: 'playground-viewer-1',
                 },
@@ -154,9 +153,7 @@ function createPlaygroundShellAdapter(): ThreadShellAdapter {
               handlers.onShellEvent?.({
                 type: 'shell.output',
                 shellId: mockShellSession.id,
-                timestamp: new Date(
-                  '2026-06-08T14:19:02.000Z',
-                ).toISOString(),
+                timestamp: new Date('2026-06-08T14:19:02.000Z').toISOString(),
                 payload: {
                   data: 'playground shell ready\n',
                   cwdBaseName: 'computational-chemistry',
@@ -174,13 +171,60 @@ function createPlaygroundShellAdapter(): ThreadShellAdapter {
   };
 }
 
+function createLargeWorkspaceAdapter(): ThreadWorkspaceAdapter {
+  const contentByPath = new Map<string, string>();
+  const children = Array.from({ length: 10_000 }, (_, index) => {
+    const name = `generated-file-${String(index + 1).padStart(5, '0')}.ts`;
+    return {
+      name,
+      path: name,
+      kind: 'file' as const,
+      size: 48,
+    };
+  });
+  return {
+    async listTree() {
+      return {
+        name: 'Large workspace fixture',
+        path: '',
+        kind: 'directory',
+        childrenLoaded: true,
+        hasChildren: true,
+        children,
+      };
+    },
+    async readFile({ path }) {
+      const content =
+        contentByPath.get(path) ??
+        `export const fixturePath = ${JSON.stringify(path)};\n`;
+      return {
+        path,
+        name: path,
+        content,
+        language: 'typescript',
+        size: content.length,
+        truncated: false,
+        nextOffset: content.length,
+      };
+    },
+    async writeFile({ path, content }) {
+      contentByPath.set(path, content);
+    },
+  };
+}
+
 export function PlaygroundApp() {
+  const playgroundParams = new URLSearchParams(window.location.search);
+  const largeWorkspace = playgroundParams.has('largeWorkspace');
+  const playgroundTheme =
+    playgroundParams.get('theme') === 'light' ? 'light' : 'dark';
   const [menuOpen, setMenuOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [threadActionsOpen, setThreadActionsOpen] = useState(false);
   const [activeView, setActiveView] = useState<'chat' | 'shell'>('chat');
   const [followTail, setFollowTail] = useState(true);
-  const [autoCollapseCompletedTurns, setAutoCollapseCompletedTurns] = useState(true);
+  const [autoCollapseCompletedTurns, setAutoCollapseCompletedTurns] =
+    useState(true);
   const [scrollRequestKey, setScrollRequestKey] = useState(0);
   const [shellState, setShellState] = useState<ThreadShellControlState | null>(
     null,
@@ -208,8 +252,9 @@ export function PlaygroundApp() {
         };
       },
       shell: createPlaygroundShellAdapter(),
+      ...(largeWorkspace ? { workspace: createLargeWorkspaceAdapter() } : {}),
     }),
-    [],
+    [largeWorkspace],
   );
 
   const navContext = useMemo<AppShellNavContextValue>(
@@ -221,15 +266,15 @@ export function PlaygroundApp() {
       settingsOpen,
       openSettings: () => setSettingsOpen(true),
       closeSettings: () => setSettingsOpen(false),
-      themeMode: 'dark',
+      themeMode: playgroundTheme,
       setThemeMode: () => {},
-      effectiveTheme: 'dark',
+      effectiveTheme: playgroundTheme,
       defaultBackend: 'codex',
       setDefaultBackend: () => {},
       autoCollapseCompletedTurns,
       setAutoCollapseCompletedTurns,
     }),
-    [autoCollapseCompletedTurns, menuOpen, settingsOpen],
+    [autoCollapseCompletedTurns, menuOpen, playgroundTheme, settingsOpen],
   );
 
   const threadActionsButton = (
@@ -298,6 +343,8 @@ export function PlaygroundApp() {
             disabled: true,
             disabledPlaceholder: 'Shell adapter is not connected in playground',
           }}
+          shellEffectiveTheme={playgroundTheme}
+          shellThemeMode={playgroundTheme}
           onShellStateChange={setShellState}
           metaContent={
             <div className="space-y-2 text-xs text-[var(--theme-fg-muted)]">
