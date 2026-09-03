@@ -176,10 +176,10 @@
 .thread-ui-shell[data-theme-effective="dark"] .thread-topbar-surface,
 :root[data-theme-effective="dark"] .thread-ui-shell .thread-topbar-surface,
 .thread-ui-shell.dark .thread-topbar-surface {
-  border-color: #2a2f3a;
-  background: #171a22;
-  color: rgb(241 245 249);
-  box-shadow: 0 18px 40px rgb(0 0 0 / 0.28);
+  border-color: var(--theme-border);
+  background: var(--theme-panel);
+  color: var(--theme-fg);
+  box-shadow: none;
 }
 
 .thread-ui-shell[data-theme-effective="light"] .thread-graph-rooms-surface,
@@ -188,10 +188,10 @@
   .thread-graph-rooms-surface,
 .thread-ui-shell[data-theme-effective="light"] .thread-topbar-surface,
 :root[data-theme-effective="light"] .thread-ui-shell .thread-topbar-surface {
-  border-color: rgb(226 232 240 / 0.8);
-  background: rgb(255 255 255);
-  color: rgb(15 23 42);
-  box-shadow: 0 10px 30px rgb(15 23 42 / 0.04);
+  border-color: var(--theme-border);
+  background: var(--theme-panel);
+  color: var(--theme-fg);
+  box-shadow: none;
 }
 
 .thread-ui-shell[data-theme-effective="dark"] .thread-mobile-scrim,
@@ -522,15 +522,16 @@
 }
 
 .thread-ui-shell .thread-graph-room-card {
-  border-color: rgb(226 232 240 / 0.9);
-  background: rgb(248 250 252);
-  color: rgb(51 65 85);
+  border-color: transparent;
+  background: transparent;
+  color: var(--theme-fg-soft);
+  box-shadow: none;
 }
 
 .thread-ui-shell[data-theme-effective="light"] .thread-graph-room-card {
-  border-color: rgb(226 232 240 / 0.9);
-  background: rgb(248 250 252);
-  color: rgb(51 65 85);
+  border-color: transparent;
+  background: transparent;
+  color: var(--theme-fg-soft);
 }
 
 .thread-ui-shell .thread-sidebar-card:hover {
@@ -540,15 +541,15 @@
 }
 
 .thread-ui-shell .thread-graph-room-card:hover {
-  border-color: rgb(203 213 225);
-  background: rgb(255 255 255);
-  color: rgb(15 23 42);
+  border-color: transparent;
+  background: var(--theme-hover);
+  color: var(--theme-fg);
 }
 
 .thread-ui-shell[data-theme-effective="light"] .thread-graph-room-card:hover {
-  border-color: rgb(203 213 225);
-  background: rgb(255 255 255);
-  color: rgb(15 23 42);
+  border-color: transparent;
+  background: var(--theme-hover);
+  color: var(--theme-fg);
 }
 
 .thread-ui-shell .thread-sidebar-card-active {
@@ -559,43 +560,43 @@
 }
 
 .thread-ui-shell .thread-graph-room-card.is-active {
-  border-color: rgb(203 213 225);
-  background: rgb(241 245 249);
-  color: rgb(15 23 42);
-  box-shadow: 0 8px 22px rgb(15 23 42 / 0.06);
+  border-color: var(--theme-border);
+  background: var(--theme-muted);
+  color: var(--theme-fg);
+  box-shadow: none;
 }
 
 .thread-ui-shell[data-theme-effective="light"]
   .thread-graph-room-card.is-active {
-  border-color: rgb(203 213 225);
-  background: rgb(241 245 249);
-  color: rgb(15 23 42);
-  box-shadow: 0 8px 22px rgb(15 23 42 / 0.06);
+  border-color: var(--theme-border);
+  background: var(--theme-muted);
+  color: var(--theme-fg);
+  box-shadow: none;
 }
 
 .thread-ui-shell.thread-ui-theme-dark .thread-graph-room-card.is-active,
 .thread-ui-shell[data-theme-effective="dark"] .thread-graph-room-card.is-active,
 .thread-ui-shell.dark .thread-graph-room-card.is-active {
-  border-color: #3c4556;
-  background: #262c38;
-  color: rgb(241 245 249);
-  box-shadow: 0 10px 24px rgb(0 0 0 / 0.18);
+  border-color: var(--theme-border);
+  background: var(--theme-muted);
+  color: var(--theme-fg);
+  box-shadow: none;
 }
 
 .thread-ui-shell.thread-ui-theme-dark .thread-graph-room-card,
 .thread-ui-shell[data-theme-effective="dark"] .thread-graph-room-card,
 .thread-ui-shell.dark .thread-graph-room-card {
   border-color: transparent;
-  background: #1d222c;
-  color: rgb(203 213 225);
+  background: transparent;
+  color: var(--theme-fg-soft);
 }
 
 .thread-ui-shell.thread-ui-theme-dark .thread-graph-room-card:hover,
 .thread-ui-shell[data-theme-effective="dark"] .thread-graph-room-card:hover,
 .thread-ui-shell.dark .thread-graph-room-card:hover {
-  border-color: #343b48;
-  background: #222733;
-  color: rgb(241 245 249);
+  border-color: transparent;
+  background: var(--theme-hover);
+  color: var(--theme-fg);
 }
 
 .thread-ui-shell .thread-sidebar-card-icon {
@@ -604,13 +605,14 @@
 }
 
 .thread-ui-shell .thread-graph-room-card-icon {
-  background: rgb(255 255 255);
-  color: rgb(100 116 139);
+  border: 1px solid var(--theme-border);
+  background: transparent;
+  color: var(--theme-fg-muted);
 }
 
 .thread-ui-shell[data-theme-effective="light"] .thread-graph-room-card-icon {
-  background: rgb(255 255 255);
-  color: rgb(100 116 139);
+  background: transparent;
+  color: var(--theme-fg-muted);
 }
 
 .thread-ui-shell .thread-sidebar-card-icon.is-active {
@@ -623,29 +625,29 @@
 }
 
 .thread-ui-shell .thread-graph-room-card-icon.is-active {
-  background: rgb(226 232 240);
-  color: rgb(15 23 42);
+  background: var(--theme-surface-strong);
+  color: var(--theme-fg);
 }
 
 .thread-ui-shell[data-theme-effective="light"]
   .thread-graph-room-card-icon.is-active {
-  background: rgb(226 232 240);
-  color: rgb(15 23 42);
+  background: var(--theme-surface-strong);
+  color: var(--theme-fg);
 }
 
 .thread-ui-shell.thread-ui-theme-dark .thread-graph-room-card-icon.is-active,
 .thread-ui-shell[data-theme-effective="dark"]
   .thread-graph-room-card-icon.is-active,
 .thread-ui-shell.dark .thread-graph-room-card-icon.is-active {
-  background: #12151c;
-  color: rgb(226 232 240);
+  background: var(--theme-surface-strong);
+  color: var(--theme-fg);
 }
 
 .thread-ui-shell.thread-ui-theme-dark .thread-graph-room-card-icon,
 .thread-ui-shell[data-theme-effective="dark"] .thread-graph-room-card-icon,
 .thread-ui-shell.dark .thread-graph-room-card-icon {
-  background: #12151c;
-  color: rgb(148 163 184);
+  background: transparent;
+  color: var(--theme-fg-muted);
 }
 
 .thread-ui-shell .thread-sidebar-card-active .thread-sidebar-card-title,
