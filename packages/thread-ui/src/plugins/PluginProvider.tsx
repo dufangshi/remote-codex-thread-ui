@@ -72,19 +72,40 @@ export function PluginProvider({
 
   const setPluginEnabled = useCallback(
     async (pluginId: string, enabled: boolean) => {
-      if (adapter.updatePlugin) {
+      let previousEnabled: boolean | undefined;
+      setError(null);
+      setPlugins((current) =>
+        current.map((plugin) => {
+          if (plugin.id !== pluginId) {
+            return plugin;
+          }
+          previousEnabled = plugin.enabled;
+          return { ...plugin, enabled };
+        }),
+      );
+
+      if (!adapter.updatePlugin) {
+        return;
+      }
+
+      try {
         const updated = await adapter.updatePlugin(pluginId, { enabled });
         setPlugins((current) =>
           current.map((plugin) => (plugin.id === updated.id ? updated : plugin)),
         );
-        return;
+      } catch (err) {
+        if (previousEnabled !== undefined) {
+          setPlugins((current) =>
+            current.map((plugin) =>
+              plugin.id === pluginId && plugin.enabled === enabled
+                ? { ...plugin, enabled: previousEnabled! }
+                : plugin,
+            ),
+          );
+        }
+        setError(err instanceof Error ? err.message : 'Unable to update plugin.');
+        throw err;
       }
-
-      setPlugins((current) =>
-        current.map((plugin) =>
-          plugin.id === pluginId ? { ...plugin, enabled } : plugin,
-        ),
-      );
     },
     [adapter],
   );
