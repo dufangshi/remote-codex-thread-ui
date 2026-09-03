@@ -9,7 +9,10 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import type { ThreadTurnDto } from '@remote-codex/shared';
 
 import { ThreadTimeline } from './ThreadTimeline';
-import { formatShortTimestamp } from './threadPresentation';
+import {
+  formatPreciseMessageTimestamp,
+  formatShortTimestamp,
+} from './threadPresentation';
 
 let root: Root | null = null;
 let container: HTMLDivElement | null = null;
@@ -58,19 +61,25 @@ describe('ThreadTimeline', () => {
               id: 'user-1',
               kind: 'userMessage',
               text: 'reply me a 3',
-              createdAt: new Date(Date.UTC(2026, 6, 3, 20, 10, 59)).toISOString(),
+              createdAt: new Date(
+                Date.UTC(2026, 6, 3, 20, 10, 59),
+              ).toISOString(),
             },
             {
               id: 'reasoning-1',
               kind: 'reasoning',
               text: 'The user asked for the exact number 3.',
-              createdAt: new Date(Date.UTC(2026, 6, 3, 20, 10, 59)).toISOString(),
+              createdAt: new Date(
+                Date.UTC(2026, 6, 3, 20, 10, 59),
+              ).toISOString(),
             },
             {
               id: 'agent-1',
               kind: 'agentMessage',
               text: '3',
-              createdAt: new Date(Date.UTC(2026, 6, 3, 20, 10, 59)).toISOString(),
+              createdAt: new Date(
+                Date.UTC(2026, 6, 3, 20, 10, 59),
+              ).toISOString(),
             },
           ]),
         ]}
@@ -80,7 +89,9 @@ describe('ThreadTimeline', () => {
     expect(element.textContent).toContain('reply me a 3');
     expect(element.textContent).toContain('3');
     expect(element.textContent).toContain('Worked');
-    expect(element.textContent).not.toContain('The user asked for the exact number 3.');
+    expect(element.textContent).not.toContain(
+      'The user asked for the exact number 3.',
+    );
     expect(
       Array.from(element.querySelectorAll('button')).some((button) =>
         button.getAttribute('aria-label')?.includes('Expand turn 1'),
@@ -99,19 +110,25 @@ describe('ThreadTimeline', () => {
               id: 'user-1',
               kind: 'userMessage',
               text: 'Keep prompt visible.',
-              createdAt: new Date(Date.UTC(2026, 6, 3, 20, 10, 0)).toISOString(),
+              createdAt: new Date(
+                Date.UTC(2026, 6, 3, 20, 10, 0),
+              ).toISOString(),
             },
             {
               id: 'agent-intermediate-1',
               kind: 'agentMessage',
               text: 'Intermediate note should collapse.',
-              createdAt: new Date(Date.UTC(2026, 6, 3, 20, 10, 20)).toISOString(),
+              createdAt: new Date(
+                Date.UTC(2026, 6, 3, 20, 10, 20),
+              ).toISOString(),
             },
             {
               id: 'agent-1',
               kind: 'agentMessage',
               text: 'Final reply stays visible.',
-              createdAt: new Date(Date.UTC(2026, 6, 3, 20, 11, 21)).toISOString(),
+              createdAt: new Date(
+                Date.UTC(2026, 6, 3, 20, 11, 21),
+              ).toISOString(),
             },
           ]),
         ]}
@@ -121,7 +138,9 @@ describe('ThreadTimeline', () => {
     expect(element.textContent).toContain('Keep prompt visible.');
     expect(element.textContent).toContain('Final reply stays visible.');
     expect(element.textContent).toContain('Worked');
-    expect(element.textContent).not.toContain('Intermediate note should collapse.');
+    expect(element.textContent).not.toContain(
+      'Intermediate note should collapse.',
+    );
   });
 
   it('keeps the Worked control available after expanding so the turn can collapse again', () => {
@@ -135,27 +154,35 @@ describe('ThreadTimeline', () => {
               id: 'user-1',
               kind: 'userMessage',
               text: 'Keep prompt visible.',
-              createdAt: new Date(Date.UTC(2026, 6, 3, 20, 10, 0)).toISOString(),
+              createdAt: new Date(
+                Date.UTC(2026, 6, 3, 20, 10, 0),
+              ).toISOString(),
             },
             {
               id: 'agent-intermediate-1',
               kind: 'agentMessage',
               text: 'Intermediate note can be toggled.',
-              createdAt: new Date(Date.UTC(2026, 6, 3, 20, 10, 20)).toISOString(),
+              createdAt: new Date(
+                Date.UTC(2026, 6, 3, 20, 10, 20),
+              ).toISOString(),
             },
             {
               id: 'agent-1',
               kind: 'agentMessage',
               text: 'Final reply stays visible.',
-              createdAt: new Date(Date.UTC(2026, 6, 3, 20, 11, 21)).toISOString(),
+              createdAt: new Date(
+                Date.UTC(2026, 6, 3, 20, 11, 21),
+              ).toISOString(),
             },
           ]),
         ]}
       />,
     );
 
-    const expandWorkedButton = Array.from(element.querySelectorAll('button')).find(
-      (button) => button.getAttribute('aria-label')?.includes('Expand turn 1'),
+    const expandWorkedButton = Array.from(
+      element.querySelectorAll('button'),
+    ).find((button) =>
+      button.getAttribute('aria-label')?.includes('Expand turn 1'),
     );
     expect(expandWorkedButton).toBeTruthy();
     flushSync(() => {
@@ -163,7 +190,9 @@ describe('ThreadTimeline', () => {
     });
 
     expect(element.textContent).toContain('Intermediate note can be toggled.');
-    const collapseWorkedButton = Array.from(element.querySelectorAll('button')).find(
+    const collapseWorkedButton = Array.from(
+      element.querySelectorAll('button'),
+    ).find(
       (button) =>
         button.getAttribute('aria-label')?.includes('Collapse turn 1') &&
         button.textContent?.includes('Worked'),
@@ -175,10 +204,12 @@ describe('ThreadTimeline', () => {
     });
 
     expect(element.textContent).toContain('Worked');
-    expect(element.textContent).not.toContain('Intermediate note can be toggled.');
+    expect(element.textContent).not.toContain(
+      'Intermediate note can be toggled.',
+    );
   });
 
-  it('shows relative timestamps for agent and tool events', () => {
+  it('shows relative tool time and a precise agent hover timestamp', () => {
     const startedAt = new Date(Date.UTC(2026, 6, 3, 20, 10, 0)).toISOString();
     const agentAt = new Date(Date.UTC(2026, 6, 3, 20, 11, 21)).toISOString();
     const element = render(
@@ -198,7 +229,9 @@ describe('ThreadTimeline', () => {
                 id: 'command-1',
                 kind: 'commandExecution',
                 text: 'pwd',
-                createdAt: new Date(Date.UTC(2026, 6, 3, 20, 10, 5)).toISOString(),
+                createdAt: new Date(
+                  Date.UTC(2026, 6, 3, 20, 10, 5),
+                ).toISOString(),
                 status: 'completed',
               },
               {
@@ -215,17 +248,19 @@ describe('ThreadTimeline', () => {
     );
 
     expect(element.textContent).toContain('5s');
-    expect(element.textContent).toContain('1m 21s');
-    expect(element.textContent).not.toContain(formatShortTimestamp(agentAt));
+    expect(element.textContent).toContain(
+      formatPreciseMessageTimestamp(agentAt),
+    );
 
-    const agentTime = Array.from(element.querySelectorAll('[role="button"]')).find(
-      (node) => node.textContent === '1m 21s',
+    const agentTime = Array.from(
+      element.querySelectorAll('.thread-graph-message-time-popover'),
+    ).find(
+      (node) => node.textContent === formatPreciseMessageTimestamp(agentAt),
     );
     expect(agentTime).toBeTruthy();
-    flushSync(() => {
-      (agentTime as HTMLElement | undefined)?.click();
-    });
-    expect(element.textContent).toContain(formatShortTimestamp(agentAt));
+    expect((agentTime as HTMLElement | undefined)?.dataset.visible).toBe(
+      'false',
+    );
   });
 
   it('shows the latest activity time and a second-precision running duration', () => {
@@ -249,7 +284,9 @@ describe('ThreadTimeline', () => {
               kind: 'commandExecution',
               text: 'pnpm test',
               status: 'running',
-              createdAt: new Date(Date.UTC(2026, 6, 3, 20, 10, 5)).toISOString(),
+              createdAt: new Date(
+                Date.UTC(2026, 6, 3, 20, 10, 5),
+              ).toISOString(),
             },
           ],
         }}
@@ -294,7 +331,9 @@ describe('ThreadTimeline', () => {
               id: 'agent-1',
               kind: 'agentMessage',
               text: 'All commands completed.',
-              createdAt: new Date(Date.UTC(2026, 6, 3, 20, 10, 5)).toISOString(),
+              createdAt: new Date(
+                Date.UTC(2026, 6, 3, 20, 10, 5),
+              ).toISOString(),
             },
           ]),
         ]}
@@ -351,14 +390,16 @@ describe('ThreadTimeline', () => {
     );
 
     expect(element.textContent).toContain('The first finding is ready.');
-    expect(element.textContent).toContain('Agent activity');
+    expect(element.textContent).toContain('Worked');
     expect(element.textContent).toContain('3 operations');
-    expect(element.textContent).toContain('The imported session now reads cleanly.');
-    expect(element.textContent).not.toContain('Planning concurrent browser inspection');
+    expect(element.textContent).toContain(
+      'The imported session now reads cleanly.',
+    );
+    expect(element.textContent).not.toContain(
+      'Planning concurrent browser inspection',
+    );
     expect(
-      Array.from(element.querySelectorAll('.thread-graph-message-sender')).filter(
-        (sender) => sender.textContent === 'Assistant',
-      ),
+      Array.from(element.querySelectorAll('[data-role="assistant"]')),
     ).toHaveLength(2);
 
     const expandButton = Array.from(element.querySelectorAll('button')).find(
@@ -368,7 +409,9 @@ describe('ThreadTimeline', () => {
     flushSync(() => {
       expandButton?.click();
     });
-    expect(element.textContent).toContain('Planning concurrent browser inspection');
+    expect(element.textContent).toContain(
+      'Planning concurrent browser inspection',
+    );
     expect(element.textContent).toContain(
       'Checking item timestamps, statuses, and duplicates',
     );
@@ -377,7 +420,9 @@ describe('ThreadTimeline', () => {
   it('auto-collapses a single tool item after newer live history arrives', () => {
     const startedAt = new Date(Date.UTC(2026, 6, 3, 20, 10, 0)).toISOString();
     const fileReadAt = new Date(Date.UTC(2026, 6, 3, 20, 10, 5)).toISOString();
-    const laterAgentAt = new Date(Date.UTC(2026, 6, 3, 20, 10, 8)).toISOString();
+    const laterAgentAt = new Date(
+      Date.UTC(2026, 6, 3, 20, 10, 8),
+    ).toISOString();
     const activeTurn: ThreadTurnDto = {
       ...completedTurn([
         {
@@ -406,12 +451,14 @@ describe('ThreadTimeline', () => {
       />,
     );
 
-    expect(element.textContent).toContain('file_read');
+    expect(element.textContent).toContain('Read');
     expect(element.textContent).toContain('Read file: src/agent-runtime.ts');
     expect(
-      Array.from(element.querySelectorAll('button')).find((button) =>
-        button.getAttribute('aria-label')?.includes('file_read history item'),
-      )?.getAttribute('aria-expanded'),
+      Array.from(element.querySelectorAll('button'))
+        .find((button) =>
+          button.getAttribute('aria-label')?.includes('Read history item'),
+        )
+        ?.getAttribute('aria-expanded'),
     ).toBe('true');
 
     flushSync(() => {
@@ -441,11 +488,13 @@ describe('ThreadTimeline', () => {
       );
     });
 
-    expect(element.textContent).toContain('file_read');
+    expect(element.textContent).toContain('Read');
     expect(
-      Array.from(element.querySelectorAll('button')).find((button) =>
-        button.getAttribute('aria-label')?.includes('file_read history item'),
-      )?.getAttribute('aria-expanded'),
+      Array.from(element.querySelectorAll('button'))
+        .find((button) =>
+          button.getAttribute('aria-label')?.includes('Read history item'),
+        )
+        ?.getAttribute('aria-expanded'),
     ).toBe('false');
     expect(element.textContent).toContain('I found the next step.');
   });
@@ -453,82 +502,140 @@ describe('ThreadTimeline', () => {
   it('advances across turns on repeated clicks while smooth scrolling is pending', () => {
     const turns = [1, 2, 3].map((index) => ({
       ...completedTurn([
-        { id: `user-${index}`, kind: 'userMessage' as const, text: `Prompt ${index}` },
+        {
+          id: `user-${index}`,
+          kind: 'userMessage' as const,
+          text: `Prompt ${index}`,
+        },
       ]),
       id: `turn-${index}`,
     }));
     const element = render(
-      <ThreadTimeline liveOutput="" turns={turns} nextTurnScrollRequestKey={0} />,
+      <ThreadTimeline
+        liveOutput=""
+        turns={turns}
+        nextTurnScrollRequestKey={0}
+      />,
     );
     const scrollContainer = element.querySelector<HTMLElement>(
       '[data-testid="thread-scroll-container"]',
     )!;
-    Object.defineProperty(scrollContainer, 'scrollTop', { configurable: true, value: 0 });
+    Object.defineProperty(scrollContainer, 'scrollTop', {
+      configurable: true,
+      value: 0,
+    });
     scrollContainer.getBoundingClientRect = () =>
-      ({ top: 0, bottom: 300, height: 300 } as DOMRect);
+      ({ top: 0, bottom: 300, height: 300 }) as DOMRect;
     const turnElements = Array.from(
       element.querySelectorAll<HTMLElement>('[data-timeline-turn]'),
     );
     turnElements.forEach((turn, index) => {
       turn.getBoundingClientRect = () =>
-        ({ top: index * 200, bottom: index * 200 + 100, height: 100 } as DOMRect);
+        ({
+          top: index * 200,
+          bottom: index * 200 + 100,
+          height: 100,
+        }) as DOMRect;
     });
     const scrollTo = vi.fn();
     scrollContainer.scrollTo = scrollTo;
 
     flushSync(() => {
       root?.render(
-        <ThreadTimeline liveOutput="" turns={turns} nextTurnScrollRequestKey={1} />,
+        <ThreadTimeline
+          liveOutput=""
+          turns={turns}
+          nextTurnScrollRequestKey={1}
+        />,
       );
     });
     flushSync(() => {
       root?.render(
-        <ThreadTimeline liveOutput="" turns={turns} nextTurnScrollRequestKey={2} />,
+        <ThreadTimeline
+          liveOutput=""
+          turns={turns}
+          nextTurnScrollRequestKey={2}
+        />,
       );
     });
 
-    expect(scrollTo).toHaveBeenNthCalledWith(1, { top: 192, behavior: 'smooth' });
-    expect(scrollTo).toHaveBeenNthCalledWith(2, { top: 392, behavior: 'smooth' });
+    expect(scrollTo).toHaveBeenNthCalledWith(1, {
+      top: 192,
+      behavior: 'smooth',
+    });
+    expect(scrollTo).toHaveBeenNthCalledWith(2, {
+      top: 392,
+      behavior: 'smooth',
+    });
   });
 
   it('moves backward across turns on repeated clicks while smooth scrolling is pending', () => {
     const turns = [1, 2, 3].map((index) => ({
       ...completedTurn([
-        { id: `user-${index}`, kind: 'userMessage' as const, text: `Prompt ${index}` },
+        {
+          id: `user-${index}`,
+          kind: 'userMessage' as const,
+          text: `Prompt ${index}`,
+        },
       ]),
       id: `turn-${index}`,
     }));
     const element = render(
-      <ThreadTimeline liveOutput="" turns={turns} previousTurnScrollRequestKey={0} />,
+      <ThreadTimeline
+        liveOutput=""
+        turns={turns}
+        previousTurnScrollRequestKey={0}
+      />,
     );
     const scrollContainer = element.querySelector<HTMLElement>(
       '[data-testid="thread-scroll-container"]',
     )!;
-    Object.defineProperty(scrollContainer, 'scrollTop', { configurable: true, value: 600 });
+    Object.defineProperty(scrollContainer, 'scrollTop', {
+      configurable: true,
+      value: 600,
+    });
     scrollContainer.getBoundingClientRect = () =>
-      ({ top: 0, bottom: 300, height: 300 } as DOMRect);
+      ({ top: 0, bottom: 300, height: 300 }) as DOMRect;
     const turnElements = Array.from(
       element.querySelectorAll<HTMLElement>('[data-timeline-turn]'),
     );
     turnElements.forEach((turn, index) => {
       turn.getBoundingClientRect = () =>
-        ({ top: -400 + index * 200, bottom: -300 + index * 200, height: 100 } as DOMRect);
+        ({
+          top: -400 + index * 200,
+          bottom: -300 + index * 200,
+          height: 100,
+        }) as DOMRect;
     });
     const scrollTo = vi.fn();
     scrollContainer.scrollTo = scrollTo;
 
     flushSync(() => {
       root?.render(
-        <ThreadTimeline liveOutput="" turns={turns} previousTurnScrollRequestKey={1} />,
+        <ThreadTimeline
+          liveOutput=""
+          turns={turns}
+          previousTurnScrollRequestKey={1}
+        />,
       );
     });
     flushSync(() => {
       root?.render(
-        <ThreadTimeline liveOutput="" turns={turns} previousTurnScrollRequestKey={2} />,
+        <ThreadTimeline
+          liveOutput=""
+          turns={turns}
+          previousTurnScrollRequestKey={2}
+        />,
       );
     });
 
-    expect(scrollTo).toHaveBeenNthCalledWith(1, { top: 392, behavior: 'smooth' });
-    expect(scrollTo).toHaveBeenNthCalledWith(2, { top: 192, behavior: 'smooth' });
+    expect(scrollTo).toHaveBeenNthCalledWith(1, {
+      top: 392,
+      behavior: 'smooth',
+    });
+    expect(scrollTo).toHaveBeenNthCalledWith(2, {
+      top: 192,
+      behavior: 'smooth',
+    });
   });
 });

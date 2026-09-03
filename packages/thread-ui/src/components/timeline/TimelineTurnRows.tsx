@@ -14,6 +14,8 @@ import type { ThreadHistoryItemDto } from '@remote-codex/shared';
 import type { ThreadTimelineAdapter } from '../../adapters';
 import {
   formatLongTimestamp,
+  formatMessageTimestamp,
+  formatPreciseMessageTimestamp,
   formatShortTimestamp,
 } from '../threadPresentation';
 import { GraphChatHistoryEntries } from '../graph-chat/GraphChatHistoryEntries';
@@ -53,10 +55,7 @@ import {
   type TimelineTurn,
 } from './timelineItems';
 import { TurnTokenSummary } from './tokenFormatting';
-import {
-  deriveDisplayedLivePlan,
-  TurnStatusBar,
-} from './turnStatus';
+import { deriveDisplayedLivePlan, TurnStatusBar } from './turnStatus';
 
 type LivePlan = {
   turnId: string;
@@ -91,7 +90,10 @@ type OpenDeferredHistoryItemDetailHandler = (
   errorText: string,
 ) => void;
 
-function timestampForHistoryItem(item: ThreadHistoryItemDto, fallback: string | null) {
+function timestampForHistoryItem(
+  item: ThreadHistoryItemDto,
+  fallback: string | null,
+) {
   return item.createdAt ?? fallback;
 }
 
@@ -245,7 +247,8 @@ export const HistoryItemRow = memo(function HistoryItemRow({
     const typedItem = item as ThreadHistoryItemDto & {
       kind: 'webSearch';
     };
-    const detailText = typedItem.detailText?.trim() || typedItem.text || 'Web search';
+    const detailText =
+      typedItem.detailText?.trim() || typedItem.text || 'Web search';
     return (
       <WebSearchItem
         autoOpen={autoOpenToolDetails}
@@ -268,7 +271,8 @@ export const HistoryItemRow = memo(function HistoryItemRow({
     const typedItem = item as ThreadHistoryItemDto & {
       kind: 'fileRead';
     };
-    const detailText = typedItem.detailText?.trim() || typedItem.text || 'File read';
+    const detailText =
+      typedItem.detailText?.trim() || typedItem.text || 'File read';
     return (
       <FileReadItem
         autoOpen={autoOpenToolDetails}
@@ -324,7 +328,8 @@ export const HistoryItemRow = memo(function HistoryItemRow({
     const typedItem = item as ThreadHistoryItemDto & {
       kind: 'fileChange';
     };
-    const detailText = typedItem.detailText?.trim() || typedItem.text || 'File change';
+    const detailText =
+      typedItem.detailText?.trim() || typedItem.text || 'File change';
     return (
       <FileChangeItem
         item={typedItem}
@@ -395,7 +400,9 @@ interface ThreadTurnRowProps {
 }
 
 function isTerminalTurnStatus(status: TimelineTurn['status']) {
-  return status === 'completed' || status === 'failed' || status === 'interrupted';
+  return (
+    status === 'completed' || status === 'failed' || status === 'interrupted'
+  );
 }
 
 function itemCreatedAtMillis(item: ThreadHistoryItemDto) {
@@ -431,14 +438,24 @@ function latestActivityTimestamp(
     : null;
 }
 
-function formatWorkedDuration(startedAt: string | null | undefined, items: ThreadHistoryItemDto[]) {
+function formatWorkedDuration(
+  startedAt: string | null | undefined,
+  items: ThreadHistoryItemDto[],
+) {
   const startMillis = Date.parse(startedAt ?? '');
   const endMillis = latestItemTimestamp(items);
-  if (!Number.isFinite(startMillis) || endMillis === null || endMillis < startMillis) {
+  if (
+    !Number.isFinite(startMillis) ||
+    endMillis === null ||
+    endMillis < startMillis
+  ) {
     return 'Worked';
   }
 
-  const totalSeconds = Math.max(1, Math.round((endMillis - startMillis) / 1000));
+  const totalSeconds = Math.max(
+    1,
+    Math.round((endMillis - startMillis) / 1000),
+  );
   const hours = Math.floor(totalSeconds / 3600);
   const minutes = Math.floor((totalSeconds % 3600) / 60);
   const seconds = totalSeconds % 60;
@@ -462,7 +479,10 @@ function formatRelativeTurnTime(
     return timestamp ? formatShortTimestamp(timestamp) : 'Time unavailable';
   }
 
-  const totalSeconds = Math.max(0, Math.round((itemMillis - startMillis) / 1000));
+  const totalSeconds = Math.max(
+    0,
+    Math.round((itemMillis - startMillis) / 1000),
+  );
   const hours = Math.floor(totalSeconds / 3600);
   const minutes = Math.floor((totalSeconds % 3600) / 60);
   const seconds = totalSeconds % 60;
@@ -521,7 +541,9 @@ function TimelineTimeToggle({
   );
 }
 
-function firstHistoryEntryTimestamp(entry: TimelineHistoryEntry): string | null {
+function firstHistoryEntryTimestamp(
+  entry: TimelineHistoryEntry,
+): string | null {
   if (entry.kind === 'item') {
     return entry.item.createdAt ?? null;
   }
@@ -556,7 +578,9 @@ function collapsedSummaryMessages(entries: TimelineHistoryEntry[]) {
       return true;
     }
 
-    return entry.item.kind !== 'userMessage' && entry.item.id !== finalAgent?.id;
+    return (
+      entry.item.kind !== 'userMessage' && entry.item.id !== finalAgent?.id
+    );
   });
 
   return {
@@ -593,7 +617,10 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
     Boolean(liveOutput) ||
     Boolean(liveItems && liveItems.length > 0);
   const activeForRendering =
-    forceActive || isActiveTurnStatus(turn.status) || hasLiveActivity || isLatestVisibleTurn;
+    forceActive ||
+    isActiveTurnStatus(turn.status) ||
+    hasLiveActivity ||
+    isLatestVisibleTurn;
   const activeFooterTurn: TimelineTurn =
     activeForRendering && !isActiveTurnStatus(turn.status)
       ? {
@@ -621,7 +648,10 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
     () => prepareTurnItemsForRendering(mergedItems, activeForRendering),
     [activeForRendering, mergedItems],
   );
-  const groupedItems = useMemo(() => groupTimelineHistoryItems(preparedItems), [preparedItems]);
+  const groupedItems = useMemo(
+    () => groupTimelineHistoryItems(preparedItems),
+    [preparedItems],
+  );
   const autoOpenLatestToolDetails =
     forceActive || isActiveTurnStatus(turn.status) || hasLiveActivity;
   const turnTimeLabel = formatShortTimestamp(turn.startedAt);
@@ -672,15 +702,9 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
       onOpenToolCallDetail={onOpenToolCallDetail}
       onOpenDeferredHistoryItemDetail={onOpenDeferredHistoryItemDetail}
       timeLabel={
-        turn.startedAt ? (
-          <TimelineTimeToggle
-            absoluteLabel={turnTimeLabel}
-            timestamp={turn.startedAt}
-            turnStartedAt={turn.startedAt}
-          />
-        ) : (
-          turnTimeLabel
-        )
+        turn.startedAt
+          ? formatPreciseMessageTimestamp(turn.startedAt)
+          : turnTimeLabel
       }
       timeTitle={turnTimeTitle}
       timeMeta={null}
@@ -698,15 +722,9 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
         }}
         scrollRootRef={scrollRootRef}
         timeLabel={
-          turn.startedAt ? (
-            <TimelineTimeToggle
-              absoluteLabel={turnTimeLabel}
-              timestamp={turn.startedAt}
-              turnStartedAt={turn.startedAt}
-            />
-          ) : (
-            turnTimeLabel
-          )
+          turn.startedAt
+            ? formatPreciseMessageTimestamp(turn.startedAt)
+            : turnTimeLabel
         }
         timeTitle={turnTimeTitle}
         streaming
@@ -732,81 +750,85 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
   const effectiveCollapsed = isCollapsed && hasCollapsedHiddenItems;
   const canToggleWorkedSummary =
     isTerminalTurnStatus(turn.status) && hasCollapsedHiddenItems;
-  const expandedWorkedToggleNode = canToggleWorkedSummary && !effectiveCollapsed ? (
-    <button
-      type="button"
-      className="thread-graph-worked-summary group flex w-full items-center gap-2 py-2 text-left text-sm transition"
-      onClick={() => onToggleCollapse(turn.id, false)}
-      aria-label={`${workedLabel}. Collapse turn ${absoluteIndex}`}
-    >
-      <span className="thread-graph-worked-label shrink-0">{workedLabel}</span>
-      <ChevronDown className="h-4 w-4 shrink-0 transition group-hover:translate-y-0.5" />
-      <span className="thread-graph-worked-rule h-px min-w-0 flex-1" aria-hidden="true" />
-    </button>
-  ) : null;
-  const collapsedSummaryNode = isTerminalTurnStatus(turn.status) && hasCollapsedHiddenItems ? (
-    <div className="thread-graph-turn-collapsed-summary space-y-2">
-      {collapsedSummary.users.map((item) => (
-        <CompactMessageItem
-          key={item.id}
-          threadId={threadId}
-          item={item}
-          scrollRootRef={scrollRootRef}
-          timeLabel={
-            item.createdAt
-              ? formatShortTimestamp(item.createdAt)
-              : turnTimeLabel
-          }
-          timeTitle={
-            item.createdAt
-              ? formatLongTimestamp(item.createdAt)
-              : turnTimeTitle
-          }
-          {...(onBeforeMessageResize
-            ? { onBeforeMessageResize }
-            : {})}
-          {...(adapter ? { adapter } : {})}
-        />
-      ))}
+  const expandedWorkedToggleNode =
+    canToggleWorkedSummary && !effectiveCollapsed ? (
       <button
         type="button"
         className="thread-graph-worked-summary group flex w-full items-center gap-2 py-2 text-left text-sm transition"
-        onClick={() => onToggleCollapse(turn.id, true)}
-        aria-label={`${workedLabel}. Expand turn ${absoluteIndex}`}
+        onClick={() => onToggleCollapse(turn.id, false)}
+        aria-label={`${workedLabel}. Collapse turn ${absoluteIndex}`}
       >
-        <span className="thread-graph-worked-label shrink-0">{workedLabel}</span>
-        <ChevronRight className="h-4 w-4 shrink-0 transition group-hover:translate-x-0.5" />
-        <span className="thread-graph-worked-rule h-px min-w-0 flex-1" aria-hidden="true" />
-      </button>
-      {collapsedSummary.finalAgent ? (
-        <CompactMessageItem
-          threadId={threadId}
-          item={collapsedSummary.finalAgent}
-          scrollRootRef={scrollRootRef}
-          timeLabel={
-            collapsedSummary.finalAgent.createdAt
-              ? (
-                  <TimelineTimeToggle
-                    absoluteLabel={formatShortTimestamp(collapsedSummary.finalAgent.createdAt)}
-                    timestamp={collapsedSummary.finalAgent.createdAt}
-                    turnStartedAt={turn.startedAt}
-                  />
-                )
-              : turnTimeLabel
-          }
-          timeTitle={
-            collapsedSummary.finalAgent.createdAt
-              ? formatLongTimestamp(collapsedSummary.finalAgent.createdAt)
-              : turnTimeTitle
-          }
-          {...(onBeforeMessageResize
-            ? { onBeforeMessageResize }
-            : {})}
-          {...(adapter ? { adapter } : {})}
+        <span className="thread-graph-worked-label shrink-0">
+          {workedLabel}
+        </span>
+        <ChevronDown className="h-4 w-4 shrink-0 transition group-hover:translate-y-0.5" />
+        <span
+          className="thread-graph-worked-rule h-px min-w-0 flex-1"
+          aria-hidden="true"
         />
-      ) : null}
-    </div>
-  ) : null;
+      </button>
+    ) : null;
+  const collapsedSummaryNode =
+    isTerminalTurnStatus(turn.status) && hasCollapsedHiddenItems ? (
+      <div className="thread-graph-turn-collapsed-summary space-y-2">
+        {collapsedSummary.users.map((item) => (
+          <CompactMessageItem
+            key={item.id}
+            threadId={threadId}
+            item={item}
+            scrollRootRef={scrollRootRef}
+            timeLabel={
+              item.createdAt
+                ? formatMessageTimestamp(item.createdAt)
+                : formatMessageTimestamp(turn.startedAt)
+            }
+            timeTitle={
+              item.createdAt
+                ? formatLongTimestamp(item.createdAt)
+                : turnTimeTitle
+            }
+            {...(onBeforeMessageResize ? { onBeforeMessageResize } : {})}
+            {...(adapter ? { adapter } : {})}
+          />
+        ))}
+        <button
+          type="button"
+          className="thread-graph-worked-summary group flex w-full items-center gap-2 py-2 text-left text-sm transition"
+          onClick={() => onToggleCollapse(turn.id, true)}
+          aria-label={`${workedLabel}. Expand turn ${absoluteIndex}`}
+        >
+          <span className="thread-graph-worked-label shrink-0">
+            {workedLabel}
+          </span>
+          <ChevronRight className="h-4 w-4 shrink-0 transition group-hover:translate-x-0.5" />
+          <span
+            className="thread-graph-worked-rule h-px min-w-0 flex-1"
+            aria-hidden="true"
+          />
+        </button>
+        {collapsedSummary.finalAgent ? (
+          <CompactMessageItem
+            threadId={threadId}
+            item={collapsedSummary.finalAgent}
+            scrollRootRef={scrollRootRef}
+            timeLabel={
+              collapsedSummary.finalAgent.createdAt
+                ? formatPreciseMessageTimestamp(
+                    collapsedSummary.finalAgent.createdAt,
+                  )
+                : formatPreciseMessageTimestamp(turn.startedAt)
+            }
+            timeTitle={
+              collapsedSummary.finalAgent.createdAt
+                ? formatLongTimestamp(collapsedSummary.finalAgent.createdAt)
+                : turnTimeTitle
+            }
+            {...(onBeforeMessageResize ? { onBeforeMessageResize } : {})}
+            {...(adapter ? { adapter } : {})}
+          />
+        ) : null}
+      </div>
+    ) : null;
   const turnBody = (
     <GraphChatTurnBody
       footer={footerNode}
@@ -953,7 +975,9 @@ function TimelineHistoryEntries({
           itemCount={entry.itemCount}
           expanded={expanded}
           onToggleExpanded={onToggleExpanded}
-          timeMeta={relativeTimeMeta(firstHistoryEntryTimestamp(entry.entries[0]!))}
+          timeMeta={relativeTimeMeta(
+            firstHistoryEntryTimestamp(entry.entries[0]!),
+          )}
         >
           <TimelineHistoryEntries
             entries={entry.entries}
@@ -977,23 +1001,18 @@ function TimelineHistoryEntries({
         </AgentActivityGroupItem>
       )}
       renderItem={(entry) => {
-        const timestamp = timestampForHistoryItem(entry.item, fallbackTimestamp ?? null);
-        const isUserMessage = entry.item.kind === 'userMessage';
-        const timeLabel = isUserMessage ? (
-          entry.item.createdAt ? (
-            formatShortTimestamp(timestamp)
-          ) : (
-            fallbackTimeLabel
-          )
-        ) : entry.item.createdAt ? (
-          <TimelineTimeToggle
-            absoluteLabel={formatShortTimestamp(timestamp)}
-            timestamp={timestamp}
-            turnStartedAt={turnStartedAt ?? fallbackTimestamp}
-          />
-        ) : (
-          fallbackTimeLabel
+        const timestamp = timestampForHistoryItem(
+          entry.item,
+          fallbackTimestamp ?? null,
         );
+        const isUserMessage = entry.item.kind === 'userMessage';
+        const isAgentMessage =
+          entry.item.kind === 'agentMessage' || entry.item.kind === 'reasoning';
+        const timeLabel = isUserMessage
+          ? formatMessageTimestamp(timestamp)
+          : isAgentMessage
+            ? formatPreciseMessageTimestamp(timestamp)
+            : fallbackTimeLabel;
         return (
           <HistoryItemRow
             key={entry.key}

@@ -5,7 +5,7 @@ export function textFromClipboardHtml(value: string) {
 
   const container = document.createElement('div');
   container.innerHTML = value;
-  return container.textContent ?? '';
+  return serializePromptContent(container, false);
 }
 
 export function editorContainsStyledRichText(editor: HTMLDivElement) {
@@ -17,6 +17,48 @@ export interface EditorSelectionOffsets {
   end: number;
 }
 
+const BLOCK_PROMPT_TAGS = new Set(['DIV', 'LI', 'P']);
+
+function serializePromptNode(node: ChildNode, currentText: string): string {
+  if (node.nodeType === Node.TEXT_NODE) {
+    return currentText + (node.textContent ?? '');
+  }
+
+  if (!(node instanceof HTMLElement)) {
+    return currentText;
+  }
+
+  if (node.dataset.segmentType === 'attachment' && node.dataset.placeholder) {
+    return currentText + node.dataset.placeholder;
+  }
+
+  if (node.tagName === 'BR') {
+    return `${currentText}\n`;
+  }
+
+  let nextText = currentText;
+  if (
+    BLOCK_PROMPT_TAGS.has(node.tagName) &&
+    nextText.length > 0 &&
+    !nextText.endsWith('\n')
+  ) {
+    nextText += '\n';
+  }
+
+  for (const child of Array.from(node.childNodes)) {
+    nextText = serializePromptNode(child, nextText);
+  }
+  return nextText;
+}
+
+function serializePromptContent(root: HTMLElement, normalizeNbsp = true) {
+  let text = '';
+  for (const child of Array.from(root.childNodes)) {
+    text = serializePromptNode(child, text);
+  }
+  return normalizeNbsp ? text.replace(/\u00a0/g, ' ') : text;
+}
+
 export function segmentNodeText(child: ChildNode) {
   if (
     child instanceof HTMLElement &&
@@ -26,15 +68,11 @@ export function segmentNodeText(child: ChildNode) {
     return child.dataset.placeholder;
   }
 
-  return child.textContent ?? '';
+  return serializePromptNode(child, '');
 }
 
 export function serializeEditorPrompt(editor: HTMLDivElement) {
-  let nextPrompt = '';
-  for (const child of Array.from(editor.childNodes)) {
-    nextPrompt += segmentNodeText(child);
-  }
-  return nextPrompt.replace(/\u00a0/g, ' ');
+  return serializePromptContent(editor);
 }
 
 export function measureSelectionOffset(
@@ -136,7 +174,11 @@ export function snapshotEditorSelection(editor: HTMLDivElement) {
   }
 
   return {
-    start: measureSelectionOffset(editor, range.startContainer, range.startOffset),
+    start: measureSelectionOffset(
+      editor,
+      range.startContainer,
+      range.startOffset,
+    ),
     end: measureSelectionOffset(editor, range.endContainer, range.endOffset),
   };
 }

@@ -50,6 +50,28 @@ describe('contenteditable prompt helpers', () => {
     expect(serializeEditorPrompt(editor)).toBe('Attach [PHOTO cat.png] done');
   });
 
+  it('preserves line breaks created by contenteditable block nodes and br tags', () => {
+    const editor = document.createElement('div');
+    editor.append(document.createTextNode('first line'));
+    const secondLine = document.createElement('div');
+    secondLine.textContent = 'second line';
+    const blankLine = document.createElement('div');
+    blankLine.append(document.createElement('br'));
+    const fourthLine = document.createElement('div');
+    fourthLine.textContent = 'fourth line';
+    editor.append(secondLine, blankLine, fourthLine);
+
+    expect(serializeEditorPrompt(editor)).toBe(
+      'first line\nsecond line\n\nfourth line',
+    );
+  });
+
+  it('preserves line breaks when converting pasted HTML to text', () => {
+    expect(
+      textFromClipboardHtml('<div>alpha</div><div>beta<br>gamma</div>'),
+    ).toBe('alpha\nbeta\ngamma');
+  });
+
   it('measures selection offsets across text and attachment chips', () => {
     const editor = document.createElement('div');
     const before = document.createTextNode('A ');
@@ -104,12 +126,12 @@ describe('contenteditable prompt helpers', () => {
     editor.append(chip, trailing);
     document.body.append(editor);
 
-    expect(
-      restoreSelectionAfterInsertedAttachments(editor, ['old-file']),
-    ).toBe(false);
-    expect(
-      restoreSelectionAfterInsertedAttachments(editor, ['new-file']),
-    ).toBe(true);
+    expect(restoreSelectionAfterInsertedAttachments(editor, ['old-file'])).toBe(
+      false,
+    );
+    expect(restoreSelectionAfterInsertedAttachments(editor, ['new-file'])).toBe(
+      true,
+    );
 
     const selection = window.getSelection();
     expect(selection?.anchorNode).toBe(trailing);

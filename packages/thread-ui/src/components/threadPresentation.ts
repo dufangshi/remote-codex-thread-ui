@@ -26,6 +26,29 @@ export function formatLongTimestamp(value: string | null) {
   return new Date(value).toLocaleString();
 }
 
+export function formatMessageTimestamp(value: string | null) {
+  if (!value) {
+    return 'Time unavailable';
+  }
+
+  return new Date(value).toLocaleTimeString([], {
+    hour: 'numeric',
+    minute: '2-digit',
+  });
+}
+
+export function formatPreciseMessageTimestamp(value: string | null) {
+  if (!value) {
+    return 'Time unavailable';
+  }
+
+  return new Date(value).toLocaleTimeString([], {
+    hour: 'numeric',
+    minute: '2-digit',
+    second: '2-digit',
+  });
+}
+
 export function threadStatusLabel(status: ThreadDto['status']) {
   switch (status) {
     case 'idle':
@@ -74,7 +97,9 @@ export function turnStatusLabel(status: ThreadTurnDto['status'] | 'sending') {
   }
 }
 
-export function turnStatusClassName(status: ThreadTurnDto['status'] | 'sending') {
+export function turnStatusClassName(
+  status: ThreadTurnDto['status'] | 'sending',
+) {
   switch (status) {
     case 'sending':
       return 'ui-status-info';

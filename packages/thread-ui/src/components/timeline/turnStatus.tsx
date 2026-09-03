@@ -9,7 +9,6 @@ import {
 } from './timelineItems';
 import {
   buildTurnPriceBadge,
-  buildTurnTokenBadges,
 } from './tokenFormatting';
 import {
   formatLongTimestamp,
@@ -296,8 +295,12 @@ export function TurnStatusBar({
 }) {
   const label = turnStatusLabel(turn.status);
   const runtimeSummary = formatTurnRuntimeSummary(turn);
-  const tokenBadges = buildTurnTokenBadges(turn);
-  const priceBadge = buildTurnPriceBadge(turn);
+  const priceBadge =
+    turn.priceEstimate &&
+    Number.isFinite(turn.priceEstimate.totalUsd) &&
+    turn.priceEstimate.totalUsd > 0
+      ? buildTurnPriceBadge(turn)
+      : null;
   const active = isActiveTurnStatus(turn.status);
   const now = useSecondClock(active && variant === 'footer');
   const elapsedLabel = active ? formatElapsedDuration(turn.startedAt, now) : null;
@@ -311,53 +314,34 @@ export function TurnStatusBar({
 
   if (variant === 'footer') {
     return (
-      <div
-        className={`flex w-full flex-col gap-1.5 rounded-[0.95rem] border px-3 py-2 text-xs ${toneClassName}`}
-      >
-        <div className="flex w-full items-center justify-between gap-3">
-          <div className="flex min-w-0 items-center gap-2">
-            <TurnStatusIndicator status={turn.status} />
-            <span className="timeline-soft-text min-w-0 truncate">
-              {runtimeSummary}
-            </span>
-          </div>
-          {effectiveLastActivityAt && (
-            <span
-              className="timeline-meta-text flex shrink-0 items-center gap-1 whitespace-nowrap text-[11px]"
-              title={[
-                `Last activity ${formatLongTimestamp(effectiveLastActivityAt)}`,
-                elapsedLabel ? `Running for ${elapsedLabel}` : null,
-              ].filter(Boolean).join(' · ')}
-            >
-              <time dateTime={effectiveLastActivityAt}>
-                {formatShortTimestamp(effectiveLastActivityAt)}
-              </time>
-              {elapsedLabel ? <span aria-label={`Running for ${elapsedLabel}`}>· {elapsedLabel}</span> : null}
-            </span>
-          )}
+      <div className="thread-graph-turn-footer flex w-full items-center justify-between gap-3 text-xs">
+        <div className="thread-graph-turn-footer-runtime flex min-w-0 items-center gap-2">
+          <TurnStatusIndicator status={turn.status} />
+          <span className="timeline-soft-text min-w-0 truncate">
+            {runtimeSummary}
+          </span>
         </div>
-        {(priceBadge || tokenBadges.length > 0) && (
-          <div className="flex flex-wrap items-center gap-1.5 pl-6">
-            {priceBadge ? (
-              <span
-                className={`inline-flex items-center rounded-full border px-1.5 py-0.5 text-[10px] font-medium ${priceBadge.className}`}
-                title={priceBadge.title}
-              >
-                {priceBadge.label}
-              </span>
-            ) : null}
-            {tokenBadges.map((badge) => (
-              <span
-                key={badge.id}
-                className={`inline-flex items-center rounded-full border px-1.5 py-0.5 text-[10px] font-medium ${badge.className}`}
-                title={badge.title}
-              >
-                {badge.icon ? <span className="mr-1">{badge.icon}</span> : null}
-                {badge.label}
-              </span>
-            ))}
-          </div>
-        )}
+        <div className="thread-graph-turn-footer-meta timeline-meta-text flex min-w-0 shrink items-center justify-end gap-1 whitespace-nowrap">
+          {effectiveLastActivityAt ? (
+            <time
+              dateTime={effectiveLastActivityAt}
+              title={`Last activity ${formatLongTimestamp(effectiveLastActivityAt)}`}
+            >
+              {formatShortTimestamp(effectiveLastActivityAt)}
+            </time>
+          ) : null}
+          {elapsedLabel ? (
+            <span aria-label={`Running for ${elapsedLabel}`}>· {elapsedLabel}</span>
+          ) : null}
+          {priceBadge ? (
+            <span
+              className="thread-graph-turn-footer-price"
+              title={priceBadge.title}
+            >
+              · {priceBadge.label}
+            </span>
+          ) : null}
+        </div>
       </div>
     );
   }

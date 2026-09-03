@@ -1,4 +1,11 @@
-import { memo, useEffect, useRef, useState, type ReactNode, type RefObject } from 'react';
+import {
+  memo,
+  useEffect,
+  useRef,
+  useState,
+  type ReactNode,
+  type RefObject,
+} from 'react';
 import { Brain, Check, Copy } from 'lucide-react';
 
 import type { ThreadHistoryItemDto } from '@remote-codex/shared';
@@ -41,11 +48,7 @@ function isGraphChatRunningStatus(status?: string | null) {
   );
 }
 
-function GraphChatRunningDots({
-  tone = 'amber',
-}: {
-  tone?: 'amber' | 'sky';
-}) {
+function GraphChatRunningDots({ tone = 'amber' }: { tone?: 'amber' | 'sky' }) {
   const dotClassName = tone === 'sky' ? 'bg-sky-300/90' : 'bg-amber-200/90';
 
   return (
@@ -86,7 +89,8 @@ export const GraphChatCompactMessageItem = memo(
     );
     const [reasoningOpen, setReasoningOpen] = useState(false);
     const resetTimerRef = useRef<number | null>(null);
-    const reasoningItems = item.kind === 'agentMessage' ? item.reasoningItems ?? [] : [];
+    const reasoningItems =
+      item.kind === 'agentMessage' ? (item.reasoningItems ?? []) : [];
     const reasoningText = reasoningItems
       .map((entry) => entry.text.trim())
       .filter(Boolean)
@@ -133,34 +137,34 @@ export const GraphChatCompactMessageItem = memo(
       setReasoningOpen((value) => !value);
     }
 
-    const copyButton =
-      item.kind === 'agentMessage' ? (
-        <button
-          type="button"
-          aria-label="Copy agent reply"
-          title={
-            copyState === 'copied'
-              ? 'Copied'
-              : copyState === 'failed'
-                ? 'Copy failed'
-                : 'Copy agent reply'
-          }
-          onClick={() => void handleCopy()}
-          className={`thread-graph-message-copy inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md border transition ${
-            copyState === 'copied'
-              ? 'ui-status-info'
-              : copyState === 'failed'
-                ? 'ui-status-danger'
-                : ''
-          }`}
-        >
-          {copyState === "copied" ? (
-            <Check className="h-3.5 w-3.5" />
-          ) : (
-            <Copy className="h-3.5 w-3.5" />
-          )}
-        </button>
-      ) : null;
+    const copyLabel = item.kind === 'agentMessage' ? 'agent reply' : 'prompt';
+    const copyButton = (
+      <button
+        type="button"
+        aria-label={`Copy ${copyLabel}`}
+        title={
+          copyState === 'copied'
+            ? 'Copied'
+            : copyState === 'failed'
+              ? 'Copy failed'
+              : `Copy ${copyLabel}`
+        }
+        onClick={() => void handleCopy()}
+        className={`thread-graph-message-copy inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md border transition ${
+          copyState === 'copied'
+            ? 'ui-status-info'
+            : copyState === 'failed'
+              ? 'ui-status-danger'
+              : ''
+        }`}
+      >
+        {copyState === 'copied' ? (
+          <Check className="h-3.5 w-3.5" />
+        ) : (
+          <Copy className="h-3.5 w-3.5" />
+        )}
+      </button>
+    );
 
     const hasRunningReasoning = reasoningItems.some((entry) =>
       isGraphChatRunningStatus(entry.status),
@@ -169,7 +173,9 @@ export const GraphChatCompactMessageItem = memo(
       item.kind === 'agentMessage' && reasoningText ? (
         <button
           type="button"
-          aria-label={reasoningOpen ? 'Hide chain of thought' : 'Show chain of thought'}
+          aria-label={
+            reasoningOpen ? 'Hide chain of thought' : 'Show chain of thought'
+          }
           aria-expanded={reasoningOpen}
           title={reasoningOpen ? 'Hide CoT' : 'Show CoT'}
           onClick={toggleReasoning}
@@ -233,7 +239,9 @@ export const GraphChatCompactMessageItem = memo(
             {...(adapter?.onOpenWorkspaceFile
               ? { onOpenWorkspaceFile: adapter.onOpenWorkspaceFile }
               : {})}
-            {...(adapter?.resolveHref ? { resolveHref: adapter.resolveHref } : {})}
+            {...(adapter?.resolveHref
+              ? { resolveHref: adapter.resolveHref }
+              : {})}
           />
         ) : (
           <GraphChatUserMessageBody

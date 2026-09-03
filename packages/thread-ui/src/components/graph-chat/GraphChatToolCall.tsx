@@ -1,10 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import {
-  CheckCircle2,
-  Loader2,
-  Wrench,
-  XCircle,
-} from 'lucide-react';
+import { CheckCircle2, Loader2, Wrench, XCircle } from 'lucide-react';
 import type { GraphChatToolStatus } from './graphChatToolBlocks';
 import {
   Accordion,
@@ -43,18 +38,14 @@ function formatPrimitiveValue(value: unknown) {
     return <span className="thread-graph-tool-number">{value}</span>;
   }
   if (typeof value === 'boolean') {
-    return (
-      <span className="thread-graph-tool-boolean">{String(value)}</span>
-    );
+    return <span className="thread-graph-tool-boolean">{String(value)}</span>;
   }
   if (value === null) {
     return <span className="thread-graph-tool-null">null</span>;
   }
   if (typeof value === 'object') {
     return (
-      <span className="thread-graph-tool-object">
-        {JSON.stringify(value)}
-      </span>
+      <span className="thread-graph-tool-object">{JSON.stringify(value)}</span>
     );
   }
   return <span>{String(value)}</span>;
@@ -65,11 +56,7 @@ function renderResultValue(key: string, value: unknown) {
     typeof value === 'string' &&
     (key === 'stdout' || key === 'stderr' || key === 'result')
   ) {
-    return (
-      <pre className="thread-graph-tool-output">
-        {value || '(empty)'}
-      </pre>
-    );
+    return <pre className="thread-graph-tool-output">{value || '(empty)'}</pre>;
   }
 
   if (typeof value === 'object' && value !== null) {
@@ -118,19 +105,10 @@ export function GraphChatToolCall({
     () => normalizeObjectEntries(parameters),
     [parameters],
   );
-  const hasTextualOutput = useMemo(() => {
-    if (typeof result === 'string') {
-      return result.length > 0;
-    }
-    if (!isRecord(result)) {
-      return false;
-    }
-    return ['stdout', 'stderr', 'result'].some((key) => {
-      const value = result[key];
-      return typeof value === 'string' && value.length > 0;
-    });
-  }, [result]);
-  const shouldAutoOpen = status === 'pending' || hasTextualOutput;
+  const shouldAutoOpen = status === 'pending';
+  const actionLabel = /(?:exec|command|shell|terminal)/i.test(toolName)
+    ? 'Ran'
+    : 'Used';
   const [openItem, setOpenItem] = useState<string | undefined>(
     shouldAutoOpen ? 'item-1' : undefined,
   );
@@ -151,12 +129,13 @@ export function GraphChatToolCall({
         {...(openItem !== undefined ? { value: openItem } : {})}
       >
         <AccordionItem value="item-1" className="border-0">
-          <AccordionTrigger
-            className="thread-graph-tool-trigger px-4 py-3 hover:no-underline"
-          >
+          <AccordionTrigger className="thread-graph-tool-trigger px-4 py-3 hover:no-underline">
             <div className="flex min-w-0 items-center gap-2">
               <Wrench className="h-4 w-4 shrink-0" />
-              <span className="min-w-0 truncate font-mono text-sm font-semibold">
+              <span className="thread-graph-tool-action shrink-0 text-sm font-medium">
+                {actionLabel}
+              </span>
+              <span className="thread-graph-tool-name min-w-0 truncate font-mono text-sm font-normal">
                 {toolName}
               </span>
               <span

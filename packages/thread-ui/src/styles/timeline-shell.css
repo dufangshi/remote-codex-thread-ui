@@ -32,18 +32,17 @@
 
 .thread-ui-shell .thread-graph-scroll-content {
   min-height: 100%;
-  padding: 0.75rem 0
-    max(0rem, var(--thread-graph-chat-scroll-bottom-spacer, 0px));
+  padding: 1rem 0 max(0rem, var(--thread-graph-chat-scroll-bottom-spacer, 0px));
 }
 
 .thread-ui-shell .thread-graph-message-list {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 0;
 }
 
 .thread-ui-shell .thread-graph-message-section {
-  border-top: 1px solid var(--theme-border);
+  border-top: 0;
 }
 
 .thread-ui-shell .thread-graph-history-control,
@@ -65,10 +64,11 @@
 
 .thread-ui-shell .thread-graph-turn {
   border-radius: 0;
+  padding: 0.65rem 1.5rem;
 }
 
 .thread-ui-shell .thread-graph-turn-header {
-  color: var(--theme-fg-muted);
+  display: none;
 }
 
 .thread-ui-shell .thread-graph-turn-time {
@@ -80,20 +80,46 @@
 }
 
 .thread-ui-shell .thread-graph-worked-summary:hover {
-  color: var(--theme-fg-soft);
+  color: var(--theme-fg);
 }
 
 .thread-ui-shell .thread-graph-worked-rule {
   background: var(--theme-border);
 }
 
+.thread-ui-shell .thread-graph-turn-body {
+  margin-top: 0;
+}
+
+.thread-ui-shell .thread-graph-worked-summary {
+  min-height: 2.25rem;
+  padding: 0.3rem 0;
+  font-size: 0.875rem;
+}
+
+.thread-ui-shell .thread-graph-turn-body > :not([hidden]) ~ :not([hidden]),
 .thread-ui-shell
-  :where(.text-stone-100, .text-stone-200, .text-stone-300) {
+  .thread-graph-turn-collapsed-summary
+  > :not([hidden])
+  ~ :not([hidden]) {
+  margin-top: 0.25rem;
+}
+
+@media (max-width: 639px) {
+  .thread-ui-shell .thread-graph-scroll-content {
+    padding-top: 0.5rem;
+  }
+
+  .thread-ui-shell .thread-graph-turn {
+    padding: 0.65rem 0.9rem;
+  }
+}
+
+.thread-ui-shell :where(.text-stone-100, .text-stone-200, .text-stone-300) {
   color: var(--theme-fg) !important;
 }
 
-.thread-ui-shell
-  :where(.text-stone-400, .text-stone-500, .text-stone-600) {
+.thread-ui-shell :where(.text-stone-400, .text-stone-500, .text-stone-600) {
   color: var(--theme-fg-muted) !important;
 }
 
@@ -127,28 +153,32 @@
 
 .thread-ui-shell[data-theme-effective="light"]
   :where(.text-sky-100, .text-sky-50),
-:root[data-theme-effective="light"] .thread-ui-shell
+:root[data-theme-effective="light"]
+  .thread-ui-shell
   :where(.text-sky-100, .text-sky-50) {
   color: rgb(3 105 161);
 }
 
 .thread-ui-shell[data-theme-effective="light"]
   :where(.text-emerald-100, .text-emerald-50),
-:root[data-theme-effective="light"] .thread-ui-shell
+:root[data-theme-effective="light"]
+  .thread-ui-shell
   :where(.text-emerald-100, .text-emerald-50) {
   color: rgb(21 128 61);
 }
 
 .thread-ui-shell[data-theme-effective="light"]
   :where(.text-rose-100, .text-rose-50),
-:root[data-theme-effective="light"] .thread-ui-shell
+:root[data-theme-effective="light"]
+  .thread-ui-shell
   :where(.text-rose-100, .text-rose-50) {
   color: rgb(190 24 93);
 }
 
 .thread-ui-shell[data-theme-effective="light"]
   :where(.text-amber-100, .text-amber-50, .text-amber-200),
-:root[data-theme-effective="light"] .thread-ui-shell
+:root[data-theme-effective="light"]
+  .thread-ui-shell
   :where(.text-amber-100, .text-amber-50, .text-amber-200) {
   color: rgb(120 53 15);
 }
@@ -185,7 +215,8 @@
     .bg-lime-300\/10,
     .bg-lime-300\/15
   ),
-:root[data-theme-effective="light"] .thread-ui-shell
+:root[data-theme-effective="light"]
+  .thread-ui-shell
   :where(
     .bg-sky-300\/10,
     .bg-sky-300\/15,

@@ -10,6 +10,8 @@ import {
   Archive,
   Bot,
   CheckCircle2,
+  ChevronDown,
+  ChevronRight,
   ClipboardList,
   ExternalLink,
   FilePenLine,
@@ -238,7 +240,9 @@ function fileChangeSummarySegments(
   const segments: string[] = [];
 
   if (typeof item.changedFiles === 'number' && item.changedFiles > 0) {
-    segments.push(`${item.changedFiles} ${item.changedFiles === 1 ? 'file' : 'files'}`);
+    segments.push(
+      `${item.changedFiles} ${item.changedFiles === 1 ? 'file' : 'files'}`,
+    );
   }
   if (typeof item.addedLines === 'number' && item.addedLines > 0) {
     segments.push(`+${item.addedLines}`);
@@ -436,6 +440,9 @@ function GraphChatHistoryEventFrame({
   tone: GraphHistoryEventTone;
 }) {
   const statusConfig = graphHistoryStatusConfig(item.status);
+  const showStatus = Boolean(
+    item.status && statusConfig.className !== 'is-completed',
+  );
 
   return (
     <div
@@ -452,7 +459,7 @@ function GraphChatHistoryEventFrame({
             <span className="thread-graph-history-event-title min-w-0 truncate font-mono text-sm font-semibold">
               {title}
             </span>
-            {item.status ? (
+            {item.status && showStatus ? (
               <Badge
                 variant="outline"
                 className={`thread-graph-tool-badge ${statusConfig.className} rounded-full px-2 py-0.5 text-xs font-normal`}
@@ -467,7 +474,7 @@ function GraphChatHistoryEventFrame({
             ) : null}
             {headerMeta}
           </div>
-          {(actions || timeMeta) ? (
+          {actions || timeMeta ? (
             <div className="thread-graph-history-event-actions">
               {actions}
               {timeMeta}
@@ -510,6 +517,9 @@ function GraphChatHistoryToolFrame({
   tone: GraphHistoryToolTone;
 }) {
   const statusConfig = graphHistoryStatusConfig(item.status);
+  const showStatus = Boolean(
+    item.status && statusConfig.className !== 'is-completed',
+  );
   const [openItem, setOpenItem] = useState<string | undefined>(
     autoOpen ? 'item-1' : undefined,
   );
@@ -526,9 +536,7 @@ function GraphChatHistoryToolFrame({
 
   return (
     <div
-      className={`thread-graph-event thread-graph-history-tool ${graphHistoryToneClassName(
-        tone,
-      )} ${className ?? ''}`}
+      className={`thread-graph-event thread-graph-history-tool ${graphHistoryToneClassName(tone)} ${className ?? ''}`}
     >
       <Accordion
         type="single"
@@ -539,7 +547,7 @@ function GraphChatHistoryToolFrame({
         className="thread-graph-tool-accordion thread-graph-history-tool-accordion w-full overflow-hidden rounded-lg border"
         value={openItem ?? ''}
       >
-          <AccordionItem value="item-1" className="border-0">
+        <AccordionItem value="item-1" className="border-0">
           <AccordionTrigger
             aria-label={`${openItem === 'item-1' ? 'Collapse' : 'Expand'} ${title} history item`}
             className="thread-graph-tool-trigger thread-graph-history-tool-trigger px-4 py-3 hover:no-underline"
@@ -548,20 +556,33 @@ function GraphChatHistoryToolFrame({
               <span className="thread-graph-history-tool-icon shrink-0">
                 {icon}
               </span>
-              <span className="min-w-0 truncate font-mono text-sm font-semibold">
+              <span className="thread-graph-history-tool-label shrink-0 text-sm font-medium">
                 {title}
               </span>
-              <Badge
-                variant="outline"
-                className={`thread-graph-tool-badge ${statusConfig.className} ml-1 sm:ml-2 rounded-full px-2 py-0.5 text-xs font-normal`}
-                title={statusConfig.label}
-                aria-label={`Status: ${statusConfig.label}`}
-              >
-                {statusConfig.icon}
-                <span className="thread-graph-status-label">
-                  {statusConfig.label}
+              <span className="thread-graph-history-tool-preview min-w-0 truncate text-sm">
+                {preview.firstLine}
+              </span>
+              {preview.showGap ? (
+                <span
+                  className="thread-graph-history-tool-preview-ellipsis"
+                  aria-hidden="true"
+                >
+                  ...
                 </span>
-              </Badge>
+              ) : null}
+              {showStatus ? (
+                <Badge
+                  variant="outline"
+                  className={`thread-graph-tool-badge ${statusConfig.className} rounded-full px-2 py-0.5 text-xs font-normal`}
+                  title={statusConfig.label}
+                  aria-label={`Status: ${statusConfig.label}`}
+                >
+                  {statusConfig.icon}
+                  <span className="thread-graph-status-label">
+                    {statusConfig.label}
+                  </span>
+                </Badge>
+              ) : null}
             </div>
             {timeMeta ? (
               <span className="thread-graph-history-tool-time shrink-0">
@@ -576,7 +597,9 @@ function GraphChatHistoryToolFrame({
               <div className="thread-graph-history-tool-summary">
                 <GraphChatLinkifiedPlainText text={preview.firstLine} />
                 {preview.showGap ? (
-                  <span className="thread-graph-history-tool-ellipsis">...</span>
+                  <span className="thread-graph-history-tool-ellipsis">
+                    ...
+                  </span>
                 ) : null}
               </div>
             </section>
@@ -616,7 +639,7 @@ export const GraphChatPlanHistoryItem = memo(function GraphChatPlanHistoryItem({
       icon={<ClipboardList className="h-4 w-4" />}
       item={item}
       timeMeta={timeMeta}
-      title="plan"
+      title="Planned"
       tone="plan"
     >
       <div className="thread-graph-history-event-prose">
@@ -654,7 +677,7 @@ export const GraphChatContextCompactionItem = memo(
         icon={<Archive className="h-4 w-4" />}
         item={item}
         timeMeta={timeMeta}
-        title="context"
+        title={isRunning ? 'Compacting' : 'Compacted'}
         tone="context"
       >
         <div className="thread-graph-history-event-line">
@@ -690,7 +713,7 @@ export const GraphChatGenericHistoryItem = memo(
         icon={<Info className="h-4 w-4" />}
         item={item}
         timeMeta={timeMeta}
-        title={item.kind}
+        title="Noted"
         tone="generic"
       >
         <pre className="thread-graph-history-event-pre">
@@ -728,7 +751,7 @@ export const GraphChatCommandItem = memo(function GraphChatCommandItem({
       onOpen={() => onOpen(item, 'Command Output')}
       preview={summary}
       timeMeta={timeMeta}
-      title="command"
+      title="Ran"
       tone="command"
     />
   );
@@ -761,7 +784,7 @@ export const GraphChatToolCallItem = memo(function GraphChatToolCallItem({
       onOpen={() => onOpen(item, 'Tool Call Details')}
       preview={summary}
       timeMeta={timeMeta}
-      title="tool_call"
+      title="Used"
       tone="tool"
     />
   );
@@ -795,7 +818,7 @@ export const GraphChatAgentToolCallItem = memo(
         onOpen={() => onOpen(item, 'Agent Details')}
         preview={summary}
         timeMeta={timeMeta}
-        title="agent"
+        title="Delegated"
         tone="agent"
       />
     );
@@ -830,7 +853,7 @@ export const GraphChatSkillToolCallItem = memo(
         onOpen={() => onOpen(item, 'Skill Details')}
         preview={summary}
         timeMeta={timeMeta}
-        title="skill"
+        title="Loaded"
         tone="skill"
       />
     );
@@ -863,7 +886,7 @@ export const GraphChatWebSearchItem = memo(function GraphChatWebSearchItem({
       onOpen={() => onOpen('Web Search Details', detailText)}
       preview={summary}
       timeMeta={timeMeta}
-      title="web_search"
+      title="Searched"
       tone="search"
     />
   );
@@ -895,7 +918,7 @@ export const GraphChatFileReadItem = memo(function GraphChatFileReadItem({
       onOpen={() => onOpen('File Read Details', detailText)}
       preview={summary}
       timeMeta={timeMeta}
-      title="file_read"
+      title="Read"
       tone="fileRead"
     />
   );
@@ -917,7 +940,7 @@ export const GraphChatImageItem = memo(function GraphChatImageItem({
   const assetPath = item.assetPath ?? item.detailText ?? null;
   const imageUrl =
     threadId && assetPath
-      ? getImageAssetUrl?.({ threadId, path: assetPath }) ?? null
+      ? (getImageAssetUrl?.({ threadId, path: assetPath }) ?? null)
       : null;
 
   return (
@@ -926,7 +949,7 @@ export const GraphChatImageItem = memo(function GraphChatImageItem({
       icon={<ImageIconLucide className="h-4 w-4" />}
       item={item}
       timeMeta={timeMeta}
-      title="image"
+      title="Generated"
       tone="image"
     >
       {imageUrl ? (
@@ -943,9 +966,7 @@ export const GraphChatImageItem = memo(function GraphChatImageItem({
           />
         </button>
       ) : (
-        <div className="thread-graph-history-event-summary">
-          {item.text}
-        </div>
+        <div className="thread-graph-history-event-summary">{item.text}</div>
       )}
       {assetPath ? (
         <button
@@ -1030,7 +1051,7 @@ export const GraphChatFileChangeItem = memo(function GraphChatFileChangeItem({
       icon={<FilePenLine className="h-4 w-4" />}
       item={item}
       timeMeta={timeMeta}
-      title="file_change"
+      title="Changed"
       tone="fileChange"
     />
   );
@@ -1083,38 +1104,42 @@ export const GraphChatArtifactHistoryItem = memo(
           </span>
         }
         className="thread-graph-event-artifact"
+        headerMeta={
+          <button
+            type="button"
+            aria-expanded={expanded}
+            aria-label={`${expanded ? 'Collapse' : 'Expand'} artifact ${artifact?.title ?? item.text}`}
+            onClick={() => setExpanded((current) => !current)}
+            className="thread-graph-artifact-inline-toggle flex min-w-0 flex-1 items-center gap-2 text-left"
+          >
+            <span className="thread-graph-history-detail-text min-w-0 truncate text-sm">
+              {artifact?.title ?? item.text}
+            </span>
+            <span className="thread-graph-history-event-secondary min-w-0 truncate">
+              {artifact?.summaryText ?? item.previewText ?? artifact?.type ?? ''}
+            </span>
+            <span className="thread-graph-history-group-chevron inline-flex shrink-0" aria-hidden="true">
+              {expanded ? (
+                <ChevronDown className="h-3.5 w-3.5" />
+              ) : (
+                <ChevronRight className="h-3.5 w-3.5" />
+              )}
+            </span>
+          </button>
+        }
         icon={<PackageOpen className="h-4 w-4" />}
         item={item}
         timeMeta={timeMeta}
-        title={artifact?.type ?? 'artifact'}
+        title="Created"
         tone="artifact"
       >
-        {rendered ?? (
-          <div className="space-y-2">
-            <button
-              type="button"
-              onClick={() => setExpanded((current) => !current)}
-              className="thread-graph-history-event-summary is-clickable flex w-full items-center justify-between gap-3 text-left"
-            >
-              <span className="min-w-0">
-                <span className="thread-graph-history-event-primary block truncate">
-                  {artifact?.title ?? item.text}
-                </span>
-                <span className="thread-graph-history-event-secondary mt-1 block truncate">
-                  {artifact?.summaryText ?? item.previewText ?? item.text}
-                </span>
-              </span>
-              <span className="thread-graph-history-event-pill">
-                {expanded ? 'Hide' : 'Open'}
-              </span>
-            </button>
-            {expanded ? (
+        {expanded
+          ? rendered ?? (
               <pre className="thread-graph-history-event-pre max-h-80 overflow-auto">
                 {JSON.stringify(artifact?.payload ?? item, null, 2)}
               </pre>
-            ) : null}
-          </div>
-        )}
+            )
+          : null}
       </GraphChatHistoryEventFrame>
     );
   },
@@ -1133,7 +1158,9 @@ export const GraphChatHookItem = memo(function GraphChatHookItem({
       .filter(Boolean)
       .join('\n')
       .trim() ?? '';
-  const hookLabel = item.hookEventLabel ? `${item.hookEventLabel} hook` : item.text;
+  const hookLabel = item.hookEventLabel
+    ? `${item.hookEventLabel} hook`
+    : item.text;
   const fallbackText =
     item.hookStatusMessage?.trim() ||
     (item.previewText && item.previewText !== item.hookStatusMessage
@@ -1141,7 +1168,8 @@ export const GraphChatHookItem = memo(function GraphChatHookItem({
       : '') ||
     item.text.trim();
   const summaryText =
-    outputText || (fallbackText && fallbackText !== hookLabel ? fallbackText : hookLabel);
+    outputText ||
+    (fallbackText && fallbackText !== hookLabel ? fallbackText : hookLabel);
   const summary = summarizeInlinePreviewText(summaryText);
   const showGap = Boolean(outputText && summary.showGap);
 
@@ -1151,7 +1179,7 @@ export const GraphChatHookItem = memo(function GraphChatHookItem({
       icon={<Webhook className="h-4 w-4" />}
       item={item}
       timeMeta={timeMeta}
-      title={item.hookEventLabel ? `${item.hookEventLabel}_hook` : 'hook'}
+      title="Ran hook"
       tone="hook"
     >
       <div className="thread-graph-history-event-line">
@@ -1216,7 +1244,8 @@ export const GraphChatCommandGroupItem = memo(
         runningIndicator={runningCount > 0 ? <RunningDots /> : null}
         summary={
           <>
-            <span className="rounded-full border border-stone-700/90 bg-stone-900/80 px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.16em] text-stone-300">
+            <span className="thread-graph-history-group-verb">Ran</span>
+            <span className="thread-graph-history-group-description">
               {countLabel}
             </span>
             {runningCount > 0 ? (
@@ -1244,7 +1273,9 @@ export const GraphChatCommandGroupItem = memo(
                   Step {index + 1}
                 </span>
                 {item.status && (
-                  <span className="thread-graph-history-detail-meta text-xs">{item.status}</span>
+                  <span className="thread-graph-history-detail-meta text-xs">
+                    {item.status}
+                  </span>
                 )}
               </div>
               <div className="mt-1 flex min-w-0 items-center gap-2 text-sm leading-6">
@@ -1279,7 +1310,9 @@ export const GraphChatToolCallGroupItem = memo(
     onOpen: (item: ToolActivityHistoryItem, title: string) => void;
     timeMeta?: ReactNode;
   }) {
-    const runningCount = items.filter((item) => isRunningHistoryStatus(item.status)).length;
+    const runningCount = items.filter((item) =>
+      isRunningHistoryStatus(item.status),
+    ).length;
     const firstKind = items[0]?.kind ?? 'toolCall';
     const label =
       firstKind === 'agentToolCall'
@@ -1287,7 +1320,8 @@ export const GraphChatToolCallGroupItem = memo(
         : firstKind === 'skillToolCall'
           ? 'skill call'
           : 'tool call';
-    const countLabel = items.length === 1 ? `1 ${label}` : `${items.length} ${label}s`;
+    const countLabel =
+      items.length === 1 ? `1 ${label}` : `${items.length} ${label}s`;
 
     return (
       <GraphChatHistoryGroupFrame
@@ -1297,15 +1331,25 @@ export const GraphChatToolCallGroupItem = memo(
         desktopIconClassName="border-teal-300/30 bg-teal-300/[0.14] text-teal-100"
         expanded={expanded}
         expandedListClassName="border-teal-300/12"
-        icon={firstKind === 'agentToolCall' ? <Bot className="h-3.5 w-3.5" /> : <Wrench className="h-3.5 w-3.5" />}
+        icon={
+          firstKind === 'agentToolCall' ? (
+            <Bot className="h-3.5 w-3.5" />
+          ) : (
+            <Wrench className="h-3.5 w-3.5" />
+          )
+        }
         onToggleExpanded={onToggleExpanded}
         runningIndicator={runningCount > 0 ? <RunningDots /> : null}
         summary={
           <>
-            <span className="rounded-full border border-teal-300/28 bg-teal-300/12 px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.24em] text-teal-100">
-              Batch
+            <span className="thread-graph-history-group-verb">
+              {firstKind === 'agentToolCall'
+                ? 'Delegated'
+                : firstKind === 'skillToolCall'
+                  ? 'Loaded'
+                  : 'Used'}
             </span>
-            <span className="rounded-full border border-stone-700/90 bg-stone-900/80 px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.16em] text-stone-300">
+            <span className="thread-graph-history-group-description">
               {countLabel}
             </span>
           </>
@@ -1355,7 +1399,8 @@ export const GraphChatAgentActivityGroupItem = memo(
     timeMeta?: ReactNode;
     children: ReactNode;
   }) {
-    const countLabel = itemCount === 1 ? '1 operation' : `${itemCount} operations`;
+    const countLabel =
+      itemCount === 1 ? '1 operation' : `${itemCount} operations`;
     return (
       <GraphChatHistoryGroupFrame
         className="thread-graph-history-group-activity"
@@ -1368,8 +1413,10 @@ export const GraphChatAgentActivityGroupItem = memo(
         onToggleExpanded={onToggleExpanded}
         summary={
           <>
-            <span className="text-sm font-medium text-stone-100">Agent activity</span>
-            <span className="rounded-full border border-stone-700/90 bg-stone-900/80 px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.16em] text-stone-300">
+            <span className="thread-graph-history-group-verb">
+              Worked
+            </span>
+            <span className="thread-graph-history-group-description">
               {countLabel}
             </span>
           </>
@@ -1383,86 +1430,85 @@ export const GraphChatAgentActivityGroupItem = memo(
   },
 );
 
-export const GraphChatSearchGroupItem = memo(
-  function GraphChatSearchGroupItem({
-    items,
-    expanded,
-    onToggleExpanded,
-    onOpen,
-    timeMeta,
-  }: {
-    items: SearchHistoryItem[];
-    expanded: boolean;
-    onToggleExpanded: () => void;
-    onOpen: (title: string, text: string) => void;
-    timeMeta?: ReactNode;
-  }) {
-    const countLabel =
-      items.length === 1 ? '1 search' : `${items.length} searches`;
+export const GraphChatSearchGroupItem = memo(function GraphChatSearchGroupItem({
+  items,
+  expanded,
+  onToggleExpanded,
+  onOpen,
+  timeMeta,
+}: {
+  items: SearchHistoryItem[];
+  expanded: boolean;
+  onToggleExpanded: () => void;
+  onOpen: (title: string, text: string) => void;
+  timeMeta?: ReactNode;
+}) {
+  const countLabel =
+    items.length === 1 ? '1 search' : `${items.length} searches`;
 
-    return (
-      <GraphChatHistoryGroupFrame
-        className="thread-graph-history-group-search"
-        count={items.length}
-        countBadgeClassName="border-sky-200/35 text-sky-100"
-        desktopIconClassName="border-sky-300/30 bg-sky-300/[0.14] text-sky-100"
-        expanded={expanded}
-        expandedListClassName="border-sky-300/12"
-        icon={<SearchBatchIcon />}
-        onToggleExpanded={onToggleExpanded}
-        summary={
-          <>
-            <span className="rounded-full border border-sky-300/28 bg-sky-300/12 px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.24em] text-sky-100">
-              Batch
-            </span>
-            <span className="rounded-full border border-stone-700/90 bg-stone-900/80 px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.16em] text-stone-300">
-              {countLabel}
-            </span>
-          </>
-        }
-        timeMeta={timeMeta}
-        toggleAriaLabel={`${expanded ? 'Collapse' : 'Expand'} ${items.length} web search entries`}
-      >
-        {items.map((item, index) => {
-          const previewText =
-            item.previewText?.trim() || item.text || 'Web search';
-          const summary = summarizeInlinePreviewText(previewText);
-          const detailText =
-            item.detailText?.trim() || item.text || 'Web search';
+  return (
+    <GraphChatHistoryGroupFrame
+      className="thread-graph-history-group-search"
+      count={items.length}
+      countBadgeClassName="border-sky-200/35 text-sky-100"
+      desktopIconClassName="border-sky-300/30 bg-sky-300/[0.14] text-sky-100"
+      expanded={expanded}
+      expandedListClassName="border-sky-300/12"
+      icon={<SearchBatchIcon />}
+      onToggleExpanded={onToggleExpanded}
+      summary={
+        <>
+          <span className="thread-graph-history-group-verb">
+            Searched
+          </span>
+          <span className="thread-graph-history-group-description">
+            {countLabel}
+          </span>
+        </>
+      }
+      timeMeta={timeMeta}
+      toggleAriaLabel={`${expanded ? 'Collapse' : 'Expand'} ${items.length} web search entries`}
+    >
+      {items.map((item, index) => {
+        const previewText =
+          item.previewText?.trim() || item.text || 'Web search';
+        const summary = summarizeInlinePreviewText(previewText);
+        const detailText = item.detailText?.trim() || item.text || 'Web search';
 
-          return (
-            <button
-              key={item.id}
-              type="button"
-              aria-label={`Open grouped web search ${index + 1}`}
-              onClick={() => onOpen(`Web Search ${index + 1}`, detailText)}
-              className="thread-graph-history-detail-row block w-full rounded-md border px-3 py-2 text-left transition"
-            >
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="rounded-full border border-sky-300/18 bg-sky-300/[0.07] px-2 py-0.5 text-[10px] uppercase tracking-[0.18em] text-sky-100">
-                  Search {index + 1}
+        return (
+          <button
+            key={item.id}
+            type="button"
+            aria-label={`Open grouped web search ${index + 1}`}
+            onClick={() => onOpen(`Web Search ${index + 1}`, detailText)}
+            className="thread-graph-history-detail-row block w-full rounded-md border px-3 py-2 text-left transition"
+          >
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="rounded-full border border-sky-300/18 bg-sky-300/[0.07] px-2 py-0.5 text-[10px] uppercase tracking-[0.18em] text-sky-100">
+                Search {index + 1}
+              </span>
+              {item.status && (
+                <span className="thread-graph-history-detail-meta text-xs">
+                  {item.status}
                 </span>
-                {item.status && (
-                  <span className="thread-graph-history-detail-meta text-xs">{item.status}</span>
-                )}
-              </div>
-              <div className="mt-1 flex min-w-0 items-center gap-2 text-sm leading-6">
-                <p className="thread-graph-history-detail-text min-w-0 flex-1 overflow-hidden whitespace-nowrap text-clip">
-                  {summary.firstLine}
-                </p>
-                {summary.showGap ? (
-                  <span className="thread-graph-history-detail-meta shrink-0 text-[11px] font-medium tracking-[0.28em]">
-                    ...
-                  </span>
-                ) : null}
-              </div>
-            </button>
-          );
-        })}
-      </GraphChatHistoryGroupFrame>
-    );
-  },
-);
+              )}
+            </div>
+            <div className="mt-1 flex min-w-0 items-center gap-2 text-sm leading-6">
+              <p className="thread-graph-history-detail-text min-w-0 flex-1 overflow-hidden whitespace-nowrap text-clip">
+                {summary.firstLine}
+              </p>
+              {summary.showGap ? (
+                <span className="thread-graph-history-detail-meta shrink-0 text-[11px] font-medium tracking-[0.28em]">
+                  ...
+                </span>
+              ) : null}
+            </div>
+          </button>
+        );
+      })}
+    </GraphChatHistoryGroupFrame>
+  );
+});
 
 export const GraphChatFileReadGroupItem = memo(
   function GraphChatFileReadGroupItem({
@@ -1493,10 +1539,10 @@ export const GraphChatFileReadGroupItem = memo(
         onToggleExpanded={onToggleExpanded}
         summary={
           <>
-            <span className="rounded-full border border-cyan-300/28 bg-cyan-300/12 px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.24em] text-cyan-100">
-              Batch
+            <span className="thread-graph-history-group-verb">
+              Read
             </span>
-            <span className="rounded-full border border-stone-700/90 bg-stone-900/80 px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.16em] text-stone-300">
+            <span className="thread-graph-history-group-description">
               {countLabel}
             </span>
           </>
@@ -1524,7 +1570,9 @@ export const GraphChatFileReadGroupItem = memo(
                   Read {index + 1}
                 </span>
                 {item.status && (
-                  <span className="thread-graph-history-detail-meta text-xs">{item.status}</span>
+                  <span className="thread-graph-history-detail-meta text-xs">
+                    {item.status}
+                  </span>
                 )}
               </div>
               <div className="mt-1 flex min-w-0 items-center gap-2 text-sm leading-6">
@@ -1586,10 +1634,10 @@ export const GraphChatFileChangeGroupItem = memo(
         onToggleExpanded={onToggleExpanded}
         summary={
           <>
-            <span className="rounded-full border border-lime-300/28 bg-lime-300/12 px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.24em] text-lime-100">
-              Batch
+            <span className="thread-graph-history-group-verb">
+              Changed
             </span>
-            <span className="rounded-full border border-stone-700/90 bg-stone-900/80 px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.16em] text-stone-300">
+            <span className="thread-graph-history-group-description">
               {batchLabel}
             </span>
             {changedFiles > 0 ? (
@@ -1620,7 +1668,8 @@ export const GraphChatFileChangeGroupItem = memo(
           const detailText =
             item.detailText?.trim() || item.previewText?.trim() || item.text;
           const pathSummary =
-            item.previewText?.trim() && item.text.trim() !== item.previewText.trim()
+            item.previewText?.trim() &&
+            item.text.trim() !== item.previewText.trim()
               ? item.text.trim()
               : item.previewText?.trim() || item.text;
           return (

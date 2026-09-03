@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import { useState, type PointerEvent, type ReactNode } from 'react';
 import { CheckCircle2, Circle, Loader2, XCircle } from 'lucide-react';
 
 type GraphChatMessageKind = 'userMessage' | 'agentMessage';
@@ -31,7 +31,8 @@ export function GraphChatMessageStatusBadge({
     normalized.includes('running') ||
     normalized.includes('generating') ||
     normalized.includes('steering');
-  const isFailed = normalized.includes('failed') || normalized.includes('error');
+  const isFailed =
+    normalized.includes('failed') || normalized.includes('error');
   const isCompleted =
     normalized.includes('accepted') || normalized.includes('complete');
   const className = isRunning
@@ -85,6 +86,13 @@ export function GraphChatMessageFrame({
   timeTitle?: string | null | undefined;
 }) {
   const isUser = kind === 'userMessage';
+  const [touchTimeVisible, setTouchTimeVisible] = useState(false);
+  const normalizedStatus = status?.trim().toLowerCase() ?? '';
+  const showStatus = Boolean(
+    status &&
+    normalizedStatus !== 'complete' &&
+    normalizedStatus !== 'completed',
+  );
   const timeNode = timeLabel ? (
     <span
       title={timeTitle ?? undefined}
@@ -93,51 +101,87 @@ export function GraphChatMessageFrame({
       {timeLabel}
     </span>
   ) : null;
+  const assistantTimeNode = timeLabel ? (
+    <span
+      className="thread-graph-message-time-popover"
+      data-visible={touchTimeVisible ? 'true' : 'false'}
+      role="status"
+    >
+      <time title={timeTitle ?? undefined}>{timeLabel}</time>
+    </span>
+  ) : null;
+
+  function handleAssistantPointerUp(event: PointerEvent<HTMLDivElement>) {
+    if (isUser || event.pointerType === 'mouse') {
+      return;
+    }
+    if (
+      event.target instanceof Element &&
+      event.target.closest('a, button, input, summary')
+    ) {
+      return;
+    }
+    setTouchTimeVisible((visible) => !visible);
+  }
 
   return (
     <div
       data-testid="chat-message"
       data-role={isUser ? 'user' : 'assistant'}
-      className="thread-graph-message flex justify-start"
+      className={`thread-graph-message flex ${isUser ? 'justify-end' : 'justify-start'}`}
     >
       <div
-        className={`thread-graph-message-bubble min-w-0 w-full max-w-full ${
-          isUser ? 'is-user' : 'is-assistant'
-        }`}
+        className={`thread-graph-message-stack min-w-0 ${isUser ? 'is-user' : 'is-assistant'}`}
       >
-        {!isUser ? (
-          <div className="thread-graph-message-header mb-2 flex min-w-0 items-center justify-between gap-2">
-            <div className="flex min-w-0 items-center gap-1.5">
-              <span className="thread-graph-message-sender rounded-full px-2.5 py-1 text-xs font-semibold tracking-[0.02em]">
-                Assistant
-              </span>
-              <GraphChatMessageStatusBadge status={status ?? 'Complete'} />
+        <div
+          className={`thread-graph-message-bubble relative min-w-0 ${isUser ? 'is-user' : 'is-assistant'}`}
+          onPointerUp={handleAssistantPointerUp}
+        >
+          {!isUser && metaControl ? (
+            <div className="thread-graph-message-leading-actions">
+              {metaControl}
             </div>
-            {metaControl ? (
-              <div className="thread-graph-message-header-meta flex min-w-0 flex-1 justify-center">
-                {metaControl}
-              </div>
+          ) : null}
+          {reasoning}
+          {!isUser ? assistantTimeNode : null}
+          <div
+            className={`thread-graph-message-content min-w-0 ${isUser ? 'is-user' : 'is-assistant'}`}
+          >
+            {children}
+          </div>
+          {copyButton ? (
+            <div className="thread-graph-message-copy-desktop">
+              {copyButton}
+            </div>
+          ) : null}
+        </div>
+        {isUser && (showStatus || timeNode || copyButton) ? (
+          <div
+            className={`thread-graph-message-user-meta flex items-center justify-end gap-2 ${showStatus || timeNode ? 'has-persistent-meta' : ''}`}
+          >
+            {showStatus ? (
+              <GraphChatMessageStatusBadge status={status} />
             ) : null}
-            {copyButton || timeNode ? (
-              <div className="thread-graph-message-header-actions flex shrink-0 items-center gap-1.5 sm:gap-2">
+            {timeNode}
+            {copyButton ? (
+              <div className="thread-graph-message-copy-mobile">
                 {copyButton}
-                {timeNode}
               </div>
             ) : null}
           </div>
         ) : null}
-        {reasoning}
-        <div
-          className={`thread-graph-message-content min-w-0 ${
-            isUser ? 'is-user' : 'is-assistant'
-          }`}
-        >
-          {children}
-        </div>
-        {isUser && (status || timeNode) ? (
-          <div className="mt-1 flex items-center justify-end gap-2">
-            {status ? <GraphChatMessageStatusBadge status={status} /> : null}
-            {timeNode}
+        {!isUser && (showStatus || copyButton) ? (
+          <div
+            className={`thread-graph-message-assistant-actions flex items-center gap-1 ${showStatus ? 'has-status' : ''}`}
+          >
+            {copyButton ? (
+              <div className="thread-graph-message-copy-mobile">
+                {copyButton}
+              </div>
+            ) : null}
+            {showStatus ? (
+              <GraphChatMessageStatusBadge status={status} />
+            ) : null}
           </div>
         ) : null}
       </div>

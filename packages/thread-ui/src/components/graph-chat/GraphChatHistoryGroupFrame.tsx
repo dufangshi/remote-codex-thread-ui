@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { ChevronDown, ChevronRight } from 'lucide-react';
 
 interface GraphChatHistoryGroupFrameProps {
   children: ReactNode;
@@ -68,6 +69,16 @@ export function GraphChatHistoryGroupFrame({
                 {timeMeta}
               </div>
             ) : null}
+            <span
+              className="thread-graph-history-group-chevron inline-flex shrink-0"
+              aria-hidden="true"
+            >
+              {expanded ? (
+                <ChevronDown className="h-3.5 w-3.5" />
+              ) : (
+                <ChevronRight className="h-3.5 w-3.5" />
+              )}
+            </span>
           </button>
 
           {expanded ? (

@@ -14,6 +14,7 @@ import ReactMarkdown from 'react-markdown';
 import rehypeKatex from 'rehype-katex';
 import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
+import 'katex/dist/katex.min.css';
 
 import { Button } from '../graph-ui/Button';
 import { usePlugins } from '../../plugins/usePlugins';
@@ -33,7 +34,10 @@ type CodeRendererProps = ComponentProps<'code'> & {
   node?: unknown;
 };
 
-type OpenWorkspaceFileHandler = (input: { path: string; line?: number }) => void;
+type OpenWorkspaceFileHandler = (input: {
+  path: string;
+  line?: number;
+}) => void;
 
 const APP_LOCAL_PATH_PREFIXES = [
   '/api/',
@@ -104,7 +108,10 @@ function parseWorkspaceFileHref(href: string | undefined) {
       return null;
     }
     const parsed = new URL(candidate, window.location.origin);
-    if (parsed.origin !== window.location.origin && parsed.protocol !== 'file:') {
+    if (
+      parsed.origin !== window.location.origin &&
+      parsed.protocol !== 'file:'
+    ) {
       return null;
     }
     candidate = parsed.protocol === 'file:' ? parsed.pathname : parsed.pathname;
@@ -122,7 +129,11 @@ function parseWorkspaceFileHref(href: string | undefined) {
     return null;
   }
 
-  if (APP_LOCAL_PATH_PREFIXES.some((prefix) => candidate === prefix || candidate.startsWith(prefix))) {
+  if (
+    APP_LOCAL_PATH_PREFIXES.some(
+      (prefix) => candidate === prefix || candidate.startsWith(prefix),
+    )
+  ) {
     return null;
   }
 
@@ -257,7 +268,7 @@ export const GraphChatMessageContent = memo(function GraphChatMessageContent({
     ...props
   }: CodeRendererProps): ReactElement | null => {
     const match = /language-(\w+(?:-\w+)*)/.exec(codeClassName || '');
-    const language = match ? match[1] ?? '' : '';
+    const language = match ? (match[1] ?? '') : '';
     const textContent = textFromReactNode(children).replace(/\n$/, '');
     const { startLine, endLine } = readMarkdownNodeLineRange(node);
     const isFencedOrBlockCode =
@@ -312,8 +323,7 @@ export const GraphChatMessageContent = memo(function GraphChatMessageContent({
       const liveResult =
         callId && resultMap.has(callId)
           ? mergeGraphChatToolResultState(
-              resultMap.get(callId) ??
-                createEmptyGraphChatToolResultState(),
+              resultMap.get(callId) ?? createEmptyGraphChatToolResultState(),
             )
           : undefined;
 
@@ -347,10 +357,7 @@ export const GraphChatMessageContent = memo(function GraphChatMessageContent({
       const loadedLanguages = highlighter?.getLoadedLanguages?.() ?? [];
       const lang = loadedLanguages.includes(language) ? language : 'text';
       const theme = dark ? 'ayu-dark' : 'ayu-light';
-      const id = `${language || 'text'}:${textContent.length}:${textContent.slice(
-        0,
-        32,
-      )}`;
+      const id = `${language || 'text'}:${textContent.length}:${textContent.slice(0, 32)}`;
       let html = '';
 
       if (highlighter) {
@@ -382,7 +389,7 @@ export const GraphChatMessageContent = memo(function GraphChatMessageContent({
             }
             aria-label="Copy code"
           >
-            {copyState[id] === "copied" ? (
+            {copyState[id] === 'copied' ? (
               <Check className="h-3.5 w-3.5" />
             ) : (
               <Copy className="h-3.5 w-3.5" />
@@ -438,7 +445,7 @@ export const GraphChatMessageContent = memo(function GraphChatMessageContent({
             return (
               <a
                 {...props}
-                href={href ? resolveHref?.(href) ?? href : href}
+                href={href ? (resolveHref?.(href) ?? href) : href}
                 className="thread-inline-link"
               >
                 {children}

@@ -1113,6 +1113,70 @@
   background: var(--theme-panel);
 }
 
+.thread-ui-shell .thread-graph-tool-call {
+  margin: 0.45rem 0;
+}
+
+.thread-ui-shell .thread-graph-tool-call > .thread-graph-tool-accordion {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.thread-ui-shell
+  .thread-graph-tool-call
+  > .thread-graph-tool-accordion
+  .thread-graph-tool-trigger {
+  min-height: 2.5rem;
+  padding: 0.45rem 0.25rem;
+  background: transparent;
+  color: var(--theme-fg-muted);
+}
+
+.thread-ui-shell
+  .thread-graph-tool-call
+  > .thread-graph-tool-accordion
+  .thread-graph-tool-trigger:hover,
+.thread-ui-shell
+  .thread-graph-tool-call
+  > .thread-graph-tool-accordion
+  .thread-graph-tool-trigger:focus-visible {
+  background: transparent;
+  color: var(--theme-fg-soft);
+}
+
+.thread-ui-shell
+  .thread-graph-tool-call
+  > .thread-graph-tool-accordion
+  .thread-graph-tool-trigger
+  > div
+  > svg {
+  height: 1.45rem;
+  width: 1.45rem;
+  padding: 0.28rem;
+  border: 1px solid var(--theme-border-strong);
+  border-radius: 0.35rem;
+  color: currentColor;
+}
+
+.thread-ui-shell .thread-graph-tool-call .thread-graph-tool-action,
+.thread-ui-shell .thread-graph-tool-call .thread-graph-tool-name {
+  color: currentColor;
+}
+
+.thread-ui-shell .thread-graph-tool-call .thread-graph-tool-badge.is-completed {
+  display: none;
+}
+
+.thread-ui-shell .thread-graph-tool-call .thread-graph-tool-content {
+  margin: 0.25rem 0 0 1.95rem;
+  border: 1px solid var(--theme-border);
+  border-radius: 0.5rem;
+  background: var(--theme-panel);
+  padding: 0.8rem;
+}
+
 .thread-ui-shell .thread-graph-history-tool-trigger {
   min-height: 2.75rem;
 }
@@ -2279,5 +2343,653 @@
 @media (min-width: 640px) {
   .thread-ui-shell .thread-graph-message-bubble.is-user {
     padding: 0.375rem 1rem;
+  }
+}
+
+/* Quiet transcript treatment modeled after the native Codex thread surface. */
+.thread-ui-shell .thread-graph-message-stack.is-user {
+  display: flex;
+  width: fit-content;
+  max-width: min(68rem, 72%);
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.thread-ui-shell .thread-graph-message-stack.is-assistant {
+  width: 100%;
+}
+
+.thread-ui-shell .thread-graph-message-bubble.is-user {
+  width: fit-content;
+  max-width: 100%;
+  border-radius: 1.5rem;
+  background: oklch(0.925 0.004 255);
+  padding: 0.95rem 1.35rem;
+  color: var(--theme-fg);
+  box-shadow: none;
+}
+
+.thread-ui-shell.thread-ui-theme-dark .thread-graph-message-bubble.is-user,
+.thread-ui-shell[data-theme-effective="dark"]
+  .thread-graph-message-bubble.is-user,
+.thread-ui-shell.dark .thread-graph-message-bubble.is-user {
+  background: oklch(0.265 0.005 255);
+  color: var(--theme-fg);
+}
+
+.thread-ui-shell .thread-graph-message-bubble.is-assistant {
+  position: relative;
+  width: 100%;
+  padding: 0.3rem 0 0;
+}
+
+.thread-ui-shell .thread-graph-message-content.is-user,
+.thread-ui-shell .thread-graph-message-content.is-user .thread-graph-plain-text,
+.thread-ui-shell .thread-graph-message-content.is-user .thread-graph-markdown,
+.thread-ui-shell
+  .thread-graph-message-content.is-user
+  .thread-graph-message-prose,
+.thread-ui-shell
+  .thread-graph-message-content.is-user
+  .thread-graph-message-prose
+  :where(p, li, span, div, strong, em, code) {
+  color: inherit;
+}
+
+.thread-ui-shell .thread-graph-message-content.is-assistant {
+  max-width: 74ch;
+}
+
+.thread-ui-shell .thread-graph-message-prose,
+.thread-ui-shell .thread-graph-markdown,
+.thread-ui-shell .thread-graph-plain-text {
+  font-size: 1rem;
+  line-height: 1.75;
+  letter-spacing: 0;
+}
+
+.thread-ui-shell .thread-graph-message-user-meta {
+  min-height: 1.5rem;
+  margin: 0.1rem 0.25rem 0;
+  color: var(--theme-fg-muted);
+}
+
+.thread-ui-shell .thread-graph-message-assistant-actions {
+  min-height: 1.75rem;
+  margin-top: 0.15rem;
+  color: var(--theme-fg-muted);
+}
+
+.thread-ui-shell .thread-graph-message-copy-desktop {
+  display: none;
+}
+
+.thread-ui-shell .thread-graph-message-copy-mobile {
+  display: contents;
+}
+
+.thread-ui-shell .thread-graph-message-leading-actions {
+  margin-bottom: 0.6rem;
+}
+
+.thread-ui-shell .thread-graph-message-copy {
+  height: 1.75rem;
+  width: 1.75rem;
+  border: 0;
+  border-radius: 0.4rem;
+  background: transparent;
+  color: var(--theme-fg-muted);
+  box-shadow: none;
+}
+
+.thread-ui-shell .thread-graph-message-copy:hover,
+.thread-ui-shell .thread-graph-message-copy:focus-visible {
+  background: var(--theme-hover);
+  color: var(--theme-fg-soft);
+  outline: none;
+}
+
+.thread-ui-shell .thread-graph-message-copy:focus-visible {
+  box-shadow: 0 0 0 2px var(--theme-border-contrast);
+}
+
+.thread-ui-shell .thread-graph-message-time {
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.thread-ui-shell .thread-graph-message-time-popover {
+  position: sticky;
+  top: 50%;
+  z-index: 20;
+  display: block;
+  width: max-content;
+  height: 1.75rem;
+  margin: 0 auto -1.75rem;
+  padding: 0.42rem 0.62rem;
+  transform: translateY(-0.2rem);
+  border: 1px solid var(--theme-border);
+  border-radius: 0.45rem;
+  background: var(--theme-muted);
+  box-shadow: 0 6px 18px oklch(0.12 0.004 255 / 0.24);
+  color: var(--theme-fg);
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  line-height: 1;
+  opacity: 0;
+  pointer-events: none;
+  white-space: nowrap;
+  transition:
+    opacity 140ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 140ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.thread-ui-shell .thread-graph-message-time-popover[data-visible="true"] {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .thread-ui-shell
+    .thread-graph-message-bubble.is-assistant:hover
+    .thread-graph-message-time-popover,
+  .thread-ui-shell
+    .thread-graph-message-bubble.is-assistant:focus-within
+    .thread-graph-message-time-popover {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.thread-ui-shell .thread-graph-history-tool-accordion {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.thread-ui-shell .thread-graph-history-tool-trigger {
+  min-height: 2.5rem;
+  padding: 0.45rem 0.25rem;
+  background: transparent;
+  color: var(--theme-fg-muted);
+}
+
+.thread-ui-shell .thread-graph-history-tool-trigger:hover,
+.thread-ui-shell .thread-graph-history-tool-trigger:focus-visible {
+  background: transparent;
+  color: var(--theme-fg-soft);
+}
+
+.thread-ui-shell .thread-graph-history-tool-trigger:focus-visible {
+  outline: 1px solid var(--theme-border-contrast);
+  outline-offset: 2px;
+}
+
+.thread-ui-shell .thread-graph-history-tool-label {
+  color: currentColor;
+}
+
+.thread-ui-shell .thread-graph-history-tool-preview {
+  color: currentColor;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  font-weight: 400;
+}
+
+.thread-ui-shell .thread-graph-history-tool-preview-ellipsis {
+  color: var(--theme-fg-muted);
+}
+
+.thread-ui-shell .thread-graph-history-tool-icon {
+  height: 1.45rem;
+  width: 1.45rem;
+  border: 1px solid var(--theme-border-strong);
+  border-radius: 0.35rem;
+  color: currentColor !important;
+}
+
+.thread-ui-shell .thread-graph-history-tool-icon svg {
+  height: 0.85rem;
+  width: 0.85rem;
+}
+
+.thread-ui-shell .thread-graph-history-tool-content {
+  margin: 0.25rem 0 0 1.95rem;
+  border: 1px solid var(--theme-border);
+  border-radius: 0.5rem;
+  background: var(--theme-panel);
+  padding: 0.8rem;
+}
+
+.thread-ui-shell .thread-graph-history-group-command {
+  overflow: visible;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  padding: 0.35rem 0.25rem;
+}
+
+.thread-ui-shell
+  .thread-graph-history-group-command
+  .thread-graph-history-group-card {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  padding: 0;
+  box-shadow: none;
+}
+
+.thread-ui-shell
+  .thread-graph-history-group-command
+  .thread-graph-history-group-icon
+  > span {
+  height: 1.45rem;
+  width: 1.45rem;
+  border-color: var(--theme-border-strong);
+  border-radius: 0.35rem;
+  background: transparent;
+  color: var(--theme-fg-muted);
+  box-shadow: none;
+}
+
+.thread-ui-shell
+  .thread-graph-history-group-command
+  .thread-graph-history-group-icon
+  > span
+  > span {
+  display: none;
+}
+
+.thread-ui-shell
+  .thread-graph-history-group-command
+  .thread-graph-history-group-summary {
+  flex-wrap: nowrap;
+  gap: 0.35rem;
+  color: var(--theme-fg-muted);
+}
+
+.thread-ui-shell .thread-graph-history-group-verb {
+  color: var(--theme-fg-muted);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.thread-ui-shell .thread-graph-history-group-description {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--theme-fg-muted);
+  font-size: 0.875rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.thread-ui-shell .thread-graph-markdown .katex-display {
+  max-width: 100%;
+  margin: 0.9rem 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.2rem 0;
+}
+
+.thread-ui-shell .thread-graph-markdown .katex {
+  font-size: 1.02em;
+}
+
+@media (max-width: 639px) {
+  .thread-ui-shell .thread-graph-message-stack.is-user {
+    max-width: 88%;
+  }
+
+  .thread-ui-shell .thread-graph-message-bubble.is-user {
+    border-radius: 1.25rem;
+    padding: 0.8rem 1rem;
+  }
+
+  .thread-ui-shell .thread-graph-message-content.is-assistant {
+    max-width: 100%;
+  }
+
+  .thread-ui-shell .thread-graph-message-prose,
+  .thread-ui-shell .thread-graph-markdown,
+  .thread-ui-shell .thread-graph-plain-text {
+    font-size: 0.9375rem;
+    line-height: 1.7;
+  }
+
+  .thread-ui-shell .thread-graph-message-copy {
+    height: 2rem;
+    width: 2rem;
+  }
+
+  .thread-ui-shell .thread-graph-message-user-meta {
+    min-height: 2rem;
+    margin-top: 0.15rem;
+  }
+
+  .thread-ui-shell .thread-graph-message-assistant-actions {
+    min-height: 2rem;
+    margin-top: 0.15rem;
+  }
+}
+
+@media (min-width: 640px) {
+  .thread-ui-shell:not([data-thread-layout="mobile"])
+    .thread-graph-message-copy-desktop {
+    position: absolute;
+    right: 0.35rem;
+    bottom: 0.3rem;
+    z-index: 10;
+    display: flex;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(0.15rem);
+    transition:
+      opacity 140ms cubic-bezier(0.22, 1, 0.36, 1),
+      transform 140ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .thread-ui-shell:not([data-thread-layout="mobile"])
+    .thread-graph-message-bubble:hover
+    .thread-graph-message-copy-desktop,
+  .thread-ui-shell:not([data-thread-layout="mobile"])
+    .thread-graph-message-bubble:focus-within
+    .thread-graph-message-copy-desktop {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+  }
+
+  .thread-ui-shell:not([data-thread-layout="mobile"])
+    .thread-graph-message-copy-mobile {
+    display: none;
+  }
+
+  .thread-ui-shell:not([data-thread-layout="mobile"])
+    .thread-graph-message-user-meta:not(.has-persistent-meta),
+  .thread-ui-shell:not([data-thread-layout="mobile"])
+    .thread-graph-message-assistant-actions:not(.has-status) {
+    display: none;
+  }
+
+  .thread-ui-shell:not([data-thread-layout="mobile"])
+    .thread-graph-message-bubble.is-user {
+    padding-right: 3.15rem;
+  }
+}
+
+.thread-ui-shell .thread-graph-turn-footer {
+  min-height: 1.75rem;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  padding: 0.2rem 0;
+  color: var(--theme-fg-muted);
+}
+
+.thread-ui-shell .thread-graph-turn-footer-runtime {
+  color: var(--theme-fg-soft);
+}
+
+.thread-ui-shell .thread-graph-turn-footer-meta {
+  overflow: hidden;
+  font-size: 0.6875rem;
+  text-overflow: ellipsis;
+}
+
+.thread-ui-shell .thread-graph-turn-footer-price {
+  color: var(--theme-fg-muted);
+}
+
+@media (max-width: 639px) {
+  .thread-ui-shell .thread-graph-turn-footer {
+    gap: 0.5rem;
+    min-height: 1.65rem;
+    padding: 0.15rem 0;
+  }
+
+  .thread-ui-shell .thread-graph-turn-footer-runtime {
+    max-width: 45%;
+  }
+
+  .thread-ui-shell .thread-graph-turn-footer-meta {
+    max-width: 55%;
+    font-size: 0.625rem;
+  }
+}
+
+/* All timeline events share the same quiet transcript-row vocabulary. */
+.thread-ui-shell .thread-graph-history-event,
+.thread-ui-shell .thread-graph-history-group {
+  min-height: 2.5rem;
+  overflow: visible;
+  border: 0 !important;
+  border-radius: 0;
+  background: transparent !important;
+  padding: 0.3rem 0.25rem;
+  color: var(--theme-fg-muted);
+  box-shadow: none;
+}
+
+.thread-ui-shell .thread-graph-history-event {
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.thread-ui-shell .thread-graph-history-event-icon,
+.thread-ui-shell .thread-graph-history-group-icon > span {
+  display: inline-flex;
+  height: 1.45rem !important;
+  width: 1.45rem !important;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--theme-border-strong) !important;
+  border-radius: 0.35rem !important;
+  background: transparent !important;
+  color: var(--theme-fg-muted) !important;
+  box-shadow: none !important;
+}
+
+.thread-ui-shell .thread-graph-history-event-icon {
+  margin-top: 0.35rem;
+}
+
+.thread-ui-shell .thread-graph-history-event-icon svg,
+.thread-ui-shell .thread-graph-history-group-icon svg {
+  height: 0.85rem;
+  width: 0.85rem;
+}
+
+.thread-ui-shell .thread-graph-history-event-card,
+.thread-ui-shell .thread-graph-history-group-card {
+  min-width: 0;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  padding: 0 !important;
+  color: inherit;
+  box-shadow: none !important;
+}
+
+.thread-ui-shell .thread-graph-history-event-header {
+  min-height: 2.15rem;
+  gap: 0.5rem;
+  padding: 0.25rem 0;
+}
+
+.thread-ui-shell
+  .thread-graph-event-file-change
+  .thread-graph-history-event-header {
+  min-height: 2.15rem;
+  padding-block: 0.25rem;
+}
+
+.thread-ui-shell .thread-graph-history-event-heading {
+  gap: 0.4rem;
+}
+
+.thread-ui-shell .thread-graph-artifact-inline-toggle {
+  color: var(--theme-fg-muted);
+}
+
+.thread-ui-shell .thread-graph-artifact-inline-toggle:hover,
+.thread-ui-shell .thread-graph-artifact-inline-toggle:focus-visible {
+  color: var(--theme-fg-soft);
+}
+
+.thread-ui-shell .thread-graph-artifact-inline-toggle:focus-visible {
+  border-radius: 0.35rem;
+  outline: 1px solid var(--theme-border-contrast);
+  outline-offset: 2px;
+}
+
+.thread-ui-shell
+  .thread-graph-event-artifact
+  .thread-graph-history-event-body
+  > .space-y-2
+  > button:first-child {
+  display: none;
+}
+
+.thread-ui-shell .thread-graph-history-event-title {
+  max-width: min(12rem, 34%);
+  color: var(--theme-fg-muted);
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.thread-ui-shell .thread-graph-history-event-actions,
+.thread-ui-shell .thread-graph-history-tool-time,
+.thread-ui-shell .thread-graph-history-group-chevron {
+  color: var(--theme-fg-muted);
+}
+
+.thread-ui-shell .thread-graph-history-event-body {
+  gap: 0.35rem;
+  border: 0;
+  background: transparent;
+  padding: 0.15rem 0 0.35rem;
+  color: var(--theme-fg-soft);
+}
+
+.thread-ui-shell .thread-graph-history-event-summary,
+.thread-ui-shell .thread-graph-history-event-pre {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  padding: 0.25rem 0;
+  box-shadow: none;
+}
+
+.thread-ui-shell .thread-graph-history-event-summary.is-clickable:hover,
+.thread-ui-shell .thread-graph-history-event-action:hover {
+  background: transparent;
+  color: var(--theme-fg);
+}
+
+.thread-ui-shell .thread-graph-history-event-action,
+.thread-ui-shell .thread-graph-history-event-pill {
+  border: 0;
+  border-radius: 0.35rem;
+  background: transparent;
+  padding: 0.2rem 0.35rem;
+}
+
+.thread-ui-shell .thread-graph-history-delta-badge {
+  border: 0;
+  border-radius: 0.25rem;
+  background: transparent !important;
+  padding: 0 0.2rem;
+}
+
+.thread-ui-shell .thread-graph-history-group > div {
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.thread-ui-shell .thread-graph-history-group-icon {
+  margin-top: 0.35rem;
+}
+
+.thread-ui-shell .thread-graph-history-group-icon > span > span {
+  display: none;
+}
+
+.thread-ui-shell .thread-graph-history-group-toggle {
+  min-height: 2.15rem;
+  gap: 0.5rem;
+  color: var(--theme-fg-muted);
+}
+
+.thread-ui-shell .thread-graph-history-group-toggle:hover,
+.thread-ui-shell .thread-graph-history-group-toggle:focus-visible {
+  color: var(--theme-fg-soft);
+}
+
+.thread-ui-shell .thread-graph-history-group-toggle:focus-visible {
+  border-radius: 0.35rem;
+  outline: 1px solid var(--theme-border-contrast);
+  outline-offset: 2px;
+}
+
+.thread-ui-shell .thread-graph-history-group-summary {
+  flex-wrap: nowrap;
+  gap: 0.35rem;
+}
+
+.thread-ui-shell .thread-graph-history-group-list {
+  margin: 0.1rem 0 0 1.95rem;
+  border: 0;
+  padding: 0.25rem 0 0;
+}
+
+.thread-ui-shell .thread-graph-history-detail-row {
+  border: 0;
+  background: transparent;
+  padding: 0.4rem 0.25rem;
+}
+
+.thread-ui-shell .thread-graph-history-detail-row:hover {
+  background: transparent;
+  color: var(--theme-fg);
+}
+
+.thread-ui-shell .thread-graph-history-tool {
+  color: var(--theme-fg-muted);
+}
+
+.thread-ui-shell .thread-graph-history-tool-icon {
+  color: var(--theme-fg-muted) !important;
+}
+
+@media (max-width: 639px) {
+  .thread-ui-shell .thread-graph-history-event,
+  .thread-ui-shell .thread-graph-history-group {
+    min-height: 2.35rem;
+    padding: 0.25rem 0;
+  }
+
+  .thread-ui-shell .thread-graph-history-event-title {
+    max-width: 7rem;
+    font-size: 0.8125rem;
+  }
+
+  .thread-ui-shell .thread-graph-history-event-body {
+    padding: 0.1rem 0 0.25rem;
+  }
+
+  .thread-ui-shell .thread-graph-history-group-list {
+    margin-left: 1.65rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .thread-ui-shell .thread-graph-message-time-popover {
+    transition: none;
   }
 }

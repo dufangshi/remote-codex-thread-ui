@@ -32,6 +32,17 @@ afterEach(() => {
 });
 
 describe('GraphChatMessageContent', () => {
+  it('renders inline and display LaTeX through KaTeX', () => {
+    const element = render(
+      <GraphChatMessageContent
+        content={'Inline $E = mc^2$\n\n$$\n\\int_0^1 x^2 dx\n$$'}
+      />,
+    );
+
+    expect(element.querySelector('.katex')).not.toBeNull();
+    expect(element.querySelector('.katex-display')).not.toBeNull();
+  });
+
   it('opens root-relative file links through the workspace callback', () => {
     const onOpenWorkspaceFile = vi.fn();
     const element = render(
@@ -101,7 +112,9 @@ describe('GraphChatMessageContent', () => {
   });
 
   it('lets embedded hosts resolve links against their proxy base', () => {
-    const resolveHref = vi.fn((href: string) => `https://treer.test/proxy${href}`);
+    const resolveHref = vi.fn(
+      (href: string) => `https://treer.test/proxy${href}`,
+    );
     const element = render(
       <GraphChatMessageContent
         content="[agent docs](/docs)"

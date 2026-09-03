@@ -229,6 +229,7 @@ export function PlaygroundApp() {
   const [shellState, setShellState] = useState<ThreadShellControlState | null>(
     null,
   );
+  const [lastSubmittedPrompt, setLastSubmittedPrompt] = useState('');
 
   const adapter = useMemo<ThreadDetailUiAdapter>(
     () => ({
@@ -239,7 +240,9 @@ export function PlaygroundApp() {
       getNewThreadHref(workspaceId) {
         return `#new-${workspaceId ?? 'workspace'}`;
       },
-      sendPrompt() {},
+      sendPrompt(input) {
+        setLastSubmittedPrompt(input.prompt);
+      },
       interrupt() {},
       compact() {},
       updateSettings() {},
@@ -364,6 +367,13 @@ export function PlaygroundApp() {
             </div>
           }
         />
+        <output
+          data-testid="playground-submitted-prompt"
+          className="sr-only"
+          aria-hidden="true"
+        >
+          {lastSubmittedPrompt}
+        </output>
         <ThreadActionsDialog
           open={threadActionsOpen}
           turnsState={mockExportTurnsState}

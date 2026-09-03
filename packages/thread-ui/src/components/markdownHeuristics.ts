@@ -12,6 +12,8 @@ const INLINE_CODE_PATTERN = /`[^`\n]+`/;
 const STRONG_EMPHASIS_PATTERN = /(?:\*\*[^*\n]+\*\*|__[^_\n]+__)/;
 const EMPHASIS_PATTERN = /(^|[^\w])(?:\*[^*\n]+\*|_[^_\n]+_)(?=[^\w]|$)/;
 const STRIKETHROUGH_PATTERN = /~~[^~\n]+~~/;
+const INLINE_MATH_PATTERN = /(^|[^\\])\$(?!\s)(?:\\.|[^$\n\\])+\$(?!\d)/;
+const BLOCK_MATH_PATTERN = /(^|\n)\s*\$\$[^]*?\$\$\s*(?=\n|$)/;
 
 export function hasLikelyMarkdownSyntax(text: string) {
   const trimmed = text.trim();
@@ -26,7 +28,11 @@ export function hasLikelyMarkdownSyntax(text: string) {
     return true;
   }
 
-  if (!/[`[\]*_~!]/.test(trimmed)) {
+  if (BLOCK_MATH_PATTERN.test(trimmed)) {
+    return true;
+  }
+
+  if (!/[`[\]*_~!$]/.test(trimmed)) {
     return false;
   }
 
@@ -35,6 +41,7 @@ export function hasLikelyMarkdownSyntax(text: string) {
     INLINE_CODE_PATTERN.test(trimmed) ||
     STRONG_EMPHASIS_PATTERN.test(trimmed) ||
     EMPHASIS_PATTERN.test(trimmed) ||
-    STRIKETHROUGH_PATTERN.test(trimmed)
+    STRIKETHROUGH_PATTERN.test(trimmed) ||
+    INLINE_MATH_PATTERN.test(trimmed)
   );
 }
