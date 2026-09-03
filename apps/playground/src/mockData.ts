@@ -214,7 +214,7 @@ export const mockDetail: ThreadDetailDto = {
         {
           id: 'item-user-2',
           kind: 'userMessage',
-          text: 'Show me a compact molecule artifact example too, so I can verify the plugin panel while redesigning this UI.',
+          text: 'Show me a compact molecule artifact example too, so I can verify the workspace preview while redesigning this UI.',
           transcriptOrder: 7,
           sourceTurnId: 'turn-2',
           createdAt: '2026-06-08T14:17:04.000Z',
@@ -222,8 +222,8 @@ export const mockDetail: ThreadDetailDto = {
         {
           id: 'item-command-2',
           kind: 'commandExecution',
-          text: 'pnpm --filter @remote-codex/plugin-xyz-viewer test',
-          previewText: 'pnpm --filter @remote-codex/plugin-xyz-viewer test',
+          text: 'pnpm --filter @remote-codex/thread-ui test',
+          previewText: 'pnpm --filter @remote-codex/thread-ui test',
           status: 'completed',
           transcriptOrder: 8,
           sourceTurnId: 'turn-2',
@@ -238,7 +238,7 @@ export const mockDetail: ThreadDetailDto = {
           sourceTurnId: 'turn-2',
           artifact: {
             id: 'artifact-ethanol',
-            pluginId: 'remote-codex.xyz-viewer',
+            pluginId: 'remote-codex.workspace-molecule-preview',
             type: 'chemistry.molecule3d',
             title: 'Ethanol',
             summaryText: 'Small XYZ structure used for renderer smoke checks.',

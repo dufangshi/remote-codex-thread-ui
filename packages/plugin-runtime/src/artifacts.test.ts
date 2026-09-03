@@ -11,7 +11,7 @@ import type {
 } from '@remote-codex/shared';
 
 const xyzViewerManifest: PluginManifestDto = {
-  id: 'remote-codex.xyz-viewer',
+  id: 'example.viewer',
   name: 'XYZ Molecule Viewer',
   version: '0.1.0',
   description: 'Test manifest',
@@ -100,7 +100,7 @@ describe('ManifestArtifactExtractor', () => {
     expect(artifactItem).toMatchObject({
       kind: 'artifact',
       artifact: {
-        pluginId: 'remote-codex.xyz-viewer',
+        pluginId: 'example.viewer',
         type: 'chemistry.molecule3d',
         payload: {
           format: 'xyz',
@@ -157,7 +157,7 @@ describe('ManifestArtifactExtractor', () => {
     expect(enriched[0]?.items[1]).toMatchObject({
       kind: 'artifact',
       artifact: {
-        pluginId: 'remote-codex.xyz-viewer',
+        pluginId: 'example.viewer',
         type: 'chemistry.molecule3d',
         title: 'Water',
       },
@@ -227,7 +227,7 @@ describe('ManifestArtifactExtractor', () => {
     expect(enriched[0]?.items[1]).toMatchObject({
       kind: 'artifact',
       artifact: {
-        pluginId: 'remote-codex.xyz-viewer',
+        pluginId: 'example.viewer',
         type: 'chemistry.molecule3d',
         title: 'Water',
       },

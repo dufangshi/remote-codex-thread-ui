@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { ThreadArtifactDto, PluginManifestDto } from '@remote-codex/shared';
+import { PluginManifestDto, ThreadArtifactDto } from '@remote-codex/shared';
 
 interface ArtifactRenderContext {
     artifact: ThreadArtifactDto;

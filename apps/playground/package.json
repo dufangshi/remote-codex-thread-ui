@@ -12,7 +12,6 @@
   "dependencies": {
     "@remote-codex/plugin-runtime": "workspace:*",
     "@remote-codex/plugin-terminal": "workspace:*",
-    "@remote-codex/plugin-xyz-viewer": "workspace:*",
     "@remote-codex/shared": "workspace:*",
     "@remote-codex/thread-ui": "workspace:*",
     "@vitejs/plugin-react": "^4.3.4",

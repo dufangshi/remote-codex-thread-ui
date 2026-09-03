@@ -11,7 +11,6 @@ The shared packages remain UI-only. Runtime integrations translate provider even
   into a dedicated `@remote-codex/thread-ui-contracts` package before publishing externally.
 - `@remote-codex/plugin-runtime`: Shared plugin/artifact helpers.
 - `@remote-codex/plugin-terminal`: Built-in terminal plugin manifest.
-- `@remote-codex/plugin-xyz-viewer`: Built-in molecule viewer plugin and frontend renderer.
 
 ## Apps
 

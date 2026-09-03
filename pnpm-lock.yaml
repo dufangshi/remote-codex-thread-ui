@@ -96,9 +96,6 @@ importers:
       '@remote-codex/plugin-terminal':
         specifier: workspace:*
         version: link:../../packages/plugin-terminal
-      '@remote-codex/plugin-xyz-viewer':
-        specifier: workspace:*
-        version: link:../../packages/plugin-xyz-viewer
       '@remote-codex/shared':
         specifier: workspace:*
         version: link:../../packages/shared
@@ -142,9 +139,6 @@ importers:
       '@remote-codex/plugin-terminal':
         specifier: workspace:*
         version: link:../../packages/plugin-terminal
-      '@remote-codex/plugin-xyz-viewer':
-        specifier: workspace:*
-        version: link:../../packages/plugin-xyz-viewer
       '@remote-codex/shared':
         specifier: workspace:*
         version: link:../../packages/shared
@@ -180,28 +174,6 @@ importers:
 
   packages/plugin-terminal:
     devDependencies:
-      tsup:
-        specifier: ^8.4.0
-        version: 8.5.1(jiti@2.7.0)(postcss@8.5.15)(tsx@4.22.4)(typescript@5.9.3)
-      typescript:
-        specifier: ^5.8.3
-        version: 5.9.3
-
-  packages/plugin-xyz-viewer:
-    dependencies:
-      3dmol:
-        specifier: ^2.5.2
-        version: 2.5.5
-      lucide-react:
-        specifier: ^0.544.0
-        version: 0.544.0(react@19.2.7)
-    devDependencies:
-      react:
-        specifier: ^19.1.0
-        version: 19.2.7
-      react-dom:
-        specifier: ^19.1.0
-        version: 19.2.7(react@19.2.7)
       tsup:
         specifier: ^8.4.0
         version: 8.5.1(jiti@2.7.0)(postcss@8.5.15)(tsx@4.22.4)(typescript@5.9.3)
@@ -298,9 +270,6 @@ importers:
       '@remote-codex/plugin-terminal':
         specifier: workspace:*
         version: link:../plugin-terminal
-      '@remote-codex/plugin-xyz-viewer':
-        specifier: workspace:*
-        version: link:../plugin-xyz-viewer
       '@remote-codex/shared':
         specifier: workspace:*
         version: link:../shared

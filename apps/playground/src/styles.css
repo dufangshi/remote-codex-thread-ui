@@ -1,6 +1,5 @@
 @import "tailwindcss";
 @source "../../../packages/thread-ui/src";
-@source "../../../packages/plugin-xyz-viewer/src";
 @source "../../../packages/plugin-terminal/src";
 
 html,

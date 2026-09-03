@@ -8,7 +8,13 @@ import type {
   ThreadWorkspaceFilePreview,
   ThreadWorkspaceTreeNode,
 } from '../../adapters';
-import type { MoleculeViewerSnapshot } from '@remote-codex/plugin-xyz-viewer';
+
+interface MoleculeViewerSnapshot {
+  content: string[];
+  format: string;
+  name: string;
+  uuid: string;
+}
 
 export type WorkspaceNodeKind =
   | 'directory'
@@ -277,7 +283,7 @@ export function buildMoleculePreviewSource(
   return {
     id: file.path,
     title: file.name,
-    pluginId: 'remote-codex.xyz-viewer',
+    pluginId: 'remote-codex.workspace-molecule-preview',
     type: 'chemistry.molecule3d',
     payload: snapshot,
     createdAt: new Date(0).toISOString(),

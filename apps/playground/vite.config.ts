@@ -56,9 +56,6 @@ export default defineConfig({
           if (id.includes('/@remote-codex/thread-ui/dist/')) {
             return 'thread-ui-core';
           }
-          if (id.includes('/@remote-codex/plugin-xyz-viewer/')) {
-            return 'plugin-xyz-viewer';
-          }
           if (id.includes('/@remote-codex/plugin-')) {
             return 'plugin-runtime';
           }
