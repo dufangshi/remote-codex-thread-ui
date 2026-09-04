@@ -419,6 +419,8 @@ interface ThreadTurnDto {
     reasoningEffortAvailable?: boolean | null;
     tokenUsage?: ThreadTurnTokenUsageDto | null;
     priceEstimate?: ThreadTurnPriceEstimateDto | null;
+    hasDeferredItems?: boolean | null;
+    deferredItemCount?: number | null;
     items: ThreadHistoryItemDto[];
 }
 interface ThreadActionQuestionOptionDto {

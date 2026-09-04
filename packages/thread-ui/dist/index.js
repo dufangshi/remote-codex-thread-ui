@@ -489,7 +489,6 @@ function buildComposerClassNames({
     composerInlineToggleClassName: isShellView ? "thread-composer-inline-toggle" : "thread-graph-composer-inline-toggle",
     composerPanelButtonClassName: isShellView ? "thread-composer-panel-button" : "thread-graph-composer-panel-button",
     composerChipButtonClassName: isShellView ? "thread-composer-chip-button" : "thread-graph-composer-chip-button",
-    composerPlanToggleActiveClassName: isShellView ? "thread-composer-plan-toggle-active" : "thread-graph-composer-plan-toggle-active",
     composerSendButtonClassName: isShellView ? "thread-composer-send-button" : "thread-graph-composer-send-button",
     composerPromptRegionClassName: isShellView ? "thread-composer-prompt-region" : "thread-graph-composer-prompt-region",
     promptInputClassName: `${composerInputClassName} min-h-[5.25rem] w-full px-4 pr-14 pt-3 outline-none transition sm:min-h-[5.75rem] ${isDragTargetActive ? "is-drag-target border-sky-300/80 bg-sky-300/[0.08] shadow-[0_0_0_1px_rgba(125,211,252,0.2)]" : ""}`,
@@ -1630,7 +1629,9 @@ var sandboxOptions = [
   { mode: "danger-full-access", label: "Danger" }
 ];
 function formatSandboxModeLabel(mode) {
-  return sandboxOptions.find((entry) => entry.mode === mode)?.label ?? "Default";
+  return sandboxOptions.find(
+    (entry) => entry.mode === (mode ?? "danger-full-access")
+  )?.label ?? "Danger";
 }
 function formatSandboxModeCompactLabel(mode) {
   switch (mode) {
@@ -1641,21 +1642,18 @@ function formatSandboxModeCompactLabel(mode) {
     case "danger-full-access":
       return "Full";
     default:
-      return "Sandbox";
+      return "Full";
   }
 }
 function ComposerSettingsToolbar({
   openMenu,
   model,
-  agentLabel,
   modelOptions,
   modelContextTitle,
   contextUsage,
   reasoningEffort,
   supportedEfforts,
-  displayedCollaborationMode,
   sandboxMode,
-  planModeAvailable,
   sandboxModeAvailable,
   settingsBusy,
   goalComposeMode,
@@ -1670,7 +1668,6 @@ function ComposerSettingsToolbar({
   effortControlTitle,
   inlineToggleClassName,
   menuItemClassName: menuItemClassName2,
-  planToggleActiveClassName,
   sendButtonBaseClassName,
   onSetOpenMenu,
   onUpdateSettings
@@ -1678,19 +1675,6 @@ function ComposerSettingsToolbar({
   const [settingsSection, setSettingsSection] = useState3(null);
   const selectedModelLabel = (modelOptions.find((entry) => entry.model === model)?.displayName || model || "Select model").replace(/\s+\([^)]+\)\s*$/, "");
   return /* @__PURE__ */ jsxs8(Fragment3, { children: [
-    agentLabel ? /* @__PURE__ */ jsx9(
-      InputGroupButton,
-      {
-        type: "button",
-        variant: "ghost",
-        size: "xs",
-        disabled: true,
-        "aria-label": `Agent: ${agentLabel}`,
-        title: `${agentLabel} is fixed for this thread`,
-        className: `${inlineToggleClassName} max-w-[7.5rem] cursor-default rounded-full px-2.5 text-stone-500 disabled:opacity-100 sm:max-w-[9rem]`,
-        children: /* @__PURE__ */ jsx9("span", { className: "block min-w-0 truncate whitespace-nowrap", children: agentLabel })
-      }
-    ) : null,
     /* @__PURE__ */ jsxs8("div", { className: "relative min-w-0", children: [
       /* @__PURE__ */ jsx9(
         InputGroupButton,
@@ -1705,9 +1689,7 @@ function ComposerSettingsToolbar({
           disabled: modelControlsDisabled || modelOptions.length === 0,
           onClick: () => {
             setSettingsSection(null);
-            onSetOpenMenu(
-              (current) => current === "model" ? null : "model"
-            );
+            onSetOpenMenu((current) => current === "model" ? null : "model");
           },
           title: fastMode ? `Fast mode is on. Turn it off from the slash toolbox to edit model. ${modelContextTitle}` : modelContextTitle,
           className: `${inlineToggleClassName} relative min-w-0 max-w-[10rem] overflow-hidden rounded-full px-2.5 text-left text-stone-300 disabled:cursor-not-allowed disabled:text-stone-600 sm:max-w-[14rem]`,
@@ -1794,7 +1776,9 @@ function ComposerSettingsToolbar({
                   {
                     type: "button",
                     onClick: () => {
-                      onUpdateSettings({ reasoningEffort: entry.reasoningEffort });
+                      onUpdateSettings({
+                        reasoningEffort: entry.reasoningEffort
+                      });
                       onSetOpenMenu(() => null);
                     },
                     className: `${menuItemClassName2} flex w-full items-center justify-between rounded-lg px-3 py-2 text-left ${selected ? "ui-status-warning" : "text-stone-300"}`,
@@ -1806,7 +1790,9 @@ function ComposerSettingsToolbar({
                   entry.reasoningEffort
                 );
               }),
-              supportedEfforts.some((entry) => entry.reasoningEffort === "ultra") ? /* @__PURE__ */ jsx9("p", { className: "px-3 pb-1 pt-2 text-xs leading-4 text-stone-500", children: "Higher effort can consume usage limits faster." }) : null
+              supportedEfforts.some(
+                (entry) => entry.reasoningEffort === "ultra"
+              ) ? /* @__PURE__ */ jsx9("p", { className: "px-3 pb-1 pt-2 text-xs leading-4 text-stone-500", children: "Higher effort can consume usage limits faster." }) : null
             ] }) : null
           ]
         }
@@ -1844,7 +1830,7 @@ function ComposerSettingsToolbar({
               onClick: () => onUpdateSettings({
                 sandboxMode: entry.mode
               }),
-              className: `block w-full rounded-xl px-3 py-2 text-left transition ${entry.mode === sandboxMode ? "ui-status-warning" : `${menuItemClassName2} text-stone-300`}`,
+              className: `block w-full rounded-xl px-3 py-2 text-left transition ${entry.mode === (sandboxMode ?? "danger-full-access") ? "ui-status-warning" : `${menuItemClassName2} text-stone-300`}`,
               children: /* @__PURE__ */ jsx9("p", { className: "text-sm font-medium", children: entry.label })
             },
             entry.mode
@@ -1852,21 +1838,6 @@ function ComposerSettingsToolbar({
         }
       )
     ] }),
-    planModeAvailable && /* @__PURE__ */ jsx9(
-      InputGroupButton,
-      {
-        type: "button",
-        variant: "ghost",
-        size: "xs",
-        "aria-pressed": displayedCollaborationMode === "plan",
-        disabled: settingsBusy,
-        onClick: () => onUpdateSettings({
-          collaborationMode: displayedCollaborationMode === "plan" ? "default" : "plan"
-        }),
-        className: `${inlineToggleClassName} rounded-full px-2.5 ${displayedCollaborationMode === "plan" ? `${planToggleActiveClassName} border !border-[oklch(0.78_0.16_86_/_0.76)] !bg-[oklch(0.44_0.095_82_/_0.72)] !text-[oklch(0.96_0.055_92)] shadow-[0_0_0_1px_oklch(0.78_0.16_86_/_0.24),0_0_18px_oklch(0.78_0.16_86_/_0.42),inset_0_0_0_1px_oklch(0.98_0.04_96_/_0.18)]` : "text-stone-500"} disabled:cursor-not-allowed disabled:opacity-60`,
-        children: "Plan"
-      }
-    ),
     /* @__PURE__ */ jsx9(
       InputGroupButton,
       {
@@ -2028,6 +1999,7 @@ import { jsx as jsx11, jsxs as jsxs10 } from "react/jsx-runtime";
 function ComposerForkPanel({
   busy,
   forkBusy,
+  forkFromTurnAvailable,
   composerMenuItemClassName,
   onForkLatest,
   onSelectForkTurnPanel
@@ -2046,7 +2018,7 @@ function ComposerForkPanel({
         ] })
       }
     ),
-    /* @__PURE__ */ jsx11(
+    forkFromTurnAvailable ? /* @__PURE__ */ jsx11(
       "button",
       {
         type: "button",
@@ -2061,7 +2033,7 @@ function ComposerForkPanel({
           /* @__PURE__ */ jsx11("span", { className: "text-[11px] uppercase tracking-[0.16em] text-stone-400", children: "Pick" })
         ] })
       }
-    ),
+    ) : null,
     busy ? /* @__PURE__ */ jsx11("p", { className: "mt-2 rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-3 text-sm text-stone-400", children: "Fork is only available while the thread is idle." }) : null
   ] });
 }
@@ -2740,6 +2712,10 @@ function ComposerSlashToolboxMenu({
   open,
   slashPanelView,
   availableToolboxItems,
+  planModeAvailable,
+  forkFromTurnAvailable,
+  displayedCollaborationMode,
+  settingsBusy,
   busy,
   forkBusy,
   forkTurnOptionsState,
@@ -2779,6 +2755,7 @@ function ComposerSlashToolboxMenu({
   chipButtonClassName,
   onToggle,
   onToolboxItemClick,
+  onUpdateSettings,
   toolboxItemDisabled: toolboxItemDisabled2,
   toolboxItemClassName: toolboxItemClassName2,
   toolboxItemStatus: toolboxItemStatus2,
@@ -2845,56 +2822,75 @@ function ComposerSlashToolboxMenu({
           event.stopPropagation();
         },
         children: slashPanelView === "root" ? /* @__PURE__ */ jsxs15("div", { className: "p-2", children: [
-          availableToolboxItems.map((item, index) => item.action === "goal" ? /* @__PURE__ */ jsxs15(
-            "div",
-            {
-              className: `mt-1 flex min-h-11 overflow-hidden rounded-xl border border-[var(--theme-border)] ${index === 0 ? "mt-0" : ""}`,
-              title: item.description ?? item.label,
-              children: [
-                /* @__PURE__ */ jsx16(
-                  "button",
-                  {
-                    type: "button",
-                    disabled: toolboxItemDisabled2(item),
-                    onClick: () => {
-                      onSetSlashPanelView("goals");
-                      void onViewGoals?.();
-                    },
-                    className: "min-w-0 flex-1 px-3 py-2.5 text-left text-sm text-[var(--theme-fg)] transition hover:bg-[var(--theme-hover)] focus-visible:z-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--theme-accent-border)] disabled:cursor-not-allowed disabled:opacity-45",
-                    "aria-label": "View goals",
-                    children: /* @__PURE__ */ jsx16("span", { children: item.command })
-                  }
-                ),
-                /* @__PURE__ */ jsx16(
-                  "button",
-                  {
-                    type: "button",
-                    disabled: toolboxItemDisabled2(item),
-                    onClick: (event) => onToolboxItemClick(item, event),
-                    className: "min-w-14 border-l border-[var(--theme-border)] px-3 text-xs font-semibold text-[var(--theme-fg-muted)] transition hover:bg-[var(--theme-hover)] hover:text-[var(--theme-fg)] focus-visible:z-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--theme-accent-border)] disabled:cursor-not-allowed disabled:opacity-45",
-                    "aria-label": "Open goal composer",
-                    children: "Open"
-                  }
-                )
-              ]
-            },
-            `${item.action}:${item.command}`
-          ) : /* @__PURE__ */ jsx16(
+          planModeAvailable ? /* @__PURE__ */ jsx16(
             "button",
             {
               type: "button",
-              disabled: toolboxItemDisabled2(item),
-              onClick: (event) => onToolboxItemClick(item, event),
-              className: `${toolboxItemClassName2(item)} ${index === 0 ? "mt-0" : ""}`,
-              title: item.description ?? item.label,
+              "aria-pressed": displayedCollaborationMode === "plan",
+              disabled: settingsBusy,
+              onClick: () => onUpdateSettings({
+                collaborationMode: displayedCollaborationMode === "plan" ? "default" : "plan"
+              }),
+              className: `${displayedCollaborationMode === "plan" ? "ui-status-warning" : menuItemClassName2} block w-full rounded-xl px-3 py-2 text-left text-sm transition disabled:cursor-not-allowed disabled:opacity-60`,
+              title: "Toggle plan mode",
               children: /* @__PURE__ */ jsxs15("div", { className: "flex items-center justify-between gap-3", children: [
-                /* @__PURE__ */ jsx16("span", { children: item.command }),
-                /* @__PURE__ */ jsx16("span", { className: "text-[11px] uppercase tracking-[0.16em] text-stone-400", children: toolboxItemStatus2(item) })
+                /* @__PURE__ */ jsx16("span", { children: "/plan" }),
+                /* @__PURE__ */ jsx16("span", { className: "text-[11px] uppercase tracking-[0.16em] text-stone-400", children: displayedCollaborationMode === "plan" ? "On" : "Off" })
               ] })
-            },
-            `${item.action}:${item.command}`
-          )),
-          availableToolboxItems.length === 0 ? /* @__PURE__ */ jsx16("p", { className: "px-3 py-2 text-sm text-stone-400", children: "No backend tools are available for this thread." }) : null
+            }
+          ) : null,
+          availableToolboxItems.map(
+            (item, index) => item.action === "goal" ? /* @__PURE__ */ jsxs15(
+              "div",
+              {
+                className: `mt-1 flex min-h-11 overflow-hidden rounded-xl border border-[var(--theme-border)] ${index === 0 && !planModeAvailable ? "mt-0" : ""}`,
+                title: item.description ?? item.label,
+                children: [
+                  /* @__PURE__ */ jsx16(
+                    "button",
+                    {
+                      type: "button",
+                      disabled: toolboxItemDisabled2(item),
+                      onClick: () => {
+                        onSetSlashPanelView("goals");
+                        void onViewGoals?.();
+                      },
+                      className: "min-w-0 flex-1 px-3 py-2.5 text-left text-sm text-[var(--theme-fg)] transition hover:bg-[var(--theme-hover)] focus-visible:z-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--theme-accent-border)] disabled:cursor-not-allowed disabled:opacity-45",
+                      "aria-label": "View goals",
+                      children: /* @__PURE__ */ jsx16("span", { children: item.command })
+                    }
+                  ),
+                  /* @__PURE__ */ jsx16(
+                    "button",
+                    {
+                      type: "button",
+                      disabled: toolboxItemDisabled2(item),
+                      onClick: (event) => onToolboxItemClick(item, event),
+                      className: "min-w-14 border-l border-[var(--theme-border)] px-3 text-xs font-semibold text-[var(--theme-fg-muted)] transition hover:bg-[var(--theme-hover)] hover:text-[var(--theme-fg)] focus-visible:z-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--theme-accent-border)] disabled:cursor-not-allowed disabled:opacity-45",
+                      "aria-label": "Open goal composer",
+                      children: "Open"
+                    }
+                  )
+                ]
+              },
+              `${item.action}:${item.command}`
+            ) : /* @__PURE__ */ jsx16(
+              "button",
+              {
+                type: "button",
+                disabled: toolboxItemDisabled2(item),
+                onClick: (event) => onToolboxItemClick(item, event),
+                className: `${toolboxItemClassName2(item)} ${index === 0 && !planModeAvailable ? "mt-0" : ""}`,
+                title: item.description ?? item.label,
+                children: /* @__PURE__ */ jsxs15("div", { className: "flex items-center justify-between gap-3", children: [
+                  /* @__PURE__ */ jsx16("span", { children: item.command }),
+                  /* @__PURE__ */ jsx16("span", { className: "text-[11px] uppercase tracking-[0.16em] text-stone-400", children: toolboxItemStatus2(item) })
+                ] })
+              },
+              `${item.action}:${item.command}`
+            )
+          ),
+          availableToolboxItems.length === 0 && !planModeAvailable ? /* @__PURE__ */ jsx16("p", { className: "px-3 py-2 text-sm text-stone-400", children: "No backend tools are available for this thread." }) : null
         ] }) : /* @__PURE__ */ jsx16("div", { className: "max-h-80 overflow-auto", children: slashPanelView === "goals" ? /* @__PURE__ */ jsx16(
           ComposerGoalsPanel,
           {
@@ -2909,6 +2905,7 @@ function ComposerSlashToolboxMenu({
           {
             busy,
             forkBusy,
+            forkFromTurnAvailable,
             composerMenuItemClassName: menuItemClassName2,
             onForkLatest,
             onSelectForkTurnPanel: () => {
@@ -4458,7 +4455,6 @@ function useComposerToolbarProps({
   panelButtonClassName,
   chipButtonClassName,
   inlineToggleClassName,
-  planToggleActiveClassName,
   sendButtonBaseClassName,
   slashPanelView,
   availableToolboxItems,
@@ -4473,7 +4469,6 @@ function useComposerToolbarProps({
   activeView,
   disabled,
   model,
-  agentLabel,
   modelOptions,
   modelContextTitle,
   contextUsage,
@@ -4559,6 +4554,10 @@ function useComposerToolbarProps({
     open: openMenu === "slash",
     slashPanelView,
     availableToolboxItems,
+    planModeAvailable: capabilities.planMode,
+    forkFromTurnAvailable: capabilities.forkFromTurn,
+    displayedCollaborationMode,
+    settingsBusy,
     busy,
     forkBusy,
     forkTurnOptionsState,
@@ -4600,6 +4599,7 @@ function useComposerToolbarProps({
       (current) => current === "slash" ? null : "slash"
     ),
     onToolboxItemClick,
+    onUpdateSettings,
     toolboxItemDisabled: (item) => toolboxItemDisabled(item, {
       settingsBusy,
       compactBusy,
@@ -4663,15 +4663,12 @@ function useComposerToolbarProps({
   const settingsToolbarProps = isShellView ? null : {
     openMenu,
     model,
-    agentLabel,
     modelOptions,
     modelContextTitle,
     contextUsage,
     reasoningEffort,
     supportedEfforts,
-    displayedCollaborationMode,
     sandboxMode,
-    planModeAvailable: capabilities.planMode,
     sandboxModeAvailable: capabilities.sandboxMode,
     settingsBusy,
     goalComposeMode,
@@ -4686,7 +4683,6 @@ function useComposerToolbarProps({
     effortControlTitle,
     inlineToggleClassName,
     menuItemClassName: menuItemClassName2,
-    planToggleActiveClassName,
     sendButtonBaseClassName,
     onSetOpenMenu,
     onUpdateSettings
@@ -4728,7 +4724,6 @@ function ThreadComposer({
   compactBusy = false,
   error,
   model = null,
-  agentLabel = null,
   reasoningEffort = null,
   fastMode = false,
   collaborationMode = "default",
@@ -4819,6 +4814,7 @@ function ThreadComposer({
       compact: capabilities?.turns.compact ?? false,
       goal: capabilities?.controls.goals ?? false,
       fork: capabilities?.branching.fork ?? false,
+      forkFromTurn: capabilities?.branching.resumeAt ?? false,
       skills: capabilities?.management.skills ?? false,
       mcp: capabilities?.management.mcpStatus ?? false,
       hooks: capabilities?.management.hooks ?? false,
@@ -5321,7 +5317,6 @@ function ThreadComposer({
     composerInlineToggleClassName,
     composerPanelButtonClassName,
     composerChipButtonClassName,
-    composerPlanToggleActiveClassName,
     composerSendButtonClassName,
     composerPromptRegionClassName,
     promptInputClassName,
@@ -5348,7 +5343,6 @@ function ThreadComposer({
     panelButtonClassName: composerPanelButtonClassName,
     chipButtonClassName: composerChipButtonClassName,
     inlineToggleClassName: composerInlineToggleClassName,
-    planToggleActiveClassName: composerPlanToggleActiveClassName,
     sendButtonBaseClassName: composerSendButtonClassName,
     slashPanelView,
     availableToolboxItems,
@@ -5363,7 +5357,6 @@ function ThreadComposer({
     activeView,
     disabled,
     model,
-    agentLabel,
     modelOptions,
     modelContextTitle,
     contextUsage,
@@ -5407,6 +5400,7 @@ function ThreadComposer({
       hookTrust: slashCapabilities.hookTrust,
       mcpConfigEditing: slashCapabilities.mcpConfigEditing,
       planMode: slashCapabilities.planMode,
+      forkFromTurn: slashCapabilities.forkFromTurn,
       sandboxMode: hideSandboxModeControl ? false : slashCapabilities.sandboxMode
     },
     shellControlState,
@@ -6289,6 +6283,7 @@ function ThreadWorkspaceLayout({
   currentThreadLabel = null,
   currentWorkspaceId = null,
   currentWorkspaceLabel = null,
+  harnessLabel = null,
   sessionLabel = null,
   usageLabel = null,
   threadActionsButton,
@@ -6417,7 +6412,8 @@ function ThreadWorkspaceLayout({
     });
   }, [currentThreadId, currentWorkspaceId, threads]);
   const newThreadHref = explicitNewThreadHref ?? getNewThreadHref?.(currentWorkspaceId);
-  const topbarRoomLabel = currentWorkspaceLabel ?? currentWorkspaceId ?? "all";
+  const topbarWorkspaceLabel = currentWorkspaceLabel ?? currentWorkspaceId ?? "All workspaces";
+  const topbarHarnessLabel = harnessLabel ?? "Agent";
   const topbarSessionLabel = sessionLabel ?? currentThreadLabel ?? currentThreadId ?? "default_session";
   const topbarUsageLabel = usageLabel ?? (status?.state ? `runtime ${status.state}` : "waiting for agent usage");
   const setThemeMode = onThemeModeChange ?? shellNav?.setThemeMode;
@@ -6944,8 +6940,9 @@ function ThreadWorkspaceLayout({
                             className: "thread-topbar-meta-row flex min-w-0 max-w-full items-center gap-1 text-left text-[11px] leading-none sm:text-xs",
                             title: "Session and usage",
                             children: [
-                              /* @__PURE__ */ jsx26("span", { className: "shrink-0", children: "Room" }),
-                              /* @__PURE__ */ jsx26("span", { className: "truncate font-mono", children: topbarRoomLabel })
+                              /* @__PURE__ */ jsx26("span", { className: "shrink-0 font-medium text-[var(--theme-fg-soft)]", children: topbarHarnessLabel }),
+                              /* @__PURE__ */ jsx26("span", { "aria-hidden": "true", className: "shrink-0", children: "\xB7" }),
+                              /* @__PURE__ */ jsx26("span", { className: "truncate", children: topbarWorkspaceLabel })
                             ]
                           }
                         ),
@@ -12046,6 +12043,8 @@ var ThreadTurnRow = memo5(function ThreadTurnRow2({
   liveOutput,
   forceActive = false,
   onToggleCollapse,
+  deferredItemsLoading = false,
+  deferredItemsError,
   onOpenExpandedText,
   onOpenCommandDetail,
   onOpenToolCallDetail,
@@ -12102,10 +12101,10 @@ var ThreadTurnRow = memo5(function ThreadTurnRow2({
       [groupKey]: !current[groupKey]
     }));
   }, []);
-  const historyNode = /* @__PURE__ */ jsx43(
+  const renderHistoryEntries = (entries) => /* @__PURE__ */ jsx43(
     TimelineHistoryEntries,
     {
-      entries: groupedItems,
+      entries,
       expandedGroups,
       onToggleGroupedItem: toggleGroupedItem,
       threadId,
@@ -12124,6 +12123,7 @@ var ThreadTurnRow = memo5(function ThreadTurnRow2({
       ...adapter ? { adapter } : {}
     }
   );
+  const historyNode = renderHistoryEntries(groupedItems);
   const liveHookPromptNode = visibleLiveHookPrompt ? /* @__PURE__ */ jsx43(
     HistoryItemRow,
     {
@@ -12172,7 +12172,7 @@ var ThreadTurnRow = memo5(function ThreadTurnRow2({
     () => formatWorkedDuration(turn.startedAt, mergedItems),
     [mergedItems, turn.startedAt]
   );
-  const hasCollapsedHiddenItems = collapsedSummary.hiddenEntries.length > 0;
+  const hasCollapsedHiddenItems = collapsedSummary.hiddenEntries.length > 0 || Boolean(turn.hasDeferredItems);
   const effectiveCollapsed = isCollapsed && hasCollapsedHiddenItems;
   const canToggleWorkedSummary = isTerminalTurnStatus(turn.status) && hasCollapsedHiddenItems;
   const expandedWorkedToggleNode = canToggleWorkedSummary && !effectiveCollapsed ? /* @__PURE__ */ jsxs37(
@@ -12180,7 +12180,7 @@ var ThreadTurnRow = memo5(function ThreadTurnRow2({
     {
       type: "button",
       className: "thread-graph-worked-summary group flex w-full items-center gap-2 py-2 text-left text-sm transition",
-      onClick: () => onToggleCollapse(turn.id, false),
+      onClick: () => onToggleCollapse(turn, false),
       "aria-label": `${workedLabel}. Collapse turn ${absoluteIndex}`,
       children: [
         /* @__PURE__ */ jsx43("span", { className: "thread-graph-worked-label shrink-0", children: workedLabel }),
@@ -12195,6 +12195,10 @@ var ThreadTurnRow = memo5(function ThreadTurnRow2({
       ]
     }
   ) : null;
+  const firstUserEntryIndex = groupedItems.findIndex(
+    (entry) => entry.kind === "item" && entry.item.kind === "userMessage"
+  );
+  const expandedLeadEntryCount = Math.max(0, firstUserEntryIndex + 1);
   const collapsedSummaryNode = isTerminalTurnStatus(turn.status) && hasCollapsedHiddenItems ? /* @__PURE__ */ jsxs37("div", { className: "thread-graph-turn-collapsed-summary space-y-2", children: [
     collapsedSummary.users.map((item) => /* @__PURE__ */ jsx43(
       GraphChatCompactMessageItem,
@@ -12214,10 +12218,11 @@ var ThreadTurnRow = memo5(function ThreadTurnRow2({
       {
         type: "button",
         className: "thread-graph-worked-summary group flex w-full items-center gap-2 py-2 text-left text-sm transition",
-        onClick: () => onToggleCollapse(turn.id, true),
+        onClick: () => onToggleCollapse(turn, true),
+        disabled: deferredItemsLoading,
         "aria-label": `${workedLabel}. Expand turn ${absoluteIndex}`,
         children: [
-          /* @__PURE__ */ jsx43("span", { className: "thread-graph-worked-label shrink-0", children: workedLabel }),
+          /* @__PURE__ */ jsx43("span", { className: "thread-graph-worked-label shrink-0", children: deferredItemsLoading ? "Loading complete history..." : deferredItemsError ? "History unavailable, retry" : workedLabel }),
           /* @__PURE__ */ jsx43(ChevronRight4, { className: "h-4 w-4 shrink-0 transition group-hover:translate-x-0.5" }),
           /* @__PURE__ */ jsx43(
             "span",
@@ -12248,10 +12253,15 @@ var ThreadTurnRow = memo5(function ThreadTurnRow2({
     GraphChatTurnBody,
     {
       footer: footerNode,
-      history: /* @__PURE__ */ jsxs37(Fragment12, { children: [
+      history: expandedWorkedToggleNode ? /* @__PURE__ */ jsxs37(Fragment12, { children: [
+        renderHistoryEntries(
+          groupedItems.slice(0, expandedLeadEntryCount)
+        ),
         expandedWorkedToggleNode,
-        historyNode
-      ] }),
+        renderHistoryEntries(
+          groupedItems.slice(expandedLeadEntryCount)
+        )
+      ] }) : historyNode,
       liveHookPrompt: liveHookPromptNode,
       liveOutput: liveOutputNode,
       livePlan: displayedLivePlan
@@ -13038,6 +13048,7 @@ function ThreadTimelineComponent({
   optimisticSteers = [],
   optimisticTurn = null,
   onLoadHistoryItemDetail,
+  onLoadTurnDetail,
   onOpenThread,
   onSelectArtifact,
   onSelectHistoryItemDetail,
@@ -13055,6 +13066,12 @@ function ThreadTimelineComponent({
   const lastPreviousTurnTargetIdRef = useRef12(null);
   const lastNextTurnTargetIdRef = useRef12(null);
   const loadHistoryItemDetail = adapter?.onLoadHistoryItemDetail ?? onLoadHistoryItemDetail;
+  const loadTurnDetail = adapter?.onLoadTurnDetail ?? onLoadTurnDetail;
+  const [loadedTurnDetails, setLoadedTurnDetails] = useState26({});
+  const [loadingTurnDetailIds, setLoadingTurnDetailIds] = useState26(
+    () => /* @__PURE__ */ new Set()
+  );
+  const [turnDetailErrors, setTurnDetailErrors] = useState26({});
   const openLinkedThread = adapter?.onOpenLinkedThread;
   const {
     expandedText,
@@ -13112,19 +13129,57 @@ function ThreadTimelineComponent({
       bottomSpacer
     ]
   });
-  const handleToggleCollapse = useCallback14((turnId, currentCollapsed) => {
-    setCollapsedTurnOverrides((current) => ({
-      ...current,
-      [turnId]: !currentCollapsed
-    }));
-  }, []);
+  useEffect17(() => {
+    setCollapsedTurnOverrides({});
+    setLoadedTurnDetails({});
+    setLoadingTurnDetailIds(/* @__PURE__ */ new Set());
+    setTurnDetailErrors({});
+  }, [threadId]);
+  const handleToggleCollapse = useCallback14((turn, currentCollapsed) => {
+    if (!currentCollapsed || !turn.hasDeferredItems || !loadTurnDetail || loadedTurnDetails[turn.id]) {
+      setCollapsedTurnOverrides((current) => ({
+        ...current,
+        [turn.id]: !currentCollapsed
+      }));
+      return;
+    }
+    if (loadingTurnDetailIds.has(turn.id)) {
+      return;
+    }
+    setLoadingTurnDetailIds((current) => new Set(current).add(turn.id));
+    setTurnDetailErrors((current) => ({ ...current, [turn.id]: void 0 }));
+    void Promise.resolve(loadTurnDetail(turn.id)).then((loadedTurn) => {
+      if (loadedTurn.id !== turn.id) {
+        throw new Error("Loaded turn detail did not match the requested turn.");
+      }
+      setLoadedTurnDetails((current) => ({
+        ...current,
+        [turn.id]: loadedTurn
+      }));
+      setCollapsedTurnOverrides((current) => ({
+        ...current,
+        [turn.id]: false
+      }));
+    }).catch((caught) => {
+      setTurnDetailErrors((current) => ({
+        ...current,
+        [turn.id]: caught instanceof Error ? caught.message : "Unable to load complete turn history."
+      }));
+    }).finally(() => {
+      setLoadingTurnDetailIds((current) => {
+        const next = new Set(current);
+        next.delete(turn.id);
+        return next;
+      });
+    });
+  }, [loadTurnDetail, loadedTurnDetails, loadingTurnDetailIds]);
   const collapsedStateForTurn = useCallback14((turn, input) => {
     const override = collapsedTurnOverrides[turn.id];
     if (override !== void 0) {
       return override;
     }
     return Boolean(
-      effectiveAutoCollapseCompletedTurns && isTerminalTurnStatus2(turn.status) && !input.forceActive && !input.hasLiveActivity
+      turn.hasDeferredItems || effectiveAutoCollapseCompletedTurns && isTerminalTurnStatus2(turn.status) && !input.forceActive && !input.hasLiveActivity
     );
   }, [collapsedTurnOverrides, effectiveAutoCollapseCompletedTurns]);
   const visibleTurns = serverManagedHistory ? turns : turns.slice(startIndex);
@@ -13323,7 +13378,17 @@ function ThreadTimelineComponent({
                 }
               ) : null,
               (() => {
-                const displayTurn = mergeOptimisticTurnItems(turn, optimisticTurn);
+                const loadedTurn = loadedTurnDetails[turn.id];
+                const hydratedTurn = loadedTurn ? {
+                  ...turn,
+                  ...loadedTurn,
+                  status: turn.status,
+                  tokenUsage: turn.tokenUsage ?? loadedTurn.tokenUsage
+                } : turn;
+                const displayTurn = mergeOptimisticTurnItems(
+                  hydratedTurn,
+                  optimisticTurn
+                );
                 const rowLivePlan = livePlan?.turnId === turn.id ? livePlan : null;
                 const rowLiveItems = liveItemsTargetTurnId === turn.id ? liveItems?.items ?? null : null;
                 const rowLiveOutput = liveOutputTargetTurnId === turn.id ? liveOutput : "";
@@ -13352,6 +13417,8 @@ function ThreadTimelineComponent({
                     liveOutput: rowLiveOutput,
                     forceActive: rowForceActive,
                     onToggleCollapse: handleToggleCollapse,
+                    deferredItemsLoading: loadingTurnDetailIds.has(turn.id),
+                    deferredItemsError: turnDetailErrors[turn.id],
                     onOpenExpandedText: handleOpenExpandedText,
                     onOpenCommandDetail: handleOpenCommandDetail,
                     onOpenToolCallDetail: handleOpenToolCallDetail,
@@ -17507,6 +17574,7 @@ function ThreadDetailSurface({
   const {
     getImageAssetUrl,
     loadHistoryItemDetail,
+    loadTurnDetail,
     openWorkspaceFile,
     openThread,
     cancelPendingSteer
@@ -17519,12 +17587,14 @@ function ThreadDetailSurface({
       onOpenLinkedThread: openThread,
       ...openWorkspaceFile ? { onOpenWorkspaceFile: openWorkspaceFile } : {},
       ...loadHistoryItemDetail ? { onLoadHistoryItemDetail: loadHistoryItemDetail } : {},
+      ...loadTurnDetail ? { onLoadTurnDetail: loadTurnDetail } : {},
       ...cancelPendingSteer ? { cancelPendingSteer } : {}
     }),
     [
       cancelPendingSteer,
       getImageAssetUrl,
       loadHistoryItemDetail,
+      loadTurnDetail,
       openWorkspaceFile,
       openThread
     ]
@@ -17638,6 +17708,7 @@ function ThreadDetailSurface({
       currentThreadLabel: detail?.thread.title,
       currentWorkspaceId: currentWorkspaceId ?? detail?.thread.workspaceId,
       currentWorkspaceLabel: currentWorkspaceLabel ?? detail?.workspace.label,
+      harnessLabel: composerProps?.agentLabel,
       sessionLabel: detail?.thread.providerSessionId ?? detail?.thread.id,
       usageLabel: topbarUsageLabel,
       threadActionsButton,

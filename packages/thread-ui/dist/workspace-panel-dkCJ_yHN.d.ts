@@ -1,7 +1,7 @@
 import * as react from 'react';
 import { ReactNode } from 'react';
 import * as _remote_codex_shared from '@remote-codex/shared';
-import { PromptAttachmentManifestEntryDto, ShellEventEnvelope, ThreadDto, UpdateThreadSettingsInput, ThreadHistoryItemDetailDto, ThreadShellStateDto, ShellSessionDto, UpdateShellInput, PluginDto, ImportPluginInput, ThreadArtifactDto, ThreadDetailDto, AgentRuntimeStatusDto } from '@remote-codex/shared';
+import { PromptAttachmentManifestEntryDto, ShellEventEnvelope, ThreadDto, UpdateThreadSettingsInput, ThreadHistoryItemDetailDto, ThreadTurnDto, ThreadShellStateDto, ShellSessionDto, UpdateShellInput, PluginDto, ImportPluginInput, ThreadArtifactDto, ThreadDetailDto, AgentRuntimeStatusDto } from '@remote-codex/shared';
 import { A as ArtifactRenderContext, I as InlineCodeRenderContext, T as ThreadPanelContribution, F as FrontendPluginModule } from './plugin-types-lcO37_1W.js';
 
 interface PromptAttachmentUpload extends PromptAttachmentManifestEntryDto {
@@ -39,6 +39,7 @@ interface ThreadTimelineAdapter {
     }) => void;
     cancelPendingSteer?: (threadId: string, pendingSteerId: string) => Promise<void> | void;
     onLoadHistoryItemDetail?: (itemId: string) => Promise<ThreadHistoryItemDetailDto> | ThreadHistoryItemDetailDto;
+    onLoadTurnDetail?: (turnId: string) => Promise<ThreadTurnDto> | ThreadTurnDto;
 }
 interface ShellSocketHandlers {
     onConnected?: (event: unknown) => void;
@@ -165,6 +166,7 @@ interface ThreadDetailUiAdapter {
     compact?: () => Promise<void> | void;
     updateSettings?: (input: UpdateThreadSettingsInput) => Promise<void> | void;
     loadHistoryItemDetail?: (itemId: string) => Promise<ThreadHistoryItemDetailDto> | ThreadHistoryItemDetailDto;
+    loadTurnDetail?: (turnId: string) => Promise<ThreadTurnDto> | ThreadTurnDto;
     getImageAssetUrl?: (path: string) => string;
     openWorkspaceFile?: (input: {
         path: string;
