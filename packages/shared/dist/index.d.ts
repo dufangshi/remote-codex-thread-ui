@@ -438,7 +438,7 @@ interface ThreadActionQuestionDto {
 }
 interface ThreadActionRequestDto {
     id: string;
-    kind: 'requestUserInput' | 'planDecision';
+    kind: 'requestUserInput' | 'permissionRequest' | 'planDecision';
     title: string;
     description: string | null;
     turnId: string | null;

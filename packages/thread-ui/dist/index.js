@@ -9125,7 +9125,8 @@ function PendingRequestCard({
   const [selectedPlanDecision, setSelectedPlanDecision] = useState19(null);
   const primaryQuestion = request.questions[0] ?? null;
   const OTHER_SENTINEL = "__other__";
-  const cardTitle = request.kind === "planDecision" ? "Plan" : request.kind === "requestUserInput" ? "Answer Required" : request.title;
+  const isPermissionRequest = request.kind === "permissionRequest";
+  const cardTitle = request.kind === "planDecision" ? "Plan" : isPermissionRequest ? "Permission required" : request.kind === "requestUserInput" ? "Answer Required" : request.title;
   function getOptionPresentation(label) {
     const recommended = /\s*\(recommended\)\s*$/i.test(label);
     return {
@@ -9196,16 +9197,19 @@ function PendingRequestCard({
         children: [
           /* @__PURE__ */ jsx34("p", { className: "timeline-meta-text text-xs uppercase tracking-[0.2em]", children: question.header }),
           /* @__PURE__ */ jsx34("p", { className: "timeline-primary-text mt-1 text-[13px] leading-5 sm:text-sm", children: question.question }),
-          request.kind === "planDecision" && question.options && question.options.length > 0 ? /* @__PURE__ */ jsx34("div", { className: "mt-3 flex flex-wrap gap-2", children: question.options.map((option, index) => {
+          (request.kind === "planDecision" || isPermissionRequest) && question.options && question.options.length > 0 ? /* @__PURE__ */ jsx34("div", { className: "mt-3 flex flex-wrap gap-2", children: question.options.map((option, index) => {
             const presentation = getOptionPresentation(option.label);
             const isImplement = presentation.displayLabel.toLowerCase() === "implement";
+            const isReject = /reject|cancel/i.test(
+              `${option.label} ${option.description}`
+            );
             return /* @__PURE__ */ jsxs30(
               "button",
               {
                 type: "button",
                 disabled: busy,
                 onClick: () => respondWithSingleAnswer(option.label),
-                className: `relative rounded-2xl border px-2.5 py-1.5 pr-6 text-[12px] leading-4 transition sm:text-[13px] ${index === 0 ? "ui-action-info" : "border-stone-700 text-stone-200 hover:bg-stone-800"} disabled:cursor-not-allowed disabled:opacity-60`,
+                className: `relative rounded-2xl border px-2.5 py-1.5 pr-6 text-[12px] leading-4 transition sm:text-[13px] ${isReject ? "border-stone-700 text-stone-300 hover:bg-stone-800" : index === 0 ? "ui-action-info" : "border-stone-700 text-stone-200 hover:bg-stone-800"} disabled:cursor-not-allowed disabled:opacity-60`,
                 title: option.description,
                 children: [
                   presentation.recommended ? /* @__PURE__ */ jsx34(
@@ -9216,7 +9220,7 @@ function PendingRequestCard({
                       children: "\u2726"
                     }
                   ) : null,
-                  busy && selectedPlanDecision === option.label ? isImplement ? "Starting..." : "Saving..." : presentation.displayLabel
+                  busy && selectedPlanDecision === option.label ? isPermissionRequest ? "Submitting..." : isImplement ? "Starting..." : "Saving..." : presentation.displayLabel
                 ]
               },
               option.label
@@ -9305,7 +9309,7 @@ function PendingRequestCard({
       },
       question.id
     )) }),
-    request.kind !== "planDecision" && /* @__PURE__ */ jsx34("div", { className: "mt-3 flex justify-end", children: /* @__PURE__ */ jsx34(
+    request.kind !== "planDecision" && !isPermissionRequest && /* @__PURE__ */ jsx34("div", { className: "mt-3 flex justify-end", children: /* @__PURE__ */ jsx34(
       "button",
       {
         type: "button",

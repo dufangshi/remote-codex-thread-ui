@@ -31,9 +31,12 @@ export function PendingRequestCard({
   >(null);
   const primaryQuestion = request.questions[0] ?? null;
   const OTHER_SENTINEL = '__other__';
+  const isPermissionRequest = request.kind === 'permissionRequest';
   const cardTitle =
     request.kind === 'planDecision'
       ? 'Plan'
+      : isPermissionRequest
+        ? 'Permission required'
       : request.kind === 'requestUserInput'
         ? 'Answer Required'
         : request.title;
@@ -144,7 +147,7 @@ export function PendingRequestCard({
             <p className="timeline-primary-text mt-1 text-[13px] leading-5 sm:text-sm">
               {question.question}
             </p>
-            {request.kind === 'planDecision' &&
+            {(request.kind === 'planDecision' || isPermissionRequest) &&
             question.options &&
             question.options.length > 0 ? (
               <div className="mt-3 flex flex-wrap gap-2">
@@ -152,6 +155,9 @@ export function PendingRequestCard({
                   const presentation = getOptionPresentation(option.label);
                   const isImplement =
                     presentation.displayLabel.toLowerCase() === 'implement';
+                  const isReject = /reject|cancel/i.test(
+                    `${option.label} ${option.description}`,
+                  );
                   return (
                     <button
                       key={option.label}
@@ -159,7 +165,9 @@ export function PendingRequestCard({
                       disabled={busy}
                       onClick={() => respondWithSingleAnswer(option.label)}
                       className={`relative rounded-2xl border px-2.5 py-1.5 pr-6 text-[12px] leading-4 transition sm:text-[13px] ${
-                        index === 0
+                        isReject
+                          ? 'border-stone-700 text-stone-300 hover:bg-stone-800'
+                          : index === 0
                           ? 'ui-action-info'
                           : 'border-stone-700 text-stone-200 hover:bg-stone-800'
                       } disabled:cursor-not-allowed disabled:opacity-60`}
@@ -174,7 +182,9 @@ export function PendingRequestCard({
                         </span>
                       ) : null}
                       {busy && selectedPlanDecision === option.label
-                        ? isImplement
+                        ? isPermissionRequest
+                          ? 'Submitting...'
+                          : isImplement
                           ? 'Starting...'
                           : 'Saving...'
                         : presentation.displayLabel}
@@ -294,7 +304,7 @@ export function PendingRequestCard({
           </div>
         ))}
       </div>
-      {request.kind !== 'planDecision' && (
+      {request.kind !== 'planDecision' && !isPermissionRequest && (
         <div className="mt-3 flex justify-end">
           <button
             type="button"
