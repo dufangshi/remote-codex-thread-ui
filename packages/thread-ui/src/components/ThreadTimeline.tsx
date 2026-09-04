@@ -89,6 +89,9 @@ export interface ThreadTimelineProps {
   onLoadHistoryItemDetail?: (
     itemId: string,
   ) => Promise<ThreadHistoryItemDetailDto> | ThreadHistoryItemDetailDto;
+  onLoadTurnDetail?: (
+    turnId: string,
+  ) => Promise<ThreadTurnDto> | ThreadTurnDto;
   onOpenThread?: (threadId: string) => void;
   onSelectArtifact?: (input: {
     item: ThreadHistoryItemDto & { kind: 'artifact' };
@@ -172,6 +175,7 @@ function ThreadTimelineComponent({
   optimisticSteers = [],
   optimisticTurn = null,
   onLoadHistoryItemDetail,
+  onLoadTurnDetail,
   onOpenThread,
   onSelectArtifact,
   onSelectHistoryItemDetail,
@@ -193,6 +197,16 @@ function ThreadTimelineComponent({
   const lastNextTurnTargetIdRef = useRef<string | null>(null);
   const loadHistoryItemDetail =
     adapter?.onLoadHistoryItemDetail ?? onLoadHistoryItemDetail;
+  const loadTurnDetail = adapter?.onLoadTurnDetail ?? onLoadTurnDetail;
+  const [loadedTurnDetails, setLoadedTurnDetails] = useState<
+    Record<string, ThreadTurnDto>
+  >({});
+  const [loadingTurnDetailIds, setLoadingTurnDetailIds] = useState<Set<string>>(
+    () => new Set(),
+  );
+  const [turnDetailErrors, setTurnDetailErrors] = useState<
+    Record<string, string | undefined>
+  >({});
   const openLinkedThread = adapter?.onOpenLinkedThread;
   const {
     expandedText,
@@ -251,12 +265,67 @@ function ThreadTimelineComponent({
     ],
   });
 
-  const handleToggleCollapse = useCallback((turnId: string, currentCollapsed: boolean) => {
-    setCollapsedTurnOverrides((current) => ({
-      ...current,
-      [turnId]: !currentCollapsed,
-    }));
-  }, []);
+  useEffect(() => {
+    setCollapsedTurnOverrides({});
+    setLoadedTurnDetails({});
+    setLoadingTurnDetailIds(new Set());
+    setTurnDetailErrors({});
+  }, [threadId]);
+
+  const handleToggleCollapse = useCallback((
+    turn: TimelineTurn,
+    currentCollapsed: boolean,
+  ) => {
+    if (
+      !currentCollapsed ||
+      !turn.hasDeferredItems ||
+      !loadTurnDetail ||
+      loadedTurnDetails[turn.id]
+    ) {
+      setCollapsedTurnOverrides((current) => ({
+        ...current,
+        [turn.id]: !currentCollapsed,
+      }));
+      return;
+    }
+
+    if (loadingTurnDetailIds.has(turn.id)) {
+      return;
+    }
+
+    setLoadingTurnDetailIds((current) => new Set(current).add(turn.id));
+    setTurnDetailErrors((current) => ({ ...current, [turn.id]: undefined }));
+    void Promise.resolve(loadTurnDetail(turn.id))
+      .then((loadedTurn) => {
+        if (loadedTurn.id !== turn.id) {
+          throw new Error('Loaded turn detail did not match the requested turn.');
+        }
+        setLoadedTurnDetails((current) => ({
+          ...current,
+          [turn.id]: loadedTurn,
+        }));
+        setCollapsedTurnOverrides((current) => ({
+          ...current,
+          [turn.id]: false,
+        }));
+      })
+      .catch((caught: unknown) => {
+        setTurnDetailErrors((current) => ({
+          ...current,
+          [turn.id]:
+            caught instanceof Error
+              ? caught.message
+              : 'Unable to load complete turn history.',
+        }));
+      })
+      .finally(() => {
+        setLoadingTurnDetailIds((current) => {
+          const next = new Set(current);
+          next.delete(turn.id);
+          return next;
+        });
+      });
+  }, [loadTurnDetail, loadedTurnDetails, loadingTurnDetailIds]);
 
   const collapsedStateForTurn = useCallback((
     turn: TimelineTurn,
@@ -271,10 +340,11 @@ function ThreadTimelineComponent({
     }
 
     return Boolean(
-      effectiveAutoCollapseCompletedTurns &&
-      isTerminalTurnStatus(turn.status) &&
-      !input.forceActive &&
-      !input.hasLiveActivity,
+      turn.hasDeferredItems ||
+        (effectiveAutoCollapseCompletedTurns &&
+          isTerminalTurnStatus(turn.status) &&
+          !input.forceActive &&
+          !input.hasLiveActivity),
     );
   }, [collapsedTurnOverrides, effectiveAutoCollapseCompletedTurns]);
 
@@ -547,7 +617,19 @@ function ThreadTimelineComponent({
                     />
                   ) : null}
                   {(() => {
-                    const displayTurn = mergeOptimisticTurnItems(turn, optimisticTurn);
+                    const loadedTurn = loadedTurnDetails[turn.id];
+                    const hydratedTurn = loadedTurn
+                      ? {
+                          ...turn,
+                          ...loadedTurn,
+                          status: turn.status,
+                          tokenUsage: turn.tokenUsage ?? loadedTurn.tokenUsage,
+                        }
+                      : turn;
+                    const displayTurn = mergeOptimisticTurnItems(
+                      hydratedTurn,
+                      optimisticTurn,
+                    );
                     const rowLivePlan = livePlan?.turnId === turn.id ? livePlan : null;
                     const rowLiveItems =
                       liveItemsTargetTurnId === turn.id ? liveItems?.items ?? null : null;
@@ -586,6 +668,8 @@ function ThreadTimelineComponent({
                     liveOutput={rowLiveOutput}
                     forceActive={rowForceActive}
                     onToggleCollapse={handleToggleCollapse}
+                    deferredItemsLoading={loadingTurnDetailIds.has(turn.id)}
+                    deferredItemsError={turnDetailErrors[turn.id]}
                     onOpenExpandedText={handleOpenExpandedText}
                     onOpenCommandDetail={handleOpenCommandDetail}
                     onOpenToolCallDetail={handleOpenToolCallDetail}

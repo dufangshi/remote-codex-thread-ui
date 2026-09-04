@@ -50,6 +50,109 @@ function completedTurn(items: ThreadTurnDto['items']): ThreadTurnDto {
 }
 
 describe('ThreadTimeline', () => {
+  it('lazy-loads a complete collapsed turn and keeps Worked below the user message', async () => {
+    let resolveTurn!: (turn: ThreadTurnDto) => void;
+    const onLoadTurnDetail = vi.fn(
+      () =>
+        new Promise<ThreadTurnDto>((resolve) => {
+          resolveTurn = resolve;
+        }),
+    );
+    const summaryTurn: ThreadTurnDto = {
+      ...completedTurn([
+        {
+          id: 'user-1',
+          kind: 'userMessage',
+          text: 'Keep the original prompt.',
+          createdAt: '2026-07-03T20:10:59.000Z',
+        },
+        {
+          id: 'agent-final',
+          kind: 'agentMessage',
+          text: 'Final answer.',
+          createdAt: '2026-07-03T21:19:00.000Z',
+        },
+      ]),
+      hasDeferredItems: true,
+      deferredItemCount: 3,
+    };
+    const element = render(
+      <ThreadTimeline
+        autoCollapseCompletedTurns={false}
+        liveOutput=""
+        onLoadTurnDetail={onLoadTurnDetail}
+        turns={[summaryTurn]}
+      />,
+    );
+
+    expect(element.textContent).toContain('Keep the original prompt.');
+    expect(element.textContent).toContain('Final answer.');
+    expect(element.textContent).not.toContain('Intermediate checkpoint.');
+    const initialText = element.textContent ?? '';
+    expect(initialText.indexOf('Keep the original prompt.')).toBeLessThan(
+      initialText.indexOf('Worked for'),
+    );
+
+    const expandButton = Array.from(element.querySelectorAll('button')).find(
+      (button) => button.getAttribute('aria-label')?.includes('Expand turn 1'),
+    );
+    flushSync(() => expandButton?.click());
+    expect(onLoadTurnDetail).toHaveBeenCalledWith('turn-1');
+    expect(element.textContent).toContain('Loading complete history...');
+
+    resolveTurn({
+      ...summaryTurn,
+      hasDeferredItems: false,
+      deferredItemCount: 0,
+      items: [
+        summaryTurn.items[0]!,
+        {
+          id: 'agent-progress',
+          kind: 'agentMessage',
+          text: 'Intermediate checkpoint.',
+          createdAt: '2026-07-03T20:20:00.000Z',
+        },
+        {
+          id: 'reasoning-1',
+          kind: 'reasoning',
+          text: 'Reasoning retained after hydration.',
+          createdAt: '2026-07-03T20:21:00.000Z',
+        },
+        {
+          id: 'command-1',
+          kind: 'commandExecution',
+          text: 'pnpm test',
+          status: 'completed',
+          createdAt: '2026-07-03T20:22:00.000Z',
+        },
+        summaryTurn.items[1]!,
+      ],
+    });
+
+    await vi.waitFor(() => {
+      expect(element.textContent).toContain('Intermediate checkpoint.');
+    });
+    const expandedText = element.textContent ?? '';
+    expect(expandedText.indexOf('Keep the original prompt.')).toBeLessThan(
+      expandedText.indexOf('Worked for'),
+    );
+    expect(expandedText.indexOf('Worked for')).toBeLessThan(
+      expandedText.indexOf('Intermediate checkpoint.'),
+    );
+    expect(expandedText).toContain('Final answer.');
+
+    const collapseButton = Array.from(element.querySelectorAll('button')).find(
+      (button) => button.getAttribute('aria-label')?.includes('Collapse turn 1'),
+    );
+    flushSync(() => collapseButton?.click());
+    const cachedExpandButton = Array.from(element.querySelectorAll('button')).find(
+      (button) => button.getAttribute('aria-label')?.includes('Expand turn 1'),
+    );
+    flushSync(() => cachedExpandButton?.click());
+    expect(onLoadTurnDetail).toHaveBeenCalledTimes(1);
+    expect(element.textContent).toContain('Intermediate checkpoint.');
+  });
+
   it('shows Worked when reasoning is the collapsed middle agent bubble', () => {
     const element = render(
       <ThreadTimeline

@@ -223,6 +223,7 @@ describe('ThreadWorkspaceLayout', () => {
       <ThreadWorkspaceLayout
         threads={[]}
         currentWorkspaceLabel="el-agente-cloud-infrastructure"
+        harnessLabel="Grok Build"
         sessionLabel="session-1"
         usageLabel={usage}
         status={{
@@ -236,6 +237,14 @@ describe('ThreadWorkspaceLayout', () => {
         <div>Chat</div>
       </ThreadWorkspaceLayout>,
     );
+
+    const topbarMetadata = element.querySelector<HTMLButtonElement>(
+      '[title="Session and usage"]',
+    );
+    expect(topbarMetadata?.textContent).toContain(
+      'Grok Build·el-agente-cloud-infrastructure',
+    );
+    expect(topbarMetadata?.textContent).not.toContain('Room');
 
     flushSync(() => {
       element

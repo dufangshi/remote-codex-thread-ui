@@ -387,7 +387,9 @@ interface ThreadTurnRowProps {
   liveActivityAt?: string | null;
   liveOutput: string;
   forceActive?: boolean;
-  onToggleCollapse: (turnId: string, currentCollapsed: boolean) => void;
+  onToggleCollapse: (turn: TimelineTurn, currentCollapsed: boolean) => void;
+  deferredItemsLoading?: boolean;
+  deferredItemsError?: string | undefined;
   onOpenExpandedText: OpenExpandedTextHandler;
   onOpenCommandDetail: OpenCommandDetailHandler;
   onOpenToolCallDetail: OpenToolCallDetailHandler;
@@ -602,6 +604,8 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
   liveOutput,
   forceActive = false,
   onToggleCollapse,
+  deferredItemsLoading = false,
+  deferredItemsError,
   onOpenExpandedText,
   onOpenCommandDetail,
   onOpenToolCallDetail,
@@ -671,9 +675,9 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
     }));
   }, []);
 
-  const historyNode = (
+  const renderHistoryEntries = (entries: TimelineHistoryEntry[]) => (
     <TimelineHistoryEntries
-      entries={groupedItems}
+      entries={entries}
       expandedGroups={expandedGroups}
       onToggleGroupedItem={toggleGroupedItem}
       threadId={threadId}
@@ -692,6 +696,7 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
       {...(adapter ? { adapter } : {})}
     />
   );
+  const historyNode = renderHistoryEntries(groupedItems);
   const liveHookPromptNode = visibleLiveHookPrompt ? (
     <HistoryItemRow
       threadId={threadId}
@@ -746,7 +751,8 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
     () => formatWorkedDuration(turn.startedAt, mergedItems),
     [mergedItems, turn.startedAt],
   );
-  const hasCollapsedHiddenItems = collapsedSummary.hiddenEntries.length > 0;
+  const hasCollapsedHiddenItems =
+    collapsedSummary.hiddenEntries.length > 0 || Boolean(turn.hasDeferredItems);
   const effectiveCollapsed = isCollapsed && hasCollapsedHiddenItems;
   const canToggleWorkedSummary =
     isTerminalTurnStatus(turn.status) && hasCollapsedHiddenItems;
@@ -755,7 +761,7 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
       <button
         type="button"
         className="thread-graph-worked-summary group flex w-full items-center gap-2 py-2 text-left text-sm transition"
-        onClick={() => onToggleCollapse(turn.id, false)}
+        onClick={() => onToggleCollapse(turn, false)}
         aria-label={`${workedLabel}. Collapse turn ${absoluteIndex}`}
       >
         <span className="thread-graph-worked-label shrink-0">
@@ -768,6 +774,11 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
         />
       </button>
     ) : null;
+  const firstUserEntryIndex = groupedItems.findIndex(
+    (entry) =>
+      entry.kind === 'item' && entry.item.kind === 'userMessage',
+  );
+  const expandedLeadEntryCount = Math.max(0, firstUserEntryIndex + 1);
   const collapsedSummaryNode =
     isTerminalTurnStatus(turn.status) && hasCollapsedHiddenItems ? (
       <div className="thread-graph-turn-collapsed-summary space-y-2">
@@ -794,11 +805,16 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
         <button
           type="button"
           className="thread-graph-worked-summary group flex w-full items-center gap-2 py-2 text-left text-sm transition"
-          onClick={() => onToggleCollapse(turn.id, true)}
+          onClick={() => onToggleCollapse(turn, true)}
+          disabled={deferredItemsLoading}
           aria-label={`${workedLabel}. Expand turn ${absoluteIndex}`}
         >
           <span className="thread-graph-worked-label shrink-0">
-            {workedLabel}
+            {deferredItemsLoading
+              ? 'Loading complete history...'
+              : deferredItemsError
+                ? 'History unavailable, retry'
+                : workedLabel}
           </span>
           <ChevronRight className="h-4 w-4 shrink-0 transition group-hover:translate-x-0.5" />
           <span
@@ -833,10 +849,19 @@ export const ThreadTurnRow = memo(function ThreadTurnRow({
     <GraphChatTurnBody
       footer={footerNode}
       history={
-        <>
-          {expandedWorkedToggleNode}
-          {historyNode}
-        </>
+        expandedWorkedToggleNode ? (
+          <>
+            {renderHistoryEntries(
+              groupedItems.slice(0, expandedLeadEntryCount),
+            )}
+            {expandedWorkedToggleNode}
+            {renderHistoryEntries(
+              groupedItems.slice(expandedLeadEntryCount),
+            )}
+          </>
+        ) : (
+          historyNode
+        )
       }
       liveHookPrompt={liveHookPromptNode}
       liveOutput={liveOutputNode}

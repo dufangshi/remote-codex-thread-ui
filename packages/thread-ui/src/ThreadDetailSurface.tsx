@@ -293,6 +293,7 @@ export function ThreadDetailSurface({
   const {
     getImageAssetUrl,
     loadHistoryItemDetail,
+    loadTurnDetail,
     openWorkspaceFile,
     openThread,
     cancelPendingSteer,
@@ -310,12 +311,14 @@ export function ThreadDetailSurface({
       ...(loadHistoryItemDetail
         ? { onLoadHistoryItemDetail: loadHistoryItemDetail }
         : {}),
+      ...(loadTurnDetail ? { onLoadTurnDetail: loadTurnDetail } : {}),
       ...(cancelPendingSteer ? { cancelPendingSteer } : {}),
     }),
     [
       cancelPendingSteer,
       getImageAssetUrl,
       loadHistoryItemDetail,
+      loadTurnDetail,
       openWorkspaceFile,
       openThread,
     ],
@@ -484,6 +487,7 @@ export function ThreadDetailSurface({
       currentThreadLabel={detail?.thread.title}
       currentWorkspaceId={currentWorkspaceId ?? detail?.thread.workspaceId}
       currentWorkspaceLabel={currentWorkspaceLabel ?? detail?.workspace.label}
+      harnessLabel={composerProps?.agentLabel}
       sessionLabel={detail?.thread.providerSessionId ?? detail?.thread.id}
       usageLabel={topbarUsageLabel}
       threadActionsButton={threadActionsButton}

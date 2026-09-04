@@ -84,6 +84,7 @@ interface ThreadWorkspaceLayoutProps {
   currentThreadLabel?: string | null | undefined;
   currentWorkspaceId?: string | null | undefined;
   currentWorkspaceLabel?: string | null | undefined;
+  harnessLabel?: string | null | undefined;
   sessionLabel?: string | null | undefined;
   usageLabel?: string | null | undefined;
   threadActionsButton?: ReactNode;
@@ -436,6 +437,7 @@ export function ThreadWorkspaceLayout({
   currentThreadLabel = null,
   currentWorkspaceId = null,
   currentWorkspaceLabel = null,
+  harnessLabel = null,
   sessionLabel = null,
   usageLabel = null,
   threadActionsButton,
@@ -596,7 +598,9 @@ export function ThreadWorkspaceLayout({
 
   const newThreadHref =
     explicitNewThreadHref ?? getNewThreadHref?.(currentWorkspaceId);
-  const topbarRoomLabel = currentWorkspaceLabel ?? currentWorkspaceId ?? "all";
+  const topbarWorkspaceLabel =
+    currentWorkspaceLabel ?? currentWorkspaceId ?? "All workspaces";
+  const topbarHarnessLabel = harnessLabel ?? "Agent";
   const topbarSessionLabel =
     sessionLabel ?? currentThreadLabel ?? currentThreadId ?? "default_session";
   const topbarUsageLabel =
@@ -1242,9 +1246,14 @@ export function ThreadWorkspaceLayout({
                           className="thread-topbar-meta-row flex min-w-0 max-w-full items-center gap-1 text-left text-[11px] leading-none sm:text-xs"
                           title="Session and usage"
                         >
-                          <span className="shrink-0">Room</span>
-                          <span className="truncate font-mono">
-                            {topbarRoomLabel}
+                          <span className="shrink-0 font-medium text-[var(--theme-fg-soft)]">
+                            {topbarHarnessLabel}
+                          </span>
+                          <span aria-hidden="true" className="shrink-0">
+                            ·
+                          </span>
+                          <span className="truncate">
+                            {topbarWorkspaceLabel}
                           </span>
                         </button>
                         {topbarDetailsOpen ? (
