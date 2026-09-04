@@ -52,6 +52,7 @@ describe('ComposerForkPanels', () => {
       <ComposerForkPanel
         busy={false}
         forkBusy={false}
+        forkFromTurnAvailable
         composerMenuItemClassName="menu-item"
         onForkLatest={onForkLatest}
         onSelectForkTurnPanel={onSelectForkTurnPanel}
@@ -67,6 +68,22 @@ describe('ComposerForkPanels', () => {
 
     expect(onForkLatest).toHaveBeenCalledTimes(1);
     expect(onSelectForkTurnPanel).toHaveBeenCalledTimes(1);
+  });
+
+  it('hides selected-turn forking when the backend only supports session fork', () => {
+    const view = renderNode(
+      <ComposerForkPanel
+        busy={false}
+        forkBusy={false}
+        forkFromTurnAvailable={false}
+        composerMenuItemClassName="menu-item"
+        onForkLatest={vi.fn()}
+        onSelectForkTurnPanel={vi.fn()}
+      />,
+    );
+
+    expect(view.textContent).toContain('Fork from latest');
+    expect(view.textContent).not.toContain('Fork from selected turn');
   });
 
   it('renders fork turn states and invokes selected turn', () => {

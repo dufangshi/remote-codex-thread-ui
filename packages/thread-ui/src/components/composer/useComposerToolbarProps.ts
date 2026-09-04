@@ -1,5 +1,6 @@
 import type {
   AgentBackendToolboxItemSchemaDto,
+  CollaborationModeDto,
   ModelOptionDto,
   ReasoningEffortDto,
   SandboxModeDto,
@@ -40,6 +41,7 @@ export interface ComposerToolbarCapabilities {
   mcpConfigEditing: boolean;
   planMode: boolean;
   sandboxMode: boolean;
+  forkFromTurn: boolean;
 }
 
 export interface UseComposerToolbarPropsInput {
@@ -55,7 +57,6 @@ export interface UseComposerToolbarPropsInput {
   panelButtonClassName: string;
   chipButtonClassName: string;
   inlineToggleClassName: string;
-  planToggleActiveClassName: string;
   sendButtonBaseClassName: string;
   slashPanelView: SlashPanelView;
   availableToolboxItems: AgentBackendToolboxItemSchemaDto[];
@@ -70,13 +71,12 @@ export interface UseComposerToolbarPropsInput {
   activeView: 'chat' | 'shell';
   disabled: boolean;
   model: string | null | undefined;
-  agentLabel?: string | null | undefined;
   modelOptions: ModelOptionDto[];
   modelContextTitle: string;
   contextUsage: ThreadContextUsageDto | null | undefined;
   reasoningEffort: ReasoningEffortDto | null | undefined;
   supportedEfforts: ModelOptionDto['supportedReasoningEfforts'];
-  displayedCollaborationMode: ComposerSettingsToolbarProps['displayedCollaborationMode'];
+  displayedCollaborationMode: CollaborationModeDto;
   sandboxMode: SandboxModeDto | null | undefined;
   sendButtonLabel: string;
   sendButtonClassName: string;
@@ -166,7 +166,6 @@ export function useComposerToolbarProps({
   panelButtonClassName,
   chipButtonClassName,
   inlineToggleClassName,
-  planToggleActiveClassName,
   sendButtonBaseClassName,
   slashPanelView,
   availableToolboxItems,
@@ -181,7 +180,6 @@ export function useComposerToolbarProps({
   activeView,
   disabled,
   model,
-  agentLabel,
   modelOptions,
   modelContextTitle,
   contextUsage,
@@ -269,6 +267,10 @@ export function useComposerToolbarProps({
         open: openMenu === 'slash',
         slashPanelView,
         availableToolboxItems,
+        planModeAvailable: capabilities.planMode,
+        forkFromTurnAvailable: capabilities.forkFromTurn,
+        displayedCollaborationMode,
+        settingsBusy,
         busy,
         forkBusy,
         forkTurnOptionsState,
@@ -311,6 +313,7 @@ export function useComposerToolbarProps({
             current === 'slash' ? null : 'slash',
           ),
         onToolboxItemClick,
+        onUpdateSettings,
         toolboxItemDisabled: (item) =>
           toolboxItemDisabled(item, {
             settingsBusy,
@@ -384,15 +387,12 @@ export function useComposerToolbarProps({
     : {
         openMenu,
         model,
-        agentLabel,
         modelOptions,
         modelContextTitle,
         contextUsage,
         reasoningEffort,
         supportedEfforts,
-        displayedCollaborationMode,
         sandboxMode,
-        planModeAvailable: capabilities.planMode,
         sandboxModeAvailable: capabilities.sandboxMode,
         settingsBusy,
         goalComposeMode,
@@ -407,7 +407,6 @@ export function useComposerToolbarProps({
         effortControlTitle,
         inlineToggleClassName,
         menuItemClassName,
-        planToggleActiveClassName,
         sendButtonBaseClassName,
         onSetOpenMenu,
         onUpdateSettings,

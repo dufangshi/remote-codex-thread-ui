@@ -21,7 +21,6 @@ function input(
     panelButtonClassName: 'panel',
     chipButtonClassName: 'chip',
     inlineToggleClassName: 'inline',
-    planToggleActiveClassName: 'plan',
     sendButtonBaseClassName: 'send',
     slashPanelView: 'root',
     availableToolboxItems: [],
@@ -80,6 +79,7 @@ function input(
       mcpConfigEditing: true,
       planMode: true,
       sandboxMode: true,
+      forkFromTurn: false,
     },
     shellControlState: null,
     onToggleView: vi.fn(),
@@ -131,7 +131,7 @@ describe('useComposerToolbarProps', () => {
 
     expect(props.slashToolboxProps?.open).toBe(true);
     expect(props.attachmentMenuProps?.open).toBe(false);
-    expect(props.settingsToolbarProps?.planModeAvailable).toBe(true);
+    expect(props.slashToolboxProps?.planModeAvailable).toBe(true);
     expect(props.settingsToolbarProps?.sandboxModeAvailable).toBe(true);
     expect(props.shellToolsPanelProps).toBeNull();
     expect(props.slashToolboxProps?.onToggle()).toBeUndefined();
@@ -154,7 +154,9 @@ describe('useComposerToolbarProps', () => {
 
   it('uses stable menu toggle updater semantics', () => {
     const setOpenMenu = vi.fn();
-    const props = useComposerToolbarProps(input({ onSetOpenMenu: setOpenMenu }));
+    const props = useComposerToolbarProps(
+      input({ onSetOpenMenu: setOpenMenu }),
+    );
 
     props.attachmentMenuProps?.onToggle();
 

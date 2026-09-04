@@ -1,5 +1,4 @@
 import type {
-  CollaborationModeDto,
   ModelOptionDto,
   ReasoningEffortDto,
   SandboxModeDto,
@@ -11,12 +10,8 @@ import { useState } from 'react';
 
 import { InputGroupButton } from '../graph-ui/InputGroup';
 import type { SettingsMenu } from './types';
-import {
-  formatReasoningEffortLabel,
-} from './composerUtils';
-import {
-  ContextProgressBar,
-} from './composerPresentation';
+import { formatReasoningEffortLabel } from './composerUtils';
+import { ContextProgressBar } from './composerPresentation';
 
 const sandboxOptions: Array<{
   mode: SandboxModeDto;
@@ -28,10 +23,16 @@ const sandboxOptions: Array<{
 ];
 
 function formatSandboxModeLabel(mode: SandboxModeDto | null | undefined) {
-  return sandboxOptions.find((entry) => entry.mode === mode)?.label ?? 'Default';
+  return (
+    sandboxOptions.find(
+      (entry) => entry.mode === (mode ?? 'danger-full-access'),
+    )?.label ?? 'Danger'
+  );
 }
 
-function formatSandboxModeCompactLabel(mode: SandboxModeDto | null | undefined) {
+function formatSandboxModeCompactLabel(
+  mode: SandboxModeDto | null | undefined,
+) {
   switch (mode) {
     case 'read-only':
       return 'RO';
@@ -40,22 +41,19 @@ function formatSandboxModeCompactLabel(mode: SandboxModeDto | null | undefined) 
     case 'danger-full-access':
       return 'Full';
     default:
-      return 'Sandbox';
+      return 'Full';
   }
 }
 
 export function ComposerSettingsToolbar({
   openMenu,
   model,
-  agentLabel,
   modelOptions,
   modelContextTitle,
   contextUsage,
   reasoningEffort,
   supportedEfforts,
-  displayedCollaborationMode,
   sandboxMode,
-  planModeAvailable,
   sandboxModeAvailable,
   settingsBusy,
   goalComposeMode,
@@ -70,22 +68,18 @@ export function ComposerSettingsToolbar({
   effortControlTitle,
   inlineToggleClassName,
   menuItemClassName,
-  planToggleActiveClassName,
   sendButtonBaseClassName,
   onSetOpenMenu,
   onUpdateSettings,
 }: {
   openMenu: SettingsMenu;
   model: string | null | undefined;
-  agentLabel?: string | null | undefined;
   modelOptions: ModelOptionDto[];
   modelContextTitle: string;
   contextUsage: ThreadContextUsageDto | null | undefined;
   reasoningEffort: ReasoningEffortDto | null | undefined;
   supportedEfforts: ModelOptionDto['supportedReasoningEfforts'];
-  displayedCollaborationMode: CollaborationModeDto;
   sandboxMode: SandboxModeDto | null | undefined;
-  planModeAvailable: boolean;
   sandboxModeAvailable: boolean;
   settingsBusy: boolean;
   goalComposeMode: boolean;
@@ -100,12 +94,13 @@ export function ComposerSettingsToolbar({
   effortControlTitle: string;
   inlineToggleClassName: string;
   menuItemClassName: string;
-  planToggleActiveClassName: string;
   sendButtonBaseClassName: string;
   onSetOpenMenu: (updater: (current: SettingsMenu) => SettingsMenu) => void;
   onUpdateSettings: (input: UpdateThreadSettingsInput) => void;
 }) {
-  const [settingsSection, setSettingsSection] = useState<'model' | 'effort' | null>(null);
+  const [settingsSection, setSettingsSection] = useState<
+    'model' | 'effort' | null
+  >(null);
   const selectedModelLabel = (
     modelOptions.find((entry) => entry.model === model)?.displayName ||
     model ||
@@ -114,19 +109,6 @@ export function ComposerSettingsToolbar({
 
   return (
     <>
-      {agentLabel ? (
-        <InputGroupButton
-          type="button"
-          variant="ghost"
-          size="xs"
-          disabled
-          aria-label={`Agent: ${agentLabel}`}
-          title={`${agentLabel} is fixed for this thread`}
-          className={`${inlineToggleClassName} max-w-[7.5rem] cursor-default rounded-full px-2.5 text-stone-500 disabled:opacity-100 sm:max-w-[9rem]`}
-        >
-          <span className="block min-w-0 truncate whitespace-nowrap">{agentLabel}</span>
-        </InputGroupButton>
-      ) : null}
       <div className="relative min-w-0">
         <InputGroupButton
           type="button"
@@ -139,9 +121,7 @@ export function ComposerSettingsToolbar({
           disabled={modelControlsDisabled || modelOptions.length === 0}
           onClick={() => {
             setSettingsSection(null);
-            onSetOpenMenu((current) =>
-              current === 'model' ? null : 'model',
-            )
+            onSetOpenMenu((current) => (current === 'model' ? null : 'model'));
           }}
           title={
             fastMode
@@ -167,7 +147,9 @@ export function ComposerSettingsToolbar({
             >
               <span>Model</span>
               <span className="flex min-w-0 items-center gap-1 text-stone-500">
-                <span className="max-w-[7rem] truncate">{selectedModelLabel}</span>
+                <span className="max-w-[7rem] truncate">
+                  {selectedModelLabel}
+                </span>
                 <ChevronRight className="h-3.5 w-3.5 shrink-0" />
               </span>
             </button>
@@ -196,12 +178,14 @@ export function ComposerSettingsToolbar({
                         key={entry.id}
                         type="button"
                         onClick={() => {
-                          const nextEffort = reasoningEffort &&
+                          const nextEffort =
+                            reasoningEffort &&
                             entry.supportedReasoningEfforts.some(
-                              (effort) => effort.reasoningEffort === reasoningEffort,
+                              (effort) =>
+                                effort.reasoningEffort === reasoningEffort,
                             )
-                            ? reasoningEffort
-                            : entry.defaultReasoningEffort;
+                              ? reasoningEffort
+                              : entry.defaultReasoningEffort;
                           onUpdateSettings({
                             model: entry.model,
                             reasoningEffort: nextEffort,
@@ -215,7 +199,9 @@ export function ComposerSettingsToolbar({
                         <span className="truncate text-sm font-medium">
                           {entry.displayName || entry.model}
                         </span>
-                        {selected ? <Check className="h-3.5 w-3.5 shrink-0" /> : null}
+                        {selected ? (
+                          <Check className="h-3.5 w-3.5 shrink-0" />
+                        ) : null}
                       </button>
                     );
                   })}
@@ -233,7 +219,9 @@ export function ComposerSettingsToolbar({
                       key={entry.reasoningEffort}
                       type="button"
                       onClick={() => {
-                        onUpdateSettings({ reasoningEffort: entry.reasoningEffort });
+                        onUpdateSettings({
+                          reasoningEffort: entry.reasoningEffort,
+                        });
                         onSetOpenMenu(() => null);
                       }}
                       className={`${menuItemClassName} flex w-full items-center justify-between rounded-lg px-3 py-2 text-left ${
@@ -247,7 +235,9 @@ export function ComposerSettingsToolbar({
                     </button>
                   );
                 })}
-                {supportedEfforts.some((entry) => entry.reasoningEffort === 'ultra') ? (
+                {supportedEfforts.some(
+                  (entry) => entry.reasoningEffort === 'ultra',
+                ) ? (
                   <p className="px-3 pb-1 pt-2 text-xs leading-4 text-stone-500">
                     Higher effort can consume usage limits faster.
                   </p>
@@ -295,7 +285,7 @@ export function ComposerSettingsToolbar({
                       })
                     }
                     className={`block w-full rounded-xl px-3 py-2 text-left transition ${
-                      entry.mode === sandboxMode
+                      entry.mode === (sandboxMode ?? 'danger-full-access')
                         ? 'ui-status-warning'
                         : `${menuItemClassName} text-stone-300`
                     }`}
@@ -307,29 +297,6 @@ export function ComposerSettingsToolbar({
             </div>
           )}
         </div>
-      )}
-
-      {planModeAvailable && (
-        <InputGroupButton
-          type="button"
-          variant="ghost"
-          size="xs"
-          aria-pressed={displayedCollaborationMode === 'plan'}
-          disabled={settingsBusy}
-          onClick={() =>
-            onUpdateSettings({
-              collaborationMode:
-                displayedCollaborationMode === 'plan' ? 'default' : 'plan',
-            })
-          }
-          className={`${inlineToggleClassName} rounded-full px-2.5 ${
-            displayedCollaborationMode === 'plan'
-              ? `${planToggleActiveClassName} border !border-[oklch(0.78_0.16_86_/_0.76)] !bg-[oklch(0.44_0.095_82_/_0.72)] !text-[oklch(0.96_0.055_92)] shadow-[0_0_0_1px_oklch(0.78_0.16_86_/_0.24),0_0_18px_oklch(0.78_0.16_86_/_0.42),inset_0_0_0_1px_oklch(0.98_0.04_96_/_0.18)]`
-              : 'text-stone-500'
-          } disabled:cursor-not-allowed disabled:opacity-60`}
-        >
-          Plan
-        </InputGroupButton>
       )}
 
       <InputGroupButton

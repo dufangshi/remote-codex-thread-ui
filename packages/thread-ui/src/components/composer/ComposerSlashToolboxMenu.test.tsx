@@ -114,6 +114,11 @@ function renderMenu({
   skills = emptySkillsState,
   onToggle = vi.fn(),
   onToolboxItemClick = vi.fn(),
+  planModeAvailable = true,
+  forkFromTurnAvailable = false,
+  displayedCollaborationMode = 'default',
+  settingsBusy = false,
+  onUpdateSettings = vi.fn(),
   onOpenForkTurns = vi.fn(),
   onCopySkillInvokeName = vi.fn(),
 }: {
@@ -126,6 +131,13 @@ function renderMenu({
     item: AgentBackendToolboxItemSchemaDto,
     event: React.MouseEvent<HTMLButtonElement>,
   ) => void;
+  planModeAvailable?: boolean;
+  forkFromTurnAvailable?: boolean;
+  displayedCollaborationMode?: 'default' | 'plan';
+  settingsBusy?: boolean;
+  onUpdateSettings?: (input: {
+    collaborationMode?: 'default' | 'plan';
+  }) => void;
   onOpenForkTurns?: () => Promise<void> | void;
   onCopySkillInvokeName?: (skillName: string) => Promise<void> | void;
 } = {}) {
@@ -138,6 +150,10 @@ function renderMenu({
         open={open}
         slashPanelView={slashPanelView}
         availableToolboxItems={items}
+        planModeAvailable={planModeAvailable}
+        forkFromTurnAvailable={forkFromTurnAvailable}
+        displayedCollaborationMode={displayedCollaborationMode}
+        settingsBusy={settingsBusy}
         busy={false}
         forkBusy={false}
         forkTurnOptionsState={forkTurnOptionsState}
@@ -177,11 +193,10 @@ function renderMenu({
         chipButtonClassName="chip"
         onToggle={onToggle}
         onToolboxItemClick={onToolboxItemClick}
+        onUpdateSettings={onUpdateSettings}
         toolboxItemDisabled={(item) => item.action === 'fast'}
         toolboxItemClassName={(item) => `toolbox-${item.action}`}
-        toolboxItemStatus={(item) =>
-          item.action === 'fast' ? 'Off' : 'View'
-        }
+        toolboxItemStatus={(item) => (item.action === 'fast' ? 'Off' : 'View')}
         onSetSlashPanelView={setSlashPanelView}
         onUpdateGoal={vi.fn()}
         onOpenForkTurns={onOpenForkTurns}
@@ -247,8 +262,12 @@ describe('ComposerSlashToolboxMenu', () => {
     const onToggle = vi.fn();
     const view = renderMenu({ open: false, onToggle });
 
-    expect(view.querySelector('[data-composer-menu-surface="true"]')).toBeNull();
-    view.querySelector<HTMLButtonElement>('[aria-label="Open slash toolbox"]')?.click();
+    expect(
+      view.querySelector('[data-composer-menu-surface="true"]'),
+    ).toBeNull();
+    view
+      .querySelector<HTMLButtonElement>('[aria-label="Open slash toolbox"]')
+      ?.click();
     expect(onToggle).toHaveBeenCalledTimes(1);
   });
 
@@ -266,6 +285,34 @@ describe('ComposerSlashToolboxMenu', () => {
     });
   });
 
+  it('toggles plan mode from the slash toolbox', () => {
+    const onUpdateSettings = vi.fn();
+    const view = renderMenu({ onUpdateSettings });
+    const planButton = buttonByText(view, '/plan');
+
+    expect(planButton?.getAttribute('aria-pressed')).toBe('false');
+    planButton?.click();
+    expect(onUpdateSettings).toHaveBeenCalledWith({
+      collaborationMode: 'plan',
+    });
+  });
+
+  it('shows active plan mode and can switch it off', () => {
+    const onUpdateSettings = vi.fn();
+    const view = renderMenu({
+      displayedCollaborationMode: 'plan',
+      onUpdateSettings,
+    });
+    const planButton = buttonByText(view, '/plan');
+
+    expect(planButton?.getAttribute('aria-pressed')).toBe('true');
+    expect(planButton?.textContent).toContain('On');
+    planButton?.click();
+    expect(onUpdateSettings).toHaveBeenCalledWith({
+      collaborationMode: 'default',
+    });
+  });
+
   it('splits goal list navigation from opening the goal composer', () => {
     const goalItem: AgentBackendToolboxItemSchemaDto = {
       action: 'goal',
@@ -277,7 +324,9 @@ describe('ComposerSlashToolboxMenu', () => {
     const view = renderMenu({ items: [goalItem], onToolboxItemClick });
 
     flushSync(() => {
-      view.querySelector<HTMLButtonElement>('[aria-label="View goals"]')?.click();
+      view
+        .querySelector<HTMLButtonElement>('[aria-label="View goals"]')
+        ?.click();
     });
     expect(view.textContent).toContain('No goals in this thread yet.');
     expect(onToolboxItemClick).not.toHaveBeenCalled();
@@ -297,11 +346,13 @@ describe('ComposerSlashToolboxMenu', () => {
       .querySelector<HTMLButtonElement>('[aria-label="Open goal composer"]')
       ?.click();
     expect(onToolboxItemClick).toHaveBeenCalledTimes(1);
-    expect(onToolboxItemClick.mock.calls[0]?.[0]).toMatchObject({ action: 'goal' });
+    expect(onToolboxItemClick.mock.calls[0]?.[0]).toMatchObject({
+      action: 'goal',
+    });
   });
 
   it('renders the empty root state', () => {
-    const view = renderMenu({ items: [] });
+    const view = renderMenu({ items: [], planModeAvailable: false });
 
     expect(view.textContent).toContain(
       'No backend tools are available for this thread.',
@@ -312,6 +363,7 @@ describe('ComposerSlashToolboxMenu', () => {
     const onOpenForkTurns = vi.fn();
     const view = renderMenu({
       initialView: 'fork',
+      forkFromTurnAvailable: true,
       onOpenForkTurns,
     });
 
@@ -331,7 +383,9 @@ describe('ComposerSlashToolboxMenu', () => {
       onCopySkillInvokeName,
     });
 
-    view.querySelector<HTMLButtonElement>('[aria-label="Copy $review"]')?.click();
+    view
+      .querySelector<HTMLButtonElement>('[aria-label="Copy $review"]')
+      ?.click();
 
     expect(view.textContent).toContain('Review');
     expect(onCopySkillInvokeName).toHaveBeenCalledWith('review');

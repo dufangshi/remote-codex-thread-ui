@@ -5,6 +5,7 @@ import type { SlashPanelState } from './types';
 interface ComposerForkPanelProps {
   busy: boolean;
   forkBusy: boolean;
+  forkFromTurnAvailable: boolean;
   composerMenuItemClassName: string;
   onForkLatest: () => Promise<void> | void;
   onSelectForkTurnPanel: () => Promise<void> | void;
@@ -13,6 +14,7 @@ interface ComposerForkPanelProps {
 export function ComposerForkPanel({
   busy,
   forkBusy,
+  forkFromTurnAvailable,
   composerMenuItemClassName,
   onForkLatest,
   onSelectForkTurnPanel,
@@ -32,22 +34,24 @@ export function ComposerForkPanel({
           </span>
         </div>
       </button>
-      <button
-        type="button"
-        disabled={busy || forkBusy}
-        onClick={(event) => {
-          event.stopPropagation();
-          void onSelectForkTurnPanel();
-        }}
-        className={`${composerMenuItemClassName} mt-1 block w-full rounded-xl px-3 py-2 text-left text-sm transition disabled:cursor-not-allowed disabled:opacity-60`}
-      >
-        <div className="flex items-center justify-between gap-3">
-          <span>Fork from selected turn</span>
-          <span className="text-[11px] uppercase tracking-[0.16em] text-stone-400">
-            Pick
-          </span>
-        </div>
-      </button>
+      {forkFromTurnAvailable ? (
+        <button
+          type="button"
+          disabled={busy || forkBusy}
+          onClick={(event) => {
+            event.stopPropagation();
+            void onSelectForkTurnPanel();
+          }}
+          className={`${composerMenuItemClassName} mt-1 block w-full rounded-xl px-3 py-2 text-left text-sm transition disabled:cursor-not-allowed disabled:opacity-60`}
+        >
+          <div className="flex items-center justify-between gap-3">
+            <span>Fork from selected turn</span>
+            <span className="text-[11px] uppercase tracking-[0.16em] text-stone-400">
+              Pick
+            </span>
+          </div>
+        </button>
+      ) : null}
       {busy ? (
         <p className="mt-2 rounded-xl border border-stone-800 bg-stone-950/70 px-3 py-3 text-sm text-stone-400">
           Fork is only available while the thread is idle.

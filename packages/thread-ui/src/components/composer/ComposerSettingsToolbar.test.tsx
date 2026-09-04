@@ -7,7 +7,6 @@ import { createRoot, type Root } from 'react-dom/client';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type {
-  CollaborationModeDto,
   ModelOptionDto,
   ReasoningEffortDto,
   SandboxModeDto,
@@ -62,12 +61,10 @@ function renderNode(node: ReactNode) {
 
 function renderToolbar({
   initialOpenMenu = null,
-  displayedCollaborationMode = 'default',
   reasoningEffort = 'medium',
   disabled = false,
   goalBusy = false,
   activeView = 'chat',
-  planModeAvailable = true,
   sandboxMode = 'workspace-write',
   sandboxModeAvailable = true,
   supportedEfforts = modelOptions[0]?.supportedReasoningEfforts ?? [],
@@ -76,15 +73,12 @@ function renderToolbar({
   onUpdateSettings = vi.fn(),
   model = 'gpt-5',
   availableModels = modelOptions,
-  agentLabel = null,
 }: {
   initialOpenMenu?: SettingsMenu;
-  displayedCollaborationMode?: CollaborationModeDto;
   reasoningEffort?: ReasoningEffortDto | null;
   disabled?: boolean;
   goalBusy?: boolean;
   activeView?: 'chat' | 'shell';
-  planModeAvailable?: boolean;
   sandboxMode?: SandboxModeDto | null;
   sandboxModeAvailable?: boolean;
   supportedEfforts?: ModelOptionDto['supportedReasoningEfforts'];
@@ -93,7 +87,6 @@ function renderToolbar({
   onUpdateSettings?: (input: UpdateThreadSettingsInput) => void;
   model?: string;
   availableModels?: ModelOptionDto[];
-  agentLabel?: string | null;
 } = {}) {
   function Harness() {
     const [openMenu, setOpenMenu] = useState<SettingsMenu>(initialOpenMenu);
@@ -107,15 +100,12 @@ function renderToolbar({
         <ComposerSettingsToolbar
           openMenu={openMenu}
           model={model}
-          agentLabel={agentLabel}
           modelOptions={availableModels}
           modelContextTitle="1k / 8k tokens"
           contextUsage={null}
           reasoningEffort={reasoningEffort}
           supportedEfforts={supportedEfforts}
-          displayedCollaborationMode={displayedCollaborationMode}
           sandboxMode={sandboxMode}
-          planModeAvailable={planModeAvailable}
           sandboxModeAvailable={sandboxModeAvailable}
           settingsBusy={false}
           goalComposeMode={false}
@@ -130,7 +120,6 @@ function renderToolbar({
           effortControlTitle={effortControlTitle}
           inlineToggleClassName="inline-toggle"
           menuItemClassName="menu-item"
-          planToggleActiveClassName="plan-active"
           sendButtonBaseClassName="send-base"
           onSetOpenMenu={setOpenMenu}
           onUpdateSettings={onUpdateSettings}
@@ -150,9 +139,9 @@ function buttonByText(view: HTMLElement, text: string) {
 
 function menuButtonByText(view: HTMLElement, text: string) {
   const menu = view.querySelector('[data-composer-menu-surface="true"]');
-  return Array.from(menu?.querySelectorAll<HTMLButtonElement>('button') ?? []).find(
-    (button) => button.textContent?.includes(text),
-  );
+  return Array.from(
+    menu?.querySelectorAll<HTMLButtonElement>('button') ?? [],
+  ).find((button) => button.textContent?.includes(text));
 }
 
 describe('ComposerSettingsToolbar', () => {
@@ -180,9 +169,13 @@ describe('ComposerSettingsToolbar', () => {
     const view = renderToolbar({ onUpdateSettings });
 
     flushSync(() => {
-      view.querySelector<HTMLButtonElement>('[aria-label^="Model and effort:"]')?.click();
+      view
+        .querySelector<HTMLButtonElement>('[aria-label^="Model and effort:"]')
+        ?.click();
     });
-    expect(view.querySelector('[data-composer-menu-surface="true"]')).not.toBeNull();
+    expect(
+      view.querySelector('[data-composer-menu-surface="true"]'),
+    ).not.toBeNull();
     flushSync(() => {
       menuButtonByText(view, 'Model')?.click();
     });
@@ -210,19 +203,22 @@ describe('ComposerSettingsToolbar', () => {
     });
 
     expect(
-      view.querySelector<HTMLButtonElement>('[aria-label^="Model and effort:"]')?.textContent,
+      view.querySelector<HTMLButtonElement>('[aria-label^="Model and effort:"]')
+        ?.textContent,
     ).toContain('Opus · 5');
     expect(view.textContent).not.toContain('(1M context)');
     flushSync(() => {
-      view.querySelector<HTMLButtonElement>('[aria-label^="Model and effort:"]')?.click();
+      view
+        .querySelector<HTMLButtonElement>('[aria-label^="Model and effort:"]')
+        ?.click();
     });
     flushSync(() => {
       menuButtonByText(view, 'Model')?.click();
     });
     expect(view.textContent).toContain('Opus · 5 (1M context)');
-    Array.from(view.querySelectorAll<HTMLButtonElement>('button')).find(
-      (button) => button.textContent?.trim() === 'Opus · 5 (1M context)',
-    )?.click();
+    Array.from(view.querySelectorAll<HTMLButtonElement>('button'))
+      .find((button) => button.textContent?.trim() === 'Opus · 5 (1M context)')
+      ?.click();
 
     expect(onUpdateSettings).toHaveBeenCalledWith({
       model: 'opus[1m]',
@@ -266,38 +262,10 @@ describe('ComposerSettingsToolbar', () => {
     );
   });
 
-  it('renders the selected agent as a fixed disabled control', () => {
-    const view = renderToolbar({ agentLabel: 'Grok Build' });
-    const agent = view.querySelector<HTMLButtonElement>('[aria-label="Agent: Grok Build"]');
+  it('does not render a plan toggle in the composer toolbar', () => {
+    const view = renderToolbar();
 
-    expect(agent?.disabled).toBe(true);
-    expect(agent?.textContent).toContain('Grok Build');
-  });
-
-  it('toggles plan mode through settings updates', () => {
-    const onUpdateSettings = vi.fn();
-    const view = renderToolbar({ onUpdateSettings });
-
-    buttonByText(view, 'Plan')?.click();
-
-    expect(onUpdateSettings).toHaveBeenCalledWith({
-      collaborationMode: 'plan',
-    });
-  });
-
-  it('marks active plan mode and can switch it back to default', () => {
-    const onUpdateSettings = vi.fn();
-    const view = renderToolbar({
-      displayedCollaborationMode: 'plan',
-      onUpdateSettings,
-    });
-    const planButton = buttonByText(view, 'Plan');
-
-    expect(planButton?.getAttribute('aria-pressed')).toBe('true');
-    planButton?.click();
-    expect(onUpdateSettings).toHaveBeenCalledWith({
-      collaborationMode: 'default',
-    });
+    expect(buttonByText(view, 'Plan')).toBeUndefined();
   });
 
   it('selects sandbox mode from the sandbox menu', () => {
@@ -339,6 +307,14 @@ describe('ComposerSettingsToolbar', () => {
     );
   });
 
+  it('defaults an unset sandbox mode to full access', () => {
+    const view = renderToolbar({ sandboxMode: null });
+
+    expect(buttonByText(view, 'Full')?.getAttribute('aria-label')).toBe(
+      'Sandbox: Danger',
+    );
+  });
+
   it('hides sandbox controls when unavailable', () => {
     const view = renderToolbar({ sandboxModeAvailable: false });
 
@@ -348,14 +324,18 @@ describe('ComposerSettingsToolbar', () => {
   it('keeps the chat send button disabled when composer input is disabled', () => {
     const view = renderToolbar({ disabled: true });
 
-    expect(view.querySelector<HTMLButtonElement>('[aria-label="Send Prompt"]')?.disabled)
-      .toBe(true);
+    expect(
+      view.querySelector<HTMLButtonElement>('[aria-label="Send Prompt"]')
+        ?.disabled,
+    ).toBe(true);
   });
 
   it('does not disable the shell send button from chat prompt disabled state', () => {
     const view = renderToolbar({ activeView: 'shell', disabled: true });
 
-    expect(view.querySelector<HTMLButtonElement>('[aria-label="Send Prompt"]')?.disabled)
-      .toBe(false);
+    expect(
+      view.querySelector<HTMLButtonElement>('[aria-label="Send Prompt"]')
+        ?.disabled,
+    ).toBe(false);
   });
 });

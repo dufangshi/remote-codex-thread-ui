@@ -2,6 +2,7 @@ import type {
   AgentBackendToolboxItemSchemaDto,
   AgentHookDto,
   AgentHookEventNameDto,
+  CollaborationModeDto,
   ThreadForkTurnOptionDto,
   ThreadHooksDto,
   ThreadMcpServersDto,
@@ -9,12 +10,16 @@ import type {
   ThreadGoalDto,
   UpdateThreadHookInput,
   UpdateThreadGoalInput,
+  UpdateThreadSettingsInput,
 } from '@remote-codex/shared';
 import type { MouseEvent } from 'react';
 
 import { InputGroupButton } from '../graph-ui/InputGroup';
 import { SlashIcon } from './composerPresentation';
-import { ComposerForkPanel, ComposerForkTurnsPanel } from './ComposerForkPanels';
+import {
+  ComposerForkPanel,
+  ComposerForkTurnsPanel,
+} from './ComposerForkPanels';
 import { ComposerHooksPanel } from './ComposerHooksPanel';
 import { ComposerGoalsPanel } from './ComposerGoalsPanel';
 import { ComposerMcpPanel } from './ComposerMcpPanel';
@@ -31,6 +36,10 @@ export function ComposerSlashToolboxMenu({
   open,
   slashPanelView,
   availableToolboxItems,
+  planModeAvailable,
+  forkFromTurnAvailable,
+  displayedCollaborationMode,
+  settingsBusy,
   busy,
   forkBusy,
   forkTurnOptionsState,
@@ -70,6 +79,7 @@ export function ComposerSlashToolboxMenu({
   chipButtonClassName,
   onToggle,
   onToolboxItemClick,
+  onUpdateSettings,
   toolboxItemDisabled,
   toolboxItemClassName,
   toolboxItemStatus,
@@ -106,6 +116,10 @@ export function ComposerSlashToolboxMenu({
   open: boolean;
   slashPanelView: SlashPanelView;
   availableToolboxItems: AgentBackendToolboxItemSchemaDto[];
+  planModeAvailable: boolean;
+  forkFromTurnAvailable: boolean;
+  displayedCollaborationMode: CollaborationModeDto;
+  settingsBusy: boolean;
   busy: boolean;
   forkBusy: boolean;
   forkTurnOptionsState: SlashPanelState<ThreadForkTurnOptionDto[]>;
@@ -148,6 +162,7 @@ export function ComposerSlashToolboxMenu({
     item: AgentBackendToolboxItemSchemaDto,
     event: MouseEvent<HTMLButtonElement>,
   ) => void;
+  onUpdateSettings: (input: UpdateThreadSettingsInput) => void;
   toolboxItemDisabled: (item: AgentBackendToolboxItemSchemaDto) => boolean;
   toolboxItemClassName: (item: AgentBackendToolboxItemSchemaDto) => string;
   toolboxItemStatus: (item: AgentBackendToolboxItemSchemaDto) => string;
@@ -217,52 +232,82 @@ export function ComposerSlashToolboxMenu({
         >
           {slashPanelView === 'root' ? (
             <div className="p-2">
-              {availableToolboxItems.map((item, index) => item.action === 'goal' ? (
-                <div
-                  key={`${item.action}:${item.command}`}
-                  className={`mt-1 flex min-h-11 overflow-hidden rounded-xl border border-[var(--theme-border)] ${index === 0 ? 'mt-0' : ''}`}
-                  title={item.description ?? item.label}
-                >
-                  <button
-                    type="button"
-                    disabled={toolboxItemDisabled(item)}
-                    onClick={() => {
-                      onSetSlashPanelView('goals');
-                      void onViewGoals?.();
-                    }}
-                    className="min-w-0 flex-1 px-3 py-2.5 text-left text-sm text-[var(--theme-fg)] transition hover:bg-[var(--theme-hover)] focus-visible:z-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--theme-accent-border)] disabled:cursor-not-allowed disabled:opacity-45"
-                    aria-label="View goals"
-                  >
-                    <span>{item.command}</span>
-                  </button>
-                  <button
-                    type="button"
-                    disabled={toolboxItemDisabled(item)}
-                    onClick={(event) => onToolboxItemClick(item, event)}
-                    className="min-w-14 border-l border-[var(--theme-border)] px-3 text-xs font-semibold text-[var(--theme-fg-muted)] transition hover:bg-[var(--theme-hover)] hover:text-[var(--theme-fg)] focus-visible:z-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--theme-accent-border)] disabled:cursor-not-allowed disabled:opacity-45"
-                    aria-label="Open goal composer"
-                  >
-                    Open
-                  </button>
-                </div>
-              ) : (
+              {planModeAvailable ? (
                 <button
-                  key={`${item.action}:${item.command}`}
                   type="button"
-                  disabled={toolboxItemDisabled(item)}
-                  onClick={(event) => onToolboxItemClick(item, event)}
-                  className={`${toolboxItemClassName(item)} ${index === 0 ? 'mt-0' : ''}`}
-                  title={item.description ?? item.label}
+                  aria-pressed={displayedCollaborationMode === 'plan'}
+                  disabled={settingsBusy}
+                  onClick={() =>
+                    onUpdateSettings({
+                      collaborationMode:
+                        displayedCollaborationMode === 'plan'
+                          ? 'default'
+                          : 'plan',
+                    })
+                  }
+                  className={`${
+                    displayedCollaborationMode === 'plan'
+                      ? 'ui-status-warning'
+                      : menuItemClassName
+                  } block w-full rounded-xl px-3 py-2 text-left text-sm transition disabled:cursor-not-allowed disabled:opacity-60`}
+                  title="Toggle plan mode"
                 >
                   <div className="flex items-center justify-between gap-3">
-                    <span>{item.command}</span>
+                    <span>/plan</span>
                     <span className="text-[11px] uppercase tracking-[0.16em] text-stone-400">
-                      {toolboxItemStatus(item)}
+                      {displayedCollaborationMode === 'plan' ? 'On' : 'Off'}
                     </span>
                   </div>
                 </button>
-              ))}
-              {availableToolboxItems.length === 0 ? (
+              ) : null}
+              {availableToolboxItems.map((item, index) =>
+                item.action === 'goal' ? (
+                  <div
+                    key={`${item.action}:${item.command}`}
+                    className={`mt-1 flex min-h-11 overflow-hidden rounded-xl border border-[var(--theme-border)] ${index === 0 && !planModeAvailable ? 'mt-0' : ''}`}
+                    title={item.description ?? item.label}
+                  >
+                    <button
+                      type="button"
+                      disabled={toolboxItemDisabled(item)}
+                      onClick={() => {
+                        onSetSlashPanelView('goals');
+                        void onViewGoals?.();
+                      }}
+                      className="min-w-0 flex-1 px-3 py-2.5 text-left text-sm text-[var(--theme-fg)] transition hover:bg-[var(--theme-hover)] focus-visible:z-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--theme-accent-border)] disabled:cursor-not-allowed disabled:opacity-45"
+                      aria-label="View goals"
+                    >
+                      <span>{item.command}</span>
+                    </button>
+                    <button
+                      type="button"
+                      disabled={toolboxItemDisabled(item)}
+                      onClick={(event) => onToolboxItemClick(item, event)}
+                      className="min-w-14 border-l border-[var(--theme-border)] px-3 text-xs font-semibold text-[var(--theme-fg-muted)] transition hover:bg-[var(--theme-hover)] hover:text-[var(--theme-fg)] focus-visible:z-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--theme-accent-border)] disabled:cursor-not-allowed disabled:opacity-45"
+                      aria-label="Open goal composer"
+                    >
+                      Open
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    key={`${item.action}:${item.command}`}
+                    type="button"
+                    disabled={toolboxItemDisabled(item)}
+                    onClick={(event) => onToolboxItemClick(item, event)}
+                    className={`${toolboxItemClassName(item)} ${index === 0 && !planModeAvailable ? 'mt-0' : ''}`}
+                    title={item.description ?? item.label}
+                  >
+                    <div className="flex items-center justify-between gap-3">
+                      <span>{item.command}</span>
+                      <span className="text-[11px] uppercase tracking-[0.16em] text-stone-400">
+                        {toolboxItemStatus(item)}
+                      </span>
+                    </div>
+                  </button>
+                ),
+              )}
+              {availableToolboxItems.length === 0 && !planModeAvailable ? (
                 <p className="px-3 py-2 text-sm text-stone-400">
                   No backend tools are available for this thread.
                 </p>
@@ -282,6 +327,7 @@ export function ComposerSlashToolboxMenu({
                 <ComposerForkPanel
                   busy={busy}
                   forkBusy={forkBusy}
+                  forkFromTurnAvailable={forkFromTurnAvailable}
                   composerMenuItemClassName={menuItemClassName}
                   onForkLatest={onForkLatest}
                   onSelectForkTurnPanel={() => {

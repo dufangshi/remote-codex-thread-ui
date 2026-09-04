@@ -162,9 +162,6 @@ export function buildComposerClassNames({
     composerChipButtonClassName: isShellView
       ? 'thread-composer-chip-button'
       : 'thread-graph-composer-chip-button',
-    composerPlanToggleActiveClassName: isShellView
-      ? 'thread-composer-plan-toggle-active'
-      : 'thread-graph-composer-plan-toggle-active',
     composerSendButtonClassName: isShellView
       ? 'thread-composer-send-button'
       : 'thread-graph-composer-send-button',
